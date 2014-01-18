@@ -46,8 +46,8 @@ class Emogrifier {
 	 *
 	 * @var integer
 	 */
-
 	const INDEX = 0;
+
 	/**
 	 * for calculating nth-of-type and nth-child selectors
 	 *
