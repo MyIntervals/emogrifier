@@ -48,7 +48,7 @@ class Emogrifier {
 
     private $html = '';
     private $css = '';
-    private $unprocessableHTMLTags = array('wbr');
+    private $unprocessableHtmlTags = array('wbr');
     private $caches = array();
 
     // this attribute applies to the case where you want to preserve your original text encoding.
@@ -86,10 +86,10 @@ class Emogrifier {
     // in particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
     // these functions allow you to add/remove them if necessary.
     // it only strips them from the code (does not remove actual nodes).
-    public function addUnprocessableHTMLTag($tag) { $this->unprocessableHTMLTags[] = $tag; }
+    public function addUnprocessableHTMLTag($tag) { $this->unprocessableHtmlTags[] = $tag; }
     public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag,$this->unprocessableHTMLTags)) !== false)
-            unset($this->unprocessableHTMLTags[$key]);
+        if (($key = array_search($tag,$this->unprocessableHtmlTags)) !== false)
+            unset($this->unprocessableHtmlTags[$key]);
     }
 
     // applies the CSS you submit to the html you submit. places the css inline
@@ -97,36 +97,36 @@ class Emogrifier {
         $body = $this->html;
 
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
-        if (count($this->unprocessableHTMLTags)) {
-            $unprocessableHTMLTags = implode('|',$this->unprocessableHTMLTags);
-            $body = preg_replace("/<\/?($unprocessableHTMLTags)[^>]*>/i",'',$body);
+        if (count($this->unprocessableHtmlTags)) {
+            $unprocessableHtmlTags = implode('|',$this->unprocessableHtmlTags);
+            $body = preg_replace("/<\/?($unprocessableHtmlTags)[^>]*>/i",'',$body);
         }
 
         $encoding = mb_detect_encoding($body);
         $body = mb_convert_encoding($body, 'HTML-ENTITIES', $encoding);
 
-        $xmldoc = new DOMDocument;
-        $xmldoc->encoding = $encoding;
-        $xmldoc->strictErrorChecking = false;
-        $xmldoc->formatOutput = true;
-        $xmldoc->loadHTML($body);
-        $xmldoc->normalizeDocument();
+        $xmlDocument = new DOMDocument;
+        $xmlDocument->encoding = $encoding;
+        $xmlDocument->strictErrorChecking = false;
+        $xmlDocument->formatOutput = true;
+        $xmlDocument->loadHTML($body);
+        $xmlDocument->normalizeDocument();
 
-        $xpath = new DOMXPath($xmldoc);
+        $xpath = new DOMXPath($xmlDocument);
 
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.
         // also store a reference of nodes with existing inline styles so we don't overwrite them
-        $vistedNodes = $vistedNodeRef = array();
+        $visitedNodes = $visitedNodeReferences = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
             $normalizedOrigStyle = preg_replace('/[A-z\-]+(?=\:)/Se',"strtolower('\\0')", $node->getAttribute('style'));
 
             // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
             $nodeKey = md5($node->getNodePath());
-            if (!isset($vistedNodeRef[$nodeKey])) {
-                $vistedNodeRef[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
-                $vistedNodes[$nodeKey]   = $node;
+            if (!isset($visitedNodeReferences[$nodeKey])) {
+                $visitedNodeReferences[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
+                $visitedNodes[$nodeKey]   = $node;
             }
 
             $node->setAttribute('style', $normalizedOrigStyle);
@@ -162,8 +162,8 @@ class Emogrifier {
 
         $css = preg_replace($search, $replace, $css);
 
-        $csskey = md5($css);
-        if (!isset($this->caches[CACHE_CSS][$csskey])) {
+        $cssKey = md5($css);
+        if (!isset($this->caches[CACHE_CSS][$cssKey])) {
 
             // process the CSS file for selectors and definitions
             preg_match_all('/(^|[^{}])\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
@@ -190,10 +190,10 @@ class Emogrifier {
             // now sort the selectors by precedence
             usort($all_selectors, array($this,'sortBySelectorPrecedence'));
 
-            $this->caches[CACHE_CSS][$csskey] = $all_selectors;
+            $this->caches[CACHE_CSS][$cssKey] = $all_selectors;
         }
 
-        foreach ($this->caches[CACHE_CSS][$csskey] as $value) {
+        foreach ($this->caches[CACHE_CSS][$cssKey] as $value) {
 
             // query the body for the xpath selector
             $nodes = $xpath->query($this->translateCSStoXpath(trim($value['selector'])));
@@ -218,8 +218,8 @@ class Emogrifier {
         }
 
         // now iterate through the nodes that contained inline styles in the original HTML
-        foreach ($vistedNodeRef as $nodeKey => $origStyleArr) {
-            $node = $vistedNodes[$nodeKey];
+        foreach ($visitedNodeReferences as $nodeKey => $origStyleArr) {
+            $node = $visitedNodes[$nodeKey];
             $currStyleArr = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
 
             $combinedArr = array_merge($currStyleArr, $origStyleArr);
@@ -242,9 +242,9 @@ class Emogrifier {
                         $node->parentNode->removeChild($node);
 
         if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmldoc->saveHTML(), $encoding, 'HTML-ENTITIES');
+            return mb_convert_encoding($xmlDocument->saveHTML(), $encoding, 'HTML-ENTITIES');
         } else {
-            return $xmldoc->saveHTML();
+            return $xmlDocument->saveHTML();
         }
     }
 
@@ -252,8 +252,8 @@ class Emogrifier {
         $precedenceA = $this->getCSSSelectorPrecedence($a['selector']);
         $precedenceB = $this->getCSSSelectorPrecedence($b['selector']);
 
-        // we want these sorted ascendingly so selectors with lesser precedence get processed first and
-        // selectors with greater precedence get sorted last
+        // We want these sorted in ascending order so selectors with lesser precedence get processed first and
+        // selectors with greater precedence get sorted last.
         return ($precedenceA == $precedenceB) ? ($a['line'] < $b['line'] ? -1 : 1) : ($precedenceA < $precedenceB ? -1 : 1);
     }
 
