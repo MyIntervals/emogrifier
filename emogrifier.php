@@ -41,36 +41,88 @@ define('CACHE_SELECTOR', 1);
 define('CACHE_XPATH', 2);
 
 class Emogrifier {
+	/**
+	 * for calculating nth-of-type and nth-child selectors
+	 *
+	 * @var integer
+	 */
+	const INDEX = 0;
 
-    // for calculating nth-of-type and nth-child selectors
-    const INDEX = 0;
+	/**
+	 * for calculating nth-of-type and nth-child selectors
+	 *
+	 * @var integer
+	 */
     const MULTIPLIER = 1;
 
-    private $html = '';
+	/**
+	 * @var string
+	 */
+	private $html = '';
+
+	/**
+	 * @var string
+	 */
     private $css = '';
+
+	/**
+	 * @var array<string>
+	 */
     private $unprocessableHTMLTags = array('wbr');
+
+	/**
+	 * @var array<array>
+	 */
     private $caches = array();
 
-    // this attribute applies to the case where you want to preserve your original text encoding.
-    // by default, emogrifier translates your text into HTML entities for two reasons:
-    // 1. because of client incompatibilities, it is better practice to send out HTML entities rather than unicode over email
-    // 2. it translates any illegal XML characters that DOMDocument cannot work with
-    // if you would like to preserve your original encoding, set this attribute to true.
-    public $preserveEncoding = false;
+	/**
+	 * This attribute applies to the case where you want to preserve your original text encoding.
+	 *
+	 * By default, emogrifier translates your text into HTML entities for two reasons:
+	 *
+	 * 1. Because of client incompatibilities, it is better practice to send out HTML entities rather than unicode over email.
+	 *
+	 * 2. It translates any illegal XML characters that DOMDocument cannot work with.
+	 *
+	 * If you would like to preserve your original encoding, set this attribute to true.
+	 *
+	 * @var boolean
+	 */
+	public $preserveEncoding = false;
 
-    public function __construct($html = '', $css = '') {
+	/**
+	 * @param string $html
+	 * @param string $css
+	 */
+	public function __construct($html = '', $css = '') {
         $this->html = $html;
         $this->css  = $css;
         $this->clearCache();
     }
 
-    public function setHTML($html = '') { $this->html = $html; }
-    public function setCSS($css = '') {
+	/**
+	 * @param string $html
+	 *
+	 * @return void
+	 */
+	public function setHTML($html = '') { $this->html = $html; }
+
+	/**
+	 * @param string $css
+	 *
+	 * @return void
+	 */
+	public function setCSS($css = '') {
         $this->css = $css;
         $this->clearCache(CACHE_CSS);
     }
 
-    public function clearCache($key = null) {
+	/**
+	 * @param integer|null $key
+	 *
+	 * @return void
+	 */
+	public function clearCache($key = null) {
         if (!is_null($key)) {
             if (isset($this->caches[$key])) $this->caches[$key] = array();
         } else {
@@ -82,18 +134,45 @@ class Emogrifier {
         }
     }
 
-    // there are some HTML tags that DOMDocument cannot process, and will throw an error if it encounters them.
-    // in particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
-    // these functions allow you to add/remove them if necessary.
-    // it only strips them from the code (does not remove actual nodes).
-    public function addUnprocessableHTMLTag($tag) { $this->unprocessableHTMLTags[] = $tag; }
+	/**
+	 * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
+	 * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
+	 *
+	 * This method allows you to add them if necessary.
+	 *
+	 * It only strips them from the code (i.e., it does not actually remove any nodes).
+	 *
+	 * @param string $tag
+	 *
+	 * @return void
+	 */
+	public function addUnprocessableHTMLTag($tag) { $this->unprocessableHTMLTags[] = $tag; }
+
+	/**
+	 * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
+	 * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
+	 *
+	 * This method allows you to remove them if necessary.
+	 *
+	 * It only strips them from the code (i.e., it does not actually remove any nodes).
+	 *
+	 * @param string $tag
+	 *
+	 * @return void
+	 */
     public function removeUnprocessableHTMLTag($tag) {
         if (($key = array_search($tag,$this->unprocessableHTMLTags)) !== false)
             unset($this->unprocessableHTMLTags[$key]);
     }
 
-    // applies the CSS you submit to the html you submit. places the css inline
-    public function emogrify() {
+	/**
+	 * Applies the CSS you submit to the HTML you submit.
+	 *
+	 * This method places the CSS inline.
+	 *
+	 * @return string
+	 */
+	public function emogrify() {
         $body = $this->html;
 
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
@@ -248,7 +327,13 @@ class Emogrifier {
         }
     }
 
-    private function sortBySelectorPrecedence($a, $b) {
+	/**
+	 * @param array $a
+	 * @param array $b
+	 *
+	 * @return integer
+	 */
+	private function sortBySelectorPrecedence(array $a, array $b) {
         $precedenceA = $this->getCSSSelectorPrecedence($a['selector']);
         $precedenceB = $this->getCSSSelectorPrecedence($b['selector']);
 
@@ -257,7 +342,12 @@ class Emogrifier {
         return ($precedenceA == $precedenceB) ? ($a['line'] < $b['line'] ? -1 : 1) : ($precedenceA < $precedenceB ? -1 : 1);
     }
 
-    private function getCSSSelectorPrecedence($selector) {
+	/**
+	 * @param string $selector
+	 *
+	 * @return integer
+	 */
+	private function getCSSSelectorPrecedence($selector) {
         $selectorkey = md5($selector);
         if (!isset($this->caches[CACHE_SELECTOR][$selectorkey])) {
             $precedence = 0;
@@ -277,9 +367,16 @@ class Emogrifier {
         return $this->caches[CACHE_SELECTOR][$selectorkey];
     }
 
-    // right now we support all CSS 1 selectors and most CSS2/3 selectors.
-    // http://plasmasturm.org/log/444/
-    private function translateCSStoXpath($css_selector) {
+	/**
+	 * Right now, we support all CSS 1 selectors and most CSS2/3 selectors.
+	 *
+	 * @see http://plasmasturm.org/log/444/
+	 *
+	 * @param string $css_selector
+	 *
+	 * @return string
+	 */
+	private function translateCSStoXpath($css_selector) {
 
         $css_selector = trim($css_selector);
         $xpathkey = md5($css_selector);
@@ -321,7 +418,12 @@ class Emogrifier {
         return $this->caches[CACHE_SELECTOR][$xpathkey];
     }
 
-    private function translateNthChild($match) {
+	/**
+	 * @param array $match
+	 *
+	 * @return string
+	 */
+	private function translateNthChild(array $match) {
 
         $result = $this->parseNth($match);
 
@@ -337,7 +439,12 @@ class Emogrifier {
         }
     }
 
-    private function translateNthOfType($match) {
+	/**
+	 * @param array $match
+	 *
+	 * @return string
+	 */
+	private function translateNthOfType(array $match) {
 
         $result = $this->parseNth($match);
 
@@ -353,7 +460,12 @@ class Emogrifier {
         }
     }
 
-    private function parseNth($match) {
+	/**
+	 * @param array $match
+	 *
+	 * @return array
+	 */
+	private function parseNth(array $match) {
 
         if (in_array(strtolower($match[2]), array('even','odd'))) {
             $index = strtolower($match[2]) == 'even' ? 0 : 1;
@@ -384,7 +496,12 @@ class Emogrifier {
         }
     }
 
-    private function cssStyleDefinitionToArray($style) {
+	/**
+	 * @param string $style
+	 *
+	 * @return array
+	 */
+	private function cssStyleDefinitionToArray($style) {
         $definitions = explode(';',$style);
         $retArr = array();
         foreach ($definitions as $def) {
