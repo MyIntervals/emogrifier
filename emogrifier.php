@@ -163,7 +163,7 @@ class Emogrifier {
      * @return void
      */
     public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag,$this->unprocessableHTMLTags)) !== FALSE)
+        if (($key = array_search($tag,$this->unprocessableHTMLTags)) !== FALSE) {
             unset($this->unprocessableHTMLTags[$key]);
         }
     }
