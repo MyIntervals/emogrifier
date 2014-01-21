@@ -471,7 +471,7 @@ class Emogrifier {
             $index = strtolower($match[2]) == 'even' ? 0 : 1;
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
         // if there is a multiplier
-        } else if (stripos($match[2], 'n') === false) {
+        } elseif (stripos($match[2], 'n') === false) {
             $index = intval(str_replace(' ', '', $match[2]));
             return array(self::INDEX => $index);
         } else {
