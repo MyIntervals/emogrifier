@@ -124,7 +124,9 @@ class Emogrifier {
 	 */
 	public function clearCache($key = null) {
         if (!is_null($key)) {
-            if (isset($this->caches[$key])) $this->caches[$key] = array();
+            if (isset($this->caches[$key])) {
+                $this->caches[$key] = array();
+            }
         } else {
             $this->caches = array(
                 CACHE_CSS       => array(),
@@ -161,8 +163,9 @@ class Emogrifier {
 	 * @return void
 	 */
     public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag,$this->unprocessableHtmlTags)) !== false)
+        if (($key = array_search($tag,$this->unprocessableHtmlTags)) !== false) {
             unset($this->unprocessableHtmlTags[$key]);
+        }
     }
 
 	/**
@@ -250,14 +253,18 @@ class Emogrifier {
             $all_selectors = array();
             foreach ($matches as $key => $selectorString) {
                 // if there is a blank definition, skip
-                if (!strlen(trim($selectorString[3]))) continue;
+                if (!strlen(trim($selectorString[3]))) {
+                    continue;
+                }
 
                 // else split by commas and duplicate attributes so we can sort by selector precedence
                 $selectors = explode(',',$selectorString[2]);
                 foreach ($selectors as $selector) {
 
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes; ONLY allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) continue;
+                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
+                        continue;
+                    }
 
                     $all_selectors[] = array('selector' => trim($selector),
                                              'attributes' => trim($selectorString[3]),
@@ -287,7 +294,9 @@ class Emogrifier {
                     // new styles overwrite the old styles (not technically accurate, but close enough)
                     $combinedArr = array_merge($oldStyleArr,$newStyleArr);
                     $style = '';
-                    foreach ($combinedArr as $k => $v) $style .= (strtolower($k) . ':' . $v . ';');
+                    foreach ($combinedArr as $k => $v) {
+                        $style .= (strtolower($k) . ':' . $v . ';');
+                    }
                 } else {
                     // otherwise create a new style
                     $style = trim($value['attributes']);
@@ -303,7 +312,9 @@ class Emogrifier {
 
             $combinedArr = array_merge($currStyleArr, $origStyleArr);
             $style = '';
-            foreach ($combinedArr as $k => $v) $style .= (strtolower($k) . ':' . $v . ';');
+            foreach ($combinedArr as $k => $v) {
+                $style .= (strtolower($k) . ':' . $v . ';');
+            }
 
             $node->setAttribute('style', $style);
         }
@@ -315,10 +326,13 @@ class Emogrifier {
         $nodes = $xpath->query('//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]');
         // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
         // we don't try to call removeChild on a nonexistent child node
-        if ($nodes->length > 0)
-            foreach ($nodes as $node)
-                if ($node->parentNode && is_callable(array($node->parentNode,'removeChild')))
-                        $node->parentNode->removeChild($node);
+        if ($nodes->length > 0) {
+            foreach ($nodes as $node) {
+                if ($node->parentNode && is_callable(array($node->parentNode,'removeChild'))) {
+                    $node->parentNode->removeChild($node);
+                }
+            }
+        }
 
         if ($this->preserveEncoding) {
             return mb_convert_encoding($xmlDocument->saveHTML(), $encoding, 'HTML-ENTITIES');
@@ -355,7 +369,9 @@ class Emogrifier {
             $search = array('\\#','\\.',''); // ids: worth 100, classes: worth 10, elements: worth 1
 
             foreach ($search as $s) {
-                if (trim($selector == '')) break;
+                if (trim($selector == '')) {
+                    break;
+                }
                 $num = 0;
                 $selector = preg_replace('/'.$s.'\\w+/','',$selector,-1,$num);
                 $precedence += ($value * $num);
@@ -486,11 +502,17 @@ class Emogrifier {
 
             $multiplier = str_ireplace('n', '', $multiple_term);
 
-            if (!strlen($multiplier)) $multiplier = 1;
-            elseif ($multiplier == 0) return array(self::INDEX => $index);
-            else $multiplier = intval($multiplier);
+            if (!strlen($multiplier)) {
+                $multiplier = 1;
+            } elseif ($multiplier == 0) {
+                return array(self::INDEX => $index);
+            } else {
+                $multiplier = intval($multiplier);
+            }
 
-            while ($index < 0) $index += abs($multiplier);
+            while ($index < 0) {
+                $index += abs($multiplier);
+            }
 
             return array(self::MULTIPLIER => $multiplier, self::INDEX => $index);
         }
@@ -505,9 +527,13 @@ class Emogrifier {
         $definitions = explode(';',$style);
         $retArr = array();
         foreach ($definitions as $def) {
-            if (empty($def) || strpos($def, ':') === false) continue;
+            if (empty($def) || strpos($def, ':') === false) {
+                continue;
+            }
             list($key,$value) = explode(':',$def,2);
-            if (empty($key) || strlen(trim($value)) === 0) continue;
+            if (empty($key) || strlen(trim($value)) === 0) {
+                continue;
+            }
             $retArr[trim($key)] = trim($value);
         }
         return $retArr;
