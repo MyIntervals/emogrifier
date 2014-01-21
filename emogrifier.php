@@ -84,11 +84,11 @@ class Emogrifier {
 	 *
 	 * 2. It translates any illegal XML characters that DOMDocument cannot work with.
 	 *
-	 * If you would like to preserve your original encoding, set this attribute to true.
+	 * If you would like to preserve your original encoding, set this attribute to TRUE.
 	 *
 	 * @var boolean
 	 */
-	public $preserveEncoding = false;
+	public $preserveEncoding = FALSE;
 
 	/**
 	 * @param string $html
@@ -118,11 +118,11 @@ class Emogrifier {
     }
 
 	/**
-	 * @param integer|null $key
+	 * @param integer|NULL $key
 	 *
 	 * @return void
 	 */
-	public function clearCache($key = null) {
+	public function clearCache($key = NULL) {
         if (!is_null($key)) {
             if (isset($this->caches[$key])) $this->caches[$key] = array();
         } else {
@@ -161,7 +161,7 @@ class Emogrifier {
 	 * @return void
 	 */
     public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag,$this->unprocessableHtmlTags)) !== false)
+        if (($key = array_search($tag,$this->unprocessableHtmlTags)) !== FALSE)
             unset($this->unprocessableHtmlTags[$key]);
     }
 
@@ -186,8 +186,8 @@ class Emogrifier {
 
         $xmlDocument = new DOMDocument;
         $xmlDocument->encoding = $encoding;
-        $xmlDocument->strictErrorChecking = false;
-        $xmlDocument->formatOutput = true;
+        $xmlDocument->strictErrorChecking = FALSE;
+        $xmlDocument->formatOutput = TRUE;
         $xmlDocument->loadHTML($body);
         $xmlDocument->normalizeDocument();
 
@@ -257,7 +257,7 @@ class Emogrifier {
                 foreach ($selectors as $selector) {
 
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes; ONLY allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) continue;
+                    if (strpos($selector, ':') !== FALSE && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) continue;
 
                     $all_selectors[] = array('selector' => trim($selector),
                                              'attributes' => trim($selectorString[3]),
@@ -471,7 +471,7 @@ class Emogrifier {
             $index = strtolower($match[2]) == 'even' ? 0 : 1;
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
         // if there is a multiplier
-        } elseif (stripos($match[2], 'n') === false) {
+        } else if (stripos($match[2], 'n') === FALSE) {
             $index = intval(str_replace(' ', '', $match[2]));
             return array(self::INDEX => $index);
         } else {
@@ -505,7 +505,7 @@ class Emogrifier {
         $definitions = explode(';',$style);
         $retArr = array();
         foreach ($definitions as $def) {
-            if (empty($def) || strpos($def, ':') === false) continue;
+            if (empty($def) || strpos($def, ':') === FALSE) continue;
             list($key,$value) = explode(':',$def,2);
             if (empty($key) || strlen(trim($value)) === 0) continue;
             $retArr[trim($key)] = trim($value);
