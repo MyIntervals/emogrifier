@@ -59,9 +59,8 @@ class Emogrifier {
      * @param string $css
      */
     public function __construct($html = '', $css = '') {
-        $this->html = $html;
-        $this->css  = $css;
-        $this->clearCache();
+        $this->setHTML($html);
+        $this->setCSS($css);
     }
 
     /**
