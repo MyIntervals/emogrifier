@@ -163,7 +163,7 @@ class Emogrifier {
      * @return void
      */
     public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag,$this->unprocessableHTMLTags)) !== FALSE) {
+        if (($key = array_search($tag, $this->unprocessableHTMLTags)) !== FALSE) {
             unset($this->unprocessableHTMLTags[$key]);
         }
     }
@@ -180,8 +180,8 @@ class Emogrifier {
 
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
         if (count($this->unprocessableHTMLTags)) {
-            $unprocessableHTMLTags = implode('|',$this->unprocessableHTMLTags);
-            $body = preg_replace("/<\/?($unprocessableHTMLTags)[^>]*>/i",'',$body);
+            $unprocessableHTMLTags = implode('|', $this->unprocessableHTMLTags);
+            $body = preg_replace("/<\\/?($unprocessableHTMLTags)[^>]*>/i", '', $body);
         }
 
         $encoding = mb_detect_encoding($body);
@@ -202,7 +202,7 @@ class Emogrifier {
         $visitedNodes = $visitedNodeReferences = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
-            $normalizedOrigStyle = preg_replace('/[A-z\\-]+(?=\\:)/Se',"strtolower('\\0')", $node->getAttribute('style'));
+            $normalizedOrigStyle = preg_replace('/[A-z\\-]+(?=\\:)/Se', "strtolower('\\0')", $node->getAttribute('style'));
 
             // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
             $nodeKey = md5($node->getNodePath());
@@ -263,7 +263,7 @@ class Emogrifier {
                 }
 
                 // else split by commas and duplicate attributes so we can sort by selector precedence
-                $selectors = explode(',',$selectorString[2]);
+                $selectors = explode(',', $selectorString[2]);
                 foreach ($selectors as $selector) {
 
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes; ONLY allow structural pseudo-classes
@@ -298,7 +298,7 @@ class Emogrifier {
                     $newStyleArr = $this->cssStyleDefinitionToArray($value['attributes']);
 
                     // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArr = array_merge($oldStyleArr,$newStyleArr);
+                    $combinedArr = array_merge($oldStyleArr, $newStyleArr);
                     $style = '';
                     foreach ($combinedArr as $k => $v) {
                         $style .= (strtolower($k) . ':' . $v . ';');
@@ -380,7 +380,7 @@ class Emogrifier {
                     break;
                 }
                 $num = 0;
-                $selector = preg_replace('/'.$s.'\\w+/','',$selector,-1,$num);
+                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $num);
                 $precedence += ($value * $num);
                 $value /= 10;
             }
@@ -540,13 +540,13 @@ class Emogrifier {
      * @return array
      */
     private function cssStyleDefinitionToArray($style) {
-        $definitions = explode(';',$style);
+        $definitions = explode(';', $style);
         $retArr = array();
         foreach ($definitions as $def) {
             if (empty($def) || strpos($def, ':') === FALSE) {
                 continue;
             }
-            list($key,$value) = explode(':',$def,2);
+            list($key, $value) = explode(':', $def, 2);
             if (empty($key) || strlen(trim($value)) === 0) {
                 continue;
             }
