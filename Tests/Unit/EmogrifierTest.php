@@ -72,8 +72,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @expectedException BadMethodCallException
      */
     public function emogrifyForEmptyHtmlAndEmptyCssThrowsException() {
-        $this->subject->setHTML('');
-        $this->subject->setCSS('');
+        $this->subject->setHtml('');
+        $this->subject->setCss('');
 
         $this->subject->emogrify();
     }
@@ -83,8 +83,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      */
     public function emogrifyForHtmlTagOnlyAndEmptyCssReturnsHtmlTagWithHtml4DocumentType() {
         $html = '<html></html>';
-        $this->subject->setHTML($html);
-        $this->subject->setCSS('');
+        $this->subject->setHtml($html);
+        $this->subject->setCss('');
 
         $this->assertSame(
             self::HTML4_TRANSITIONAL_DOCUMENT_TYPE . self::LF . $html . self::LF,
@@ -97,8 +97,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      */
     public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType() {
         $html = self::XHTML1_STRICT_DOCUMENT_TYPE . self::LF . '<html></html>' . self::LF;
-        $this->subject->setHTML($html);
-        $this->subject->setCSS('');
+        $this->subject->setHtml($html);
+        $this->subject->setCss('');
 
         $this->assertSame(
             $html,
@@ -111,8 +111,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      */
     public function emogrifyForHtmlTagWithXhtml5DocumentTypeKeepsDocumentType() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
-        $this->subject->setHTML($html);
-        $this->subject->setCSS('');
+        $this->subject->setHtml($html);
+        $this->subject->setCss('');
 
         $this->assertSame(
             $html,
@@ -125,8 +125,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      */
     public function emogrifyCanAddMatchingElementRuleOnHtmlElementFromCss() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
-        $this->subject->setHTML($html);
-        $this->subject->setCSS('html {color: #000;}');
+        $this->subject->setHtml($html);
+        $this->subject->setCss('html {color: #000;}');
 
         $this->assertContains(
             '<html style="color: #000;">',
@@ -139,8 +139,8 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      */
     public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
-        $this->subject->setHTML($html);
-        $this->subject->setCSS('p {color: #000;}');
+        $this->subject->setHtml($html);
+        $this->subject->setCss('p {color: #000;}');
 
         $this->assertContains(
             '<html>',
