@@ -68,7 +68,9 @@ class Emogrifier {
      *
      * @return void
      */
-    public function setHTML($html = '') { $this->html = $html; }
+    public function setHTML($html = '') {
+        $this->html = $html;
+    }
 
     /**
      * @param string $css
@@ -111,7 +113,9 @@ class Emogrifier {
      *
      * @return void
      */
-    public function addUnprocessableHTMLTag($tag) { $this->unprocessableHTMLTags[] = $tag; }
+    public function addUnprocessableHTMLTag($tag) {
+        $this->unprocessableHTMLTags[] = $tag;
+    }
 
     /**
      * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
@@ -220,7 +224,6 @@ class Emogrifier {
 
         $cssKey = md5($css);
         if (!isset($this->caches[CACHE_CSS][$cssKey])) {
-
             // process the CSS file for selectors and definitions
             preg_match_all('/(^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
@@ -234,7 +237,6 @@ class Emogrifier {
                 // else split by commas and duplicate attributes so we can sort by selector precedence
                 $selectors = explode(',', $selectorString[2]);
                 foreach ($selectors as $selector) {
-
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes; ONLY allow structural pseudo-classes
                     if (strpos($selector, ':') !== FALSE && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
                         continue;
@@ -255,11 +257,10 @@ class Emogrifier {
         }
 
         foreach ($this->caches[CACHE_CSS][$cssKey] as $value) {
-
             // query the body for the xpath selector
             $nodes = $xpath->query($this->translateCSStoXpath(trim($value['selector'])));
 
-            foreach($nodes as $node) {
+            foreach ($nodes as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
@@ -369,7 +370,6 @@ class Emogrifier {
      * @return string
      */
     private function translateCSStoXpath($css_selector) {
-
         $css_selector = trim($css_selector);
         $xpathkey = md5($css_selector);
         if (!isset($this->caches[CACHE_XPATH][$xpathkey])) {
@@ -425,7 +425,6 @@ class Emogrifier {
      * @return string
      */
     private function translateNthChild(array $match) {
-
         $result = $this->parseNth($match);
 
         if (isset($result[self::MULTIPLIER])) {
@@ -446,7 +445,6 @@ class Emogrifier {
      * @return string
      */
     private function translateNthOfType(array $match) {
-
         $result = $this->parseNth($match);
 
         if (isset($result[self::MULTIPLIER])) {
@@ -467,16 +465,14 @@ class Emogrifier {
      * @return array
      */
     private function parseNth(array $match) {
-
         if (in_array(strtolower($match[2]), array('even','odd'))) {
             $index = strtolower($match[2]) == 'even' ? 0 : 1;
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
         // if there is a multiplier
-        } else if (stripos($match[2], 'n') === FALSE) {
+        } elseif (stripos($match[2], 'n') === FALSE) {
             $index = intval(str_replace(' ', '', $match[2]));
             return array(self::INDEX => $index);
         } else {
-
             if (isset($match[3])) {
                 $multiple_term = str_replace($match[3], '', $match[2]);
                 $index = intval(str_replace(' ', '', $match[3]));
@@ -511,6 +507,7 @@ class Emogrifier {
     private function cssStyleDefinitionToArray($style) {
         $definitions = explode(';', $style);
         $retArr = array();
+
         foreach ($definitions as $def) {
             if (empty($def) || strpos($def, ':') === FALSE) {
                 continue;
@@ -521,6 +518,7 @@ class Emogrifier {
             }
             $retArr[trim($key)] = trim($value);
         }
+
         return $retArr;
     }
 }
