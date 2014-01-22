@@ -227,11 +227,16 @@ class Emogrifier {
 
         // filter the CSS
         $search = array(
-            '/\\/\\*.*\\*\\//sU', // get rid of css comment code
-            '/^\\s*@import\\s[^;]+;/misU', // strip out any import directives
-            '/^\\s*@media\\s[^{]+{\\s*}/misU', // strip any empty media enclosures
-            '/^\\s*@media\\s+((aural|braille|embossed|handheld|print|projection|speech|tty|tv)\\s*,*\\s*)+{.*}\\s*}/misU', // strip out all media types that are not 'screen' or 'all' (these don't apply to email)
-            '/^\\s*@media\\s[^{]+{(.*})\\s*}/misU', // get rid of remaining media type enclosures
+            // get rid of css comment code
+            '/\\/\\*.*\\*\\//sU',
+            // strip out any import directives
+            '/^\\s*@import\\s[^;]+;/misU',
+            // strip any empty media enclosures
+            '/^\\s*@media\\s[^{]+{\\s*}/misU',
+            // strip out all media types that are not 'screen' or 'all' (these don't apply to email)
+            '/^\\s*@media\\s+((aural|braille|embossed|handheld|print|projection|speech|tty|tv)\\s*,*\\s*)+{.*}\\s*}/misU',
+            // get rid of remaining media type enclosures
+            '/^\\s*@media\\s[^{]+{(.*})\\s*}/misU',
         );
 
         $replace = array(
@@ -268,7 +273,8 @@ class Emogrifier {
 
                     $all_selectors[] = array('selector' => trim($selector),
                                              'attributes' => trim($selectorString[3]),
-                                             'line' => $key, // keep track of where it appears in the file, since order is important
+                                             // keep track of where it appears in the file, since order is important
+                                             'line' => $key,
                     );
                 }
             }
@@ -366,7 +372,8 @@ class Emogrifier {
         if (!isset($this->caches[CACHE_SELECTOR][$selectorkey])) {
             $precedence = 0;
             $value = 100;
-            $search = array('\\#','\\.',''); // ids: worth 100, classes: worth 10, elements: worth 1
+            // ids: worth 100, classes: worth 10, elements: worth 1
+            $search = array('\\#','\\.','');
 
             foreach ($search as $s) {
                 if (trim($selector == '')) {
@@ -399,15 +406,24 @@ class Emogrifier {
         if (!isset($this->caches[CACHE_XPATH][$xpathkey])) {
             // returns an Xpath selector
             $search = array(
-                               '/\\s+>\\s+/', // Matches any element that is a child of parent.
-                               '/\\s+\\+\\s+/', // Matches any element that is an adjacent sibling.
-                               '/\\s+/', // Matches any element that is a descendant of an parent element element.
-                               '/([^\\/]+):first-child/i', // first-child pseudo-selector
-                               '/([^\\/]+):last-child/i', // last-child pseudo-selector
-                               '/(\\w)\\[(\\w+)\\]/', // Matches element with attribute
-                               '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/', // Matches element with EXACT attribute
-                               '/(\\w+)?\\#([\\w\\-]+)/e', // Matches id attributes
-                               '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/e', // Matches class attributes
+                               // Matches any element that is a child of parent.
+                               '/\\s+>\\s+/',
+                               // Matches any element that is an adjacent sibling.
+                               '/\\s+\\+\\s+/',
+                               // Matches any element that is a descendant of an parent element element.
+                               '/\\s+/',
+                               // first-child pseudo-selector
+                               '/([^\\/]+):first-child/i',
+                               // last-child pseudo-selector
+                               '/([^\\/]+):last-child/i',
+                               // Matches element with attribute
+                               '/(\\w)\\[(\\w+)\\]/',
+                               // Matches element with EXACT attribute
+                               '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
+                               // Matches id attributes
+                               '/(\\w+)?\\#([\\w\\-]+)/e',
+                               // Matches class attributes
+                               '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/e',
 
             );
             $replace = array(
