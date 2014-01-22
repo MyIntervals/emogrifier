@@ -84,7 +84,7 @@ class Emogrifier {
      *
      * 2. It translates any illegal XML characters that DOMDocument cannot work with.
      *
-     * If you would like to preserve your original encoding, set this attribute to true.
+     * If you would like to preserve your original encoding, set this attribute to TRUE.
      *
      * @var boolean
      */
@@ -118,11 +118,11 @@ class Emogrifier {
     }
 
     /**
-     * @param integer|null $key
+     * @param integer|NULL $key
      *
      * @return void
      */
-    public function clearCache($key = null) {
+    public function clearCache($key = NULL) {
         if (!is_null($key)) {
             if (isset($this->caches[$key])) {
                 $this->caches[$key] = array();
