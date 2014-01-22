@@ -174,8 +174,14 @@ class Emogrifier {
      * This method places the CSS inline.
      *
      * @return string
+     *
+     * @throws BadMethodCallException
      */
     public function emogrify() {
+        if ($this->html === '') {
+            throw new BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
+        }
+
         $body = $this->html;
 
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
