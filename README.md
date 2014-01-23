@@ -39,8 +39,8 @@ You could also use the setters for providing this data after instantiation:
     $html = '<html><h1>Hello world!</h1></html>';
     $css = 'h1 {font-size: 32px;}';
 
-    $emogrifier->setHTML($html);
-    $emogrifier->setCSS($css);
+    $emogrifier->setHtml($html);
+    $emogrifier->setCss($css);
 
 After you have set the HTML and CSS, you can call the `emogrify` method to merge both:
 

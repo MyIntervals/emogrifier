@@ -32,7 +32,7 @@ class Emogrifier {
     /**
      * @var array<string>
      */
-    private $unprocessableHTMLTags = array('wbr');
+    private $unprocessableHtmlTags = array('wbr');
 
     /**
      * @var array<array>
@@ -59,8 +59,8 @@ class Emogrifier {
      * @param string $css
      */
     public function __construct($html = '', $css = '') {
-        $this->setHTML($html);
-        $this->setCSS($css);
+        $this->setHtml($html);
+        $this->setCss($css);
     }
 
     /**
@@ -68,7 +68,7 @@ class Emogrifier {
      *
      * @return void
      */
-    public function setHTML($html = '') {
+    public function setHtml($html = '') {
         $this->html = $html;
     }
 
@@ -77,7 +77,7 @@ class Emogrifier {
      *
      * @return void
      */
-    public function setCSS($css = '') {
+    public function setCss($css = '') {
         $this->css = $css;
         $this->clearCache(CACHE_CSS);
     }
@@ -113,8 +113,8 @@ class Emogrifier {
      *
      * @return void
      */
-    public function addUnprocessableHTMLTag($tag) {
-        $this->unprocessableHTMLTags[] = $tag;
+    public function addUnprocessableHtmlTag($tag) {
+        $this->unprocessableHtmlTags[] = $tag;
     }
 
     /**
@@ -129,9 +129,9 @@ class Emogrifier {
      *
      * @return void
      */
-    public function removeUnprocessableHTMLTag($tag) {
-        if (($key = array_search($tag, $this->unprocessableHTMLTags)) !== FALSE) {
-            unset($this->unprocessableHTMLTags[$key]);
+    public function removeUnprocessableHtmlTag($tag) {
+        if (($key = array_search($tag, $this->unprocessableHtmlTags)) !== FALSE) {
+            unset($this->unprocessableHtmlTags[$key]);
         }
     }
 
@@ -152,9 +152,9 @@ class Emogrifier {
         $body = $this->html;
 
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
-        if (count($this->unprocessableHTMLTags)) {
-            $unprocessableHTMLTags = implode('|', $this->unprocessableHTMLTags);
-            $body = preg_replace("/<\\/?($unprocessableHTMLTags)[^>]*>/i", '', $body);
+        if (count($this->unprocessableHtmlTags)) {
+            $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
+            $body = preg_replace("/<\\/?($unprocessableHtmlTags)[^>]*>/i", '', $body);
         }
 
         $encoding = mb_detect_encoding($body);
@@ -227,7 +227,7 @@ class Emogrifier {
             // process the CSS file for selectors and definitions
             preg_match_all('/(^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
-            $all_selectors = array();
+            $allSelectors = array();
             foreach ($matches as $key => $selectorString) {
                 // if there is a blank definition, skip
                 if (!strlen(trim($selectorString[3]))) {
@@ -242,7 +242,7 @@ class Emogrifier {
                         continue;
                     }
 
-                    $all_selectors[] = array('selector' => trim($selector),
+                    $allSelectors[] = array('selector' => trim($selector),
                                              'attributes' => trim($selectorString[3]),
                                              // keep track of where it appears in the file, since order is important
                                              'line' => $key,
@@ -251,14 +251,14 @@ class Emogrifier {
             }
 
             // now sort the selectors by precedence
-            usort($all_selectors, array($this,'sortBySelectorPrecedence'));
+            usort($allSelectors, array($this,'sortBySelectorPrecedence'));
 
-            $this->caches[CACHE_CSS][$cssKey] = $all_selectors;
+            $this->caches[CACHE_CSS][$cssKey] = $allSelectors;
         }
 
         foreach ($this->caches[CACHE_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodes = $xpath->query($this->translateCSStoXpath(trim($value['selector'])));
+            $nodes = $xpath->query($this->translateCsstoXpath(trim($value['selector'])));
 
             foreach ($nodes as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
@@ -268,9 +268,9 @@ class Emogrifier {
                     $newStyleArr = $this->cssStyleDefinitionToArray($value['attributes']);
 
                     // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArr = array_merge($oldStyleArr, $newStyleArr);
+                    $combinedArray = array_merge($oldStyleArr, $newStyleArr);
                     $style = '';
-                    foreach ($combinedArr as $k => $v) {
+                    foreach ($combinedArray as $k => $v) {
                         $style .= (strtolower($k) . ':' . $v . ';');
                     }
                 } else {
@@ -282,13 +282,13 @@ class Emogrifier {
         }
 
         // now iterate through the nodes that contained inline styles in the original HTML
-        foreach ($visitedNodeReferences as $nodeKey => $origStyleArr) {
+        foreach ($visitedNodeReferences as $nodeKey => $originalStyleArray) {
             $node = $visitedNodes[$nodeKey];
-            $currStyleArr = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
+            $currentStyleArray = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
 
-            $combinedArr = array_merge($currStyleArr, $origStyleArr);
+            $combinedArray = array_merge($currentStyleArray, $originalStyleArray);
             $style = '';
-            foreach ($combinedArr as $k => $v) {
+            foreach ($combinedArray as $k => $v) {
                 $style .= (strtolower($k) . ':' . $v . ';');
             }
 
@@ -324,8 +324,8 @@ class Emogrifier {
      * @return integer
      */
     private function sortBySelectorPrecedence(array $a, array $b) {
-        $precedenceA = $this->getCSSSelectorPrecedence($a['selector']);
-        $precedenceB = $this->getCSSSelectorPrecedence($b['selector']);
+        $precedenceA = $this->getCssSelectorPrecedence($a['selector']);
+        $precedenceB = $this->getCssSelectorPrecedence($b['selector']);
 
         // We want these sorted in ascending order so selectors with lesser precedence get processed first and
         // selectors with greater precedence get sorted last.
@@ -337,9 +337,9 @@ class Emogrifier {
      *
      * @return integer
      */
-    private function getCSSSelectorPrecedence($selector) {
-        $selectorkey = md5($selector);
-        if (!isset($this->caches[CACHE_SELECTOR][$selectorkey])) {
+    private function getCssSelectorPrecedence($selector) {
+        $selectorKey = md5($selector);
+        if (!isset($this->caches[CACHE_SELECTOR][$selectorKey])) {
             $precedence = 0;
             $value = 100;
             // ids: worth 100, classes: worth 10, elements: worth 1
@@ -349,15 +349,15 @@ class Emogrifier {
                 if (trim($selector == '')) {
                     break;
                 }
-                $num = 0;
-                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $num);
-                $precedence += ($value * $num);
+                $number = 0;
+                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $number);
+                $precedence += ($value * $number);
                 $value /= 10;
             }
-            $this->caches[CACHE_SELECTOR][$selectorkey] = $precedence;
+            $this->caches[CACHE_SELECTOR][$selectorKey] = $precedence;
         }
 
-        return $this->caches[CACHE_SELECTOR][$selectorkey];
+        return $this->caches[CACHE_SELECTOR][$selectorKey];
     }
 
     /**
@@ -365,14 +365,14 @@ class Emogrifier {
      *
      * @see http://plasmasturm.org/log/444/
      *
-     * @param string $css_selector
+     * @param string $cssSelector
      *
      * @return string
      */
-    private function translateCSStoXpath($css_selector) {
-        $css_selector = trim($css_selector);
-        $xpathkey = md5($css_selector);
-        if (!isset($this->caches[CACHE_XPATH][$xpathkey])) {
+    private function translateCsstoXpath($cssSelector) {
+        $cssSelector = trim($cssSelector);
+        $xpathKey = md5($cssSelector);
+        if (!isset($this->caches[CACHE_XPATH][$xpathKey])) {
             // returns an Xpath selector
             $search = array(
                                // Matches any element that is a child of parent.
@@ -407,16 +407,16 @@ class Emogrifier {
                                "(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
             );
 
-            $css_selector = '//'.preg_replace($search, $replace, $css_selector);
+            $cssSelector = '//'.preg_replace($search, $replace, $cssSelector);
 
             // advanced selectors are going to require a bit more advanced emogrification
             // if we required PHP 5.3 we could do this with closures
-            $css_selector = preg_replace_callback('/([^\\/]+):nth-child\\(\s*(odd|even|[+\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i', array($this, 'translateNthChild'), $css_selector);
-            $css_selector = preg_replace_callback('/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i', array($this, 'translateNthOfType'), $css_selector);
+            $cssSelector = preg_replace_callback('/([^\\/]+):nth-child\\(\s*(odd|even|[+\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i', array($this, 'translateNthChild'), $cssSelector);
+            $cssSelector = preg_replace_callback('/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i', array($this, 'translateNthOfType'), $cssSelector);
 
-            $this->caches[CACHE_SELECTOR][$xpathkey] = $css_selector;
+            $this->caches[CACHE_SELECTOR][$xpathKey] = $cssSelector;
         }
-        return $this->caches[CACHE_SELECTOR][$xpathkey];
+        return $this->caches[CACHE_SELECTOR][$xpathKey];
     }
 
     /**
@@ -474,14 +474,14 @@ class Emogrifier {
             return array(self::INDEX => $index);
         } else {
             if (isset($match[3])) {
-                $multiple_term = str_replace($match[3], '', $match[2]);
+                $multipleTerm = str_replace($match[3], '', $match[2]);
                 $index = intval(str_replace(' ', '', $match[3]));
             } else {
-                $multiple_term = $match[2];
+                $multipleTerm = $match[2];
                 $index = 0;
             }
 
-            $multiplier = str_ireplace('n', '', $multiple_term);
+            $multiplier = str_ireplace('n', '', $multipleTerm);
 
             if (!strlen($multiplier)) {
                 $multiplier = 1;
@@ -506,7 +506,7 @@ class Emogrifier {
      */
     private function cssStyleDefinitionToArray($style) {
         $definitions = explode(';', $style);
-        $retArr = array();
+        $returnArray = array();
 
         foreach ($definitions as $def) {
             if (empty($def) || strpos($def, ':') === FALSE) {
@@ -516,9 +516,9 @@ class Emogrifier {
             if (empty($key) || strlen(trim($value)) === 0) {
                 continue;
             }
-            $retArr[trim($key)] = trim($value);
+            $returnArray[trim($key)] = trim($value);
         }
 
-        return $retArr;
+        return $returnArray;
     }
 }
