@@ -375,36 +375,35 @@ class Emogrifier {
         if (!isset($this->caches[CACHE_XPATH][$xpathKey])) {
             // returns an Xpath selector
             $search = array(
-                               // Matches any element that is a child of parent.
-                               '/\\s+>\\s+/',
-                               // Matches any element that is an adjacent sibling.
-                               '/\\s+\\+\\s+/',
-                               // Matches any element that is a descendant of an parent element element.
-                               '/\\s+/',
-                               // first-child pseudo-selector
-                               '/([^\\/]+):first-child/i',
-                               // last-child pseudo-selector
-                               '/([^\\/]+):last-child/i',
-                               // Matches element with attribute
-                               '/(\\w)\\[(\\w+)\\]/',
-                               // Matches element with EXACT attribute
-                               '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
-                               // Matches id attributes
-                               '/(\\w+)?\\#([\\w\\-]+)/e',
-                               // Matches class attributes
-                               '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/e',
-
+                // Matches any element that is a child of parent.
+                '/\\s+>\\s+/',
+                // Matches any element that is an adjacent sibling.
+                '/\\s+\\+\\s+/',
+                // Matches any element that is a descendant of an parent element element.
+                '/\\s+/',
+                // first-child pseudo-selector
+                '/([^\\/]+):first-child/i',
+                // last-child pseudo-selector
+                '/([^\\/]+):last-child/i',
+                // Matches element with attribute
+                '/(\\w)\\[(\\w+)\\]/',
+                // Matches element with EXACT attribute
+                '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
+                // Matches id attributes
+                '/(\\w+)?\\#([\\w\\-]+)/e',
+                // Matches class attributes
+                '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/e',
             );
             $replace = array(
-                               '/',
-                               '/following-sibling::*[1]/self::',
-                               '//',
-                               '*[1]/self::\\1',
-                               '*[last()]/self::\\1',
-                               '\\1[@\\2]',
-                               '\\1[@\\2="\\3"]',
-                               "(strlen('\\1') ? '\\1' : '*').'[@id=\"\\2\"]'",
-                               "(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
+                '/',
+                '/following-sibling::*[1]/self::',
+                '//',
+                '*[1]/self::\\1',
+                '*[last()]/self::\\1',
+                '\\1[@\\2]',
+                '\\1[@\\2="\\3"]',
+                "(strlen('\\1') ? '\\1' : '*').'[@id=\"\\2\"]'",
+                "(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
             );
 
             $cssSelector = '//'.preg_replace($search, $replace, $cssSelector);
@@ -468,8 +467,8 @@ class Emogrifier {
         if (in_array(strtolower($match[2]), array('even','odd'))) {
             $index = strtolower($match[2]) == 'even' ? 0 : 1;
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
-        // if there is a multiplier
         } elseif (stripos($match[2], 'n') === FALSE) {
+            // if there is a multiplier
             $index = intval(str_replace(' ', '', $match[2]));
             return array(self::INDEX => $index);
         } else {
