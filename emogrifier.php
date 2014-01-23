@@ -258,7 +258,7 @@ class Emogrifier {
 
         foreach ($this->caches[CACHE_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodes = $xpath->query($this->translateCsstoXpath(trim($value['selector'])));
+            $nodes = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
 
             foreach ($nodes as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
@@ -369,7 +369,7 @@ class Emogrifier {
      *
      * @return string
      */
-    private function translateCsstoXpath($cssSelector) {
+    private function translateCssToXpath($cssSelector) {
         $cssSelector = trim($cssSelector);
         $xpathKey = md5($cssSelector);
         if (!isset($this->caches[CACHE_XPATH][$xpathKey])) {
@@ -507,11 +507,11 @@ class Emogrifier {
         $definitions = explode(';', $style);
         $returnArray = array();
 
-        foreach ($definitions as $def) {
-            if (empty($def) || strpos($def, ':') === FALSE) {
+        foreach ($definitions as $definition) {
+            if (empty($definition) || strpos($definition, ':') === FALSE) {
                 continue;
             }
-            list($key, $value) = explode(':', $def, 2);
+            list($key, $value) = explode(':', $definition, 2);
             if (empty($key) || strlen(trim($value)) === 0) {
                 continue;
             }
