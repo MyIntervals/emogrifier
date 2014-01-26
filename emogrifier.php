@@ -175,7 +175,7 @@ class Emogrifier {
         $visitedNodes = $visitedNodeReferences = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
-            $normalizedOrigStyle = preg_replace('/[A-z\\-]+(?=\\:)/Se', "strtolower('\\0')", $node->getAttribute('style'));
+            $normalizedOrigStyle = preg_replace_callback('/[A-z\\-]+(?=\\:)/S', create_function('$m', 'return strtolower($m[0]);'), $node->getAttribute('style'));
 
             // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
             $nodeKey = md5($node->getNodePath());
@@ -389,10 +389,6 @@ class Emogrifier {
                 '/(\\w)\\[(\\w+)\\]/',
                 // Matches element with EXACT attribute
                 '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
-                // Matches id attributes
-                '/(\\w+)?\\#([\\w\\-]+)/e',
-                // Matches class attributes
-                '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/e',
             );
             $replace = array(
                 '/',
@@ -402,11 +398,13 @@ class Emogrifier {
                 '*[last()]/self::\\1',
                 '\\1[@\\2]',
                 '\\1[@\\2="\\3"]',
-                "(strlen('\\1') ? '\\1' : '*').'[@id=\"\\2\"]'",
-                "(strlen('\\1') ? '\\1' : '*').'[contains(concat(\" \",@class,\" \"),concat(\" \",\"'.implode('\",\" \"))][contains(concat(\" \",@class,\" \"),concat(\" \",\"',explode('.',substr('\\2',1))).'\",\" \"))]'",
             );
 
             $cssSelector = '//'.preg_replace($search, $replace, $cssSelector);
+
+            // matches ids and classes
+            $cssSelector = preg_replace_callback('/(\\w+)?\\#([\\w\\-]+)/', array($this, 'matchIdAttributes'), $cssSelector);
+            $cssSelector = preg_replace_callback('/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/', array($this, 'matchClassAttributes'), $cssSelector);
 
             // advanced selectors are going to require a bit more advanced emogrification
             // if we required PHP 5.3 we could do this with closures
@@ -416,6 +414,24 @@ class Emogrifier {
             $this->caches[CACHE_SELECTOR][$xpathKey] = $cssSelector;
         }
         return $this->caches[CACHE_SELECTOR][$xpathKey];
+    }
+
+    /**
+     * @param array $m
+     * 
+     * @return string
+     */
+    private function matchIdAttributes($m) {
+      return (strlen($m[1]) ? $m[1] : '*').'[@id="'.$m[2].'"]';
+    }
+
+    /**
+     * @param array $m
+     * 
+     * @return string
+     */
+    private function matchClassAttributes($m) {
+      return (strlen($m[1]) ? $m[1] : '*').'[contains(concat(" ",@class," "),concat(" ","'.implode('"," "))][contains(concat(" ",@class," "),concat(" ","',explode('.',substr($m[2],1))).'"," "))]';
     }
 
     /**
