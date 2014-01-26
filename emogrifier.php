@@ -421,8 +421,8 @@ class Emogrifier {
      * 
      * @return string
      */
-    private function matchIdAttributes($m) {
-      return (strlen($m[1]) ? $m[1] : '*').'[@id="'.$m[2].'"]';
+    private function matchIdAttributes(array $match) {
+      return (strlen($match[1]) ? $match[1] : '*').'[@id="'.$match[2].'"]';
     }
 
     /**
@@ -430,8 +430,8 @@ class Emogrifier {
      * 
      * @return string
      */
-    private function matchClassAttributes($m) {
-      return (strlen($m[1]) ? $m[1] : '*').'[contains(concat(" ",@class," "),concat(" ","'.implode('"," "))][contains(concat(" ",@class," "),concat(" ","',explode('.',substr($m[2],1))).'"," "))]';
+    private function matchClassAttributes(array $match) {
+      return (strlen($match[1]) ? $match[1] : '*').'[contains(concat(" ",@class," "),concat(" ","'.implode('"," "))][contains(concat(" ",@class," "),concat(" ","',explode('.',substr($match[2],1))).'"," "))]';
     }
 
     /**
