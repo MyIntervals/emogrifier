@@ -6,6 +6,7 @@ php:
   - 5.5
 
 before_script:
+  - pear channel-discover pear.typo3.org
   - pyrus install pear/PHP_CodeSniffer
   - pyrus install typo3/PHPCS_TYPO3_SniffPool-alpha
   - pyrus install typo3/PHPCS_TYPO3v4_Standard-alpha
