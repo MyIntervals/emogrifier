@@ -129,33 +129,28 @@
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
 
-    <rule ref="TYPO3.Classes.LowercaseClassKeywords"/>
+    <rule ref="TYPO3SniffPool.Classes.LowercaseClassKeywords"/>
     <!-- Enable this rule when Emogrifier has a class documentation comment. -->
-    <!--<rule ref="TYPO3.Commenting.ClassDocComment"/>-->
-    <rule ref="TYPO3.Commenting.DoubleSlashCommentsInNewLine"/>
+    <!--<rule ref="TYPO3SniffPool.Commenting.ClassDocComment"/>-->
+    <rule ref="TYPO3SniffPool.Commenting.DoubleSlashCommentsInNewLine"/>
     <!-- Enable this rule when all functions have proper documentation comments. -->
-    <!--<rule ref="TYPO3.Commenting.FunctionDocComment"/>-->
-    <rule ref="TYPO3.Commenting.NoAuthorAnnotationInFunctionDocComment"/>
-    <rule ref="TYPO3.Commenting.SpaceAfterDoubleSlash"/>
-    <rule ref="TYPO3.ControlStructures.DisallowEachInLoopCondition"/>
-    <rule ref="TYPO3.ControlStructures.DisallowElseIfConstruct"/>
-    <rule ref="TYPO3.ControlStructures.ValidBreakStatementsInSwitches"/>
-    <rule ref="TYPO3.ControlStructures.ValidDefaultStatementsInSwitches"/>
-    <rule ref="TYPO3.Debug.DebugCode"/>
-    <rule ref="TYPO3.Files.EncodingUtf8"/>
-    <rule ref="TYPO3.Files.OneClassPerFile"/>
-    <rule ref="TYPO3.Files.OneInterfacePerFile"/>
-    <rule ref="TYPO3.NamingConventions.ValidFunctionName"/>
-    <rule ref="TYPO3.NamingConventions.ValidVariableName"/>
-    <rule ref="TYPO3.PHP.CharacterAfterPHPClosingTag"/>
-    <rule ref="TYPO3.PHP.CharacterBeforePHPOpeningTag"/>
-    <rule ref="TYPO3.PHP.DisallowMultiplePHPTags"/>
-    <rule ref="TYPO3.Strings.ConcatenationSpacing"/>
-    <rule ref="TYPO3.Strings.UnnecessaryStringConcat"/>
+    <!--<rule ref="TYPO3SniffPool.Commenting.FunctionDocComment"/>-->
+    <rule ref="TYPO3SniffPool.Commenting.NoAuthorAnnotationInFunctionDocComment"/>
+    <rule ref="TYPO3SniffPool.Commenting.SpaceAfterDoubleSlash"/>
+    <rule ref="TYPO3SniffPool.ControlStructures.DisallowEachInLoopCondition"/>
+    <rule ref="TYPO3SniffPool.ControlStructures.DisallowElseIfConstruct"/>
+    <rule ref="TYPO3SniffPool.ControlStructures.ValidBreakStatementsInSwitches"/>
+    <rule ref="TYPO3SniffPool.ControlStructures.ValidDefaultStatementsInSwitches"/>
+    <rule ref="TYPO3SniffPool.Debug.DebugCode"/>
+    <rule ref="TYPO3SniffPool.NamingConventions.ValidFunctionName"/>
+    <rule ref="TYPO3SniffPool.NamingConventions.ValidVariableName"/>
+    <rule ref="TYPO3SniffPool.PHP.DisallowMultiplePHPTags"/>
+    <rule ref="TYPO3SniffPool.Strings.ConcatenationSpacing"/>
+    <rule ref="TYPO3SniffPool.Strings.UnnecessaryStringConcat"/>
     <!-- Enable this rule when there is whitespace around arithmetic operators. -->
-    <!--<rule ref="TYPO3.WhiteSpace.AssignmentArithmeticAndComparisonSpace"/>-->
-    <rule ref="TYPO3.WhiteSpace.AsteriksWhitespaces"/>
-    <rule ref="TYPO3.WhiteSpace.WhitespaceAfterCommentSigns"/>
+    <!--<rule ref="TYPO3SniffPool.WhiteSpace.AssignmentArithmeticAndComparisonSpace"/>-->
+    <rule ref="TYPO3SniffPool.WhiteSpace.AsteriksWhitespaces"/>
+    <rule ref="TYPO3SniffPool.WhiteSpace.WhitespaceAfterCommentSigns"/>
 
     <rule ref="Zend.Files.ClosingTag"/>
 </ruleset>
