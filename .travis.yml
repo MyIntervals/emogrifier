@@ -5,8 +5,19 @@ php:
   - 5.4
   - 5.5
 
+before_script:
+  - pyrus install pear/PHP_CodeSniffer
+  - pyrus install typo3/PHPCS_TYPO3_SniffPool-alpha
+  - pyrus install typo3/PHPCS_TYPO3v4_Standard-alpha
+  - phpenv rehash
+  - phpcs --config-set encoding utf-8
+  - phpcs --config-set tab_width 4
+  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ emogrifier.php
+  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/EmogrifierTests/ Tests/
+
+
 script:
   # Run PHP lint on all PHP files.
   - find -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
-  # Runt the unit tests.
+  # Run the unit tests.
   - phpunit Tests/

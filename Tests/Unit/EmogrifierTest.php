@@ -35,7 +35,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      *
      * @return void
      */
-    static public function setUpBeforeClass() {
+    public static function setUpBeforeClass() {
         require_once(__DIR__ . '/../../emogrifier.php');
     }
 
