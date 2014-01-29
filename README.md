@@ -1,5 +1,7 @@
 # Emogrifier
 
+[![Build Status](https://travis-ci.org/jjriv/emogrifier.png?branch=master)](https://travis-ci.org/jjriv/emogrifier)
+
 _n. e•mog•ri•fi•er [\ē-'mä-grƏ-,fī-Ər\] - a utility for changing completely the nature or appearance of HTML email,
 esp. in a particularly fantastic or bizarre manner_
 
