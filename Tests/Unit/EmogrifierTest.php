@@ -110,7 +110,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyForHtmlTagWithXhtml5DocumentTypeKeepsDocumentType() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>' . self::LF;
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
@@ -124,7 +124,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyCanAddMatchingElementRuleOnHtmlElementFromCss() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>' . self::LF;
         $this->subject->setHtml($html);
         $styleRule = 'color: #000;';
         $this->subject->setCss('html {' . $styleRule . '}');
@@ -139,7 +139,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>' . self::LF;
         $this->subject->setHtml($html);
         $this->subject->setCss('p {color: #000;}');
 
@@ -153,7 +153,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyCanMatchTwoElements() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html><p></p><p></p></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
         $styleRule = 'color: #000;';
         $this->subject->setCss('p {' . $styleRule . '}');
@@ -168,7 +168,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyCanAssignTwoStyleRulesFromSameMatcherToElement() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html><p></p></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
         $styleRules = 'color: #000; text-align: left;';
         $this->subject->setCss('p {' . $styleRules . '}');
@@ -183,7 +183,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyCanAssignStyleRulesFromTwoIdenticalMatchersToElement() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html><p></p></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
         $styleRule1 = 'color:#000;';
         $styleRule2 = 'text-align:left;';
@@ -199,7 +199,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyCanAssignStyleRulesFromTwoDifferentMatchersToElement() {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF  . '<html><p class="x"></p></html>' . self::LF;
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p class="x"></p></html>' . self::LF;
         $this->subject->setHtml($html);
         $styleRule1 = 'color:#000;';
         $styleRule2 = 'text-align:left;';

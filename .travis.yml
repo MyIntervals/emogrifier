@@ -7,12 +7,11 @@ php:
 
 before_script:
   - pear channel-discover pear.typo3.org
-  - pyrus install pear/PHP_CodeSniffer
-  - pyrus install typo3/PHPCS_TYPO3_SniffPool-alpha
-  - pyrus install typo3/PHPCS_TYPO3v4_Standard-alpha
+  - pear install pear/PHP_CodeSniffer
+  - pear install typo3/TYPO3SniffPool-alpha
+  - pear install typo3/TYPO3CMS-alpha
   - phpenv rehash
   - phpcs --config-set encoding utf-8
-  - phpcs --config-set tab_width 4
   - phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ emogrifier.php
   - phpcs --standard=Configuration/PhpCodeSniffer/Standards/EmogrifierTests/ Tests/
 
