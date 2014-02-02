@@ -4,6 +4,14 @@ define('CACHE_CSS', 0);
 define('CACHE_SELECTOR', 1);
 define('CACHE_XPATH', 2);
 
+/**
+ * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
+ *
+ * For more information, please see the README.md file.
+ *
+ * @author Cameron Brooks
+ * @author Jaime Prado
+ */
 class Emogrifier {
     /**
      * for calculating nth-of-type and nth-child selectors
