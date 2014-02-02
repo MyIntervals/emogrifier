@@ -118,8 +118,7 @@
     <rule ref="Squiz.Scope.MemberVarScope"/>
     <rule ref="Squiz.Scope.MethodScope"/>
     <rule ref="Squiz.Scope.StaticThisUsage"/>
-    <!-- Enable this rule when all strings use single quotes. -->
-    <!--<rule ref="Squiz.Strings.DoubleQuoteUsage"/>-->
+    <rule ref="Squiz.Strings.DoubleQuoteUsage"/>
     <rule ref="Squiz.WhiteSpace.CastSpacing"/>
     <rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
     <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
