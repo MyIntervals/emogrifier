@@ -130,8 +130,7 @@
     <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
 
     <rule ref="TYPO3SniffPool.Classes.LowercaseClassKeywords"/>
-    <!-- Enable this rule when Emogrifier has a class documentation comment. -->
-    <!--<rule ref="TYPO3SniffPool.Commenting.ClassDocComment"/>-->
+    <rule ref="TYPO3SniffPool.Commenting.ClassDocComment"/>
     <rule ref="TYPO3SniffPool.Commenting.DoubleSlashCommentsInNewLine"/>
     <!-- Enable this rule when all functions have proper documentation comments. -->
     <!--<rule ref="TYPO3SniffPool.Commenting.FunctionDocComment"/>-->
