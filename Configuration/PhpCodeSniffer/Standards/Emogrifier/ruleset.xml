@@ -146,8 +146,7 @@
     <rule ref="TYPO3SniffPool.PHP.DisallowMultiplePHPTags"/>
     <rule ref="TYPO3SniffPool.Strings.ConcatenationSpacing"/>
     <rule ref="TYPO3SniffPool.Strings.UnnecessaryStringConcat"/>
-    <!-- Enable this rule when there is whitespace around arithmetic operators. -->
-    <!--<rule ref="TYPO3SniffPool.WhiteSpace.AssignmentArithmeticAndComparisonSpace"/>-->
+    <rule ref="TYPO3SniffPool.WhiteSpace.AssignmentArithmeticAndComparisonSpace"/>
     <rule ref="TYPO3SniffPool.WhiteSpace.AsteriksWhitespaces"/>
     <rule ref="TYPO3SniffPool.WhiteSpace.WhitespaceAfterCommentSigns"/>
 
