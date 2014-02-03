@@ -106,7 +106,7 @@ class Emogrifier {
      * @return void
      */
     public function clearCache($key = NULL) {
-        if (!is_null($key)) {
+        if ($key !== NULL) {
             if (isset($this->caches[$key])) {
                 $this->caches[$key] = array();
             }
@@ -195,7 +195,13 @@ class Emogrifier {
         $visitedNodeReferences = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
-            $normalizedOrigStyle = preg_replace_callback('/[A-z\\-]+(?=\\:)/S', create_function('$m', 'return strtolower($m[0]);'), $node->getAttribute('style'));
+            $normalizedOrigStyle = preg_replace_callback(
+                '/[A-z\\-]+(?=\\:)/S',
+                function (array $m) {
+                    return strtolower($m[0]);
+                },
+                $node->getAttribute('style')
+            );
 
             // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
             $nodeKey = md5($node->getNodePath());

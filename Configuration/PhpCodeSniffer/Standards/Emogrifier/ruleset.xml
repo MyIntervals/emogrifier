@@ -107,8 +107,7 @@
     <rule ref="Squiz.PHP.DisallowSizeFunctionsInLoops"/>
     <rule ref="Squiz.PHP.DiscouragedFunctions"/>
     <rule ref="Squiz.PHP.Eval"/>
-    <!-- Enable this rule when forbidden functions are no longer used. -->
-    <!--<rule ref="Squiz.PHP.ForbiddenFunctions"/>-->
+    <rule ref="Squiz.PHP.ForbiddenFunctions"/>
     <rule ref="Squiz.PHP.GlobalKeyword"/>
     <rule ref="Squiz.PHP.Heredoc"/>
     <rule ref="Squiz.PHP.InnerFunctions"/>
