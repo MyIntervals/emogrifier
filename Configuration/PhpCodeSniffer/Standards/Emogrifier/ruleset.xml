@@ -49,8 +49,7 @@
     <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent"/>
     <rule ref="PEAR.WhiteSpace.ScopeClosingBrace"/>
 
-    <!-- Enable this rule after Emogrifier uses namespaces. -->
-    <!--<rule ref="PSR1.Classes.ClassDeclaration"/>-->
+    <rule ref="PSR1.Classes.ClassDeclaration"/>
     <rule ref="PSR1.Files.SideEffects"/>
 
     <rule ref="PSR2.Classes.PropertyDeclaration"/>
@@ -62,8 +61,7 @@
     <rule ref="PSR2.Namespaces.UseDeclaration"/>
 
     <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
-    <!-- Enable this rule when both the class name and the file name are "Emogrifier". -->
-    <!--<rule ref="Squiz.Classes.ClassFileName"/>-->
+    <rule ref="Squiz.Classes.ClassFileName"/>
     <rule ref="Squiz.Classes.DuplicateProperty"/>
     <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
     <rule ref="Squiz.Classes.SelfMemberReference"/>

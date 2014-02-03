@@ -1,4 +1,5 @@
 <?php
+namespace Pelago;
 
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
@@ -172,11 +173,11 @@ class Emogrifier {
      *
      * @return string
      *
-     * @throws BadMethodCallException
+     * @throws \BadMethodCallException
      */
     public function emogrify() {
         if ($this->html === '') {
-            throw new BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
+            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
         }
 
         $body = $this->html;
@@ -190,14 +191,14 @@ class Emogrifier {
         $encoding = mb_detect_encoding($body);
         $body = mb_convert_encoding($body, 'HTML-ENTITIES', $encoding);
 
-        $xmlDocument = new DOMDocument;
+        $xmlDocument = new \DOMDocument;
         $xmlDocument->encoding = $encoding;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
         $xmlDocument->loadHTML($body);
         $xmlDocument->normalizeDocument();
 
-        $xpath = new DOMXPath($xmlDocument);
+        $xpath = new \DOMXPath($xmlDocument);
 
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.

@@ -32,11 +32,11 @@ instantiation:
 
     $html = '<html><h1>Hello world!</h1></html>';
     $css = 'h1 {font-size: 32px;}';
-    $emogrifier = new Emogrifier($html, $css);
+    $emogrifier = new \Pelago\Emogrifier($html, $css);
 
 You could also use the setters for providing this data after instantiation:
 
-    $emogrifier = new Emogrifier();
+    $emogrifier = new \Pelago\Emogrifier();
 
     $html = '<html><h1>Hello world!</h1></html>';
     $css = 'h1 {font-size: 32px;}';
