@@ -172,7 +172,7 @@ class Emogrifier {
         // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
         if (count($this->unprocessableHtmlTags)) {
             $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
-            $body = preg_replace("/<\\/?($unprocessableHtmlTags)[^>]*>/i", '', $body);
+            $body = preg_replace('/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i', '', $body);
         }
 
         $encoding = mb_detect_encoding($body);
@@ -211,7 +211,7 @@ class Emogrifier {
         $nodes = @$xpath->query('//style');
         foreach ($nodes as $node) {
             // append the css
-            $css .= "\n\n{$node->nodeValue}";
+            $css .= "\n\n{" . $node->nodeValue . '}';
             // remove the <style> node
             $node->parentNode->removeChild($node);
         }
@@ -477,12 +477,12 @@ class Emogrifier {
         if (isset($result[self::MULTIPLIER])) {
             if ($result[self::MULTIPLIER] < 0) {
                 $result[self::MULTIPLIER] = abs($result[self::MULTIPLIER]);
-                return sprintf("*[(last() - position()) mod %u = %u]/self::%s", $result[self::MULTIPLIER], $result[self::INDEX], $match[1]);
+                return sprintf('*[(last() - position()) mod %u = %u]/self::%s', $result[self::MULTIPLIER], $result[self::INDEX], $match[1]);
             } else {
-                return sprintf("*[position() mod %u = %u]/self::%s", $result[self::MULTIPLIER], $result[self::INDEX], $match[1]);
+                return sprintf('*[position() mod %u = %u]/self::%s', $result[self::MULTIPLIER], $result[self::INDEX], $match[1]);
             }
         } else {
-            return sprintf("*[%u]/self::%s", $result[self::INDEX], $match[1]);
+            return sprintf('*[%u]/self::%s', $result[self::INDEX], $match[1]);
         }
     }
 
@@ -497,12 +497,12 @@ class Emogrifier {
         if (isset($result[self::MULTIPLIER])) {
             if ($result[self::MULTIPLIER] < 0) {
                 $result[self::MULTIPLIER] = abs($result[self::MULTIPLIER]);
-                return sprintf("%s[(last() - position()) mod %u = %u]", $match[1], $result[self::MULTIPLIER], $result[self::INDEX]);
+                return sprintf('%s[(last() - position()) mod %u = %u]', $match[1], $result[self::MULTIPLIER], $result[self::INDEX]);
             } else {
-                return sprintf("%s[position() mod %u = %u]", $match[1], $result[self::MULTIPLIER], $result[self::INDEX]);
+                return sprintf('%s[position() mod %u = %u]', $match[1], $result[self::MULTIPLIER], $result[self::INDEX]);
             }
         } else {
-            return sprintf("%s[%u]", $match[1], $result[self::INDEX]);
+            return sprintf('%s[%u]', $match[1], $result[self::INDEX]);
         }
     }
 
