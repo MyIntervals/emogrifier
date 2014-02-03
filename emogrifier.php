@@ -148,7 +148,8 @@ class Emogrifier {
      * @return void
      */
     public function removeUnprocessableHtmlTag($tag) {
-        if (($key = array_search($tag, $this->unprocessableHtmlTags)) !== FALSE) {
+        $key = array_search($tag, $this->unprocessableHtmlTags, TRUE);
+        if ($key !== FALSE) {
             unset($this->unprocessableHtmlTags[$key]);
         }
     }
@@ -190,7 +191,8 @@ class Emogrifier {
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.
         // also store a reference of nodes with existing inline styles so we don't overwrite them
-        $visitedNodes = $visitedNodeReferences = array();
+        $visitedNodes = array();
+        $visitedNodeReferences = array();
         $nodes = @$xpath->query('//*[@style]');
         foreach ($nodes as $node) {
             $normalizedOrigStyle = preg_replace_callback('/[A-z\\-]+(?=\\:)/S', create_function('$m', 'return strtolower($m[0]);'), $node->getAttribute('style'));

@@ -103,8 +103,7 @@
             <property name="maxPercentage" value="70"/>
         </properties>
     </rule>
-    <!-- Enable this rule when all assignments are formatted correctly. -->
-    <!--<rule ref="Squiz.PHP.DisallowMultipleAssignments"/>-->
+    <rule ref="Squiz.PHP.DisallowMultipleAssignments"/>
     <rule ref="Squiz.PHP.DisallowSizeFunctionsInLoops"/>
     <rule ref="Squiz.PHP.DiscouragedFunctions"/>
     <rule ref="Squiz.PHP.Eval"/>
