@@ -51,17 +51,17 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
 ## Caveats
 
-* NEW: Emogrifier will grab existing inline style attributes and will grab `<style>` blocks from your HTML, but it
+* **NEW:** Emogrifier will grab existing inline style attributes _and_ will grab `<style>` blocks from your HTML, but it
   will not grab CSS files referenced in <link> elements (the problem email clients are going to ignore these tags
   anyway, so why leave them in your HTML?).
 * Even with styles inline, certain CSS properties are ignored by certain email clients. For more information,
-  review documentation here.
+  review documentation [here](http://www.email-standards.org/).
 * All CSS attributes that apply to a node will be applied, even if they are redundant. For example, if you define a
-  font attribute and a font-size attribute, both attributes will be applied to that node (in other words, the more
+  font attribute _and_ a font-size attribute, both attributes will be applied to that node (in other words, the more
   specific attribute will not be combined into the more general attribute).
 * There's a good chance you might encounter problems if your HTML is not well formed and valid (DOMDocument might
-  complain). If you get problems like this, consider running your HTML through Tidy before you pass it to
-  Emogrifier.
+  complain). If you get problems like this, consider running your HTML through [Tidy](http://php.net/manual/en/book.tidy.php)
+  before you pass it to Emogrifier.
 * Finally, Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors (but not all of them). It
   does not support pseudo selectors (Emogrifier works by converting CSS selectors to XPath selectors, and pseudo
   selectors cannot be converted accurately).
