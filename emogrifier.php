@@ -1,9 +1,5 @@
 <?php
 
-define('CACHE_CSS', 0);
-define('CACHE_SELECTOR', 1);
-define('CACHE_XPATH', 2);
-
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
  *
@@ -13,6 +9,21 @@ define('CACHE_XPATH', 2);
  * @author Jaime Prado
  */
 class Emogrifier {
+    /**
+     * @var integer
+     */
+    const CACHE_KEY_CSS = 0;
+
+    /**
+     * @var integer
+     */
+    const CACHE_KEY_SELECTOR = 1;
+
+    /**
+     * @var integer
+     */
+    const CACHE_KEY_XPATH = 2;
+
     /**
      * for calculating nth-of-type and nth-child selectors
      *
@@ -97,7 +108,7 @@ class Emogrifier {
      */
     public function setCss($css = '') {
         $this->css = $css;
-        $this->clearCache(CACHE_CSS);
+        $this->clearCache(self::CACHE_KEY_CSS);
     }
 
     /**
@@ -112,9 +123,9 @@ class Emogrifier {
             }
         } else {
             $this->caches = array(
-                CACHE_CSS       => array(),
-                CACHE_SELECTOR  => array(),
-                CACHE_XPATH     => array(),
+                self::CACHE_KEY_CSS       => array(),
+                self::CACHE_KEY_SELECTOR  => array(),
+                self::CACHE_KEY_XPATH     => array(),
             );
         }
     }
@@ -249,7 +260,7 @@ class Emogrifier {
         $css = preg_replace($search, $replace, $css);
 
         $cssKey = md5($css);
-        if (!isset($this->caches[CACHE_CSS][$cssKey])) {
+        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
             preg_match_all('/(^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
@@ -279,10 +290,10 @@ class Emogrifier {
             // now sort the selectors by precedence
             usort($allSelectors, array($this,'sortBySelectorPrecedence'));
 
-            $this->caches[CACHE_CSS][$cssKey] = $allSelectors;
+            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
         }
 
-        foreach ($this->caches[CACHE_CSS][$cssKey] as $value) {
+        foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
             $nodes = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
 
@@ -370,7 +381,7 @@ class Emogrifier {
      */
     private function getCssSelectorPrecedence($selector) {
         $selectorKey = md5($selector);
-        if (!isset($this->caches[CACHE_SELECTOR][$selectorKey])) {
+        if (!isset($this->caches[self::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
             $value = 100;
             // ids: worth 100, classes: worth 10, elements: worth 1
@@ -385,10 +396,10 @@ class Emogrifier {
                 $precedence += ($value * $number);
                 $value /= 10;
             }
-            $this->caches[CACHE_SELECTOR][$selectorKey] = $precedence;
+            $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
         }
 
-        return $this->caches[CACHE_SELECTOR][$selectorKey];
+        return $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey];
     }
 
     /**
@@ -403,7 +414,7 @@ class Emogrifier {
     private function translateCssToXpath($cssSelector) {
         $cssSelector = trim($cssSelector);
         $xpathKey = md5($cssSelector);
-        if (!isset($this->caches[CACHE_XPATH][$xpathKey])) {
+        if (!isset($this->caches[self::CACHE_KEY_XPATH][$xpathKey])) {
             // returns an Xpath selector
             $search = array(
                 // Matches any element that is a child of parent.
@@ -447,9 +458,9 @@ class Emogrifier {
                 array($this, 'translateNthOfType'), $cssSelector
             );
 
-            $this->caches[CACHE_SELECTOR][$xpathKey] = $cssSelector;
+            $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey] = $cssSelector;
         }
-        return $this->caches[CACHE_SELECTOR][$xpathKey];
+        return $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey];
     }
 
     /**
