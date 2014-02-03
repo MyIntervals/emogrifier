@@ -65,3 +65,8 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 * Finally, Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors (but not all of them). It
   does not support pseudo selectors (Emogrifier works by converting CSS selectors to XPath selectors, and pseudo
   selectors cannot be converted accurately).
+
+
+## Maintainer
+
+Emogrifier is maintained by the good people at [Pelago](http://www.pelagodesign.com/), info AT pelagodesign DOT com.
