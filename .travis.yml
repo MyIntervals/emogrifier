@@ -12,9 +12,8 @@ before_script:
   - pear install typo3/TYPO3CMS-alpha
   - phpenv rehash
   - phpcs --config-set encoding utf-8
-  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ emogrifier.php
+  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/
   - phpcs --standard=Configuration/PhpCodeSniffer/Standards/EmogrifierTests/ Tests/
-
 
 script:
   # Run PHP lint on all PHP files.

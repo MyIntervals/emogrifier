@@ -1,10 +1,12 @@
 <?php
+namespace Pelago\Tests\Unit;
+
 /**
  * Test case.
  *
  * @author Oliver Klee <typo3-coding@oliverklee.de>
  */
-class EmogrifierTest extends PHPUnit_Framework_TestCase {
+class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * @var string
      */
@@ -36,7 +38,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @return void
      */
     public static function setUpBeforeClass() {
-        require_once(__DIR__ . '/../../emogrifier.php');
+        require_once(__DIR__ . '/../../Classes/Emogrifier.php');
     }
 
     /**
@@ -45,7 +47,7 @@ class EmogrifierTest extends PHPUnit_Framework_TestCase {
      * @return void
      */
     protected function setUp() {
-        $this->subject = new Emogrifier();
+        $this->subject = new \Pelago\Emogrifier();
     }
 
     /**
