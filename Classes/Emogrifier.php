@@ -205,35 +205,39 @@ class Emogrifier {
         // also store a reference of nodes with existing inline styles so we don't overwrite them
         $visitedNodes = array();
         $visitedNodeReferences = array();
-        $nodes = @$xpath->query('//*[@style]');
-        foreach ($nodes as $node) {
-            $normalizedOrigStyle = preg_replace_callback(
-                '/[A-z\\-]+(?=\\:)/S',
-                function (array $m) {
-                    return strtolower($m[0]);
-                },
-                $node->getAttribute('style')
-            );
+        $nodes = $xpath->query('//*[@style]');
+        if ($nodes !== FALSE) {
+            foreach ($nodes as $node) {
+                $normalizedOrigStyle = preg_replace_callback(
+                    '/[A-z\\-]+(?=\\:)/S',
+                    function (array $m) {
+                        return strtolower($m[0]);
+                    },
+                    $node->getAttribute('style')
+                );
 
-            // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
-            $nodeKey = md5($node->getNodePath());
-            if (!isset($visitedNodeReferences[$nodeKey])) {
-                $visitedNodeReferences[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
-                $visitedNodes[$nodeKey]   = $node;
+                // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
+                $nodeKey = md5($node->getNodePath());
+                if (!isset($visitedNodeReferences[$nodeKey])) {
+                    $visitedNodeReferences[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
+                    $visitedNodes[$nodeKey]   = $node;
+                }
+
+                $node->setAttribute('style', $normalizedOrigStyle);
             }
-
-            $node->setAttribute('style', $normalizedOrigStyle);
         }
 
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         $css = $this->css;
-        $nodes = @$xpath->query('//style');
-        foreach ($nodes as $node) {
-            // append the css
-            $css .= "\n\n{" . $node->nodeValue . '}';
-            // remove the <style> node
-            $node->parentNode->removeChild($node);
+        $nodes = $xpath->query('//style');
+        if ($nodes !== FALSE) {
+            foreach ($nodes as $node) {
+                // append the css
+                $css .= "\n\n{" . $node->nodeValue . '}';
+                // remove the <style> node
+                $node->parentNode->removeChild($node);
+            }
         }
 
         // filter the CSS
