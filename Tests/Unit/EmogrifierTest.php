@@ -269,4 +269,88 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * Data provider for emogrifyDropsWhitespaceFromCssDeclarations.
+     *
+     * @return array
+     */
+    public function cssDeclarationWhitespaceDroppingDataProvider() {
+        return array(
+            'no whitespace, trailing semicolon' => array('color:#000;', 'color:#000;'),
+            'no whitespace, no trailing semicolon' => array('color:#000', 'color:#000'),
+            'space after colon, no trailing semicolon' => array('color: #000', 'color: #000'),
+            'space before colon, no trailing semicolon' => array('color :#000', 'color :#000'),
+            'space before property name, no trailing semicolon' => array(' color:#000', 'color:#000'),
+            'space before trailing semicolon' => array(' color:#000 ;', 'color:#000 ;'),
+            'space after trailing semicolon' => array(' color:#000; ', 'color:#000;'),
+            'space after property value, no trailing semicolon' => array(' color:#000; ', 'color:#000;'),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     * @param string $expectedStyleAttributeContent the expected value of the style attribute
+     *
+     * @dataProvider cssDeclarationWhitespaceDroppingDataProvider
+     */
+    public function emogrifyDropsLeadingAndTrailingWhitespaceFromCssDeclarations(
+        $cssDeclarationBlock, $expectedStyleAttributeContent
+    ) {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html></html>';
+        $css = 'html {' . $cssDeclarationBlock . '}';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            'html style="' . $expectedStyleAttributeContent . '">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Data provider for emogrifyFormatsCssDeclarations.
+     *
+     * @return array
+     */
+    public function formattedCssDeclarationDataProvider() {
+        return array(
+            'one declaration' => array('color: #000;', 'color: #000;'),
+            'one declaration with dash in property name' => array('font-weight: bold;', 'font-weight: bold;'),
+            'one declaration with space in property value' => array('margin: 0 4px;', 'margin: 0 4px;'),
+            'two declarations separated by semicolon' => array('color: #000;width: 3px;', 'color: #000;width: 3px;'),
+            'two declarations separated by semicolon and space' => array('color: #000; width: 3px;', 'color: #000; width: 3px;'),
+            'two declaration separated by semicolon and Linefeed' => array(
+                'color: #000;' . self::LF . 'width: 3px;', 'color: #000;' . self::LF . 'width: 3px;'
+            ),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     * @param string $expectedStyleAttributeContent the expected value of the style attribute
+     *
+     * @dataProvider formattedCssDeclarationDataProvider
+     */
+    public function emogrifyFormatsCssDeclarations(
+        $cssDeclarationBlock, $expectedStyleAttributeContent
+    ) {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html></html>';
+        $css = 'html {' . $cssDeclarationBlock . '}';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            'html style="' . $expectedStyleAttributeContent . '">',
+            $this->subject->emogrify()
+        );
+    }
 }

@@ -219,7 +219,7 @@ class Emogrifier {
                 // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
                 $nodeKey = md5($node->getNodePath());
                 if (!isset($visitedNodeReferences[$nodeKey])) {
-                    $visitedNodeReferences[$nodeKey] = $this->cssStyleDefinitionToArray($normalizedOrigStyle);
+                    $visitedNodeReferences[$nodeKey] = $this->parseCssDeclarationBlock($normalizedOrigStyle);
                     $visitedNodes[$nodeKey]   = $node;
                 }
 
@@ -306,8 +306,8 @@ class Emogrifier {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
-                    $oldStyleArr = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
-                    $newStyleArr = $this->cssStyleDefinitionToArray($value['attributes']);
+                    $oldStyleArr = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+                    $newStyleArr = $this->parseCssDeclarationBlock($value['attributes']);
 
                     // new styles overwrite the old styles (not technically accurate, but close enough)
                     $combinedArray = array_merge($oldStyleArr, $newStyleArr);
@@ -326,7 +326,7 @@ class Emogrifier {
         // now iterate through the nodes that contained inline styles in the original HTML
         foreach ($visitedNodeReferences as $nodeKey => $originalStyleArray) {
             $node = $visitedNodes[$nodeKey];
-            $currentStyleArray = $this->cssStyleDefinitionToArray($node->getAttribute('style'));
+            $currentStyleArray = $this->parseCssDeclarationBlock($node->getAttribute('style'));
 
             $combinedArray = array_merge($currentStyleArray, $originalStyleArray);
             $style = '';
@@ -571,25 +571,37 @@ class Emogrifier {
     }
 
     /**
-     * @param string $style
+     * Parses a CSS declaration block into property name/value pairs.
      *
-     * @return array
+     * Example:
+     *
+     * The declaration block
+     *
+     *   "color: #000; font-weight: bold;"
+     *
+     * will be parsed into the following array:
+     *
+     *   "color" => "#000"
+     *   "font-weight" => "bold"
+     *
+     * @param string $cssDeclarationBlock the CSS declaration block without the curly braces, may be empty
+     *
+     * @return array the CSS declarations with the property names as array keys and the property values as array values
      */
-    private function cssStyleDefinitionToArray($style) {
-        $definitions = explode(';', $style);
-        $returnArray = array();
+    private function parseCssDeclarationBlock($cssDeclarationBlock) {
+        $properties = array();
 
-        foreach ($definitions as $definition) {
-            if (empty($definition) || strpos($definition, ':') === FALSE) {
+        $declarations = explode(';', $cssDeclarationBlock);
+        foreach ($declarations as $declaration) {
+            $matches = array();
+            if (!preg_match('/ *([a-z\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
-            list($key, $value) = explode(':', $definition, 2);
-            if (empty($key) || strlen(trim($value)) === 0) {
-                continue;
-            }
-            $returnArray[trim($key)] = trim($value);
+            $propertyName = $matches[1];
+            $propertyValue = $matches[2];
+            $properties[$propertyName] = $propertyValue;
         }
 
-        return $returnArray;
+        return $properties;
     }
 }
