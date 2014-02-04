@@ -28,7 +28,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     const HTML5_DOCUMENT_TYPE = '<!DOCTYPE html>';
 
     /**
-     * @var Emogrifier
+     * @var \Pelago\Emogrifier
      */
     private $subject = NULL;
 
