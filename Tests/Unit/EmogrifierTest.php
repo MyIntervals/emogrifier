@@ -387,8 +387,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     public function emogrifyDropsLeadingAndTrailingWhitespaceFromCssDeclarations(
         $cssDeclarationBlock, $expectedStyleAttributeContent
     ) {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
-            '<html></html>';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>';
         $css = 'html {' . $cssDeclarationBlock . '}';
 
         $this->subject->setHtml($html);
@@ -438,6 +437,68 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertContains(
             'html style="' . $expectedStyleAttributeContent . '">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsExistingStyleAttributes() {
+        $styleAttribute = 'style="color:#ccc;"';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html ' . $styleAttribute . '></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $styleAttribute,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddsCssAfterExistingStyle() {
+        $styleAttributeValue = 'color:#ccc;';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html style="' . $styleAttributeValue . '"></html>';
+        $this->subject->setHtml($html);
+
+        $cssDeclarations = 'margin:0 2px;';
+        $css = 'html {' . $cssDeclarations . '}';
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            'style="' . $styleAttributeValue . $cssDeclarations . '"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyLowercasesAttributeNamesFromStyleAttributes() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html style="COLOR:#ccc;"></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            'style="color:#ccc;"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsAttributeNamesFromCssInOriginalCasing() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>';
+        $this->subject->setHtml($html);
+
+        $cssDeclarations = 'mArGiN:0 2px;';
+        $css = 'html {' . $cssDeclarations . '}';
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            'style="' . $cssDeclarations . '"',
             $this->subject->emogrify()
         );
     }
