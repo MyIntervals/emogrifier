@@ -83,6 +83,35 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      */
+    public function emogrifyByDefaultEncodesUmlautsAsHtmlEntities() {
+        $html = self::HTML5_DOCUMENT_TYPE . '<html><p>Einen schönen Gruß!</p></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            'Einen sch&ouml;nen Gru&szlig;!',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyCanKeepEncodedUmlauts() {
+        $this->subject->preserveEncoding = TRUE;
+        $encodedString = 'Küss die Hand, schöne Frau.';
+
+        $html = self::HTML5_DOCUMENT_TYPE . '<html><p>' . $encodedString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $encodedString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyForHtmlTagOnlyAndEmptyCssReturnsHtmlTagWithHtml4DocumentType() {
         $html = '<html></html>';
         $this->subject->setHtml($html);
@@ -118,6 +147,65 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertSame(
             $html,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyByDefaultRemovesWbrTag() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html>foo<wbr/>bar</html>' . self::LF;
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            'foobar',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function addUnprocessableTagCausesTagToBeRemoved() {
+        $this->subject->addUnprocessableHtmlTag('p');
+
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
+        $this->subject->setHtml($html);
+
+        $this->assertNotContains(
+            '<p>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function addUnprocessableTagNotRemovesTagWithContent() {
+        $this->subject->addUnprocessableHtmlTag('p');
+
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foobar</p></html>' . self::LF;
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            '<p>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function removeUnprocessableHtmlTagCausesTagToStayAgain() {
+        $this->subject->addUnprocessableHtmlTag('p');
+        $this->subject->removeUnprocessableHtmlTag('p');
+
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foo<br/><span>bar</span></p></html>' . self::LF;
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            '<p>',
             $this->subject->emogrify()
         );
     }

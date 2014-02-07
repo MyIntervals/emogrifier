@@ -11,6 +11,11 @@ namespace Pelago;
  */
 class Emogrifier {
     /**
+     * @var string
+     */
+    const ENCODING = 'UTF-8';
+
+    /**
      * @var integer
      */
     const CACHE_KEY_CSS = 0;
@@ -85,8 +90,10 @@ class Emogrifier {
     public $preserveEncoding = FALSE;
 
     /**
-     * @param string $html
-     * @param string $css
+     * The constructor.
+     *
+     * @param string $html the HTML to emogrify, must be UTF-8-encoded
+     * @param string $css the CSS to merge, must be UTF-8-encoded
      */
     public function __construct($html = '', $css = '') {
         $this->setHtml($html);
@@ -94,7 +101,9 @@ class Emogrifier {
     }
 
     /**
-     * @param string $html
+     * Sets the HTML to emogrify.
+     *
+     * @param string $html the HTML to emogrify, must be UTF-8-encoded
      *
      * @return void
      */
@@ -103,7 +112,9 @@ class Emogrifier {
     }
 
     /**
-     * @param string $css
+     * Sets the CSS to merge with the HTML.
+     *
+     * @param string $css the CSS to merge, must be UTF-8-encoded
      *
      * @return void
      */
@@ -132,35 +143,30 @@ class Emogrifier {
     }
 
     /**
+     * Marks a tag for removal.
+     *
      * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
      * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
      *
-     * This method allows you to add them if necessary.
+     * Note: The tags will not be removed if they have any content.
      *
-     * It only strips them from the code (i.e., it does not actually remove any nodes).
-     *
-     * @param string $tag
+     * @param string $tagName the tag name, e.g., "p"
      *
      * @return void
      */
-    public function addUnprocessableHtmlTag($tag) {
-        $this->unprocessableHtmlTags[] = $tag;
+    public function addUnprocessableHtmlTag($tagName) {
+        $this->unprocessableHtmlTags[] = $tagName;
     }
 
     /**
-     * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
-     * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
+     * Drops a tag from the removal list.
      *
-     * This method allows you to remove them if necessary.
-     *
-     * It only strips them from the code (i.e., it does not actually remove any nodes).
-     *
-     * @param string $tag
+     * @param string $tagName the tag name, e.g., "p"
      *
      * @return void
      */
-    public function removeUnprocessableHtmlTag($tag) {
-        $key = array_search($tag, $this->unprocessableHtmlTags, TRUE);
+    public function removeUnprocessableHtmlTag($tagName) {
+        $key = array_search($tagName, $this->unprocessableHtmlTags, TRUE);
         if ($key !== FALSE) {
             unset($this->unprocessableHtmlTags[$key]);
         }
@@ -180,22 +186,11 @@ class Emogrifier {
             throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
         }
 
-        $body = $this->html;
-
-        // remove any unprocessable HTML tags (tags that DOMDocument cannot parse; this includes wbr and many new HTML5 tags)
-        if (count($this->unprocessableHtmlTags)) {
-            $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
-            $body = preg_replace('/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i', '', $body);
-        }
-
-        $encoding = mb_detect_encoding($body);
-        $body = mb_convert_encoding($body, 'HTML-ENTITIES', $encoding);
-
         $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = $encoding;
+        $xmlDocument->encoding = self::ENCODING;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
-        $xmlDocument->loadHTML($body);
+        $xmlDocument->loadHTML($this->getUnifiedHtml());
         $xmlDocument->normalizeDocument();
 
         $xpath = new \DOMXPath($xmlDocument);
@@ -353,10 +348,28 @@ class Emogrifier {
         }
 
         if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmlDocument->saveHTML(), $encoding, 'HTML-ENTITIES');
+            return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
         } else {
             return $xmlDocument->saveHTML();
         }
+    }
+
+    /**
+     * Returns the HTML with the non-ASCII characters converts into HTML entities and the unprocessable HTML tags removed.
+     *
+     * @return string the unified HTML
+     *
+     * @throws \BadMethodCallException
+     */
+    private function getUnifiedHtml() {
+        if (!empty($this->unprocessableHtmlTags)) {
+            $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
+            $bodyWithoutUnprocessableTags = preg_replace('/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i', '', $this->html);
+        } else {
+            $bodyWithoutUnprocessableTags = $this->html;
+        }
+
+        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
     }
 
     /**
