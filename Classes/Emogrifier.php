@@ -186,13 +186,7 @@ class Emogrifier {
             throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
         }
 
-        $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = self::ENCODING;
-        $xmlDocument->strictErrorChecking = FALSE;
-        $xmlDocument->formatOutput = TRUE;
-        $xmlDocument->loadHTML($this->getUnifiedHtml());
-        $xmlDocument->normalizeDocument();
-
+        $xmlDocument = $this->createXmlDocument();
         $xpath = new \DOMXPath($xmlDocument);
 
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
@@ -352,6 +346,22 @@ class Emogrifier {
         } else {
             return $xmlDocument->saveHTML();
         }
+    }
+
+    /**
+     * Creates a DOMDocument instance with the current HTML.
+     *
+     * @return \DOMDocument
+     */
+    private function createXmlDocument() {
+        $xmlDocument = new \DOMDocument;
+        $xmlDocument->encoding = self::ENCODING;
+        $xmlDocument->strictErrorChecking = FALSE;
+        $xmlDocument->formatOutput = TRUE;
+        $xmlDocument->loadHTML($this->getUnifiedHtml());
+        $xmlDocument->normalizeDocument();
+
+        return $xmlDocument;
     }
 
     /**
