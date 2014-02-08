@@ -309,7 +309,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * @see emogrifierMatchesSelectors
      */
     public function selectorDataProvider() {
-        $styleRule = 'color: red';
+        $styleRule = 'color: red;';
         $styleAttribute = 'style="' . $styleRule . '"';
 
         return array(
@@ -323,12 +323,26 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             'child selector P > SPAN matches direct child'
                 => array('p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'),
             'child selector BODY > SPAN not matches grandchild' => array('body > span {' . $styleRule . '} ', '#<span>#'),
-            'BODY:first-child not matches second child' => array('body:first-child {' . $styleRule . '} ', '#<p class="p-2">#'),
+            'adjacent selector P + P not matches first P' => array('p + p {' . $styleRule . '} ', '#<p class="p-1">#'),
+            'adjacent selector P + P matches second P'
+                => array('p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'),
+            'adjacent selector P + P matches third P'
+                => array('p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'),
             'ID selector #HTML' => array('#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'),
             'type and ID selector HTML#HTML'
                 => array('html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'),
             'class selector .P-1' => array('.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'),
             'type and class selector P.P-1' => array('p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'),
+            'attribute presence selector SPAN[title] matches element with matching attribute'
+                => array('span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'),
+            'attribute presence selector SPAN[title] not matches element without any attributes'
+                => array('span[title] {' . $styleRule . '} ', '#<span>#'),
+            'attribute value selector SPAN[title] matches element with matching attribute value'
+                => array('span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'),
+            'attribute value selector SPAN[title] not matches element with other attribute value'
+                => array('span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'),
+            'attribute value selector SPAN[title] not matches element without any attributes'
+                => array('span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'),
         );
     }
 
@@ -345,7 +359,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             '<html id="html">' .
             '  <body>' .
             '    <p class="p-1"><span>some text</span></p>' .
-            '    <p class="p-2">some text</p>' .
+            '    <p class="p-2"><span title="bonjour">some</span> text</p>' .
+            '    <p class="p-3"><span title="buenas dias">some</span> more text</p>' .
             '  </body>' .
             '</html>';
 
