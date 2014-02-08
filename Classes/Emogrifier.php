@@ -72,7 +72,11 @@ class Emogrifier {
     /**
      * @var array<array>
      */
-    private $caches = array();
+    private $caches = array(
+        self::CACHE_KEY_CSS => array(),
+        self::CACHE_KEY_SELECTOR => array(),
+        self::CACHE_KEY_XPATH => array(),
+    );
 
     /**
      * This attribute applies to the case where you want to preserve your original text encoding.
@@ -124,22 +128,32 @@ class Emogrifier {
     }
 
     /**
-     * @param integer|NULL $key
+     * Clears all caches.
      *
      * @return void
      */
-    public function clearCache($key = NULL) {
-        if ($key !== NULL) {
-            if (isset($this->caches[$key])) {
-                $this->caches[$key] = array();
-            }
-        } else {
-            $this->caches = array(
-                self::CACHE_KEY_CSS       => array(),
-                self::CACHE_KEY_SELECTOR  => array(),
-                self::CACHE_KEY_XPATH     => array(),
-            );
+    public function clearAllCaches() {
+        $this->clearCache(self::CACHE_KEY_CSS);
+        $this->clearCache(self::CACHE_KEY_SELECTOR);
+        $this->clearCache(self::CACHE_KEY_XPATH);
+    }
+
+    /**
+     * Clears a single cache by key.
+     *
+     * @param integer $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR or CACHE_KEY_XPATH
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function clearCache($key) {
+        $allowedCacheKeys = array(self::CACHE_KEY_CSS, self::CACHE_KEY_SELECTOR, self::CACHE_KEY_XPATH);
+        if (!in_array($key, $allowedCacheKeys, TRUE)) {
+            throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
         }
+
+        $this->caches[$key] = array();
     }
 
     /**
@@ -188,6 +202,7 @@ class Emogrifier {
 
         $xmlDocument = $this->createXmlDocument();
         $xpath = new \DOMXPath($xmlDocument);
+        $this->clearAllCaches();
 
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.
