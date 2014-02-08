@@ -49,6 +49,29 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
     $mergedHtml = $emogrifier->emogrify();
 
 
+## Supported CSS selectors
+
+Emogrifier currently support the following [CSS selectors](http://www.w3.org/TR/CSS2/selector.html):
+
+ * ID
+ * class
+ * type
+ * descendant
+ * child
+ * adjacent
+ * attribute presence
+ * attribute value
+
+The following selectors are implemented, but currently are broken:
+
+ * first-child (currently broken)
+ * last-child (currently broken)
+
+The following selectors are not implemented yet:
+
+ * universal
+
+
 ## Caveats
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like ISO8859-1 or ISO8859-15 are not supported.
