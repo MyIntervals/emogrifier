@@ -146,7 +146,6 @@ class Emogrifier {
      */
     public function setCss($css = '') {
         $this->css = $css;
-        $this->clearCache(self::CACHE_KEY_CSS);
     }
 
     /**
@@ -154,7 +153,7 @@ class Emogrifier {
      *
      * @return void
      */
-    public function clearAllCaches() {
+    private function clearAllCaches() {
         $this->clearCache(self::CACHE_KEY_CSS);
         $this->clearCache(self::CACHE_KEY_SELECTOR);
         $this->clearCache(self::CACHE_KEY_XPATH);
@@ -169,7 +168,7 @@ class Emogrifier {
      *
      * @throws \InvalidArgumentException
      */
-    public function clearCache($key) {
+    private function clearCache($key) {
         $allowedCacheKeys = array(self::CACHE_KEY_CSS, self::CACHE_KEY_SELECTOR, self::CACHE_KEY_XPATH);
         if (!in_array($key, $allowedCacheKeys, TRUE)) {
             throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
