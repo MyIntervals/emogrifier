@@ -192,12 +192,16 @@ class Emogrifier {
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.
         // also store a reference of nodes with existing inline styles so we don't overwrite them
+        /** @var $visitedNodes<\DOMNode> */
         $visitedNodes = array();
+        /** @var $visitedNodeReferences array<array> */
         $visitedNodeReferences = array();
-        $nodes = $xpath->query('//*[@style]');
-        if ($nodes !== FALSE) {
-            foreach ($nodes as $node) {
-                $normalizedOrigStyle = preg_replace_callback(
+
+        $nodesWithStyleAttributes = $xpath->query('//*[@style]');
+        if ($nodesWithStyleAttributes !== FALSE) {
+            /** @var $nodeWithStyleAttribute \DOMNode */
+            foreach ($nodesWithStyleAttributes as $node) {
+                $normalizedOriginalStyle = preg_replace_callback(
                     '/[A-z\\-]+(?=\\:)/S',
                     function (array $m) {
                         return strtolower($m[0]);
@@ -208,24 +212,25 @@ class Emogrifier {
                 // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
                 $nodeKey = md5($node->getNodePath());
                 if (!isset($visitedNodeReferences[$nodeKey])) {
-                    $visitedNodeReferences[$nodeKey] = $this->parseCssDeclarationBlock($normalizedOrigStyle);
-                    $visitedNodes[$nodeKey]   = $node;
+                    $visitedNodeReferences[$nodeKey] = $this->parseCssDeclarationBlock($normalizedOriginalStyle);
+                    $visitedNodes[$nodeKey] = $node;
                 }
 
-                $node->setAttribute('style', $normalizedOrigStyle);
+                $node->setAttribute('style', $normalizedOriginalStyle);
             }
         }
 
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         $css = $this->css;
-        $nodes = $xpath->query('//style');
-        if ($nodes !== FALSE) {
-            foreach ($nodes as $node) {
+        $styleNodes = $xpath->query('//style');
+        if ($styleNodes !== FALSE) {
+            /** @var $styleNode \DOMNode */
+            foreach ($styleNodes as $styleNode) {
                 // append the css
-                $css .= "\n\n{" . $node->nodeValue . '}';
+                $css .= "\n\n{" . $styleNode->nodeValue . '}';
                 // remove the <style> node
-                $node->parentNode->removeChild($node);
+                $styleNode->parentNode->removeChild($styleNode);
             }
         }
 
@@ -289,20 +294,21 @@ class Emogrifier {
 
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodes = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
+            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
 
-            foreach ($nodes as $node) {
+            /** @var $node \DOMNode */
+            foreach ($nodesMatchingCssSelectors as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
-                    $oldStyleArr = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-                    $newStyleArr = $this->parseCssDeclarationBlock($value['attributes']);
+                    $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+                    $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
 
                     // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArray = array_merge($oldStyleArr, $newStyleArr);
+                    $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
                     $style = '';
-                    foreach ($combinedArray as $k => $v) {
-                        $style .= (strtolower($k) . ':' . $v . ';');
+                    foreach ($combinedArray as $attributeName => $attributeValue) {
+                        $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
                     }
                 } else {
                     // otherwise create a new style
@@ -319,8 +325,8 @@ class Emogrifier {
 
             $combinedArray = array_merge($currentStyleArray, $originalStyleArray);
             $style = '';
-            foreach ($combinedArray as $k => $v) {
-                $style .= (strtolower($k) . ':' . $v . ';');
+            foreach ($combinedArray as $attributeName => $attributeValue) {
+                $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
             }
 
             $node->setAttribute('style', $style);
@@ -330,11 +336,12 @@ class Emogrifier {
         // We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only supports XPath 1.0,
         // lower-case() isn't available to us. We've thus far only set attributes to lowercase, not attribute values. Consequently, we need
         // to translate() the letters that would be in 'NONE' ("NOE") to lowercase.
-        $nodes = $xpath->query('//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]');
+        $nodesWithStyleDisplayNone = $xpath->query('//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]');
         // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
         // we don't try to call removeChild on a nonexistent child node
-        if ($nodes->length > 0) {
-            foreach ($nodes as $node) {
+        if ($nodesWithStyleDisplayNone->length > 0) {
+            /** @var $node \DOMNode */
+            foreach ($nodesWithStyleDisplayNone as $node) {
                 if ($node->parentNode && is_callable(array($node->parentNode,'removeChild'))) {
                     $node->parentNode->removeChild($node);
                 }
