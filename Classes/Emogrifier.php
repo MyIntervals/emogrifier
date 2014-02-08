@@ -75,6 +75,21 @@ class Emogrifier {
     private $caches = array();
 
     /**
+     * the visited nodes with the XPath paths as array keys
+     *
+     * @var array<\DOMNode>
+     */
+    private $visitedNodes = array();
+
+    /**
+     * the styles to apply to the nodes with the XPath paths as array keys for the outer array and the attribute names/values
+     * as key/value pairs for the inner array
+     *
+     * @var array<array><string>
+     */
+    private $styleAttributesForNodes = array();
+
+    /**
      * This attribute applies to the case where you want to preserve your original text encoding.
      *
      * By default, emogrifier translates your text into HTML entities for two reasons:
@@ -98,6 +113,13 @@ class Emogrifier {
     public function __construct($html = '', $css = '') {
         $this->setHtml($html);
         $this->setCss($css);
+    }
+
+    /**
+     * The destructor.
+     */
+    public function __destruct() {
+        $this->purgeVisitedNodes();
     }
 
     /**
@@ -140,6 +162,16 @@ class Emogrifier {
                 self::CACHE_KEY_XPATH     => array(),
             );
         }
+    }
+
+    /**
+     * Purges the visited nodes.
+     *
+     * @return void
+     */
+    private function purgeVisitedNodes() {
+        $this->visitedNodes = array();
+        $this->styleAttributesForNodes = array();
     }
 
     /**
@@ -192,10 +224,7 @@ class Emogrifier {
         // before be begin processing the CSS file, parse the document and normalize all existing CSS attributes (changes 'DISPLAY: none' to 'display: none');
         // we wouldn't have to do this if DOMXPath supported XPath 2.0.
         // also store a reference of nodes with existing inline styles so we don't overwrite them
-        /** @var $visitedNodes<\DOMNode> */
-        $visitedNodes = array();
-        /** @var $visitedNodeReferences array<array> */
-        $visitedNodeReferences = array();
+        $this->purgeVisitedNodes();
 
         $nodesWithStyleAttributes = $xpath->query('//*[@style]');
         if ($nodesWithStyleAttributes !== FALSE) {
@@ -210,10 +239,10 @@ class Emogrifier {
                 );
 
                 // in order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles
-                $nodeKey = md5($node->getNodePath());
-                if (!isset($visitedNodeReferences[$nodeKey])) {
-                    $visitedNodeReferences[$nodeKey] = $this->parseCssDeclarationBlock($normalizedOriginalStyle);
-                    $visitedNodes[$nodeKey] = $node;
+                $nodePath = $node->getNodePath();
+                if (!isset($this->styleAttributesForNodes[$nodePath])) {
+                    $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationBlock($normalizedOriginalStyle);
+                    $this->visitedNodes[$nodePath] = $node;
                 }
 
                 $node->setAttribute('style', $normalizedOriginalStyle);
@@ -319,11 +348,11 @@ class Emogrifier {
         }
 
         // now iterate through the nodes that contained inline styles in the original HTML
-        foreach ($visitedNodeReferences as $nodeKey => $originalStyleArray) {
-            $node = $visitedNodes[$nodeKey];
-            $currentStyleArray = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+        foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
+            $node = $this->visitedNodes[$nodePath];
+            $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
 
-            $combinedArray = array_merge($currentStyleArray, $originalStyleArray);
+            $combinedArray = array_merge($currentStyleAttributes, $styleAttributesForNode);
             $style = '';
             foreach ($combinedArray as $attributeName => $attributeValue) {
                 $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
