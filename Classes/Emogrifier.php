@@ -285,9 +285,9 @@ class Emogrifier {
             '/^\\s*@import\\s[^;]+;/misU',
             // strip any empty media enclosures
             '/^\\s*@media\\s[^{]+{\\s*}/misU',
-            // strip out all media types that are not 'screen' or 'all' (these don't apply to email)
+            // strip out all media rules that are not 'screen' or 'all' (these don't apply to email)
             '/^\\s*@media\\s+((aural|braille|embossed|handheld|print|projection|speech|tty|tv)\\s*,*\\s*)+{.*}\\s*}/misU',
-            // get rid of remaining media type enclosures
+            // get rid of remaining media type rules
             '/^\\s*@media\\s[^{]+{(.*})\\s*}/misU',
         );
 

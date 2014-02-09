@@ -305,8 +305,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * Data provide for selectors.
      *
      * @return array
-     *
-     * @see emogrifierMatchesSelectors
      */
     public function selectorDataProvider() {
         $styleRule = 'color: red;';
@@ -514,6 +512,91 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
 
         $this->assertContains(
             'style="' . $cssDeclarations . '"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyRemovesStyleNodes() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><style type="text/css"></style></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertNotContains(
+            '<style>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Data provider for things that should be left out when applying the CSS.
+     *
+     * @return array<array>
+     */
+    public function unneededCssThingsDataProvider() {
+        return array(
+            'CSS comments with one asterisk' => array('p {color: #000;/* black */}', 'black'),
+            'CSS comments with two asterisks' => array('p {color: #000;/** black */}', 'black'),
+            '@import directive' => array('@import "foo.css";', '@import'),
+            'style in "aural" media type rule' => array('@media aural {p {color: #000;}}', '#000'),
+            'style in "braille" media type rule' => array('@media braille {p {color: #000;}}', '#000'),
+            'style in "embossed" media type rule' => array('@media embossed {p {color: #000;}}', '#000'),
+            'style in "handheld" media type rule' => array('@media handheld {p {color: #000;}}', '#000'),
+            'style in "print" media type rule' => array('@media print {p {color: #000;}}', '#000'),
+            'style in "projection" media type rule' => array('@media projection {p {color: #000;}}', '#000'),
+            'style in "speech" media type rule' => array('@media speech {p {color: #000;}}', '#000'),
+            'style in "tty" media type rule' => array('@media tty {p {color: #000;}}', '#000'),
+            'style in "tv" media type rule' => array('@media tv {p {color: #000;}}', '#000'),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     * @param string $markerNotExpectedInHtml
+     *
+     * @dataProvider unneededCssThingsDataProvider
+     */
+    public function emogrifyFiltersUnneededCssThings($css, $markerNotExpectedInHtml) {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foo</p></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertNotContains(
+            $markerNotExpectedInHtml,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Data provider for media rules.
+     *
+     * @return array<array>
+     */
+    public function mediaRulesDataProvider() {
+        return array(
+            'style in "screen" media type rule' => array('@media screen {p {color: #000;}}', '<p style="color: #000;">'),
+            'style in "all" media type rule' => array('@media all {p {color: #000;}}', '<p style="color: #000;">'),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     * @param string $markerExpectedInHtml
+     *
+     * @dataProvider mediaRulesDataProvider
+     */
+    public function emogrifyKeepsStylesInApplicableMediaRules($css, $markerExpectedInHtml) {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foo</p></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $markerExpectedInHtml,
             $this->subject->emogrify()
         );
     }
