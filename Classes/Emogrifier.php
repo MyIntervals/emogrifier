@@ -271,7 +271,7 @@ class Emogrifier {
             /** @var $styleNode \DOMNode */
             foreach ($styleNodes as $styleNode) {
                 // append the css
-                $css .= "\n\n{" . $styleNode->nodeValue . '}';
+                $css .= "\n\n" . $styleNode->nodeValue;
                 // remove the <style> node
                 $styleNode->parentNode->removeChild($styleNode);
             }
@@ -304,17 +304,17 @@ class Emogrifier {
         $cssKey = md5($css);
         if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
-            preg_match_all('/(^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+            preg_match_all('/(?:^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
             $allSelectors = array();
             foreach ($matches as $key => $selectorString) {
                 // if there is a blank definition, skip
-                if (!strlen(trim($selectorString[3]))) {
+                if (!strlen(trim($selectorString[2]))) {
                     continue;
                 }
 
                 // else split by commas and duplicate attributes so we can sort by selector precedence
-                $selectors = explode(',', $selectorString[2]);
+                $selectors = explode(',', $selectorString[1]);
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes; ONLY allow structural pseudo-classes
                     if (strpos($selector, ':') !== FALSE && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
@@ -322,7 +322,7 @@ class Emogrifier {
                     }
 
                     $allSelectors[] = array('selector' => trim($selector),
-                                             'attributes' => trim($selectorString[3]),
+                                             'attributes' => trim($selectorString[2]),
                                              // keep track of where it appears in the file, since order is important
                                              'line' => $key,
                     );
