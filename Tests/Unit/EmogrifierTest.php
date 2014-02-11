@@ -600,4 +600,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             $this->subject->emogrify()
         );
     }
+
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesCssFromStyleNodes() {
+        $styleAttributeValue = 'color:#ccc;';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+        '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            '<html style="' . $styleAttributeValue . '">',
+            $this->subject->emogrify()
+        );
+    }
 }
