@@ -48,6 +48,27 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
+## Installing with composer
+
+Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or install [Composer](https://getcomposer.org/) globally:
+
+    curl -s https://getcomposer.org/installer | php
+
+Run the following command for a local installation:
+
+    php composer.phar require pelago/emogrifier:*
+
+Or for a global installation, run the following command:
+
+    composer require pelago/emogrifier:*
+
+You can also add follow lines to your `composer.json` and run the `composer update` command:
+
+    "require": {
+      "pelago/emogrifier": "*"
+    }
+
+See https://getcomposer.org/ for more information and documentation.
 
 ## Supported CSS selectors
 

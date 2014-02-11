@@ -1,0 +1,35 @@
+{
+	"name": "pelago/emogrifier",
+	"description": "Converts CSS styles into inline style attributes in your HTML code",
+	"tags": ["email", "css", "pre-processing"],
+	"license": "MIT",
+	"homepage": "http://www.pelagodesign.com/sidecar/emogrifier/",
+	"authors": [
+		{
+			"name": "John Reeve",
+			"email": "jreeve@pelagodesign.com"
+		},
+		{
+			"name": "Cameron Brooks"
+		},
+		{
+			"name": "Jaime Prado"
+		},
+		{
+			"name": "Oliver Klee",
+			"email": "typo3-coding@oliverklee.de"
+		},
+		{
+			"name": "Roman Ožana",
+			"email": "ozana@omdesign.cz"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"Pelago\\": "Classes/"
+		}
+	}
+}
