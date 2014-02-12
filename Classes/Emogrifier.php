@@ -408,7 +408,9 @@ class Emogrifier {
         $xmlDocument->encoding = self::ENCODING;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
+        libxml_use_internal_errors(TRUE);
         $xmlDocument->loadHTML($this->getUnifiedHtml());
+        libxml_clear_errors();
         $xmlDocument->normalizeDocument();
 
         return $xmlDocument;
