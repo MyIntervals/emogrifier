@@ -19,6 +19,17 @@ The primary problem with uncooperative email clients is that most tend to only r
 styles into inline style attributes in your HTML code.
 
 
+- [How it works](#how-it-works)
+- [Usage](#usage)
+- [Installing with Composer](#installing-with-composer)
+- [Usage](#usage)
+- [Supported CSS selectors](#supported-css-selectors)
+- [Caveats](#caveats)
+- [Maintainer](#maintainer)
+- [Contributing](#contributing)
+
+
+
 ## How it Works
 
 Emogrifier automagically transmogrifies your HTML by parsing your CSS and inserting your CSS definitions into tags
@@ -48,7 +59,8 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
-## Installing with composer
+
+## Installing with Composer
 
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or install [Composer](https://getcomposer.org/) globally:
 
@@ -115,3 +127,18 @@ The following selectors are not implemented yet:
 ## Maintainer
 
 Emogrifier is maintained by the good people at [Pelago](http://www.pelagodesign.com/), info AT pelagodesign DOT com.
+
+
+## Contributing
+
+Those that wish to contribute bug fixes, new features, refactorings and clean-up to Emogrifier are more than welcome.
+When you contribute, please take the following things into account:
+
+* Please cover all changes with unit tests and make sure that your code does not break any existing tests.
+* Please use the same coding style as the rest of the code. Indentation is four spaces.
+* Please make your code clean, well-readable and easy to understand.
+* If you add new methods or fields, please use proper PHPDoc for the new methods/fields.
+* Git commits should have a <= 50 character summary, optionally followed by a blank line
+  and a more in depth description of 79 characters per line.
+* [Please squash related commits together](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
+* Please use grammatically correct, complete sentences in the code documentation and the commit messages.
