@@ -408,10 +408,10 @@ class Emogrifier {
         $xmlDocument->encoding = self::ENCODING;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
-        $libxmlState = libxml_use_internal_errors(TRUE);
+        $libXmlState = libxml_use_internal_errors(TRUE);
         $xmlDocument->loadHTML($this->getUnifiedHtml());
         libxml_clear_errors();
-        libxml_use_internal_errors($libxmlState);
+        libxml_use_internal_errors($libXmlState);
         $xmlDocument->normalizeDocument();
 
         return $xmlDocument;
