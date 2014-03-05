@@ -304,7 +304,7 @@ class Emogrifier {
         $cssKey = md5($css);
         if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
-            preg_match_all('/(?:^|[^{}])\\s*([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
             $allSelectors = array();
             foreach ($matches as $key => $selectorString) {

@@ -489,6 +489,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      */
+    public function emogrifyCanMatchMinifiedCss() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
+        $this->subject->setHtml($html);
+        $this->subject->setCss('p{color:blue;}html{color:red;}');
+
+        $this->assertContains(
+            '<html style="color:red;">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyLowercasesAttributeNamesFromStyleAttributes() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html style="COLOR:#ccc;"></html>';
         $this->subject->setHtml($html);
