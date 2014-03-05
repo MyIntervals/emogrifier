@@ -272,6 +272,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      */
+    public function emogrifyCanMatchAttributeOnlySelector() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p hidden="hidden"></p></html>' . self::LF;
+        $this->subject->setHtml($html);
+        $this->subject->setCss('[hidden] { color:red; }');
+
+        $this->assertContains(
+            '<p hidden="hidden" style="color:red;">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyCanAssignStyleRulesFromTwoIdenticalMatchersToElement() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);

@@ -98,6 +98,7 @@ Emogrifier currently support the following [CSS selectors](http://www.w3.org/TR/
  * adjacent
  * attribute presence
  * attribute value
+ * attribute only
 
 The following selectors are implemented, but currently are broken:
 

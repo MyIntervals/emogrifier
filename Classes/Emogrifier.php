@@ -508,6 +508,8 @@ class Emogrifier {
                 '/([^\\/]+):first-child/i',
                 // last-child pseudo-selector
                 '/([^\\/]+):last-child/i',
+                // Matches attribute only selector
+                '/^\\[(\\w+)\\]/',
                 // Matches element with attribute
                 '/(\\w)\\[(\\w+)\\]/',
                 // Matches element with EXACT attribute
@@ -519,6 +521,7 @@ class Emogrifier {
                 '//',
                 '*[1]/self::\\1',
                 '*[last()]/self::\\1',
+                '*[@\\1]',
                 '\\1[@\\2]',
                 '\\1[@\\2="\\3"]',
             );
