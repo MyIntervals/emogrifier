@@ -605,8 +605,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      */
     public function mediaRulesDataProvider() {
         return array(
-            'style in "screen" media type rule' => array('@media screen {p {color: #000;}}', '<p style="color: #000;">'),
-            'style in "all" media type rule' => array('@media all {p {color: #000;}}', '<p style="color: #000;">'),
+            'style in "only all" media type rule' => array('@media only all {p {color: #000;}}'),
+            'style in "only screen" media type rule' => array('@media only screen {p {color: #000;}}'),
+            'style in media type rule' => array('@media {p {color: #000;}}'),
+            'style in "screen" media type rule' => array('@media screen {p {color: #000;}}'),
+            'style in "all" media type rule' => array('@media all {p {color: #000;}}'),
         );
     }
 
@@ -614,21 +617,223 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * @test
      *
      * @param string $css
-     * @param string $markerExpectedInHtml
      *
      * @dataProvider mediaRulesDataProvider
      */
-    public function emogrifyKeepsStylesInApplicableMediaRules($css, $markerExpectedInHtml) {
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foo</p></html>';
+    public function emogrifyKeepsMediaRules($css) {
+          $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p>foo</p></html>';
+          $this->subject->setHtml($html);
+          $this->subject->setCss($css);
+
+          $this->assertContains(
+              $css,
+              $this->subject->emogrify()
+          );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddsMissingHeadElement() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>';
         $this->subject->setHtml($html);
-        $this->subject->setCss($css);
+        $this->subject->setCss('@media all { html {} }');
 
         $this->assertContains(
-            $markerExpectedInHtml,
+            '<head>',
             $this->subject->emogrify()
         );
     }
 
+    /**
+     * @test
+     */
+    public function emogrifyKeepExistingHeadElementContent() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><head><!-- original content --></head></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss('@media all { html {} }');
+
+        $this->assertContains(
+            '<!-- original content -->',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepExistingHeadElementAddStyleElement() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><head><!-- original content --></head></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss('@media all { html {} }');
+
+        $this->assertContains(
+            '<style type="text/css">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Valid media query which need to be preserved
+     *
+     * @return array<array>
+     */
+    public function validMediaPreserveDataProvider() {
+        return array(
+            'style in "only screen and size" media type rule' => array('@media only screen and (min-device-width: 320px) and (max-device-width: 480px) { h1 { color:red; } }'),
+            'style in "screen size" media type rule' => array('@media screen and (min-device-width: 320px) and (max-device-width: 480px) { h1 { color:red; } }'),
+            'style in "only screen and screen size" media type rule' => array('@media only screen and (min-device-width: 320px) and (max-device-width: 480px) { h1 { color:red; } }'),
+            'style in "all and screen size" media type rule' => array('@media all and (min-device-width: 320px) and (max-device-width: 480px) { h1 { color:red; } }'),
+            'style in "only all and" media type rule' => array('@media only all and (min-device-width: 320px) and (max-device-width: 480px) { h1 { color:red; } }'),
+            'style in "all" media type rule' => array('@media all {p {color: #000;}}'),
+            'style in "only screen" media type rule' => array('@media only screen { h1 { color:red; } }'),
+            'style in "only all" media type rule' => array('@media only all { h1 { color:red; } }'),
+            'style in "screen" media type rule' => array('@media screen { h1 { color:red; } }'),
+            'style in "all" media type rule' => array('@media all { h1 { color:red; } }'),
+            'style in media type rule without specification' => array('@media { h1 { color:red; } }'),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider validMediaPreserveDataProvider
+     */
+    public function emogrifyWithValidMediaQueryContainsInnerCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $css,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider validMediaPreserveDataProvider
+     */
+    public function emogrifyForHtmlWithValidMediaQueryContainsInnerCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><style type="text/css">' . $css . '</style><h1></h1></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $css,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider validMediaPreserveDataProvider
+     */
+    public function emogrifyWithValidMediaQueryNotContainsInlineCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertNotContains(
+            'style="color:red"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Invalid media query which need to be strip
+     *
+     * @return array<array>
+     */
+    public function invalidMediaPreserveDataProvider() {
+        return array(
+            'style in "braille" type rule' => array('@media braille { h1 { color:red; } }'),
+            'style in "embossed" type rule' => array('@media embossed { h1 { color:red; } }'),
+            'style in "handheld" type rule' => array('@media handheld { h1 { color:red; } }'),
+            'style in "print" type rule' => array('@media print { h1 { color:red; } }'),
+            'style in "projection" type rule' => array('@media projection { h1 { color:red; } }'),
+            'style in "speech" type rule' => array('@media speech { h1 { color:red; } }'),
+            'style in "tty" type rule' => array('@media tty { h1 { color:red; } }'),
+            'style in "tv" type rule' => array('@media tv { h1 { color:red; } }'),
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider invalidMediaPreserveDataProvider
+     */
+    public function emogrifyWithInvalidMediaQueryaNotContainsInnerCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertNotContains(
+            $css,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider invalidMediaPreserveDataProvider
+     */
+    public function emogrifyWithInValidMediaQueryNotContainsInlineCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertNotContains(
+            'style="color:red"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider invalidMediaPreserveDataProvider
+     */
+    public function emogrifyFromHtmlWithInValidMediaQueryNotContainsInnerCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><style type="text/css">' . $css . '</style><h1></h1></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertNotContains(
+            $css,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider invalidMediaPreserveDataProvider
+     */
+    public function emogrifyFromHtmlWithInValidMediaQueryNotContainsInlineCss($css) {
+        $html = self::HTML5_DOCUMENT_TYPE . PHP_EOL . '<html><style type="text/css">' . $css . '</style><h1></h1></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertNotContains(
+            'style="color:red"',
+            $this->subject->emogrify()
+        );
+    }
 
     /**
      * @test

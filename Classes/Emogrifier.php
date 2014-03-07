@@ -8,6 +8,7 @@ namespace Pelago;
  *
  * @author Cameron Brooks
  * @author Jaime Prado
+ * @author Roman Ožana <ozana@omdesign.cz>
  */
 class Emogrifier {
     /**
@@ -265,46 +266,16 @@ class Emogrifier {
 
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
-        $css = $this->css;
-        $styleNodes = $xpath->query('//style');
-        if ($styleNodes !== FALSE) {
-            /** @var $styleNode \DOMNode */
-            foreach ($styleNodes as $styleNode) {
-                // append the css
-                $css .= "\n\n" . $styleNode->nodeValue;
-                // remove the <style> node
-                $styleNode->parentNode->removeChild($styleNode);
-            }
-        }
+        $allCss = $this->css;
 
-        // filter the CSS
-        $search = array(
-            // get rid of css comment code
-            '/\\/\\*.*\\*\\//sU',
-            // strip out any import directives
-            '/^\\s*@import\\s[^;]+;/misU',
-            // strip any empty media enclosures
-            '/^\\s*@media\\s[^{]+{\\s*}/misU',
-            // strip out all media rules that are not 'screen' or 'all' (these don't apply to email)
-            '/^\\s*@media\\s+((aural|braille|embossed|handheld|print|projection|speech|tty|tv)\\s*,*\\s*)+{.*}\\s*}/misU',
-            // get rid of remaining media type rules
-            '/^\\s*@media\\s[^{]+{(.*})\\s*}/misU',
-        );
+        $allCss .= $this->getCssFromAllStyleNodes($xpath);
 
-        $replace = array(
-            '',
-            '',
-            '',
-            '',
-            '\\1',
-        );
+        $cssParts = $this->splitCssAndMediaQuery($allCss);
 
-        $css = preg_replace($search, $replace, $css);
-
-        $cssKey = md5($css);
+        $cssKey = md5($cssParts['css']);
         if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
-            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $cssParts['css'], $matches, PREG_SET_ORDER);
 
             $allSelectors = array();
             foreach ($matches as $key => $selectorString) {
@@ -391,11 +362,136 @@ class Emogrifier {
             }
         }
 
+        $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
+
         if ($this->preserveEncoding) {
             return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
         } else {
             return $xmlDocument->saveHTML();
         }
+    }
+
+    /**
+     * Copies the media part from CSS array parts to $xmlDocument.
+     *
+     * @param array $cssParts
+     * @param \DOMDocument $xmlDocument
+     * @return void
+     */
+    public function copyCssWithMediaToStyleNode(array $cssParts, \DOMDocument $xmlDocument) {
+        if (isset($cssParts['media']) && $cssParts['media'] !== '') {
+            $this->addStyleElementToDocument($xmlDocument, $cssParts['media']);
+        }
+    }
+
+    /**
+     * Returns CSS content.
+     *
+     * @param \DOMXPath $xpath
+     * @return string
+     */
+    private function getCssFromAllStyleNodes(\DOMXPath $xpath) {
+        $styleNodes = $xpath->query('//style');
+
+        if ($styleNodes === FALSE) {
+            return '';
+        }
+
+        $css = '';
+        /** @var $styleNode \DOMNode */
+        foreach ($styleNodes as $styleNode) {
+            $css .= "\n\n" . $styleNode->nodeValue;
+            $styleNode->parentNode->removeChild($styleNode);
+        }
+
+        return $css;
+    }
+
+    /**
+     * Adds a style element with $css to $document.
+     *
+     * @param \DOMDocument $document
+     * @param string $css
+     * @return void
+     */
+    private function addStyleElementToDocument(\DOMDocument $document, $css) {
+        $styleElement = $document->createElement('style', $css);
+        $styleAttribute = $document->createAttribute('type');
+        $styleAttribute->value = 'text/css';
+        $styleElement->appendChild($styleAttribute);
+
+        $head = $this->getOrCreateHeadElement($document);
+        $head->appendChild($styleElement);
+    }
+
+    /**
+     * Returns the existing or creates a new head element in $document.
+     *
+     * @param \DOMDocument $document
+     * @return \DOMNode the head element
+     */
+    private function getOrCreateHeadElement(\DOMDocument $document) {
+        $head = $document->getElementsByTagName('head')->item(0);
+
+        if ($head === NULL) {
+            $head = $document->createElement('head');
+            $html = $document->getElementsByTagName('html')->item(0);
+            $html->insertBefore($head, $document->getElementsByTagName('body')->item(0));
+        }
+
+        return $head;
+    }
+
+    /**
+     * Splits input CSS code to an array where:
+     *
+     * - key "css" will be contains clean CSS code
+     * - key "media" will be contains all valuable media queries
+     *
+     * Example:
+     *
+     * The CSS code
+     *
+     *   "@import "file.css"; h1 { color:red; } @media { h1 {}} @media tv { h1 {}}"
+     *
+     * will be parsed into the following array:
+     *
+     *   "css" => "h1 { color:red; }"
+     *   "media" => "@media { h1 {}}"
+     *
+     * @param string $css
+     * @return array
+     */
+    private function splitCssAndMediaQuery($css) {
+        $media = '';
+
+        $css = preg_replace_callback(
+            '#@media\\s+(?:only\\s)?(?:[\\s{\(]|screen|all)\\s?[^{]+{.*}\\s*}\\s*#misU',
+            function($matches) use (&$media) {
+                $media .= $matches[0];
+            }, $css
+        );
+
+        // filter the CSS
+        $search = array(
+            // get rid of css comment code
+            '/\\/\\*.*\\*\\//sU',
+            // strip out any import directives
+            '/^\\s*@import\\s[^;]+;/misU',
+            // strip remains media enclosures
+            '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
+        );
+
+        $replace = array(
+            '',
+            '',
+            '',
+        );
+
+        // clean CSS before output
+        $css = preg_replace($search, $replace, $css);
+
+        return array('css' => $css, 'media' => $media);
     }
 
     /**
