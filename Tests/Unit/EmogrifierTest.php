@@ -33,15 +33,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     private $subject = NULL;
 
     /**
-     * This method is called before the first test of this test class is run.
-     *
-     * @return void
-     */
-    public static function setUpBeforeClass() {
-        require_once(__DIR__ . '/../../Classes/Emogrifier.php');
-    }
-
-    /**
      * Sets up the test case.
      *
      * @return void

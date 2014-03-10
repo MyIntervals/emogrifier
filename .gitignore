@@ -21,3 +21,4 @@
 .webprj
 nbproject
 /vendor/
+composer.lock
