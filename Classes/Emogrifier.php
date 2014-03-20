@@ -769,7 +769,7 @@ class Emogrifier {
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
-            if (!preg_match('/ *([a-z\-]+) *: *([^;]+) */', $declaration, $matches)) {
+            if (!preg_match('/ *([a-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
             $propertyName = $matches[1];
