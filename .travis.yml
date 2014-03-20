@@ -6,18 +6,14 @@ php:
   - 5.5
 
 before_script:
-  - pear channel-discover pear.typo3.org
-  - pear install pear/PHP_CodeSniffer
-  - pear install typo3/TYPO3SniffPool-alpha
-  - pear install typo3/TYPO3CMS-alpha
-  - phpenv rehash
-  - phpcs --config-set encoding utf-8
-  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/
-  - phpcs --standard=Configuration/PhpCodeSniffer/Standards/EmogrifierTests/ Tests/
+  - composer install --dev
+  - vendor/bin/phpcs --config-set encoding utf-8
 
 script:
   # Run PHP lint on all PHP files.
   - find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
-  # Install PHPUNit and run the unit tests.
-  - composer install --dev
+  # Check the coding style.
+  - vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/
+  - vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/EmogrifierTests/ Tests/
+  # Run the unit tests.
   - vendor/bin/phpunit Tests/
