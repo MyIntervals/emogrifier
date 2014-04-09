@@ -32,6 +32,11 @@ class Emogrifier {
     const CACHE_KEY_XPATH = 2;
 
     /**
+     * @var integer
+     */
+    const CACHE_KEY_CSS_DECLARATION_BLOCK = 3;
+
+    /**
      * for calculating nth-of-type and nth-child selectors
      *
      * @var integer
@@ -77,6 +82,7 @@ class Emogrifier {
         self::CACHE_KEY_CSS => array(),
         self::CACHE_KEY_SELECTOR => array(),
         self::CACHE_KEY_XPATH => array(),
+        self::CACHE_KEY_CSS_DECLARATION_BLOCK => array(),
     );
 
     /**
@@ -158,19 +164,20 @@ class Emogrifier {
         $this->clearCache(self::CACHE_KEY_CSS);
         $this->clearCache(self::CACHE_KEY_SELECTOR);
         $this->clearCache(self::CACHE_KEY_XPATH);
+        $this->clearCache(self::CACHE_KEY_CSS_DECLARATION_BLOCK);
     }
 
     /**
      * Clears a single cache by key.
      *
-     * @param integer $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR or CACHE_KEY_XPATH
+     * @param integer $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH or CACHE_KEY_CSS_DECLARATION_BLOCK
      *
      * @return void
      *
      * @throws \InvalidArgumentException
      */
     private function clearCache($key) {
-        $allowedCacheKeys = array(self::CACHE_KEY_CSS, self::CACHE_KEY_SELECTOR, self::CACHE_KEY_XPATH);
+        $allowedCacheKeys = array(self::CACHE_KEY_CSS, self::CACHE_KEY_SELECTOR, self::CACHE_KEY_XPATH, self::CACHE_KEY_CSS_DECLARATION_BLOCK);
         if (!in_array($key, $allowedCacheKeys, TRUE)) {
             throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
         }
@@ -764,8 +771,11 @@ class Emogrifier {
      * @return array the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationBlock($cssDeclarationBlock) {
-        $properties = array();
+        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock])) {
+            return $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock];
+        }
 
+        $properties = array();
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
@@ -776,6 +786,7 @@ class Emogrifier {
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
+        $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock] = $properties;
 
         return $properties;
     }
