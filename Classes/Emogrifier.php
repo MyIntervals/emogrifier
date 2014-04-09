@@ -764,8 +764,13 @@ class Emogrifier {
      * @return array the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationBlock($cssDeclarationBlock) {
-        $properties = array();
+        static $properties = array();
+        
+        if (isset($properties[$cssDeclarationBlock])) {
+            return $properties[$cssDeclarationBlock];
+        }
 
+        $properties[$cssDeclarationBlock] = array();
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
@@ -774,9 +779,9 @@ class Emogrifier {
             }
             $propertyName = $matches[1];
             $propertyValue = $matches[2];
-            $properties[$propertyName] = $propertyValue;
+            $properties[$cssDeclarationBlock][$propertyName] = $propertyValue;
         }
 
-        return $properties;
+        return $properties[$cssDeclarationBlock];
     }
 }
