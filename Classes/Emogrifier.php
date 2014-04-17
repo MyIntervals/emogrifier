@@ -315,7 +315,7 @@ class Emogrifier {
 
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
+            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
 
             /** @var $node \DOMNode */
             foreach ($nodesMatchingCssSelectors as $node) {
@@ -323,17 +323,16 @@ class Emogrifier {
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
                     $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-                    $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
-
-                    // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
-                    $style = '';
-                    foreach ($combinedArray as $attributeName => $attributeValue) {
-                        $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
-                    }
                 } else {
-                    // otherwise create a new style
-                    $style = trim($value['attributes']);
+                    $oldStyleDeclarations = array();
+                }
+                $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
+
+                // new styles overwrite the old styles (not technically accurate, but close enough)
+                $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
+                $style = '';
+                foreach ($combinedArray as $attributeName => $attributeValue) {
+                    $style .= strtolower($attributeName) . ':' . $attributeValue . ';';
                 }
                 $node->setAttribute('style', $style);
             }
@@ -596,6 +595,13 @@ class Emogrifier {
      * @return string
      */
     private function translateCssToXpath($cssSelector) {
+        $cssSelector = ' ' . $cssSelector . ' ';
+        $cssSelector = preg_replace_callback('/\s+\w+\s+/',
+            function($matches) {
+                return strtolower($matches[0]);
+            },
+            $cssSelector
+        );
         $cssSelector = trim($cssSelector);
         $xpathKey = md5($cssSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xpathKey])) {
@@ -779,10 +785,11 @@ class Emogrifier {
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
-            if (!preg_match('/ *([a-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
+            // can we remove this regex entirely and replace with an explod on :, and conditional on resulting arraty being 2 strings?
+            if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
-            $propertyName = $matches[1];
+            $propertyName = strtolower($matches[1]);
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
