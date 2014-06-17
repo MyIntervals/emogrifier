@@ -327,14 +327,7 @@ class Emogrifier {
                     $oldStyleDeclarations = array();
                 }
                 $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
-
-                // new styles overwrite the old styles (not technically accurate, but close enough)
-                $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
-                $style = '';
-                foreach ($combinedArray as $attributeName => $attributeValue) {
-                    $style .= strtolower($attributeName) . ':' . $attributeValue . ';';
-                }
-                $node->setAttribute('style', $style);
+                $node->setAttribute('style', $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations));
             }
         }
 
@@ -342,14 +335,7 @@ class Emogrifier {
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
             $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-
-            $combinedArray = array_merge($currentStyleAttributes, $styleAttributesForNode);
-            $style = '';
-            foreach ($combinedArray as $attributeName => $attributeValue) {
-                $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
-            }
-
-            $node->setAttribute('style', $style);
+            $node->setAttribute('style', $this->generateStyleStringFromDeclarationsArrays($currentStyleAttributes, $styleAttributesForNode));
         }
 
         // This removes styles from your email that contain display:none.
@@ -376,6 +362,25 @@ class Emogrifier {
             return $xmlDocument->saveHTML();
         }
     }
+
+
+    /**
+     * generateStyleStringFromDeclarationsArrays merges old or existing name/value array with new name/value array
+     * and then generates a string of the combined stye suitible for placing inline.  This becomes the single point
+     * for css string generation allowing for consistent CSS output no matter where the CSS originally came from
+     * @param array $oldStyles
+     * @param array $newStyles
+     * @return string
+     */
+    private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles) {
+        $combinedArray = array_merge($oldStyles, $newStyles);
+        $style = '';
+        foreach ($combinedArray as $attributeName => $attributeValue) {
+            $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
+        }
+        return $style;
+    }
+
 
     /**
      * Copies the media part from CSS array parts to $xmlDocument.
@@ -594,10 +599,10 @@ class Emogrifier {
      *
      * @return string
      */
-    private function translateCssToXpath($cssSelector) {
-        $cssSelector = ' ' . $cssSelector . ' ';
+    private function translateCssToXpath($paramCssSelector) {
+        $cssSelector = ' ' . $paramCssSelector . ' ';
         $cssSelector = preg_replace_callback('/\s+\w+\s+/',
-            function($matches) {
+            function(array $matches) {
                 return strtolower($matches[0]);
             },
             $cssSelector
@@ -785,7 +790,6 @@ class Emogrifier {
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
-            // can we remove this regex entirely and replace with an explod on :, and conditional on resulting arraty being 2 strings?
             if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
