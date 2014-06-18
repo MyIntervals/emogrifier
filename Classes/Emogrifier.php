@@ -14,11 +14,17 @@ class Emogrifier {
     /**
      * @var string
      */
-    const ENCODING = 'UTF-8';
+    const FROM_ENCODING = 'UTF-8';
 
+    /**
+     * @var string
+     */
+
+    const TO_ENCODING = 'HTML-ENTITIES';
     /**
      * @var integer
      */
+
     const CACHE_KEY_CSS = 0;
 
     /**
@@ -100,6 +106,19 @@ class Emogrifier {
      */
     private $styleAttributesForNodes = array();
 
+
+    /**
+     * @var string
+     */
+    private $fromEncoding = self::FROM_ENCODING;
+
+    /**
+     * @var string
+     */
+    private $toEncoding = self::TO_ENCODING;
+
+
+
     /**
      * This attribute applies to the case where you want to preserve your original text encoding.
      *
@@ -121,9 +140,11 @@ class Emogrifier {
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
-    public function __construct($html = '', $css = '') {
+    public function __construct($html = '', $css = '', $fromEncoding = self::FROM_ENCODING, $toEncoding = self::TO_ENCODING) {
         $this->setHtml($html);
         $this->setCss($css);
+        $this->setFromEncoding($fromEncoding);
+        $this->setToEncoding($toEncoding);
     }
 
     /**
@@ -153,6 +174,30 @@ class Emogrifier {
      */
     public function setCss($css = '') {
         $this->css = $css;
+    }
+
+    /**
+     * If preserveEncoding is true this overrides the default encoding type
+     * to use as the source/original/from when re-encoding.
+     *
+     * @param string $enc the encoding type to use
+     *
+     * @return void
+     */
+    public function setFromEncoding($enc) {
+        $this->fromEncoding = $enc;
+    }
+
+    /**
+     * If preserveEncoding is true this overrides the default encoding type
+     * to use as the result/output/to when re-encoding.
+     *
+     * @param string $enc the encoding type to use
+     *
+     * @return void
+     */
+    public function setToEncoding($enc) {
+        $this->ToEncoding = $enc;
     }
 
     /**
@@ -357,7 +402,7 @@ class Emogrifier {
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
 
         if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
+            return mb_convert_encoding($xmlDocument->saveHTML(), $this->fromEncoding, $this->toEncoding);
         } else {
             return $xmlDocument->saveHTML();
         }
@@ -512,7 +557,7 @@ class Emogrifier {
      */
     private function createXmlDocument() {
         $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = self::ENCODING;
+        $xmlDocument->encoding = self::FROM_ENCODING;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
         $libXmlState = libxml_use_internal_errors(TRUE);
@@ -539,7 +584,7 @@ class Emogrifier {
             $bodyWithoutUnprocessableTags = $this->html;
         }
 
-        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
+        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::FROM_ENCODING);
     }
 
     /**
