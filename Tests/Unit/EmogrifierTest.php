@@ -222,7 +222,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>' . self::LF;
         $this->subject->setHtml($html);
-        $this->subject->setCss('p {color: #000;}');
+        $this->subject->setCss('p {color:#000;}');
 
         $this->assertContains(
             '<html>',
@@ -251,11 +251,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     public function emogrifyCanAssignTwoStyleRulesFromSameMatcherToElement() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
-        $styleRules = 'color: #000; text-align: left;';
-        $this->subject->setCss('p {' . $styleRules . '}');
+        $styleRulesIn = 'color:#000; text-align:left;';
+        $styleRulesOut = 'color: #000; text-align: left;';
+        $this->subject->setCss('p {' . $styleRulesIn . '}');
 
         $this->assertContains(
-            '<p style="' . $styleRules . '">',
+            '<p style="' . $styleRulesOut . '">',
             $this->subject->emogrify()
         );
     }
@@ -269,7 +270,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         $this->subject->setCss('[hidden] { color:red; }');
 
         $this->assertContains(
-            '<p hidden="hidden" style="color:red;">',
+            '<p hidden="hidden" style="color: red;">',
             $this->subject->emogrify()
         );
     }
@@ -280,12 +281,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     public function emogrifyCanAssignStyleRulesFromTwoIdenticalMatchersToElement() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
-        $styleRule1 = 'color:#000;';
-        $styleRule2 = 'text-align:left;';
+        $styleRule1 = 'color: #000;';
+        $styleRule2 = 'text-align: left;';
         $this->subject->setCss('p {' . $styleRule1 . '}  p {' . $styleRule2 . '}');
 
         $this->assertContains(
-            '<p style="' . $styleRule1 . $styleRule2 . '">',
+            '<p style="' . $styleRule1 . ' ' . $styleRule2 . '">',
             $this->subject->emogrify()
         );
     }
@@ -296,12 +297,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     public function emogrifyCanAssignStyleRulesFromTwoDifferentMatchersToElement() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><p class="x"></p></html>' . self::LF;
         $this->subject->setHtml($html);
-        $styleRule1 = 'color:#000;';
-        $styleRule2 = 'text-align:left;';
+        $styleRule1 = 'color: #000;';
+        $styleRule2 = 'text-align: left;';
         $this->subject->setCss('p {' . $styleRule1 . '}  .x {' . $styleRule2 . '}');
 
         $this->assertContains(
-            '<p class="x" style="' . $styleRule1 . $styleRule2 . '">',
+            '<p class="x" style="' . $styleRule1 . ' ' . $styleRule2 . '">',
             $this->subject->emogrify()
         );
     }
@@ -383,14 +384,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      */
     public function cssDeclarationWhitespaceDroppingDataProvider() {
         return array(
-            'no whitespace, trailing semicolon' => array('color:#000;', 'color:#000;'),
-            'no whitespace, no trailing semicolon' => array('color:#000', 'color:#000'),
-            'space after colon, no trailing semicolon' => array('color: #000', 'color: #000'),
-            'space before colon, no trailing semicolon' => array('color :#000', 'color :#000'),
-            'space before property name, no trailing semicolon' => array(' color:#000', 'color:#000'),
-            'space before trailing semicolon' => array(' color:#000 ;', 'color:#000 ;'),
-            'space after trailing semicolon' => array(' color:#000; ', 'color:#000;'),
-            'space after property value, no trailing semicolon' => array(' color:#000; ', 'color:#000;'),
+            'no whitespace, trailing semicolon' => array('color:#000;', 'color: #000;'),
+            'no whitespace, no trailing semicolon' => array('color:#000', 'color: #000;'),
+            'space after colon, no trailing semicolon' => array('color: #000', 'color: #000;'),
+            'space before colon, no trailing semicolon' => array('color :#000', 'color: #000;'),
+            'space before property name, no trailing semicolon' => array(' color:#000', 'color: #000;'),
+            'space before trailing semicolon' => array(' color:#000 ;', 'color: #000;'),
+            'space after trailing semicolon' => array(' color:#000; ', 'color: #000;'),
+            'space after property value, no trailing semicolon' => array(' color:#000; ', 'color: #000;'),
         );
     }
 
@@ -427,10 +428,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             'one declaration' => array('color: #000;', 'color: #000;'),
             'one declaration with dash in property name' => array('font-weight: bold;', 'font-weight: bold;'),
             'one declaration with space in property value' => array('margin: 0 4px;', 'margin: 0 4px;'),
-            'two declarations separated by semicolon' => array('color: #000;width: 3px;', 'color: #000;width: 3px;'),
+            'two declarations separated by semicolon' => array('color: #000;width: 3px;', 'color: #000; width: 3px;'),
             'two declarations separated by semicolon and space' => array('color: #000; width: 3px;', 'color: #000; width: 3px;'),
             'two declaration separated by semicolon and Linefeed' => array(
-                'color: #000;' . self::LF . 'width: 3px;', 'color: #000;' . self::LF . 'width: 3px;'
+                'color: #000;' . self::LF . 'width: 3px;', 'color: #000; width: 3px;'
             ),
         );
     }
@@ -463,7 +464,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyKeepsExistingStyleAttributes() {
-        $styleAttribute = 'style="color:#ccc;"';
+        $styleAttribute = 'style="color: #ccc;"';
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html ' . $styleAttribute . '></html>';
         $this->subject->setHtml($html);
 
@@ -477,16 +478,16 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyAddsCssAfterExistingStyle() {
-        $styleAttributeValue = 'color:#ccc;';
+        $styleAttributeValue = 'color: #ccc;';
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html style="' . $styleAttributeValue . '"></html>';
         $this->subject->setHtml($html);
 
-        $cssDeclarations = 'margin:0 2px;';
+        $cssDeclarations = 'margin: 0 2px;';
         $css = 'html {' . $cssDeclarations . '}';
         $this->subject->setCss($css);
 
         $this->assertContains(
-            'style="' . $styleAttributeValue . $cssDeclarations . '"',
+            'style="' . $styleAttributeValue . ' ' . $cssDeclarations . '"',
             $this->subject->emogrify()
         );
     }
@@ -500,7 +501,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         $this->subject->setCss('p{color:blue;}html{color:red;}');
 
         $this->assertContains(
-            '<html style="color:red;">',
+            '<html style="color: red;">',
             $this->subject->emogrify()
         );
     }
@@ -513,7 +514,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         $this->subject->setHtml($html);
 
         $this->assertContains(
-            'style="color:#ccc;"',
+            'style="color: #ccc;"',
             $this->subject->emogrify()
         );
     }
@@ -521,16 +522,44 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * @test
      */
-    public function emogrifyKeepsAttributeNamesFromCssInOriginalCasing() {
+    public function emogrifyLowerCasesAttributeNames() {
         $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html></html>';
         $this->subject->setHtml($html);
-
-        $cssDeclarations = 'mArGiN:0 2px;';
-        $css = 'html {' . $cssDeclarations . '}';
-        $this->subject->setCss($css);
+        $cssIn = 'html {mArGiN:0 2pX;}';
+        $cssOut = 'margin: 0 2pX;';
+        $this->subject->setCss($cssIn);
 
         $this->assertContains(
-            'style="' . $cssDeclarations . '"',
+            'style="' . $cssOut . '"',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyPreservesCaseForAttributeValuesFromPassedInCss() {
+        $css = "content: 'Hello World';";
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><body><p>target</p></body></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss('p {' . $css . '}');
+
+        $this->assertContains(
+            '<p style="' . $css . '">target</p>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyPreservesCaseForAttributeValuesFromParsedStyleBlock() {
+        $css = "content: 'Hello World';";
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><head><style>p {' . $css . '}</style></head><body><p>target</p></body></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            '<p style="' . $css . '">target</p>',
             $this->subject->emogrify()
         );
     }
@@ -787,7 +816,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         $this->subject->setCss($css);
 
         $this->assertNotContains(
-            'style="color:red"',
+            'style="color: red"',
             $this->subject->emogrify()
         );
     }
@@ -821,7 +850,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         $this->subject->setHtml($html);
 
         $this->assertNotContains(
-            'style="color:red"',
+            'style="color: red"',
             $this->subject->emogrify()
         );
     }
@@ -830,7 +859,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
      * @test
      */
     public function emogrifyAppliesCssFromStyleNodes() {
-        $styleAttributeValue = 'color:#ccc;';
+        $styleAttributeValue = 'color: #ccc;';
         $html = self::HTML5_DOCUMENT_TYPE . self::LF .
         '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>';
         $this->subject->setHtml($html);
@@ -840,4 +869,71 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesCssWithUpperCaseSelector() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><style type="text/css">P { color:#ccc; }</style><body><p>paragraph</p></body></html>';
+        $expected = '<p style="color: #ccc;">';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Emogrify was handling case differently for passed in CSS vs CSS parsed from style blocks.
+     * @test
+     */
+    public function emogrifyAppliesCssWithMixedCaseAttributesInStyleBlock() {
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0px;}</style></head><body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>';
+        $expected = '<p style="text-align: center; padding-bottom: 1px; padding-top: 0px;">';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Passed in CSS sets the order, but style block CSS overrides values.
+     * @test
+     */
+    public function emogrifyMergesCssWithMixedCaseAttribute() {
+        $css = 'p { margin: 0px; padding-TOP: 0px; PADDING-bottom: 0PX;}';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head><body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>';
+        $expected = '<p style="text-align: center; margin: 0px; padding-top: 1px; padding-bottom: 3px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyMergesCssWithMixedUnits() {
+        $css = 'p { margin: 1px; padding-bottom:0;}';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head><body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>';
+        $expected = '<p style="text-align: center; margin: 0; padding-bottom: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
 }

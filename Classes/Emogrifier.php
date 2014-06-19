@@ -315,7 +315,7 @@ class Emogrifier {
 
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath(trim($value['selector'])));
+            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
 
             /** @var $node \DOMNode */
             foreach ($nodesMatchingCssSelectors as $node) {
@@ -323,19 +323,11 @@ class Emogrifier {
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
                     $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-                    $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
-
-                    // new styles overwrite the old styles (not technically accurate, but close enough)
-                    $combinedArray = array_merge($oldStyleDeclarations, $newStyleDeclarations);
-                    $style = '';
-                    foreach ($combinedArray as $attributeName => $attributeValue) {
-                        $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
-                    }
                 } else {
-                    // otherwise create a new style
-                    $style = trim($value['attributes']);
+                    $oldStyleDeclarations = array();
                 }
-                $node->setAttribute('style', $style);
+                $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
+                $node->setAttribute('style', $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations));
             }
         }
 
@@ -343,14 +335,7 @@ class Emogrifier {
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
             $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-
-            $combinedArray = array_merge($currentStyleAttributes, $styleAttributesForNode);
-            $style = '';
-            foreach ($combinedArray as $attributeName => $attributeValue) {
-                $style .= (strtolower($attributeName) . ':' . $attributeValue . ';');
-            }
-
-            $node->setAttribute('style', $style);
+            $node->setAttribute('style', $this->generateStyleStringFromDeclarationsArrays($currentStyleAttributes, $styleAttributesForNode));
         }
 
         // This removes styles from your email that contain display:none.
@@ -377,6 +362,26 @@ class Emogrifier {
             return $xmlDocument->saveHTML();
         }
     }
+
+
+    /**
+     * This method merges old or existing name/value array with new name/value array
+     * and then generates a string of the combined style suitable for placing inline.
+     * This becomes the single point for CSS string generation allowing for consistent
+     * CSS output no matter where the CSS originally came from.
+     * @param array $oldStyles
+     * @param array $newStyles
+     * @return string
+     */
+    private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles) {
+        $combinedStyles = array_merge($oldStyles, $newStyles);
+        $style = '';
+        foreach ($combinedStyles as $attributeName => $attributeValue) {
+            $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
+        }
+        return trim($style);
+    }
+
 
     /**
      * Copies the media part from CSS array parts to $xmlDocument.
@@ -591,11 +596,18 @@ class Emogrifier {
      *
      * @see http://plasmasturm.org/log/444/
      *
-     * @param string $cssSelector
+     * @param string $paramCssSelector
      *
      * @return string
      */
-    private function translateCssToXpath($cssSelector) {
+    private function translateCssToXpath($paramCssSelector) {
+        $cssSelector = ' ' . $paramCssSelector . ' ';
+        $cssSelector = preg_replace_callback('/\s+\w+\s+/',
+            function(array $matches) {
+                return strtolower($matches[0]);
+            },
+            $cssSelector
+        );
         $cssSelector = trim($cssSelector);
         $xpathKey = md5($cssSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xpathKey])) {
@@ -779,10 +791,10 @@ class Emogrifier {
         $declarations = explode(';', $cssDeclarationBlock);
         foreach ($declarations as $declaration) {
             $matches = array();
-            if (!preg_match('/ *([a-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
+            if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
-            $propertyName = $matches[1];
+            $propertyName = strtolower($matches[1]);
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
