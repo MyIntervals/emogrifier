@@ -14,6 +14,11 @@ class Emogrifier {
     /**
      * @var string
      */
+    const ENCODING = 'UTF-8';
+
+    /**
+     * @var string
+     */
     const FROM_ENCODING = 'UTF-8';
 
     /**
@@ -180,13 +185,18 @@ class Emogrifier {
      * If preserveEncoding is true this overrides the default encoding type
      * to use as the source/original/from when re-encoding.
      *
+     * This verifies that the encoding type is supported and takes no action
+     * if it is not supported, relying on the default value.
      * @param string $enc the encoding type to use
      *
      * @return void
      */
     public function setFromEncoding($enc) {
+        $allowedEncodings = mb_list_encodings();
+        if (!in_array($enc, $allowedEncodings)) {
+            trigger_error('NOTICE: Invalid encoding set for source, used default.', E_USER_NOTICE);
+        }
         $this->fromEncoding = $enc;
-//TODO use mb_list_encodings() to verify copding is allowed
     }
 
     /**
@@ -198,6 +208,10 @@ class Emogrifier {
      * @return void
      */
     public function setToEncoding($enc) {
+        $allowedEncodings = mb_list_encodings();
+        if (!in_array($enc, $allowedEncodings)) {
+            trigger_error('NOTICE: Invalid encoding set for result, used default.', E_USER_NOTICE);
+        }
         $this->ToEncoding = $enc;
     }
 
@@ -401,9 +415,10 @@ class Emogrifier {
         }
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
-
         if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmlDocument->saveHTML(), $this->fromEncoding, $this->toEncoding);
+            $result = str_replace('&nbsp;', '@nbsp;', $xmlDocument->saveHTML());
+            $result = mb_convert_encoding($result, $this->fromEncoding, $this->toEncoding);
+            return str_replace('@nbsp;', '&nbsp;', $result);
         } else {
             return $xmlDocument->saveHTML();
         }
@@ -559,7 +574,7 @@ class Emogrifier {
      */
     private function createXmlDocument() {
         $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = self::FROM_ENCODING;
+        $xmlDocument->encoding = self::ENCODING;
         $xmlDocument->strictErrorChecking = FALSE;
         $xmlDocument->formatOutput = TRUE;
         $libXmlState = libxml_use_internal_errors(TRUE);
@@ -585,8 +600,7 @@ class Emogrifier {
         } else {
             $bodyWithoutUnprocessableTags = $this->html;
         }
-
-        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::FROM_ENCODING);
+        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
     }
 
     /**

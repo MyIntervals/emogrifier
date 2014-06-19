@@ -937,50 +937,82 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * @test
+     * Data Provider
+     * simplified indentation in html 
      */
-    public function emogrifyiHandlesUnicodeIconsInContent() {
-        $cssIn = "content: \"\U+2193\";";
-        $cssOut = "content: \"↓\";";
-        $html = self::HTML5_DOCUMENT_TYPE . self::LF . '<html><body><p>target</p></body></html>';
-        $this->subject->setHtml($html);
-        $this->subject->setCss('p {' . $cssIn . '}');
-        $this->subject->setFromEncoding('auto');
-        $this->subject->setToEncoding('auto');
-        $this->subject->preserveEncoding = TRUE; 
-        $this->assertContains(
-            '<p style="' . $cssOut . '">target</p>',
-            $this->subject->emogrify()
-        );
+    public function foreignLanguageDataProvider() {
+        return array('Full document with 4 langs' => array(
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/REC-html40/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta charset="utf-8"></head>
+<body>
+<ul>
+<li>One ﻡﺮﺤﺑﺍ، ﻮﻫﺫﺍ ﻩﻭ ﺎﺨﺘﺑﺍﺭ</li>
+<li>Two Esta un una prueba información ¡exclamación! ¿Pregunta?</li>
+<li>Three 你好，这是一个测试</li>
+<li>Four Ciao, Questo è un test</li>
+</ul>
+</body>
+</html>
+'));
     }
 
     /**
-     * Data Provider
-     *
+     * @test
+     * @dataProvider foreignLanguageDataProvider
      */
-    public function foreignLanguageDataProvider() {
-        return <<<HTML
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta charset="utf-8">
-        <style>
-            li {
-                list-style: none;
-            }
-        </style>
-    </head>
+    public function emogrifyHandlesMultipleLanguages($html) {
+        $this->subject->setHtml($html);
+        $this->assertNotEquals(
+            $html,
+            $this->subject->emogrify(),
+            'default encoding, not preserved encoding'
+        );
 
-    <body>
-        <ul>
-            <li>&#8595;&nbsp;One ﻡﺮﺤﺑﺍ، ﻮﻫﺫﺍ ﻩﻭ ﺎﺨﺘﺑﺍﺭ</li>
-            <li>&#8595;&nbsp;&nbsp;Two Esta un una prueba información ¡exclamación! ¿Pregunta?</li>
-            <li>&#8595;&nbsp;&nbsp;Three 你好，这是一个测试</li>
-            <li>&#8595;&nbsp;&nbsp;&nbsp;&nbsp;Four Ciao, Questo è un test</li>
-        </ul>
-    </body>
-</html>
-HTML;
+        $this->subject->preserveEncoding = TRUE;
+        $this->assertEquals(
+            $html,
+            $this->subject->emogrify(),
+            'default encoding, preserved encoding'
+        );
+        $this->subject->setFromEncoding('UTF-8');
+        $this->subject->setToEncoding('UTF-8');
+        $this->assertEquals(
+            $html,
+            $this->subject->emogrify(),
+            'UTF8 in and out'
+        );
+        $this->subject->setFromEncoding('auto');
+        $this->subject->setToEncoding('auto');
+        $this->assertNotEquals(
+            $html,
+            $this->subject->emogrify(),
+            'auto in and out'
+        );
     }
+    /**
+     * @test
+     */
+    public function emogrifyPreservesNonbreakingSpaces() {
+        $html = '|One Two &nbsp;Three &nbsp;&nbsp;Four &nbsp; &nbsp;|';
+        $preservedEncoding = $html;
+        $this->subject->setHtml($html);
+        $this->assertContains(
+            $preservedEncoding,
+            $this->subject->emogrify()
+        );
+
+        $this->subject->preserveEncoding = TRUE;
+
+        $this->assertContains(
+            $preservedEncoding,
+            $this->subject->emogrify(),
+            'Nonbreak spaces are preserved to force browser to render correctly'
+        );
+    }
+
+
+
 
 
 
