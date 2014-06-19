@@ -186,6 +186,7 @@ class Emogrifier {
      */
     public function setFromEncoding($enc) {
         $this->fromEncoding = $enc;
+//TODO use mb_list_encodings() to verify copding is allowed
     }
 
     /**
@@ -410,20 +411,21 @@ class Emogrifier {
 
 
     /**
-     * generateStyleStringFromDeclarationsArrays merges old or existing name/value array with new name/value array
-     * and then generates a string of the combined stye suitible for placing inline.  This becomes the single point
-     * for css string generation allowing for consistent CSS output no matter where the CSS originally came from
+     * This method merges old or existing name/value array with new name/value array
+     * and then generates a string of the combined style suitable for placing inline.
+     * This becomes the single point for CSS string generation allowing for consistent
+     * CSS output no matter where the CSS originally came from.
      * @param array $oldStyles
      * @param array $newStyles
      * @return string
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles) {
-        $combinedArray = array_merge($oldStyles, $newStyles);
+        $combinedStyles = array_merge($oldStyles, $newStyles);
         $style = '';
-        foreach ($combinedArray as $attributeName => $attributeValue) {
+        foreach ($combinedStyles as $attributeName => $attributeValue) {
             $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
         }
-        return $style;
+        return trim($style);
     }
 
 
@@ -640,7 +642,7 @@ class Emogrifier {
      *
      * @see http://plasmasturm.org/log/444/
      *
-     * @param string $cssSelector
+     * @param string $paramCssSelector
      *
      * @return string
      */
