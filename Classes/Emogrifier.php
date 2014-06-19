@@ -17,8 +17,19 @@ class Emogrifier {
     const ENCODING = 'UTF-8';
 
     /**
+     * @var string
+     */
+    const FROM_ENCODING = 'UTF-8';
+
+    /**
+     * @var string
+     */
+
+    const TO_ENCODING = 'HTML-ENTITIES';
+    /**
      * @var integer
      */
+
     const CACHE_KEY_CSS = 0;
 
     /**
@@ -100,6 +111,19 @@ class Emogrifier {
      */
     private $styleAttributesForNodes = array();
 
+
+    /**
+     * @var string
+     */
+    private $fromEncoding = self::FROM_ENCODING;
+
+    /**
+     * @var string
+     */
+    private $toEncoding = self::TO_ENCODING;
+
+
+
     /**
      * This attribute applies to the case where you want to preserve your original text encoding.
      *
@@ -121,9 +145,11 @@ class Emogrifier {
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
-    public function __construct($html = '', $css = '') {
+    public function __construct($html = '', $css = '', $fromEncoding = self::FROM_ENCODING, $toEncoding = self::TO_ENCODING) {
         $this->setHtml($html);
         $this->setCss($css);
+        $this->setFromEncoding($fromEncoding);
+        $this->setToEncoding($toEncoding);
     }
 
     /**
@@ -153,6 +179,40 @@ class Emogrifier {
      */
     public function setCss($css = '') {
         $this->css = $css;
+    }
+
+    /**
+     * If preserveEncoding is true this overrides the default encoding type
+     * to use as the source/original/from when re-encoding.
+     *
+     * This verifies that the encoding type is supported and takes no action
+     * if it is not supported, relying on the default value.
+     * @param string $enc the encoding type to use
+     *
+     * @return void
+     */
+    public function setFromEncoding($enc) {
+        $allowedEncodings = mb_list_encodings();
+        if (!in_array($enc, $allowedEncodings)) {
+            trigger_error('NOTICE: Invalid encoding set for source, used default.', E_USER_NOTICE);
+        }
+        $this->fromEncoding = $enc;
+    }
+
+    /**
+     * If preserveEncoding is true this overrides the default encoding type
+     * to use as the result/output/to when re-encoding.
+     *
+     * @param string $enc the encoding type to use
+     *
+     * @return void
+     */
+    public function setToEncoding($enc) {
+        $allowedEncodings = mb_list_encodings();
+        if (!in_array($enc, $allowedEncodings)) {
+            trigger_error('NOTICE: Invalid encoding set for result, used default.', E_USER_NOTICE);
+        }
+        $this->ToEncoding = $enc;
     }
 
     /**
@@ -355,9 +415,10 @@ class Emogrifier {
         }
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
-
         if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
+            $result = str_replace('&nbsp;', '@nbsp;', $xmlDocument->saveHTML());
+            $result = mb_convert_encoding($result, $this->fromEncoding, $this->toEncoding);
+            return str_replace('@nbsp;', '&nbsp;', $result);
         } else {
             return $xmlDocument->saveHTML();
         }
@@ -539,7 +600,6 @@ class Emogrifier {
         } else {
             $bodyWithoutUnprocessableTags = $this->html;
         }
-
         return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
     }
 
