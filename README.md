@@ -72,16 +72,16 @@ Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally or
 
 Run the following command for a local installation:
 
-    php composer.phar require pelago/emogrifier:*
+    php composer.phar require pelago/emogrifier:@dev
 
 Or for a global installation, run the following command:
 
-    composer require pelago/emogrifier:*
+    composer require pelago/emogrifier:@dev
 
 You can also add follow lines to your `composer.json` and run the `composer update` command:
 
     "require": {
-      "pelago/emogrifier": "*"
+      "pelago/emogrifier": "@dev"
     }
 
 See https://getcomposer.org/ for more information and documentation.
