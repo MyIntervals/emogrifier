@@ -65,12 +65,12 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
 ## Options
 
-There are several options that you can set on the Emogrifier object before 
+There are several options that you can set on the Emogrifier object before
 calling the `emogrify` method:
 
 * `$emogrifier->disableStyleBlocksParsing()` - By default, Emogrifier will grab
   all `<style>` blocks in the HTML and will apply the CSS styles as inline
-  "style" attributes to the HTML. The `<style>` blocks will then be removed 
+  "style" attributes to the HTML. The `<style>` blocks will then be removed
   from the HTML. If you want to disable this functionality so that Emogrifier
   leaves these `<style>` blocks in the HTML and does not parse them, you should
   use this option.
@@ -78,6 +78,9 @@ calling the `emogrify` method:
   preserves all of the "style" attributes on tags in the HTML you pass to it.
   However if you want to discard all existing inline styles in the HTML before
   the CSS is applied, you should use this option.
+* `$emogrifier->disableInvisibleNodeRemoval()` - By default, Emogrifier removes
+  elements from the DOM that have the style attribute `display: none;`.  If
+  you would like to keep invisible elements in the DOM, use this option.
 
 
 ## Installing with Composer
@@ -163,18 +166,18 @@ Those that wish to contribute bug fixes, new features, refactorings and clean-up
 When you contribute, please take the following things into account:
 
 * Please cover all changes with unit tests and make sure that your code does not break any existing tests.
-* To run the existing PHPUnit tests, run the following 
+* To run the existing PHPUnit tests, run the following
   command:
-  
+
       composer install
-  
+
   and then run this command:
-  
+
       vendor/bin/phpunit Tests/
-  
-  If you want to uninstall the development packages that were installed when 
+
+  If you want to uninstall the development packages that were installed when
   you ran `composer install`, you can run this command:
-  
+
       composer install --no-dev
 * Please use the same coding style (PSR-2) as the rest of the code. Indentation is four spaces.
 * Please make your code clean, well-readable and easy to understand.
