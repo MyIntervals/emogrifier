@@ -936,4 +936,44 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
         );
     }
 
+    /**
+     * @test
+     */
+    public function emogrifyRemovesDisplayNoneElements() {
+        $css = 'div.foo { display: none; }';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+
+        $expected = '<div class="bar"></div>';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyPreservesDisplayNoneElements() {
+        $css = 'div.foo { display: none; }';
+        $html = self::HTML5_DOCUMENT_TYPE . self::LF .
+            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+
+        $expected = '<div class="foo" style="display: none;">';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+        $this->subject->setOptions(array(
+            'removeDisplayNone' => FALSE
+        ));
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
 }

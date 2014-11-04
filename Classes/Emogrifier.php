@@ -101,6 +101,11 @@ class Emogrifier {
     private $styleAttributesForNodes = array();
 
     /**
+     * Remove elements from the dom that have display: none set.
+     */
+    private $removeDisplayNone = TRUE;
+
+    /**
      * This attribute applies to the case where you want to preserve your original text encoding.
      *
      * By default, emogrifier translates your text into HTML entities for two reasons:
@@ -121,9 +126,10 @@ class Emogrifier {
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
-    public function __construct($html = '', $css = '') {
+    public function __construct($html = '', $css = '', $options = array()) {
         $this->setHtml($html);
         $this->setCss($css);
+        $this->setOptions($options);
     }
 
     /**
@@ -153,6 +159,19 @@ class Emogrifier {
      */
     public function setCss($css = '') {
         $this->css = $css;
+    }
+
+    /**
+     * Check, validate and set option fields based on user input.
+     *
+     * @param array $options user specified options
+     * 
+     * @return void
+     */
+    public function setOptions($options = array()) {
+        if (array_key_exists('removeDisplayNone', $options)) {
+            $this->removeDisplayNone = $options['removeDisplayNone'];
+        }
     }
 
     /**
@@ -342,14 +361,16 @@ class Emogrifier {
         // We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only supports XPath 1.0,
         // lower-case() isn't available to us. We've thus far only set attributes to lowercase, not attribute values. Consequently, we need
         // to translate() the letters that would be in 'NONE' ("NOE") to lowercase.
-        $nodesWithStyleDisplayNone = $xpath->query('//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]');
-        // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
-        // we don't try to call removeChild on a nonexistent child node
-        if ($nodesWithStyleDisplayNone->length > 0) {
-            /** @var $node \DOMNode */
-            foreach ($nodesWithStyleDisplayNone as $node) {
-                if ($node->parentNode && is_callable(array($node->parentNode,'removeChild'))) {
-                    $node->parentNode->removeChild($node);
+        if ($this->removeDisplayNone) {
+            $nodesWithStyleDisplayNone = $xpath->query('//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]');
+            // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
+            // we don't try to call removeChild on a nonexistent child node
+            if ($nodesWithStyleDisplayNone->length > 0) {
+                /** @var $node \DOMNode */
+                foreach ($nodesWithStyleDisplayNone as $node) {
+                    if ($node->parentNode && is_callable(array($node->parentNode,'removeChild'))) {
+                        $node->parentNode->removeChild($node);
+                    }
                 }
             }
         }
