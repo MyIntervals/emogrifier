@@ -809,8 +809,6 @@ class Emogrifier {
      * of php - so we must decalre each preg_replace_callback it's own function.
      *
      * @return string
-     *
-     * @author Stuart_OB
      */
     private function strtolower_callback(array $matches) {
         return strtolower($matches[0]);
@@ -823,8 +821,6 @@ class Emogrifier {
      * of php - so we must decalre each preg_replace_callback it's own function.
      *
      * @return string
-     *
-     * @author Stuart_OB
      */
     private function splitCssAndMediaQuery_callback (array $matches) {
         $this->media .= $matches[0];
