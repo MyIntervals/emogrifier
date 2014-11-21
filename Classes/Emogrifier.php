@@ -69,6 +69,11 @@ class Emogrifier {
      * @var string
      */
     private $css = '';
+    
+    /**
+     * @var string
+     */
+    private $media = '';
 
     /**
      * @var array<string>
@@ -254,9 +259,7 @@ class Emogrifier {
             foreach ($nodesWithStyleAttributes as $node) {
                 $normalizedOriginalStyle = preg_replace_callback(
                     '/[A-z\\-]+(?=\\:)/S',
-                    function (array $m) {
-                        return strtolower($m[0]);
-                    },
+                    array($this, 'strtolower_callback'),
                     $node->getAttribute('style')
                 );
 
@@ -475,13 +478,11 @@ class Emogrifier {
      * @return array
      */
     private function splitCssAndMediaQuery($css) {
-        $media = '';
-
+        
         $css = preg_replace_callback(
             '#@media\\s+(?:only\\s)?(?:[\\s{\(]|screen|all)\\s?[^{]+{.*}\\s*}\\s*#misU',
-            function($matches) use (&$media) {
-                $media .= $matches[0];
-            }, $css
+            array($this, 'splitCssAndMediaQuery_callback'),
+            $css
         );
 
         // filter the CSS
@@ -503,7 +504,7 @@ class Emogrifier {
         // clean CSS before output
         $css = preg_replace($search, $replace, $css);
 
-        return array('css' => $css, 'media' => $media);
+        return array('css' => $css, 'media' => $this->media);
     }
 
     /**
@@ -603,9 +604,7 @@ class Emogrifier {
     private function translateCssToXpath($paramCssSelector) {
         $cssSelector = ' ' . $paramCssSelector . ' ';
         $cssSelector = preg_replace_callback('/\s+\w+\s+/',
-            function(array $matches) {
-                return strtolower($matches[0]);
-            },
+            array($this, 'strtolower_callback'),
             $cssSelector
         );
         $cssSelector = trim($cssSelector);
@@ -802,4 +801,29 @@ class Emogrifier {
 
         return $properties;
     }
+    
+    /**
+     * Callback function for a preg_replace_callback
+     *
+     * Anonymous functions are not available on older versions
+     * of php - so we must decalre each preg_replace_callback it's own function.
+     *
+     * @return string
+     */
+    private function strtolower_callback(array $matches) {
+        return strtolower($matches[0]);
+    }
+    
+    /**
+     * Callback function for a preg_replace_callback
+     *
+     * Anonymous functions are not available on older versions
+     * of php - so we must decalre each preg_replace_callback it's own function.
+     *
+     * @return string
+     */
+    private function splitCssAndMediaQuery_callback (array $matches) {
+        $this->media .= $matches[0];
+    }
+    
 }
