@@ -71,12 +71,12 @@ class Emogrifier {
     private $css = '';
 
     /**
-     * @var array<string>
+     * @var string[]
      */
     private $unprocessableHtmlTags = array('wbr');
 
     /**
-     * @var array<array>
+     * @var array[]
      */
     private $caches = array(
         self::CACHE_KEY_CSS => array(),
@@ -88,7 +88,7 @@ class Emogrifier {
     /**
      * the visited nodes with the XPath paths as array keys
      *
-     * @var array<\DOMNode>
+     * @var \DOMNode[]
      */
     private $visitedNodes = array();
 
@@ -96,7 +96,7 @@ class Emogrifier {
      * the styles to apply to the nodes with the XPath paths as array keys for the outer array and the attribute names/values
      * as key/value pairs for the inner array
      *
-     * @var array<array><string>
+     * @var array[]
      */
     private $styleAttributesForNodes = array();
 
@@ -369,8 +369,10 @@ class Emogrifier {
      * and then generates a string of the combined style suitable for placing inline.
      * This becomes the single point for CSS string generation allowing for consistent
      * CSS output no matter where the CSS originally came from.
-     * @param array $oldStyles
-     * @param array $newStyles
+     *
+     * @param string[] $oldStyles
+     * @param string[] $newStyles
+     *
      * @return string
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles) {
@@ -386,8 +388,9 @@ class Emogrifier {
     /**
      * Copies the media part from CSS array parts to $xmlDocument.
      *
-     * @param array $cssParts
+     * @param string[] $cssParts
      * @param \DOMDocument $xmlDocument
+     *
      * @return void
      */
     public function copyCssWithMediaToStyleNode(array $cssParts, \DOMDocument $xmlDocument) {
@@ -400,6 +403,7 @@ class Emogrifier {
      * Returns CSS content.
      *
      * @param \DOMXPath $xpath
+     *
      * @return string
      */
     private function getCssFromAllStyleNodes(\DOMXPath $xpath) {
@@ -424,6 +428,7 @@ class Emogrifier {
      *
      * @param \DOMDocument $document
      * @param string $css
+     *
      * @return void
      */
     protected function addStyleElementToDocument(\DOMDocument $document, $css) {
@@ -440,6 +445,7 @@ class Emogrifier {
      * Returns the existing or creates a new head element in $document.
      *
      * @param \DOMDocument $document
+     *
      * @return \DOMNode the head element
      */
     private function getOrCreateHeadElement(\DOMDocument $document) {
@@ -472,7 +478,8 @@ class Emogrifier {
      *   "media" => "@media { h1 {}}"
      *
      * @param string $css
-     * @return array
+     *
+     * @return string[]
      */
     private function splitCssAndMediaQuery($css) {
         $media = '';
@@ -544,8 +551,8 @@ class Emogrifier {
     }
 
     /**
-     * @param array $a
-     * @param array $b
+     * @param string[] $a
+     * @param string[] $b
      *
      * @return integer
      */
@@ -663,7 +670,7 @@ class Emogrifier {
     }
 
     /**
-     * @param array $match
+     * @param string[] $match
      *
      * @return string
      */
@@ -672,7 +679,7 @@ class Emogrifier {
     }
 
     /**
-     * @param array $match
+     * @param string[] $match
      *
      * @return string
      */
@@ -685,7 +692,7 @@ class Emogrifier {
     }
 
     /**
-     * @param array $match
+     * @param string[] $match
      *
      * @return string
      */
@@ -705,7 +712,7 @@ class Emogrifier {
     }
 
     /**
-     * @param array $match
+     * @param string[] $match
      *
      * @return string
      */
@@ -725,7 +732,7 @@ class Emogrifier {
     }
 
     /**
-     * @param array $match
+     * @param string[] $match
      *
      * @return array
      */
@@ -780,7 +787,7 @@ class Emogrifier {
      *
      * @param string $cssDeclarationBlock the CSS declaration block without the curly braces, may be empty
      *
-     * @return array the CSS declarations with the property names as array keys and the property values as array values
+     * @return string[] the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationBlock($cssDeclarationBlock) {
         if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock])) {
