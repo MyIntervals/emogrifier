@@ -426,6 +426,10 @@ class Emogrifier {
     /**
      * Adds a style element with $css to $document.
      *
+     * This method is protected to allow overriding.
+     *
+     * @see https://github.com/jjriv/emogrifier/issues/103
+     *
      * @param \DOMDocument $document
      * @param string $css
      *
