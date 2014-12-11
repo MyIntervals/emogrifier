@@ -140,7 +140,7 @@ class Emogrifier {
      *
      * @return void
      */
-    public function setHtml($html = '') {
+    public function setHtml($html) {
         $this->html = $html;
     }
 
@@ -151,7 +151,7 @@ class Emogrifier {
      *
      * @return void
      */
-    public function setCss($css = '') {
+    public function setCss($css) {
         $this->css = $css;
     }
 
