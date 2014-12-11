@@ -250,7 +250,7 @@ class Emogrifier {
 
         $nodesWithStyleAttributes = $xpath->query('//*[@style]');
         if ($nodesWithStyleAttributes !== FALSE) {
-            /** @var $nodeWithStyleAttribute \DOMNode */
+            /** @var \DOMNode $nodeWithStyleAttribute */
             foreach ($nodesWithStyleAttributes as $node) {
                 $normalizedOriginalStyle = preg_replace_callback(
                     '/[A-z\\-]+(?=\\:)/S',
@@ -317,7 +317,7 @@ class Emogrifier {
             // query the body for the xpath selector
             $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
 
-            /** @var $node \DOMNode */
+            /** @var \DOMNode $node */
             foreach ($nodesMatchingCssSelectors as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
@@ -346,7 +346,7 @@ class Emogrifier {
         // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
         // we don't try to call removeChild on a nonexistent child node
         if ($nodesWithStyleDisplayNone->length > 0) {
-            /** @var $node \DOMNode */
+            /** @var \DOMNode $node */
             foreach ($nodesWithStyleDisplayNone as $node) {
                 if ($node->parentNode && is_callable(array($node->parentNode,'removeChild'))) {
                     $node->parentNode->removeChild($node);
@@ -410,7 +410,7 @@ class Emogrifier {
         }
 
         $css = '';
-        /** @var $styleNode \DOMNode */
+        /** @var \DOMNode $styleNode */
         foreach ($styleNodes as $styleNode) {
             $css .= "\n\n" . $styleNode->nodeValue;
             $styleNode->parentNode->removeChild($styleNode);
