@@ -588,7 +588,7 @@ class Emogrifier {
             $search = array('\\#','\\.','');
 
             foreach ($search as $s) {
-                if (trim($selector == '')) {
+                if (trim($selector) === '') {
                     break;
                 }
                 $number = 0;
@@ -738,11 +738,11 @@ class Emogrifier {
     /**
      * @param string[] $match
      *
-     * @return array
+     * @return int[]
      */
     private function parseNth(array $match) {
-        if (in_array(strtolower($match[2]), array('even','odd'))) {
-            $index = strtolower($match[2]) == 'even' ? 0 : 1;
+        if (in_array(strtolower($match[2]), array('even','odd'), TRUE)) {
+            $index = strtolower($match[2]) === 'even' ? 0 : 1;
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
         } elseif (stripos($match[2], 'n') === FALSE) {
             // if there is a multiplier
@@ -757,11 +757,11 @@ class Emogrifier {
                 $index = 0;
             }
 
-            $multiplier = str_ireplace('n', '', $multipleTerm);
+            $multiplier = (int) str_ireplace('n', '', $multipleTerm);
 
             if (!strlen($multiplier)) {
                 $multiplier = 1;
-            } elseif ($multiplier == 0) {
+            } elseif ($multiplier === 0) {
                 return array(self::INDEX => $index);
             } else {
                 $multiplier = intval($multiplier);
