@@ -310,7 +310,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provide for selectors.
      *
-     * @return array
+     * @return array[]
      */
     public function selectorDataProvider() {
         $styleRule = 'color: red;';
@@ -380,7 +380,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider for emogrifyDropsWhitespaceFromCssDeclarations.
      *
-     * @return array
+     * @return array[]
      */
     public function cssDeclarationWhitespaceDroppingDataProvider() {
         return array(
@@ -421,7 +421,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider for emogrifyFormatsCssDeclarations.
      *
-     * @return array
+     * @return array[]
      */
     public function formattedCssDeclarationDataProvider() {
         return array(
@@ -580,7 +580,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider for things that should be left out when applying the CSS.
      *
-     * @return array<array>
+     * @return array[]
      */
     public function unneededCssThingsDataProvider() {
         return array(
@@ -621,7 +621,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Data provider for media rules.
      *
-     * @return array<array>
+     * @return array[]
      */
     public function mediaRulesDataProvider() {
         return array(
@@ -696,7 +696,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Valid media query which need to be preserved
      *
-     * @return array<array>
+     * @return array[]
      */
     public function validMediaPreserveDataProvider() {
         return array(
@@ -770,7 +770,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     /**
      * Invalid media query which need to be strip
      *
-     * @return array<array>
+     * @return array[]
      */
     public function invalidMediaPreserveDataProvider() {
         return array(
