@@ -86,6 +86,7 @@ You can also add follow lines to your `composer.json` and run the `composer upda
 
 See https://getcomposer.org/ for more information and documentation.
 
+
 ## Supported CSS selectors
 
 Emogrifier currently support the following [CSS selectors](http://www.w3.org/TR/CSS2/selector.html):
@@ -142,7 +143,7 @@ Those that wish to contribute bug fixes, new features, refactorings and clean-up
 When you contribute, please take the following things into account:
 
 * Please cover all changes with unit tests and make sure that your code does not break any existing tests.
-* Please use the same coding style as the rest of the code. Indentation is four spaces.
+* Please use the same coding style (PSR-2) as the rest of the code. Indentation is four spaces.
 * Please make your code clean, well-readable and easy to understand.
 * If you add new methods or fields, please use proper PHPDoc for the new methods/fields.
 * Git commits should have a <= 50 character summary, optionally followed by a blank line

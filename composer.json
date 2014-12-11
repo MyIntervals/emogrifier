@@ -29,8 +29,7 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "1.5.*",
-        "typo3-ci/typo3sniffpool": "dev-master",
+        "squizlabs/php_codesniffer": "~2.0",
         "phpunit/phpunit": "~4.4.0"
     },
     "autoload": {
