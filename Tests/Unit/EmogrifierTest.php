@@ -42,15 +42,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Tear down.
-     *
-     * @return void
-     */
-    protected function tearDown() {
-        unset($this->subject);
-    }
-
-    /**
      * @test
      *
      * @expectedException BadMethodCallException
