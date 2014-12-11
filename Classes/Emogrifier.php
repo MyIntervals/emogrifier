@@ -17,36 +17,36 @@ class Emogrifier {
     const ENCODING = 'UTF-8';
 
     /**
-     * @var integer
+     * @var int
      */
     const CACHE_KEY_CSS = 0;
 
     /**
-     * @var integer
+     * @var int
      */
     const CACHE_KEY_SELECTOR = 1;
 
     /**
-     * @var integer
+     * @var int
      */
     const CACHE_KEY_XPATH = 2;
 
     /**
-     * @var integer
+     * @var int
      */
     const CACHE_KEY_CSS_DECLARATION_BLOCK = 3;
 
     /**
      * for calculating nth-of-type and nth-child selectors
      *
-     * @var integer
+     * @var int
      */
     const INDEX = 0;
 
     /**
      * for calculating nth-of-type and nth-child selectors
      *
-     * @var integer
+     * @var int
      */
     const MULTIPLIER = 1;
 
@@ -111,7 +111,7 @@ class Emogrifier {
      *
      * If you would like to preserve your original encoding, set this attribute to TRUE.
      *
-     * @var boolean
+     * @var bool
      */
     public $preserveEncoding = FALSE;
 
@@ -170,7 +170,7 @@ class Emogrifier {
     /**
      * Clears a single cache by key.
      *
-     * @param integer $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH or CACHE_KEY_CSS_DECLARATION_BLOCK
+     * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH or CACHE_KEY_CSS_DECLARATION_BLOCK
      *
      * @return void
      *
@@ -554,7 +554,7 @@ class Emogrifier {
      * @param string[] $a
      * @param string[] $b
      *
-     * @return integer
+     * @return int
      */
     private function sortBySelectorPrecedence(array $a, array $b) {
         $precedenceA = $this->getCssSelectorPrecedence($a['selector']);
@@ -573,7 +573,7 @@ class Emogrifier {
     /**
      * @param string $selector
      *
-     * @return integer
+     * @return int
      */
     private function getCssSelectorPrecedence($selector) {
         $selectorKey = md5($selector);
