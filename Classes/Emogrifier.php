@@ -746,12 +746,12 @@ class Emogrifier {
             return array(self::MULTIPLIER => 2, self::INDEX => $index);
         } elseif (stripos($match[2], 'n') === FALSE) {
             // if there is a multiplier
-            $index = intval(str_replace(' ', '', $match[2]));
+            $index = (int) str_replace(' ', '', $match[2]);
             return array(self::INDEX => $index);
         } else {
             if (isset($match[3])) {
                 $multipleTerm = str_replace($match[3], '', $match[2]);
-                $index = intval(str_replace(' ', '', $match[3]));
+                $index = (int) str_replace(' ', '', $match[3]);
             } else {
                 $multipleTerm = $match[2];
                 $index = 0;
@@ -764,7 +764,7 @@ class Emogrifier {
             } elseif ($multiplier === 0) {
                 return array(self::INDEX => $index);
             } else {
-                $multiplier = intval($multiplier);
+                $multiplier = (int) $multiplier;
             }
 
             while ($index < 0) {
