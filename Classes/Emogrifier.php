@@ -614,11 +614,8 @@ class Emogrifier
 
         // We want these sorted in ascending order so selectors with lesser precedence get processed first and
         // selectors with greater precedence get sorted last.
-        // The parenthesis around the -1 are necessary to avoid a PHP_CodeSniffer warning about missing spaces around
-        // arithmetic operators.
-        // @see http://forge.typo3.org/issues/55605
-        $precedenceForEquals = ($a['line'] < $b['line'] ? (-1) : 1);
-        $precedenceForNotEquals = ($precedenceA < $precedenceB ? (-1) : 1);
+        $precedenceForEquals = ($a['line'] < $b['line'] ? -1 : 1);
+        $precedenceForNotEquals = ($precedenceA < $precedenceB ? -1 : 1);
         return ($precedenceA === $precedenceB) ? $precedenceForEquals : $precedenceForNotEquals;
     }
 
