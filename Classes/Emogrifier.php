@@ -269,7 +269,7 @@ class Emogrifier
 
         $nodesWithStyleAttributes = $xpath->query('//*[@style]');
         if ($nodesWithStyleAttributes !== false) {
-            /** @var \DOMNode $nodeWithStyleAttribute */
+            /** @var \DOMElement $node */
             foreach ($nodesWithStyleAttributes as $node) {
                 $normalizedOriginalStyle = preg_replace_callback(
                     '/[A-z\\-]+(?=\\:)/S',
@@ -342,7 +342,7 @@ class Emogrifier
             // query the body for the xpath selector
             $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
 
-            /** @var \DOMNode $node */
+            /** @var \DOMElement $node */
             foreach ($nodesMatchingCssSelectors as $node) {
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
