@@ -1,6 +1,8 @@
 <?php
 namespace Pelago\Tests\Unit;
 
+use Pelago\Emogrifier;
+
 /**
  * Test case.
  *
@@ -29,7 +31,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     private $html5DocumentType = '<!DOCTYPE html>';
 
     /**
-     * @var \Pelago\Emogrifier
+     * @var Emogrifier
      */
     private $subject = null;
 
@@ -45,13 +47,13 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->xhtml1StrictDocumentType = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" '
             . '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
 
-        $this->subject = new \Pelago\Emogrifier();
+        $this->subject = new Emogrifier();
     }
 
     /**
      * @test
      *
-     * @expectedException BadMethodCallException
+     * @expectedException \BadMethodCallException
      */
     public function emogrifyForNoDataSetReturnsThrowsException()
     {
@@ -61,7 +63,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @expectedException BadMethodCallException
+     * @expectedException \BadMethodCallException
      */
     public function emogrifyForEmptyHtmlAndEmptyCssThrowsException()
     {
@@ -777,7 +779,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "only screen" media type rule' => array('@media only screen { h1 { color:red; } }'),
             'style in "only all" media type rule' => array('@media only all { h1 { color:red; } }'),
             'style in "screen" media type rule' => array('@media screen { h1 { color:red; } }'),
-            'style in "all" media type rule' => array('@media all { h1 { color:red; } }'),
             'style in media type rule without specification' => array('@media { h1 { color:red; } }'),
         );
     }
@@ -973,9 +974,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAppliesCssWithMixedCaseAttributesInStyleBlock()
     {
         $html = $this->html5DocumentType . self::LF .
-            '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0px;}</style></head>'
+            '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>'
                 . '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>';
-        $expected = '<p style="text-align: center; padding-bottom: 1px; padding-top: 0px;">';
+        $expected = '<p style="text-align: center; padding-bottom: 1px; padding-top: 0;">';
         $this->subject->setHtml($html);
 
         $this->assertContains(
@@ -990,11 +991,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyMergesCssWithMixedCaseAttribute()
     {
-        $css = 'p { margin: 0px; padding-TOP: 0px; PADDING-bottom: 0PX;}';
+        $css = 'p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}';
         $html = $this->html5DocumentType . self::LF .
             '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>'
                 . '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>';
-        $expected = '<p style="text-align: center; margin: 0px; padding-top: 1px; padding-bottom: 3px;">';
+        $expected = '<p style="text-align: center; margin: 0; padding-top: 1px; padding-bottom: 3px;">';
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
