@@ -162,87 +162,6 @@ class Emogrifier
     }
 
     /**
-     * Clears all caches.
-     *
-     * @return void
-     */
-    private function clearAllCaches()
-    {
-        $this->clearCache(self::CACHE_KEY_CSS);
-        $this->clearCache(self::CACHE_KEY_SELECTOR);
-        $this->clearCache(self::CACHE_KEY_XPATH);
-        $this->clearCache(self::CACHE_KEY_CSS_DECLARATION_BLOCK);
-    }
-
-    /**
-     * Clears a single cache by key.
-     *
-     * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH
-     *                 or CACHE_KEY_CSS_DECLARATION_BLOCK
-     *
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function clearCache($key)
-    {
-        $allowedCacheKeys = array(
-            self::CACHE_KEY_CSS,
-            self::CACHE_KEY_SELECTOR,
-            self::CACHE_KEY_XPATH,
-            self::CACHE_KEY_CSS_DECLARATION_BLOCK,
-        );
-        if (!in_array($key, $allowedCacheKeys, true)) {
-            throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
-        }
-
-        $this->caches[$key] = array();
-    }
-
-    /**
-     * Purges the visited nodes.
-     *
-     * @return void
-     */
-    private function purgeVisitedNodes()
-    {
-        $this->visitedNodes = array();
-        $this->styleAttributesForNodes = array();
-    }
-
-    /**
-     * Marks a tag for removal.
-     *
-     * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
-     * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
-     *
-     * Note: The tags will not be removed if they have any content.
-     *
-     * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
-     */
-    public function addUnprocessableHtmlTag($tagName)
-    {
-        $this->unprocessableHtmlTags[] = $tagName;
-    }
-
-    /**
-     * Drops a tag from the removal list.
-     *
-     * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
-     */
-    public function removeUnprocessableHtmlTag($tagName)
-    {
-        $key = array_search($tagName, $this->unprocessableHtmlTags, true);
-        if ($key !== false) {
-            unset($this->unprocessableHtmlTags[$key]);
-        }
-    }
-
-    /**
      * Applies the CSS you submit to the HTML you submit.
      *
      * This method places the CSS inline.
@@ -325,9 +244,9 @@ class Emogrifier
                     }
 
                     $allSelectors[] = array('selector' => trim($selector),
-                                             'attributes' => trim($selectorString[2]),
-                                             // keep track of where it appears in the file, since order is important
-                                             'line' => $key,
+                        'attributes' => trim($selectorString[2]),
+                        // keep track of where it appears in the file, since order is important
+                        'line' => $key,
                     );
                 }
             }
@@ -397,6 +316,86 @@ class Emogrifier
         }
     }
 
+    /**
+     * Clears all caches.
+     *
+     * @return void
+     */
+    private function clearAllCaches()
+    {
+        $this->clearCache(self::CACHE_KEY_CSS);
+        $this->clearCache(self::CACHE_KEY_SELECTOR);
+        $this->clearCache(self::CACHE_KEY_XPATH);
+        $this->clearCache(self::CACHE_KEY_CSS_DECLARATION_BLOCK);
+    }
+
+    /**
+     * Clears a single cache by key.
+     *
+     * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH
+     *                 or CACHE_KEY_CSS_DECLARATION_BLOCK
+     *
+     * @return void
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function clearCache($key)
+    {
+        $allowedCacheKeys = array(
+            self::CACHE_KEY_CSS,
+            self::CACHE_KEY_SELECTOR,
+            self::CACHE_KEY_XPATH,
+            self::CACHE_KEY_CSS_DECLARATION_BLOCK,
+        );
+        if (!in_array($key, $allowedCacheKeys, true)) {
+            throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
+        }
+
+        $this->caches[$key] = array();
+    }
+
+    /**
+     * Purges the visited nodes.
+     *
+     * @return void
+     */
+    private function purgeVisitedNodes()
+    {
+        $this->visitedNodes = array();
+        $this->styleAttributesForNodes = array();
+    }
+
+    /**
+     * Marks a tag for removal.
+     *
+     * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
+     * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
+     *
+     * Note: The tags will not be removed if they have any content.
+     *
+     * @param string $tagName the tag name, e.g., "p"
+     *
+     * @return void
+     */
+    public function addUnprocessableHtmlTag($tagName)
+    {
+        $this->unprocessableHtmlTags[] = $tagName;
+    }
+
+    /**
+     * Drops a tag from the removal list.
+     *
+     * @param string $tagName the tag name, e.g., "p"
+     *
+     * @return void
+     */
+    public function removeUnprocessableHtmlTag($tagName)
+    {
+        $key = array_search($tagName, $this->unprocessableHtmlTags, true);
+        if ($key !== false) {
+            unset($this->unprocessableHtmlTags[$key]);
+        }
+    }
 
     /**
      * This method merges old or existing name/value array with new name/value array
