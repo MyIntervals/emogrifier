@@ -1,10 +1,10 @@
 # Emogrifier
 
-[![Build Status](https://travis-ci.org/jjriv/emogrifier.png?branch=master)](https://travis-ci.org/jjriv/emogrifier)
-[![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.png)](https://packagist.org/packages/pelago/emogrifier)
-[![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.png)](https://packagist.org/packages/pelago/emogrifier)
-[![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.png)](https://packagist.org/packages/pelago/emogrifier)
-[![License](https://poser.pugx.org/pelago/emogrifier/license.png)](https://packagist.org/packages/pelago/emogrifier)
+[![Build Status](https://travis-ci.org/jjriv/emogrifier.svg?branch=master)](https://travis-ci.org/jjriv/emogrifier)
+[![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![License](https://poser.pugx.org/pelago/emogrifier/license.svg)](https://packagist.org/packages/pelago/emogrifier)
 
 _n. e•mog•ri•fi•er [\ē-'mä-grƏ-,fī-Ər\] - a utility for changing completely the nature or appearance of HTML email,
 esp. in a particularly fantastic or bizarre manner_
