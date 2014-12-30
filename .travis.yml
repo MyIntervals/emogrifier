@@ -2,6 +2,10 @@ sudo: false
 
 language: php
 
+cache:
+  directories:
+  - vendor
+
 php:
   - 5.4
   - 5.5
