@@ -1,10 +1,10 @@
 # Emogrifier
 
-[![Build Status](https://travis-ci.org/jjriv/emogrifier.png?branch=master)](https://travis-ci.org/jjriv/emogrifier)
-[![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.png)](https://packagist.org/packages/pelago/emogrifier)
-[![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.png)](https://packagist.org/packages/pelago/emogrifier)
-[![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.png)](https://packagist.org/packages/pelago/emogrifier)
-[![License](https://poser.pugx.org/pelago/emogrifier/license.png)](https://packagist.org/packages/pelago/emogrifier)
+[![Build Status](https://travis-ci.org/jjriv/emogrifier.svg?branch=master)](https://travis-ci.org/jjriv/emogrifier)
+[![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![License](https://poser.pugx.org/pelago/emogrifier/license.svg)](https://packagist.org/packages/pelago/emogrifier)
 
 _n. e•mog•ri•fi•er [\ē-'mä-grƏ-,fī-Ər\] - a utility for changing completely the nature or appearance of HTML email,
 esp. in a particularly fantastic or bizarre manner_
@@ -86,6 +86,7 @@ You can also add follow lines to your `composer.json` and run the `composer upda
 
 See https://getcomposer.org/ for more information and documentation.
 
+
 ## Supported CSS selectors
 
 Emogrifier currently support the following [CSS selectors](http://www.w3.org/TR/CSS2/selector.html):
@@ -142,7 +143,7 @@ Those that wish to contribute bug fixes, new features, refactorings and clean-up
 When you contribute, please take the following things into account:
 
 * Please cover all changes with unit tests and make sure that your code does not break any existing tests.
-* Please use the same coding style as the rest of the code. Indentation is four spaces.
+* Please use the same coding style (PSR-2) as the rest of the code. Indentation is four spaces.
 * Please make your code clean, well-readable and easy to understand.
 * If you add new methods or fields, please use proper PHPDoc for the new methods/fields.
 * Git commits should have a <= 50 character summary, optionally followed by a blank line
