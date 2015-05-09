@@ -90,7 +90,24 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyCanKeepEncodedUmlauts()
+    public function emogrifyCanKeepEncodedUmlautsUsingMethod()
+    {
+        $this->subject->enablePreserveEncoding();
+        $encodedString = 'Küss die Hand, schöne Frau.';
+
+        $html = $this->html5DocumentType . '<html><p>' . $encodedString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $encodedString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyCanKeepEncodedUmlautsUsingProperty()
     {
         $this->subject->preserveEncoding = true;
         $encodedString = 'Küss die Hand, schöne Frau.';
