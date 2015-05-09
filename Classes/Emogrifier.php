@@ -102,6 +102,26 @@ class Emogrifier
     private $styleAttributesForNodes = array();
 
     /**
+     * Determines whether the "style" attributes of tags in the the HTML passed to this class should be preserved.
+     * If set to false, the value of the style attributes will be discarded.
+     *
+     * @var bool
+     */
+    private $isInlineStyleAttributesParsingEnabled = true;
+
+    /**
+     * Determines whether the <style> blocks in the HTML passed to this class should be parsed.
+     *
+     * If set to true, the <style> blocks will be removed from the HTML and their contents will be applied to the HTML
+     * via inline styles.
+     *
+     * If set to false, the <style> blocks will be left as they are in the HTML.
+     *
+     * @var bool
+     */
+    private $isStyleBlocksParsingEnabled = true;
+
+    /**
      * This attribute applies to the case where you want to preserve your original text encoding.
      *
      * By default, emogrifier translates your text into HTML entities for two reasons:
@@ -190,25 +210,11 @@ class Emogrifier
         if ($nodesWithStyleAttributes !== false) {
             /** @var \DOMElement $node */
             foreach ($nodesWithStyleAttributes as $node) {
-                $normalizedOriginalStyle = preg_replace_callback(
-                    '/[A-z\\-]+(?=\\:)/S',
-                    function (array $m) {
-                        return strtolower($m[0]);
-                    },
-                    $node->getAttribute('style')
-                );
-
-                // in order to not overwrite existing style attributes in the HTML, we have to save
-                // the original HTML styles
-                $nodePath = $node->getNodePath();
-                if (!isset($this->styleAttributesForNodes[$nodePath])) {
-                    $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationBlock(
-                        $normalizedOriginalStyle
-                    );
-                    $this->visitedNodes[$nodePath] = $node;
+                if ($this->isInlineStyleAttributesParsingEnabled) {
+                    $this->normalizeStyleAttributes($node);
+                } else {
+                    $node->removeAttribute('style');
                 }
-
-                $node->setAttribute('style', $normalizedOriginalStyle);
             }
         }
 
@@ -216,7 +222,9 @@ class Emogrifier
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         $allCss = $this->css;
 
-        $allCss .= $this->getCssFromAllStyleNodes($xpath);
+        if ($this->isStyleBlocksParsingEnabled) {
+            $allCss .= $this->getCssFromAllStyleNodes($xpath);
+        }
 
         $cssParts = $this->splitCssAndMediaQuery($allCss);
 
@@ -277,14 +285,8 @@ class Emogrifier
             }
         }
 
-        // now iterate through the nodes that contained inline styles in the original HTML
-        foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
-            $node = $this->visitedNodes[$nodePath];
-            $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
-            $node->setAttribute(
-                'style',
-                $this->generateStyleStringFromDeclarationsArrays($currentStyleAttributes, $styleAttributesForNode)
-            );
+        if ($this->isInlineStyleAttributesParsingEnabled) {
+            $this->fillStyleAttributesWithMergedStyles();
         }
 
         // This removes styles from your email that contain display:none.
@@ -313,6 +315,26 @@ class Emogrifier
         } else {
             return $xmlDocument->saveHTML();
         }
+    }
+
+    /**
+     * Disables the parsing of inline styles.
+     *
+     * @return void
+     */
+    public function disableInlineStyleAttributesParsing()
+    {
+        $this->isInlineStyleAttributesParsingEnabled = false;
+    }
+
+    /**
+     * Disables the parsing of <style> blocks.
+     *
+     * @return void
+     */
+    public function disableStyleBlocksParsing()
+    {
+        $this->isStyleBlocksParsingEnabled = false;
     }
 
     /**
@@ -393,6 +415,54 @@ class Emogrifier
         $key = array_search($tagName, $this->unprocessableHtmlTags, true);
         if ($key !== false) {
             unset($this->unprocessableHtmlTags[$key]);
+        }
+    }
+
+    /**
+     * Normalizes the value of the "style" attribute and saves it.
+     *
+     * @param \DOMElement $node
+     *
+     * @return void
+     */
+    private function normalizeStyleAttributes(\DOMElement $node)
+    {
+        $normalizedOriginalStyle = preg_replace_callback(
+            '/[A-z\\-]+(?=\\:)/S',
+            function (array $m) {
+                return strtolower($m[0]);
+            },
+            $node->getAttribute('style')
+        );
+
+        // in order to not overwrite existing style attributes in the HTML, we
+        // have to save the original HTML styles
+        $nodePath = $node->getNodePath();
+        if (!isset($this->styleAttributesForNodes[$nodePath])) {
+            $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationBlock($normalizedOriginalStyle);
+            $this->visitedNodes[$nodePath] = $node;
+        }
+
+        $node->setAttribute('style', $normalizedOriginalStyle);
+    }
+
+    /**
+     * Merges styles from styles attributes and style nodes and applies them to the attribute nodes
+     *
+     * return @void
+     */
+    private function fillStyleAttributesWithMergedStyles()
+    {
+        foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
+            $node = $this->visitedNodes[$nodePath];
+            $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+            $node->setAttribute(
+                'style',
+                $this->generateStyleStringFromDeclarationsArrays(
+                    $currentStyleAttributes,
+                    $styleAttributesForNode
+                )
+            );
         }
     }
 
