@@ -29,8 +29,8 @@
         "ext-mbstring": "*"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "~2.0",
-        "phpunit/phpunit": "~4.4.0"
+        "squizlabs/php_codesniffer": "~2.3.0",
+        "phpunit/phpunit": "~4.6.0"
     },
     "autoload": {
         "psr-4": {
