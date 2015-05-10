@@ -13,7 +13,7 @@ php:
   - hhvm
 
 before_script:
-  - composer install --dev
+  - composer install
   - vendor/bin/phpcs --config-set encoding utf-8
 
 script:

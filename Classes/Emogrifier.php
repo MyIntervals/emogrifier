@@ -237,8 +237,7 @@ class Emogrifier
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
-                    if (
-                        strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)
+                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)
                     ) {
                         continue;
                     }
@@ -529,7 +528,7 @@ class Emogrifier
 
         $css = preg_replace_callback(
             '#@media\\s+(?:only\\s)?(?:[\\s{\\(]|screen|all)\\s?[^{]+{.*}\\s*}\\s*#misU',
-            function($matches) use (&$media) {
+            function ($matches) use (&$media) {
                 $media .= $matches[0];
             },
             $css
@@ -662,7 +661,7 @@ class Emogrifier
         $cssSelector = ' ' . $paramCssSelector . ' ';
         $cssSelector = preg_replace_callback(
             '/\\s+\\w+\\s+/',
-            function(array $matches) {
+            function (array $matches) {
                 return strtolower($matches[0]);
             },
             $cssSelector
