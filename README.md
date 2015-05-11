@@ -130,6 +130,7 @@ The following selectors are not implemented yet:
 * Finally, Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors (but not all of them). It
   does not support pseudo selectors (Emogrifier works by converting CSS selectors to XPath selectors, and pseudo
   selectors cannot be converted accurately).
+* `!important` currently is not supported yet.
 
 
 ## Maintainer
