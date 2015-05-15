@@ -63,6 +63,22 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
+## Options
+
+There are several options that you can set on the Emogrifier object before 
+calling the `emogrify` method:
+
+* `$emogrifier->disableStyleBlocksParsing()` - By default, Emogrifier will grab
+  all `<style>` blocks in the HTML and will apply the CSS styles as inline
+  "style" attributes to the HTML. The `<style>` blocks will then be removed 
+  from the HTML. If you want to disable this functionality so that Emogrifier
+  leaves these `<style>` blocks in the HTML and does not parse them, you should
+  use this option.
+* `$emogrifier->disableInlineStylesParsing()` - By default, Emogrifier
+  preserves all of the "style" attributes on tags in the HTML you pass to it.
+  However if you want to discard all existing inline styles in the HTML before
+  the CSS is applied, you should use this option.
+
 
 ## Installing with Composer
 

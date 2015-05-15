@@ -948,6 +948,79 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function emogrifyWhenDisabledNotAppliesCssFromStyleBlocks()
+    {
+        $styleAttributeValue = 'color: #ccc;';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>';
+        $this->subject->setHtml($html);
+        $this->subject->disableStyleBlocksParsing();
+
+        $this->assertNotContains(
+            '<html style="' . $styleAttributeValue . '">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyWhenStyleBlocksParsingDisabledKeepInlineStyles()
+    {
+        $styleAttributeValue = 'text-align: center;';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head><style type="text/css">p { color: #ccc; }</style></head>'
+                . '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>';
+        $expected = '<p style="' . $styleAttributeValue . '">';
+        $this->subject->setHtml($html);
+        $this->subject->disableStyleBlocksParsing();
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyWhenDisabledNotAppliesCssFromInlineStyles()
+    {
+        $styleAttributeValue = 'color: #ccc;';
+        $html = $this->html5DocumentType . self::LF .
+            '<html style="' . $styleAttributeValue . '"></html>';
+        $expected = '<html></html>';
+        $this->subject->setHtml($html);
+        $this->subject->disableInlineStyleAttributesParsing();
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyWhenInlineStyleAttributesParsingDisabledKeepStyleBlockStyles()
+    {
+        $styleAttributeValue = 'color: #ccc;';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head><style type="text/css">p { ' . $styleAttributeValue . ' }</style></head>'
+                . '<body><p style="text-align: center;">paragraph</p></body></html>';
+        $expected = '<p style="' . $styleAttributeValue . '">';
+        $this->subject->setHtml($html);
+        $this->subject->disableInlineStyleAttributesParsing();
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyAppliesCssWithUpperCaseSelector()
     {
         $html = $this->html5DocumentType . self::LF .
