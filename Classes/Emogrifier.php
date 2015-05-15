@@ -9,6 +9,7 @@ namespace Pelago;
  * @author Cameron Brooks
  * @author Jaime Prado
  * @author Roman Ožana <ozana@omdesign.cz>
+ * @author Erik Pall Hansen
  */
 class Emogrifier
 {
@@ -335,6 +336,16 @@ class Emogrifier
     public function disableStyleBlocksParsing()
     {
         $this->isStyleBlocksParsingEnabled = false;
+    }
+
+    /**
+     * Enables the preservation of encoding
+     *
+     * return @void
+     */
+    public function enablePreserveEncoding()
+    {
+        $this->preserveEncoding = true;
     }
 
     /**

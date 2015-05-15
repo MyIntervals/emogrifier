@@ -27,6 +27,7 @@ styles into inline style attributes in your HTML code.
 - [Usage](#usage)
 - [Installing with Composer](#installing-with-composer)
 - [Usage](#usage)
+- [Options](#options)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
 - [Maintainer](#maintainer)
@@ -78,6 +79,16 @@ calling the `emogrify` method:
   preserves all of the "style" attributes on tags in the HTML you pass to it.
   However if you want to discard all existing inline styles in the HTML before
   the CSS is applied, you should use this option.
+* `$emogrifier->enablePreserveEncoding()` - By default, Emogrifier translates 
+  your text into HTML entities for two reasons: 
+  
+  * Because of client incompatibilities, it is better practice to send out HTML
+    entities.
+  
+  * It translates any illegal XML characters that DOMDocument cannot work with.
+  
+  If you would like to preserve your original encoding, you should use this 
+  option.
 
 
 ## Installing with Composer
