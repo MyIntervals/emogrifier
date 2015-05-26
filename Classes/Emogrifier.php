@@ -6,6 +6,8 @@ namespace Pelago;
  *
  * For more information, please see the README.md file.
  *
+ * @version 0.1.1
+ *
  * @author Cameron Brooks
  * @author Jaime Prado
  * @author Roman Ožana <ozana@omdesign.cz>
