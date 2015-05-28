@@ -1090,4 +1090,64 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyByDefaultRemovesElementsWithDisplayNoneFromExternalCss()
+    {
+        $css = 'div.foo { display: none; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+
+        $expected = '<div class="bar"></div>';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyByDefaultRemovesElementsWithDisplayNoneInStyleAttribute()
+    {
+        $html = $this->html5DocumentType . self::LF .
+            '<html><body><div class="bar"></div><div class="foobar" style="display: none;"></div>'
+                . '</body></html>';
+
+        $expected = '<div class="bar"></div>';
+
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAfterDisableInvisibleNodeRemovalPreservesInvisibleElements()
+    {
+        $css = 'div.foo { display: none; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+
+        $expected = '<div class="foo" style="display: none;">';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+        $this->subject->disableInvisibleNodeRemoval();
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
 }
