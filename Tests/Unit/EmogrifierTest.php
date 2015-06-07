@@ -1151,4 +1151,52 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyForXhtmlDocumentTypeConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag() {
+        $this->subject->setHtml($this->xhtml1StrictDocumentType . '<html><body><br/></body></html>');
+
+        self::assertContains(
+            '<body><br></body>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyForHtml5DocumentTypeKeepsNonXmlSelfClosingTagsAsNonXmlSelfClosing() {
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><br></body></html>');
+
+        self::assertContains(
+            '<body><br></body>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyForHtml5DocumentTypeConvertXmlSelfClosingTagsToNonXmlSelfClosingTag() {
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><br/></body></html>');
+
+        self::assertContains(
+            '<body><br></body>',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAutomaticallyClosesUnclosedTag() {
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></body></html>');
+
+        self::assertContains(
+            '<body><p></p></body>',
+            $this->subject->emogrify()
+        );
+    }
 }

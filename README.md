@@ -146,9 +146,14 @@ The following selectors are not implemented yet:
 * All CSS attributes that apply to a node will be applied, even if they are redundant. For example, if you define a
   font attribute _and_ a font-size attribute, both attributes will be applied to that node (in other words, the more
   specific attribute will not be combined into the more general attribute).
-* There's a good chance you might encounter problems if your HTML is not well formed and valid (DOMDocument might
-  complain). If you get problems like this, consider running your HTML through [Tidy](http://php.net/manual/en/book.tidy.php)
-  before you pass it to Emogrifier.
+* There's a good chance you might encounter problems if your HTML is not
+  well-formed and valid (DOMDocument might complain). If you get problems like
+  this, consider running your HTML through
+  [Tidy](http://php.net/manual/en/book.tidy.php) before you pass it to
+  Emogrifier.
+* Emogrifier automatically converts the provided (X)HTML into HTML, i.e.,
+  self-closing tags will lose their slash. To keep your HTML valid, it is
+  recommended to use HTML5 instead of one of the XHTML variants.
 * Finally, Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors (but not all of them). It
   does not support pseudo selectors (Emogrifier works by converting CSS selectors to XPath selectors, and pseudo
   selectors cannot be converted accurately).
