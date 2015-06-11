@@ -132,22 +132,6 @@ class Emogrifier
     private $shouldKeepInvisibleNodes = true;
 
     /**
-     * This attribute applies to the case where you want to preserve your original text encoding.
-     *
-     * By default, emogrifier translates your text into HTML entities for two reasons:
-     *
-     * 1. Because of client incompatibilities, it is better practice to send out HTML entities
-     *    rather than unicode over email.
-     *
-     * 2. It translates any illegal XML characters that DOMDocument cannot work with.
-     *
-     * If you would like to preserve your original encoding, set this attribute to true.
-     *
-     * @var bool
-     */
-    public $preserveEncoding = false;
-
-    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -305,11 +289,7 @@ class Emogrifier
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
 
-        if ($this->preserveEncoding) {
-            return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
-        } else {
-            return $xmlDocument->saveHTML();
-        }
+        return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
     }
 
     /**

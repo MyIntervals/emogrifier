@@ -76,13 +76,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyByDefaultEncodesUmlautsAsHtmlEntities()
+    public function emogrifyKeepsDollarSignsAndSquareBrackets()
     {
-        $html = $this->html5DocumentType . '<html><p>Einen schönen Gruß!</p></html>';
+        $templateMarker = '$[USER:NAME]$';
+
+        $html = $this->html5DocumentType . '<html><p>' . $templateMarker . '</p></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
-            'Einen sch&ouml;nen Gru&szlig;!',
+        self::assertContains(
+            $templateMarker,
             $this->subject->emogrify()
         );
     }
@@ -90,16 +92,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyCanKeepEncodedUmlauts()
+    public function emogrifyKeepsUtf8Umlauts()
     {
-        $this->subject->preserveEncoding = true;
-        $encodedString = 'Küss die Hand, schöne Frau.';
+        $umlautString = 'Küss die Hand, schöne Frau.';
 
-        $html = $this->html5DocumentType . '<html><p>' . $encodedString . '</p></html>';
+        $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
         $this->assertContains(
-            $encodedString,
+            $umlautString,
             $this->subject->emogrify()
         );
     }
@@ -152,7 +153,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyByDefaultRemovesWbrTag()
+    public function emogrifyByRemovesWbrTag()
     {
         $html = $this->html5DocumentType . self::LF . '<html>foo<wbr/>bar</html>' . self::LF;
         $this->subject->setHtml($html);
