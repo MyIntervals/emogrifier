@@ -76,6 +76,66 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function emogrifyAddsHtmlTagIfNoHtmlTagAndNoHeadTagAreProvided()
+    {
+        $this->subject->setHtml('<p>Hello</p>');
+
+        $emogrifiedHtml = $this->subject->emogrify();
+
+        self::assertContains(
+            '<html>',
+            $emogrifiedHtml
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddsHtmlTagIfHeadTagIsProvidedButNoHtmlTaqg()
+    {
+        $this->subject->setHtml('<head><title>Hello</title></head><p>World</p>');
+
+        $emogrifiedHtml = $this->subject->emogrify();
+
+        self::assertContains(
+            '<html>',
+            $emogrifiedHtml
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddsHeadTagIfNoHtmlTagAndNoHeadTagAreProvided()
+    {
+        $this->subject->setHtml('<p>Hello</p>');
+
+        $emogrifiedHtml = $this->subject->emogrify();
+
+        self::assertContains(
+            '<head>',
+            $emogrifiedHtml
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddsHtmlTagIfHtmlTagIsProvidedButNoHeadTaqg()
+    {
+        $this->subject->setHtml('<html></head><p>World</p></html>');
+
+        $emogrifiedHtml = $this->subject->emogrify();
+
+        self::assertContains(
+            '<head>',
+            $emogrifiedHtml
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyKeepsDollarSignsAndSquareBrackets()
     {
         $templateMarker = '$[USER:NAME]$';
@@ -92,11 +152,43 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepsUtf8Umlauts()
+    public function emogrifyKeepsUtf8UmlautsInHtml5()
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
 
         $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsUtf8UmlautsInXhtml()
+    {
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+
+        $html = $this->xhtml1StrictDocumentType . '<html<p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsUtf8UmlautsInHtml4()
+    {
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+
+        $html = $this->html4TransitionalDocumentType . '<html><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
         self::assertContains(
@@ -109,14 +201,127 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyForHtmlTagOnlyAndEmptyCssReturnsHtmlTagWithHtml4DocumentType()
+    public function emogrifyKeepsHtmlEntities()
+    {
+        $entityString = 'a &amp; b &gt; c';
+
+        $html = $this->html5DocumentType . '<html><p>' . $entityString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $entityString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsHtmlEntitiesInXhtml()
+    {
+        $entityString = 'a &amp; b &gt; c';
+
+        $html = $this->xhtml1StrictDocumentType . '<html<p>' . $entityString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $entityString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsHtmlEntitiesInHtml4()
+    {
+        $entityString = 'a &amp; b &gt; c';
+
+        $html = $this->html4TransitionalDocumentType . '<html><p>' . $entityString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $entityString,
+            $entityString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsUtf8UmlautsWithoutDocumentType()
+    {
+        $umlautString = 'Küss die Hand, schöne Frau.';
+
+        $html = '<html><head></head><p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+   /**
+    * @test
+    */
+    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithoutHead()
+    {
+        $umlautString = 'Küss die Hand, schöne Frau.';
+
+        $html = '<p>' . $umlautString . '</p>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+   /**
+    * @test
+    */
+    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithHtmlAndWithoutHead()
+    {
+        $umlautString = 'Küss die Hand, schöne Frau.';
+
+        $html = '<html><p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+   /**
+    * @test
+    */
+    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithHead()
+    {
+        $umlautString = 'Küss die Hand, schöne Frau.';
+
+        $html = '<head></head><p>' . $umlautString . '</p>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyForHtmlTagOnlyAndEmptyCssByDefaultReturnsHtmlTagWithHtml4DocumentType()
     {
         $html = '<html></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
-        self::assertSame(
-            $this->html4TransitionalDocumentType . self::LF . $html . self::LF,
+        self::assertContains(
+            $this->html4TransitionalDocumentType,
             $this->subject->emogrify()
         );
     }
@@ -126,12 +331,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType()
     {
-        $html = $this->xhtml1StrictDocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->xhtml1StrictDocumentType . self::LF . '<html></html>';
         $this->subject->setHtml($html);
-        $this->subject->setCss('');
 
-        self::assertSame(
-            $html,
+        self::assertContains(
+            $this->xhtml1StrictDocumentType,
             $this->subject->emogrify()
         );
     }
@@ -141,12 +345,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlTagWithXhtml5DocumentTypeKeepsDocumentType()
     {
-        $html = $this->html5DocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html></html>';
         $this->subject->setHtml($html);
-        $this->subject->setCss('');
 
-        self::assertSame(
-            $html,
+        self::assertContains(
+            $this->html5DocumentType,
             $this->subject->emogrify()
         );
     }
@@ -154,9 +357,40 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyByRemovesWbrTag()
+    public function emogrifyAddsContentTypeMetaTag()
     {
-        $html = $this->html5DocumentType . self::LF . '<html>foo<wbr/>bar</html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<p>Hello</p>';
+        $this->subject->setHtml($html);
+
+        self::assertContains(
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyForExistingContentTypeMetaTagNotAddsSecondContentTypeMetaTag()
+    {
+        $html = $this->html5DocumentType . self::LF
+            . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+            . '<body><p>Hello</p></body></html>';
+        $this->subject->setHtml($html);
+
+        $numberOfContentTypeMetaTags = substr_count($this->subject->emogrify(), 'Content-Type');
+        self::assertSame(
+            1,
+            $numberOfContentTypeMetaTags
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyByDefaultRemovesWbrTag()
+    {
+        $html = $this->html5DocumentType . self::LF . '<html>foo<wbr/>bar</html>';
         $this->subject->setHtml($html);
 
         self::assertContains(
@@ -168,11 +402,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addUnprocessableTagCausesTagToBeRemoved()
+    public function addUnprocessableTagCausesGivenEmptyTagToBeRemoved()
     {
         $this->subject->addUnprocessableHtmlTag('p');
 
-        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>';
         $this->subject->setHtml($html);
 
         self::assertNotContains(
@@ -184,11 +418,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addUnprocessableTagNotRemovesTagWithContent()
+    public function addUnprocessableTagNotRemovesGivenTagWithContent()
     {
         $this->subject->addUnprocessableHtmlTag('p');
 
-        $html = $this->html5DocumentType . self::LF . '<html><p>foobar</p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p>foobar</p></html>';
         $this->subject->setHtml($html);
 
         self::assertContains(
@@ -205,7 +439,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addUnprocessableHtmlTag('p');
         $this->subject->removeUnprocessableHtmlTag('p');
 
-        $html = $this->html5DocumentType . self::LF . '<html><p>foo<br/><span>bar</span></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p>foo<br/><span>bar</span></p></html>';
         $this->subject->setHtml($html);
 
         self::assertContains(
@@ -219,7 +453,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanAddMatchingElementRuleOnHtmlElementFromCss()
     {
-        $html = $this->html5DocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html></html>';
         $this->subject->setHtml($html);
         $styleRule = 'color: #000;';
         $this->subject->setCss('html {' . $styleRule . '}');
@@ -235,7 +469,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss()
     {
-        $html = $this->html5DocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('p {color:#000;}');
 
@@ -250,7 +484,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanMatchTwoElements()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p></p><p></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p></p><p></p></html>';
         $this->subject->setHtml($html);
         $styleRule = 'color: #000;';
         $this->subject->setCss('p {' . $styleRule . '}');
@@ -266,7 +500,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanAssignTwoStyleRulesFromSameMatcherToElement()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>';
         $this->subject->setHtml($html);
         $styleRulesIn = 'color:#000; text-align:left;';
         $styleRulesOut = 'color: #000; text-align: left;';
@@ -283,7 +517,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanMatchAttributeOnlySelector()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p hidden="hidden"></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p hidden="hidden"></p></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('[hidden] { color:red; }');
 
@@ -298,7 +532,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanAssignStyleRulesFromTwoIdenticalMatchersToElement()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>';
         $this->subject->setHtml($html);
         $styleRule1 = 'color: #000;';
         $styleRule2 = 'text-align: left;';
@@ -315,7 +549,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanAssignStyleRulesFromTwoDifferentMatchersToElement()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p class="x"></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p class="x"></p></html>';
         $this->subject->setHtml($html);
         $styleRule1 = 'color: #000;';
         $styleRule2 = 'text-align: left;';
@@ -533,7 +767,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanMatchMinifiedCss()
     {
-        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><p></p></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('p{color:blue;}html{color:red;}');
 
@@ -989,14 +1223,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWhenDisabledNotAppliesCssFromInlineStyles()
     {
         $styleAttributeValue = 'color: #ccc;';
-        $html = $this->html5DocumentType . self::LF .
-            '<html style="' . $styleAttributeValue . '"></html>';
-        $expected = '<html></html>';
+        $html = $this->html5DocumentType . self::LF . '<html style="' . $styleAttributeValue . '"></html>';
         $this->subject->setHtml($html);
         $this->subject->disableInlineStyleAttributesParsing();
 
-        self::assertContains(
-            $expected,
+        self::assertNotContains(
+            '<html style',
             $this->subject->emogrify()
         );
     }
