@@ -289,7 +289,7 @@ class Emogrifier
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
 
-        return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
+        return $xmlDocument->saveHTML();
     }
 
     /**
@@ -662,8 +662,7 @@ class Emogrifier
     }
 
     /**
-     * Returns the HTML with the non-ASCII characters converts into HTML entities and the unprocessable
-     * HTML tags removed.
+     * Returns the HTML with the unprocessable HTML tags removed.
      *
      * @return string the unified HTML
      *
@@ -682,7 +681,7 @@ class Emogrifier
             $bodyWithoutUnprocessableTags = $this->html;
         }
 
-        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
+        return $bodyWithoutUnprocessableTags;
     }
 
     /**

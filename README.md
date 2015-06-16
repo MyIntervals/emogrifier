@@ -63,6 +63,10 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
+NB! for Emogrifier to properly deal with entities and UTF-8 characters you need to add Content-Type meta tag with UTF-8 charset declaration to your HTML.
+
+    $html = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><h1>Hello world!</h1></html>';
+
 ## Options
 
 There are several options that you can set on the Emogrifier object before

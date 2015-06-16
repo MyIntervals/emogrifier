@@ -96,7 +96,39 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
 
-        $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
+        $html = $this->html5DocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsUtf8UmlautsXhtml()
+    {
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+
+        $html = $this->xhtml1StrictDocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $this->assertContains(
+            $umlautString,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsUtf8UmlautsHtml4()
+    {
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+
+        $html = $this->html4TransitionalDocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
         $this->assertContains(
