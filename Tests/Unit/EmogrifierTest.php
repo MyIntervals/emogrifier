@@ -114,7 +114,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $html = $this->xhtml1StrictDocumentType . '<html style="padding: 1px;"><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
-echo($this->subject->emogrify());
+
         $this->assertContains(
             $umlautString,
             $this->subject->emogrify()
