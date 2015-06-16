@@ -96,7 +96,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
 
-        $html = $this->html5DocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
+        $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
         $this->assertContains(
@@ -108,13 +108,13 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepsUtf8UmlautsXhtml()
+    public function emogrifyKeepsUtf8UmlautsInXhtml()
     {
-        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber. Also ampersand entity should remain unchanged: &amp;';
 
-        $html = $this->xhtml1StrictDocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
+        $html = $this->xhtml1StrictDocumentType . '<html style="padding: 1px;"><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
-
+echo($this->subject->emogrify());
         $this->assertContains(
             $umlautString,
             $this->subject->emogrify()
@@ -124,11 +124,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepsUtf8UmlautsHtml4()
+    public function emogrifyKeepsUtf8UmlautsInHtml4()
     {
-        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
+        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber. Also ampersand entity should remain unchanged: &amp;';
 
-        $html = $this->html4TransitionalDocumentType . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><p>' . $umlautString . '</p></html>';
+        $html = $this->html4TransitionalDocumentType . '<html><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
         $this->assertContains(
@@ -142,7 +142,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlTagOnlyAndEmptyCssReturnsHtmlTagWithHtml4DocumentType()
     {
-        $html = '<html></html>';
+        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
@@ -157,7 +157,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType()
     {
-        $html = $this->xhtml1StrictDocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->xhtml1StrictDocumentType . self::LF . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head></html>' . self::LF;
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
@@ -172,7 +172,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlTagWithXhtml5DocumentTypeKeepsDocumentType()
     {
-        $html = $this->html5DocumentType . self::LF . '<html></html>' . self::LF;
+        $html = $this->html5DocumentType . self::LF . '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head></html>' . self::LF;
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
@@ -1022,7 +1022,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleAttributeValue = 'color: #ccc;';
         $html = $this->html5DocumentType . self::LF .
             '<html style="' . $styleAttributeValue . '"></html>';
-        $expected = '<html></html>';
+        $expected = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head></html>';
         $this->subject->setHtml($html);
         $this->subject->disableInlineStyleAttributesParsing();
 
