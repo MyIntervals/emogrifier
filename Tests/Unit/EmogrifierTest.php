@@ -1159,7 +1159,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $css = '@media only screen and (max-width: 480px) { body { color: #ffffff } /* This comment should not break CSS */ }';
         $html = $this->html5DocumentType . self::LF .
-            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+            '<html><body></body></html>';
 
         $expected = '@media only screen and (max-width: 480px)';
 
