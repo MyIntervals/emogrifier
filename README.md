@@ -81,6 +81,11 @@ calling the `emogrify` method:
 * `$emogrifier->disableInvisibleNodeRemoval()` - By default, Emogrifier removes
   elements from the DOM that have the style attribute `display: none;`.  If
   you would like to keep invisible elements in the DOM, use this option.
+* `$emogrifier->addAllowedMediaType(string $mediaName)` - By default, Emogrifier
+  will keep only media types `all`, `screen` and `print`. If you want to keep some
+  others then you can use this method to define them.
+* `$emogrifier->removeAllowedMediaType(string $mediaName)` - You can use this method to remove
+  media types that Emogrifier keeps.
 
 
 ## Installing with Composer
