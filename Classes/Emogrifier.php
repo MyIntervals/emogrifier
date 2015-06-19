@@ -644,8 +644,8 @@ class Emogrifier
         $media = '';
         $allowedMediaTypes = '';
 
-        if (count($this->allowedMediaTypes)>0) {
-          $allowedMediaTypes = '|'.implode('|', $this->allowedMediaTypes);
+        if (count($this->allowedMediaTypes) > 0) {
+            $allowedMediaTypes = '|'.implode('|', $this->allowedMediaTypes);
         }
 
         $css = preg_replace_callback(
