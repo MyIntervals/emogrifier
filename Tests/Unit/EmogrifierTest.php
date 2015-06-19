@@ -1151,4 +1151,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyCSSCommentAfterCSSBlockInMediaQueryShouldNotRemoveMediaQueryBlock()
+    {
+        $css = '@media only screen and (max-width: 480px) { body { color: #ffffff } /* This comment should not break CSS */ }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><body><div class="bar"></div><div class="foo"></div></body></html>';
+
+        $expected = '@media only screen and (max-width: 480px)';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+        $this->subject->disableInvisibleNodeRemoval();
+
+        $this->assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
 }

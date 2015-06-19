@@ -611,6 +611,8 @@ class Emogrifier
     {
         $media = '';
 
+        $css = preg_replace('/\\/\\*.*\\*\\//sU', '', $css);
+
         $css = preg_replace_callback(
             '#@media\\s+(?:only\\s)?(?:[\\s{\\(]|screen|all)\\s?[^{]+{.*}\\s*}\\s*#misU',
             function ($matches) use (&$media) {
