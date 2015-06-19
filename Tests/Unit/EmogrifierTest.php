@@ -99,8 +99,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $umlautString,
+            $encodedString,
             $this->subject->emogrify()
         );
     }
@@ -114,7 +115,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
-        $this->assertSame(
+        self::assertSame(
             $this->html4TransitionalDocumentType . self::LF . $html . self::LF,
             $this->subject->emogrify()
         );
@@ -129,7 +130,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
-        $this->assertSame(
+        self::assertSame(
             $html,
             $this->subject->emogrify()
         );
@@ -144,7 +145,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
-        $this->assertSame(
+        self::assertSame(
             $html,
             $this->subject->emogrify()
         );
@@ -158,7 +159,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html>foo<wbr/>bar</html>' . self::LF;
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             'foobar',
             $this->subject->emogrify()
         );
@@ -174,7 +175,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html><p></p></html>' . self::LF;
         $this->subject->setHtml($html);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             '<p>',
             $this->subject->emogrify()
         );
@@ -190,7 +191,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html><p>foobar</p></html>' . self::LF;
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             '<p>',
             $this->subject->emogrify()
         );
@@ -207,7 +208,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html><p>foo<br/><span>bar</span></p></html>' . self::LF;
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             '<p>',
             $this->subject->emogrify()
         );
@@ -223,7 +224,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRule = 'color: #000;';
         $this->subject->setCss('html {' . $styleRule . '}');
 
-        $this->assertContains(
+        self::assertContains(
             '<html style="' . $styleRule . '">',
             $this->subject->emogrify()
         );
@@ -238,7 +239,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('p {color:#000;}');
 
-        $this->assertContains(
+        self::assertContains(
             '<html>',
             $this->subject->emogrify()
         );
@@ -254,7 +255,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRule = 'color: #000;';
         $this->subject->setCss('p {' . $styleRule . '}');
 
-        $this->assertSame(
+        self::assertSame(
             2,
             substr_count($this->subject->emogrify(), '<p style="' . $styleRule . '">')
         );
@@ -271,7 +272,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRulesOut = 'color: #000; text-align: left;';
         $this->subject->setCss('p {' . $styleRulesIn . '}');
 
-        $this->assertContains(
+        self::assertContains(
             '<p style="' . $styleRulesOut . '">',
             $this->subject->emogrify()
         );
@@ -286,7 +287,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('[hidden] { color:red; }');
 
-        $this->assertContains(
+        self::assertContains(
             '<p hidden="hidden" style="color: red;">',
             $this->subject->emogrify()
         );
@@ -303,7 +304,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRule2 = 'text-align: left;';
         $this->subject->setCss('p {' . $styleRule1 . '}  p {' . $styleRule2 . '}');
 
-        $this->assertContains(
+        self::assertContains(
             '<p style="' . $styleRule1 . ' ' . $styleRule2 . '">',
             $this->subject->emogrify()
         );
@@ -320,7 +321,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRule2 = 'text-align: left;';
         $this->subject->setCss('p {' . $styleRule1 . '}  .x {' . $styleRule2 . '}');
 
-        $this->assertContains(
+        self::assertContains(
             '<p class="x" style="' . $styleRule1 . ' ' . $styleRule2 . '">',
             $this->subject->emogrify()
         );
@@ -402,7 +403,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertRegExp(
+        self::assertRegExp(
             $containedHtml,
             $this->subject->emogrify()
         );
@@ -445,7 +446,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             'html style="' . $expectedStyleAttributeContent . '">',
             $this->subject->emogrify()
         );
@@ -487,7 +488,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             'html style="' . $expectedStyleAttributeContent . '">',
             $this->subject->emogrify()
         );
@@ -502,7 +503,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html ' . $styleAttribute . '></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $styleAttribute,
             $this->subject->emogrify()
         );
@@ -521,7 +522,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $css = 'html {' . $cssDeclarations . '}';
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             'style="' . $styleAttributeValue . ' ' . $cssDeclarations . '"',
             $this->subject->emogrify()
         );
@@ -536,7 +537,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('p{color:blue;}html{color:red;}');
 
-        $this->assertContains(
+        self::assertContains(
             '<html style="color: red;">',
             $this->subject->emogrify()
         );
@@ -550,7 +551,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html style="COLOR:#ccc;"></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             'style="color: #ccc;"',
             $this->subject->emogrify()
         );
@@ -567,7 +568,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $cssOut = 'margin: 0 2pX;';
         $this->subject->setCss($cssIn);
 
-        $this->assertContains(
+        self::assertContains(
             'style="' . $cssOut . '"',
             $this->subject->emogrify()
         );
@@ -583,7 +584,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('p {' . $css . '}');
 
-        $this->assertContains(
+        self::assertContains(
             '<p style="' . $css . '">target</p>',
             $this->subject->emogrify()
         );
@@ -599,7 +600,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             . $css . '}</style></head><body><p>target</p></body></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             '<p style="' . $css . '">target</p>',
             $this->subject->emogrify()
         );
@@ -613,7 +614,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . self::LF . '<html><style type="text/css"></style></html>';
         $this->subject->setHtml($html);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             '<style>',
             $this->subject->emogrify()
         );
@@ -656,7 +657,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             $markerNotExpectedInHtml,
             $this->subject->emogrify()
         );
@@ -691,7 +692,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
           $this->subject->setHtml($html);
           $this->subject->setCss($css);
 
-          $this->assertContains(
+          self::assertContains(
               $css,
               $this->subject->emogrify()
           );
@@ -706,7 +707,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
-        $this->assertContains(
+        self::assertContains(
             '<head>',
             $this->subject->emogrify()
         );
@@ -721,7 +722,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
-        $this->assertContains(
+        self::assertContains(
             '<!-- original content -->',
             $this->subject->emogrify()
         );
@@ -736,7 +737,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
-        $this->assertContains(
+        self::assertContains(
             '<style type="text/css">',
             $this->subject->emogrify()
         );
@@ -791,7 +792,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             $css,
             $this->subject->emogrify()
         );
@@ -810,7 +811,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             . '</style><h1></h1></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $css,
             $this->subject->emogrify()
         );
@@ -829,7 +830,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             'style="color:red"',
             $this->subject->emogrify()
         );
@@ -867,7 +868,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             $css,
             $this->subject->emogrify()
         );
@@ -886,7 +887,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             'style="color: red"',
             $this->subject->emogrify()
         );
@@ -905,7 +906,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             . '</style><h1></h1></html>';
         $this->subject->setHtml($html);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             $css,
             $this->subject->emogrify()
         );
@@ -924,7 +925,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             . '</style><h1></h1></html>';
         $this->subject->setHtml($html);
 
-        $this->assertNotContains(
+        self::assertNotContains(
             'style="color: red"',
             $this->subject->emogrify()
         );
@@ -940,7 +941,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             '<html style="' . $styleAttributeValue . '">',
             $this->subject->emogrify()
         );
@@ -957,7 +958,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->disableStyleBlocksParsing();
 
-        $this->assertNotContains(
+        self::assertNotContains(
             '<html style="' . $styleAttributeValue . '">',
             $this->subject->emogrify()
         );
@@ -976,7 +977,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->disableStyleBlocksParsing();
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -994,7 +995,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->disableInlineStyleAttributesParsing();
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1013,7 +1014,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->disableInlineStyleAttributesParsing();
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1029,7 +1030,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $expected = '<p style="color: #ccc;">';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1047,7 +1048,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $expected = '<p style="text-align: center; padding-bottom: 1px; padding-top: 0;">';
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1067,7 +1068,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1086,7 +1087,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1106,7 +1107,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1125,7 +1126,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $this->subject->setHtml($html);
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
@@ -1146,7 +1147,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setCss($css);
         $this->subject->disableInvisibleNodeRemoval();
 
-        $this->assertContains(
+        self::assertContains(
             $expected,
             $this->subject->emogrify()
         );
