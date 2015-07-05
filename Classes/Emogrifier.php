@@ -261,6 +261,10 @@ class Emogrifier
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
             $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
+            // ignore invalid selectors
+            if ($nodesMatchingCssSelectors === false) {
+                continue;
+            }
 
             /** @var \DOMElement $node */
             foreach ($nodesMatchingCssSelectors as $node) {
