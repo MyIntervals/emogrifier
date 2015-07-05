@@ -15,11 +15,6 @@ namespace Pelago;
 class Emogrifier
 {
     /**
-     * @var string
-     */
-    const ENCODING = 'UTF-8';
-
-    /**
      * @var int
      */
     const CACHE_KEY_CSS = 0;
@@ -62,6 +57,11 @@ class Emogrifier
      * @var string
      */
     const CLASS_ATTRIBUTE_MATCHER = '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/';
+
+    /**
+     * @var string
+     */
+    const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
     /**
      * @var string
@@ -289,7 +289,7 @@ class Emogrifier
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
 
-        return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
+        return $xmlDocument->saveHTML();
     }
 
     /**
@@ -649,7 +649,7 @@ class Emogrifier
     private function createXmlDocument()
     {
         $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = self::ENCODING;
+        $xmlDocument->encoding = 'UTF-8';
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
         $libXmlState = libxml_use_internal_errors(true);
@@ -662,8 +662,8 @@ class Emogrifier
     }
 
     /**
-     * Returns the HTML with the non-ASCII characters converts into HTML entities and the unprocessable
-     * HTML tags removed.
+     * Returns the HTML with the unprocessable HTML tags removed and
+     * with added Content-Type meta tag if needed.
      *
      * @return string the unified HTML
      *
@@ -671,18 +671,66 @@ class Emogrifier
      */
     private function getUnifiedHtml()
     {
-        if (!empty($this->unprocessableHtmlTags)) {
-            $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
-            $bodyWithoutUnprocessableTags = preg_replace(
-                '/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i',
-                '',
-                $this->html
-            );
-        } else {
-            $bodyWithoutUnprocessableTags = $this->html;
+        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
+
+        return $this->addContentTypeMetaTag($htmlWithoutUnprocessableTags);
+    }
+
+    /**
+     * Removes the unprocessable tags from $html (if this feature is enabled).
+     *
+     * @param string $html
+     *
+     * @return string the reworked HTML with the unprocessable tags removed
+     */
+    private function removeUnprocessableTags($html)
+    {
+        if (empty($this->unprocessableHtmlTags)) {
+            return $html;
         }
 
-        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
+        $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
+
+        return preg_replace(
+            '/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i',
+            '',
+            $html
+        );
+    }
+
+    /**
+     * Adds a Content-Type meta tag for the charset.
+     *
+     * @param string $html
+     *
+     * @return string the HTML with the meta tag added
+     */
+    private function addContentTypeMetaTag($html)
+    {
+        $hasContentTypeMetaTag = stristr($html, 'Content-Type') !== false;
+        if ($hasContentTypeMetaTag) {
+            return $html;
+
+        }
+
+        // We are trying to insert the meta tag to the right spot in the DOM.
+        // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
+        $hasHeadTag = stripos($html, '<head') !== false;
+        $hasHtmlTag = stripos($html, '<html') !== false;
+
+        if ($hasHeadTag) {
+            $reworkedHtml = preg_replace('/<head(.*?)>/i', '<head$1>' . self::CONTENT_TYPE_META_TAG, $html);
+        } elseif ($hasHtmlTag) {
+            $reworkedHtml = preg_replace(
+                '/<html(.*?)>/i',
+                '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
+                $html
+            );
+        } else {
+            $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
+        }
+
+        return $reworkedHtml;
     }
 
     /**

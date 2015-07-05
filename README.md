@@ -63,6 +63,10 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
+Emogrifier automatically adds a Content-Type meta tag to set the charset for
+the document (if it is not provided).
+
+
 ## Options
 
 There are several options that you can set on the Emogrifier object before
