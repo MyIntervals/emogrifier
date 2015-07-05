@@ -855,6 +855,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function emogrifyIgnoreInvalidSelectors()
+    {
+        $html = $this->html5DocumentType . self::LF . '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>';
+        $this->subject->setHtml($html);
+        $noerrors = true;
+        set_error_handler(function($errno, $errstr) use (&$noerrors) {
+            if ($errstr == 'DOMXPath::query(): Invalid expression') {
+                //Eat this error, see #179
+                return true;
+            }
+            $noerrors = false;
+            return true;
+        });
+        $this->subject->emogrify();
+        restore_error_handler();
+        self::assertTrue(
+            $noerrors
+        );
+    }
+
+    /**
      * Data provider for things that should be left out when applying the CSS.
      *
      * @return array[]
