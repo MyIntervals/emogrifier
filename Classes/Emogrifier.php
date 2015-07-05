@@ -464,7 +464,7 @@ class Emogrifier
     /**
      * Merges styles from styles attributes and style nodes and applies them to the attribute nodes
      *
-     * return @void
+     * @return void
      */
     private function fillStyleAttributesWithMergedStyles()
     {
