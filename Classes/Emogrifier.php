@@ -91,7 +91,7 @@ class Emogrifier
     /**
      * the visited nodes with the XPath paths as array keys
      *
-     * @var \DOMNode[]
+     * @var \DOMElement[]
      */
     private $visitedNodes = array();
 
