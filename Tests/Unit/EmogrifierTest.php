@@ -899,7 +899,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "braille" media type rule' => array('@media braille {p {color: #000;}}', '#000'),
             'style in "embossed" media type rule' => array('@media embossed {p {color: #000;}}', '#000'),
             'style in "handheld" media type rule' => array('@media handheld {p {color: #000;}}', '#000'),
-            'style in "print" media type rule' => array('@media print {p {color: #000;}}', '#000'),
             'style in "projection" media type rule' => array('@media projection {p {color: #000;}}', '#000'),
             'style in "speech" media type rule' => array('@media speech {p {color: #000;}}', '#000'),
             'style in "tty" media type rule' => array('@media tty {p {color: #000;}}', '#000'),
@@ -939,6 +938,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "only screen" media type rule' => array('@media only screen {p {color: #000;}}'),
             'style in media type rule' => array('@media {p {color: #000;}}'),
             'style in "screen" media type rule' => array('@media screen {p {color: #000;}}'),
+            'style in "print" media type rule' => array('@media print {p {color: #000;}}'),
             'style in "all" media type rule' => array('@media all {p {color: #000;}}'),
         );
     }
@@ -960,6 +960,42 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
               $css,
               $this->subject->emogrify()
           );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyRemoveAllowedMediaQueryType()
+    {
+        $css = '@media print { html {} }';
+
+        $html = $this->html5DocumentType . self::LF . '<html></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+        $this->subject->removeAllowedMediaType('print');
+
+        $this->assertNotContains(
+            $css,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAddAllowedMediaQueryType()
+    {
+        $css = '@media braille { html {} }';
+
+        $html = $this->html5DocumentType . self::LF . '<html></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+        $this->subject->addAllowedMediaType('braille');
+
+        $this->assertContains(
+            $css,
+            $this->subject->emogrify()
+        );
     }
 
     /**
@@ -1111,7 +1147,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "braille" type rule' => array('@media braille { h1 { color:red; } }'),
             'style in "embossed" type rule' => array('@media embossed { h1 { color:red; } }'),
             'style in "handheld" type rule' => array('@media handheld { h1 { color:red; } }'),
-            'style in "print" type rule' => array('@media print { h1 { color:red; } }'),
             'style in "projection" type rule' => array('@media projection { h1 { color:red; } }'),
             'style in "speech" type rule' => array('@media speech { h1 { color:red; } }'),
             'style in "tty" type rule' => array('@media tty { h1 { color:red; } }'),
