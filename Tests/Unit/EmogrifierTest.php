@@ -605,6 +605,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => array('span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'),
             'attribute presence selector SPAN[title] not matches element without any attributes'
                 => array('span[title] {' . $styleRule . '} ', '#<span>#'),
+            'attribute value selector [role="button"] matches element with matching attribute value' => array(
+                '[id="html"] {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'
+	          ),
             'attribute value selector SPAN[title] matches element with matching attribute value' => array(
                 'span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ),

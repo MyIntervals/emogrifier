@@ -819,7 +819,7 @@ class Emogrifier
                 // last-child pseudo-selector
                 '/([^\\/]+):last-child/i',
                 // Matches attribute only selector
-                '/^\\[(\\w+)\\]/',
+                '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/',
                 // Matches element with attribute
                 '/(\\w)\\[(\\w+)\\]/',
                 // Matches element with EXACT attribute
