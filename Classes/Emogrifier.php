@@ -15,11 +15,6 @@ namespace Pelago;
 class Emogrifier
 {
     /**
-     * @var string
-     */
-    const ENCODING = 'UTF-8';
-
-    /**
      * @var int
      */
     const CACHE_KEY_CSS = 0;
@@ -130,6 +125,13 @@ class Emogrifier
      * @var bool
      */
     private $shouldKeepInvisibleNodes = true;
+
+    /**
+     * Determines whether Content-Type meta tag with UTF-( charset should be inserted to HTML if it is missing
+     *
+     * @var bool
+     */
+    private $shouldFixMissingCharsetDeclaration = true;
 
     /**
      * The constructor.
@@ -289,7 +291,7 @@ class Emogrifier
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
 
-        return mb_convert_encoding($xmlDocument->saveHTML(), self::ENCODING, 'HTML-ENTITIES');
+        return $xmlDocument->saveHTML();
     }
 
     /**
@@ -320,6 +322,16 @@ class Emogrifier
     public function disableInvisibleNodeRemoval()
     {
         $this->shouldKeepInvisibleNodes = false;
+    }
+
+    /**
+     * Disables the removal of elements with `display: none` properties.
+     *
+     * @return void
+     */
+    public function disableCharsetFix()
+    {
+        $this->shouldFixMissingCharsetDeclaration = false;
     }
 
     /**
@@ -649,7 +661,6 @@ class Emogrifier
     private function createXmlDocument()
     {
         $xmlDocument = new \DOMDocument;
-        $xmlDocument->encoding = self::ENCODING;
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
         $libXmlState = libxml_use_internal_errors(true);
@@ -662,8 +673,8 @@ class Emogrifier
     }
 
     /**
-     * Returns the HTML with the non-ASCII characters converts into HTML entities and the unprocessable
-     * HTML tags removed.
+     * Returns the HTML with the unprocessable HTML tags removed and
+     * with added Content-Type meta tag if needed.
      *
      * @return string the unified HTML
      *
@@ -681,8 +692,22 @@ class Emogrifier
         } else {
             $bodyWithoutUnprocessableTags = $this->html;
         }
+        
+        if ($this->shouldFixMissingCharsetDeclaration) {
+            if (!stristr($bodyWithoutUnprocessableTags, 'Content-Type')) {
 
-        return mb_convert_encoding($bodyWithoutUnprocessableTags, 'HTML-ENTITIES', self::ENCODING);
+                // We are trying to insert the meta tag to the right spot in the DOM as if we just prepend it to the HTML we will lose attributes set to the HTML tag.
+                if (stristr($bodyWithoutUnprocessableTags, '<head')) {
+                    $bodyWithoutUnprocessableTags = preg_replace('/<head(.*?)>/i', '<head$1><meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $bodyWithoutUnprocessableTags);
+                } elseif (stristr($bodyWithoutUnprocessableTags, '<html')) {
+                    $bodyWithoutUnprocessableTags = preg_replace('/<html(.*?)>/i', '<html$1><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>', $bodyWithoutUnprocessableTags);
+                } else {
+                    $bodyWithoutUnprocessableTags = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $bodyWithoutUnprocessableTags;
+                }
+            }
+        }
+
+        return $bodyWithoutUnprocessableTags;
     }
 
     /**

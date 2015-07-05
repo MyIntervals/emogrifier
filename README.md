@@ -63,6 +63,11 @@ After you have set the HTML and CSS, you can call the `emogrify` method to merge
 
     $mergedHtml = $emogrifier->emogrify();
 
+For Emogrifier to properly deal with entities and UTF-8 characters you need to add Content-Type meta tag with UTF-8 charset
+declaration to your HTML. If you don't provide this tag in your HTML then Emogrifier adds it automatically.
+
+    $html = '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8"><h1>Hello world!</h1></html>';
+
 ## Options
 
 There are several options that you can set on the Emogrifier object before
@@ -81,6 +86,9 @@ calling the `emogrify` method:
 * `$emogrifier->disableInvisibleNodeRemoval()` - By default, Emogrifier removes
   elements from the DOM that have the style attribute `display: none;`.  If
   you would like to keep invisible elements in the DOM, use this option.
+* `$emogrifier->disableCharsetFix()` - By default, Emogrifier fixes HTML with
+  missing Content-Type meta tag by inserting the tag with UTF-8 charset declaration
+  to the document. You can disable this functionality if you would like to.
 
 
 ## Installing with Composer
