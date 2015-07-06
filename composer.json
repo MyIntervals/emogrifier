@@ -24,12 +24,6 @@
             "email": "ozana@omdesign.cz"
         }
     ],
-    "config": {
-        "preferred-install": "dist",
-        "github-oauth": {
-            "github.com": "6e9eb0240520b7fb1531eaeaed3a6ecab0bcf8b8"
-        }
-    },
     "require": {
         "php": ">=5.4.0",
         "ext-mbstring": "*"
