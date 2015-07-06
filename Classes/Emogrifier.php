@@ -644,39 +644,29 @@ class Emogrifier
      */
     private function splitCssAndMediaQuery($css)
     {
-        $media = '';
+        $cssWithoutComments = preg_replace('/\\/\\*.*\\*\\//sU', '', $css);
 
         $mediaTypesExpression = '';
         if (!empty($this->allowedMediaTypes)) {
             $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
         }
 
+        $media = '';
         $cssForAllowedMediaTypes = preg_replace_callback(
             '#@media\\s+(?:only\\s)?(?:[\\s{\\(]' . $mediaTypesExpression . ')\\s?[^{]+{.*}\\s*}\\s*#misU',
             function ($matches) use (&$media) {
                 $media .= $matches[0];
             },
-            $css
+            $cssWithoutComments
         );
 
         // filter the CSS
         $search = array(
-            // get rid of css comment code
-            '/\\/\\*.*\\*\\//sU',
-            // strip out any import directives
-            '/^\\s*@import\\s[^;]+;/misU',
-            // strip remains media enclosures
-            '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
+            'import directives' => '/^\\s*@import\\s[^;]+;/misU',
+            'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         );
 
-        $replace = array(
-            '',
-            '',
-            '',
-        );
-
-        // clean CSS before output
-        $cleanedCss = preg_replace($search, $replace, $cssForAllowedMediaTypes);
+        $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
 
         return array('css' => $cleanedCss, 'media' => $media);
     }
