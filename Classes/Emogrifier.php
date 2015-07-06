@@ -79,6 +79,11 @@ class Emogrifier
     private $unprocessableHtmlTags = array('wbr');
 
     /**
+     * @var bool[]
+     */
+    private $allowedMediaTypes = array('all' => true, 'screen' => true, 'print' => true);
+
+    /**
      * @var array[]
      */
     private $caches = array(
@@ -407,6 +412,32 @@ class Emogrifier
         }
     }
 
+    /**
+     * Marks a media query type to keep.
+     *
+     * @param string $mediaName the media type name, e.g., "braille"
+     *
+     * @return void
+     */
+    public function addAllowedMediaType($mediaName)
+    {
+        $this->allowedMediaTypes[$mediaName] = true;
+    }
+
+    /**
+     * Drops a media query type from the allowed list.
+     *
+     * @param string $mediaName the tag name, e.g., "braille"
+     *
+     * @return void
+     */
+    public function removeAllowedMediaType($mediaName)
+    {
+        if (isset($this->allowedMediaTypes[$mediaName])) {
+            unset($this->allowedMediaTypes[$mediaName]);
+        }
+    }
+
      /**
       * This removes styles from your email that contain display:none.
       * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
@@ -615,8 +646,13 @@ class Emogrifier
     {
         $media = '';
 
-        $css = preg_replace_callback(
-            '#@media\\s+(?:only\\s)?(?:[\\s{\\(]|screen|all)\\s?[^{]+{.*}\\s*}\\s*#misU',
+        $mediaTypesExpression = '';
+        if (!empty($this->allowedMediaTypes)) {
+            $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
+        }
+
+        $cssForAllowedMediaTypes = preg_replace_callback(
+            '#@media\\s+(?:only\\s)?(?:[\\s{\\(]' . $mediaTypesExpression . ')\\s?[^{]+{.*}\\s*}\\s*#misU',
             function ($matches) use (&$media) {
                 $media .= $matches[0];
             },
@@ -640,9 +676,9 @@ class Emogrifier
         );
 
         // clean CSS before output
-        $css = preg_replace($search, $replace, $css);
+        $cleanedCss = preg_replace($search, $replace, $cssForAllowedMediaTypes);
 
-        return array('css' => $css, 'media' => $media);
+        return array('css' => $cleanedCss, 'media' => $media);
     }
 
     /**
