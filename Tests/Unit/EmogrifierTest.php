@@ -1453,6 +1453,24 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function emogrifyKeepsCssMediaQueriesWithCssCommentAfterMediaQuery()
+    {
+        $css = '@media only screen and (max-width: 480px) { body { color: #ffffff } /* some comment */ }';
+        $html = $this->html5DocumentType . self::LF . '<html><body></body></html>';
+
+        $expected = '@media only screen and (max-width: 480px)';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyForXhtmlDocumentTypeConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag()
     {
         $this->subject->setHtml($this->xhtml1StrictDocumentType . '<html><body><br/></body></html>');
