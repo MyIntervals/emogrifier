@@ -1519,4 +1519,28 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyExcludeSelector()
+    {
+        $css = 'p { margin: 0; }';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body>' .
+            '<p class="x"></p><p></p></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->addExcludedSelector('p.x');
+
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p class="x"></p>',
+            $html
+        );
+
+        self::assertContains(
+            '<p style="margin: 0;"></p>',
+            $html
+        );
+    }
 }
