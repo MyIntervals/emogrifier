@@ -1519,4 +1519,77 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifyHandleNoImportant()
+    {
+        $css = 'p { margin: 1px; padding: 1px;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; text-align: center;">some content</p></body></html>';
+        $expected = '<p style="margin: 2px; text-align: center; padding: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyHandleImportantStyleTag()
+    {
+        $css = 'p { margin: 1px !important; padding: 1px;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; text-align: center;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important; text-align: center; padding: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyHandleImportantStyleTagCaseInsensitive()
+    {
+        $css = 'p { margin: 1px !ImPorTant; padding: 1px;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; text-align: center;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !ImPorTant; text-align: center; padding: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyHandleImportantStyleTagAndAttribute()
+    {
+        $css = 'p { margin: 1px !important; padding: 1px;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px !important; text-align: center;">some content</p>' .
+            '</body></html>';
+        $expected = '<p style="margin: 2px !important; text-align: center; padding: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
 }

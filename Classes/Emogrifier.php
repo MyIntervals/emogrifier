@@ -438,17 +438,17 @@ class Emogrifier
         }
     }
 
-     /**
-      * This removes styles from your email that contain display:none.
-      * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
-      * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
-      * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
-      * to lowercase.
-      *
-      * @param \DOMXPath $xpath
-      *
-      * @return void
-      */
+    /**
+     * This removes styles from your email that contain display:none.
+     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
+     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
+     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
+     * to lowercase.
+     *
+     * @param \DOMXPath $xpath
+     *
+     * @return void
+     */
     private function removeInvisibleNodes(\DOMXPath $xpath)
     {
         $nodesWithStyleDisplayNone = $xpath->query(
@@ -530,6 +530,13 @@ class Emogrifier
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
         $combinedStyles = array_merge($oldStyles, $newStyles);
+
+        foreach ($oldStyles as $attribute => $expression) {
+            if (isset($newStyles[$attribute]) && strtolower(substr($expression, -10)) === '!important') {
+                $combinedStyles[$attribute] = $expression;
+            }
+        }
+
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
             $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
