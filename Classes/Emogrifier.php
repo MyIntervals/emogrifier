@@ -235,7 +235,7 @@ class Emogrifier
             $allSelectors = array();
             foreach ($matches as $key => $selectorString) {
                 // if there is a blank definition, skip
-                if (!strlen(trim($selectorString[2]))) {
+                if (trim($selectorString[2]) === '') {
                     continue;
                 }
 
@@ -900,7 +900,7 @@ class Emogrifier
      */
     private function matchIdAttributes(array $match)
     {
-        return (strlen($match[1]) ? $match[1] : '*') . '[@id="' . $match[2] . '"]';
+        return ($match[1] !== '' ? $match[1] : '*') . '[@id="' . $match[2] . '"]';
     }
 
     /**
@@ -910,7 +910,7 @@ class Emogrifier
      */
     private function matchClassAttributes(array $match)
     {
-        return (strlen($match[1]) ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
+        return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
             implode(
                 '"," "))][contains(concat(" ",@class," "),concat(" ","',
                 explode('.', substr($match[2], 1))
