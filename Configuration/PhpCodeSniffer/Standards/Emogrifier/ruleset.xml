@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="PPW Coding Standard">
-    <description>This is the coding standard user for the Emogrifier code (without the unit tests).
-        This standard has been tested with to work with PHP_CodeSniffer >= 1.4.5.
+    <description>This is the coding standard used for the Emogrifier code.
+        This standard has been tested with to work with PHP_CodeSniffer >= 2.3.0.
     </description>
 
     <rule ref="PSR2"/>
 
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Generic.Classes.DuplicateClassName"/>
     <rule ref="Generic.CodeAnalysis.EmptyStatement"/>
     <rule ref="Generic.CodeAnalysis.ForLoopShouldBeWhileLoop"/>

@@ -571,51 +571,51 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleRule = 'color: red;';
         $styleAttribute = 'style="' . $styleRule . '"';
 
-        return array(
+        return [
             'universal selector HTML'
-                => array('* {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'),
+                => ['* {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'universal selector BODY'
-                => array('* {' . $styleRule . '} ', '#<body ' . $styleAttribute . '>#'),
+                => ['* {' . $styleRule . '} ', '#<body ' . $styleAttribute . '>#'],
             'universal selector P'
-                => array('* {' . $styleRule . '} ', '#<p[^>]*' . $styleAttribute . '>#'),
+                => ['* {' . $styleRule . '} ', '#<p[^>]*' . $styleAttribute . '>#'],
             'type selector matches first P'
-                => array('p {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'),
+                => ['p {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'type selector matches second P'
-                => array('p {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'),
+                => ['p {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
             'descendant selector P SPAN'
-                => array('p span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'),
+                => ['p span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'descendant selector BODY SPAN'
-                => array('body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'),
+                => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child'
-                => array('p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'),
+                => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector BODY > SPAN not matches grandchild'
-                => array('body > span {' . $styleRule . '} ', '#<span>#'),
-            'adjacent selector P + P not matches first P' => array('p + p {' . $styleRule . '} ', '#<p class="p-1">#'),
+                => ['body > span {' . $styleRule . '} ', '#<span>#'],
+            'adjacent selector P + P not matches first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
             'adjacent selector P + P matches second P'
-                => array('p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'),
+                => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
-                => array('p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'),
-            'ID selector #HTML' => array('#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'),
+                => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'ID selector #HTML' => ['#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'type and ID selector HTML#HTML'
-                => array('html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'),
-            'class selector .P-1' => array('.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'),
+                => ['html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
+            'class selector .P-1' => ['.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'type and class selector P.P-1'
-                => array('p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'),
+                => ['p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] matches element with matching attribute'
-                => array('span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'),
+                => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] not matches element without any attributes'
-                => array('span[title] {' . $styleRule . '} ', '#<span>#'),
-            'attribute value selector [id="html"] matches element with matching attribute value' => array(
+                => ['span[title] {' . $styleRule . '} ', '#<span>#'],
+            'attribute value selector [id="html"] matches element with matching attribute value' => [
                 '[id="html"] {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'
-            ),
-            'attribute value selector SPAN[title] matches element with matching attribute value' => array(
+            ],
+            'attribute value selector SPAN[title] matches element with matching attribute value' => [
                 'span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ),
+            ],
             'attribute value selector SPAN[title] not matches element with other attribute value'
-                => array('span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'),
+                => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] not matches element without any attributes'
-                => array('span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'),
-        );
+                => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
+        ];
     }
 
     /**
@@ -653,16 +653,16 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function cssDeclarationWhitespaceDroppingDataProvider()
     {
-        return array(
-            'no whitespace, trailing semicolon' => array('color:#000;', 'color: #000;'),
-            'no whitespace, no trailing semicolon' => array('color:#000', 'color: #000;'),
-            'space after colon, no trailing semicolon' => array('color: #000', 'color: #000;'),
-            'space before colon, no trailing semicolon' => array('color :#000', 'color: #000;'),
-            'space before property name, no trailing semicolon' => array(' color:#000', 'color: #000;'),
-            'space before trailing semicolon' => array(' color:#000 ;', 'color: #000;'),
-            'space after trailing semicolon' => array(' color:#000; ', 'color: #000;'),
-            'space after property value, no trailing semicolon' => array(' color:#000; ', 'color: #000;'),
-        );
+        return [
+            'no whitespace, trailing semicolon' => ['color:#000;', 'color: #000;'],
+            'no whitespace, no trailing semicolon' => ['color:#000', 'color: #000;'],
+            'space after colon, no trailing semicolon' => ['color: #000', 'color: #000;'],
+            'space before colon, no trailing semicolon' => ['color :#000', 'color: #000;'],
+            'space before property name, no trailing semicolon' => [' color:#000', 'color: #000;'],
+            'space before trailing semicolon' => [' color:#000 ;', 'color: #000;'],
+            'space after trailing semicolon' => [' color:#000; ', 'color: #000;'],
+            'space after property value, no trailing semicolon' => [' color:#000; ', 'color: #000;'],
+        ];
     }
 
     /**
@@ -696,17 +696,17 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function formattedCssDeclarationDataProvider()
     {
-        return array(
-            'one declaration' => array('color: #000;', 'color: #000;'),
-            'one declaration with dash in property name' => array('font-weight: bold;', 'font-weight: bold;'),
-            'one declaration with space in property value' => array('margin: 0 4px;', 'margin: 0 4px;'),
-            'two declarations separated by semicolon' => array('color: #000;width: 3px;', 'color: #000; width: 3px;'),
+        return [
+            'one declaration' => ['color: #000;', 'color: #000;'],
+            'one declaration with dash in property name' => ['font-weight: bold;', 'font-weight: bold;'],
+            'one declaration with space in property value' => ['margin: 0 4px;', 'margin: 0 4px;'],
+            'two declarations separated by semicolon' => ['color: #000;width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon and space'
-                => array('color: #000; width: 3px;', 'color: #000; width: 3px;'),
-            'two declaration separated by semicolon and Linefeed' => array(
+                => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
+            'two declaration separated by semicolon and Linefeed' => [
                 'color: #000;' . self::LF . 'width: 3px;', 'color: #000; width: 3px;'
-            ),
-        );
+            ],
+        ];
     }
 
     /**
@@ -891,19 +891,19 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function unneededCssThingsDataProvider()
     {
-        return array(
-            'CSS comments with one asterisk' => array('p {color: #000;/* black */}', 'black'),
-            'CSS comments with two asterisks' => array('p {color: #000;/** black */}', 'black'),
-            '@import directive' => array('@import "foo.css";', '@import'),
-            'style in "aural" media type rule' => array('@media aural {p {color: #000;}}', '#000'),
-            'style in "braille" media type rule' => array('@media braille {p {color: #000;}}', '#000'),
-            'style in "embossed" media type rule' => array('@media embossed {p {color: #000;}}', '#000'),
-            'style in "handheld" media type rule' => array('@media handheld {p {color: #000;}}', '#000'),
-            'style in "projection" media type rule' => array('@media projection {p {color: #000;}}', '#000'),
-            'style in "speech" media type rule' => array('@media speech {p {color: #000;}}', '#000'),
-            'style in "tty" media type rule' => array('@media tty {p {color: #000;}}', '#000'),
-            'style in "tv" media type rule' => array('@media tv {p {color: #000;}}', '#000'),
-        );
+        return [
+            'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
+            'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
+            '@import directive' => ['@import "foo.css";', '@import'],
+            'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
+            'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
+            'style in "embossed" media type rule' => ['@media embossed {p {color: #000;}}', '#000'],
+            'style in "handheld" media type rule' => ['@media handheld {p {color: #000;}}', '#000'],
+            'style in "projection" media type rule' => ['@media projection {p {color: #000;}}', '#000'],
+            'style in "speech" media type rule' => ['@media speech {p {color: #000;}}', '#000'],
+            'style in "tty" media type rule' => ['@media tty {p {color: #000;}}', '#000'],
+            'style in "tv" media type rule' => ['@media tv {p {color: #000;}}', '#000'],
+        ];
     }
 
     /**
@@ -933,14 +933,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function mediaRulesDataProvider()
     {
-        return array(
-            'style in "only all" media type rule' => array('@media only all {p {color: #000;}}'),
-            'style in "only screen" media type rule' => array('@media only screen {p {color: #000;}}'),
-            'style in media type rule' => array('@media {p {color: #000;}}'),
-            'style in "screen" media type rule' => array('@media screen {p {color: #000;}}'),
-            'style in "print" media type rule' => array('@media print {p {color: #000;}}'),
-            'style in "all" media type rule' => array('@media all {p {color: #000;}}'),
-        );
+        return [
+            'style in "only all" media type rule' => ['@media only all {p {color: #000;}}'],
+            'style in "only screen" media type rule' => ['@media only screen {p {color: #000;}}'],
+            'style in media type rule' => ['@media {p {color: #000;}}'],
+            'style in "screen" media type rule' => ['@media screen {p {color: #000;}}'],
+            'style in "print" media type rule' => ['@media print {p {color: #000;}}'],
+            'style in "all" media type rule' => ['@media all {p {color: #000;}}'],
+        ];
     }
 
     /**
@@ -1050,33 +1050,33 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function validMediaPreserveDataProvider()
     {
-        return array(
-            'style in "only screen and size" media type rule' => array(
+        return [
+            'style in "only screen and size" media type rule' => [
                 '@media only screen and (min-device-width: 320px) and (max-device-width: 480px) '
                     . '{ h1 { color:red; } }'
-            ),
-            'style in "screen size" media type rule' => array(
+            ],
+            'style in "screen size" media type rule' => [
                 '@media screen and (min-device-width: 320px) and (max-device-width: 480px) '
                     . '{ h1 { color:red; } }'
-            ),
-            'style in "only screen and screen size" media type rule' => array(
+            ],
+            'style in "only screen and screen size" media type rule' => [
                 '@media only screen and (min-device-width: 320px) and (max-device-width: 480px) '
                     . '{ h1 { color:red; } }'
-            ),
-            'style in "all and screen size" media type rule' => array(
+            ],
+            'style in "all and screen size" media type rule' => [
                 '@media all and (min-device-width: 320px) and (max-device-width: 480px) '
                     . '{ h1 { color:red; } }'
-            ),
-            'style in "only all and" media type rule' => array(
+            ],
+            'style in "only all and" media type rule' => [
                 '@media only all and (min-device-width: 320px) and (max-device-width: 480px) '
                     . '{ h1 { color:red; } }'
-            ),
-            'style in "all" media type rule' => array('@media all {p {color: #000;}}'),
-            'style in "only screen" media type rule' => array('@media only screen { h1 { color:red; } }'),
-            'style in "only all" media type rule' => array('@media only all { h1 { color:red; } }'),
-            'style in "screen" media type rule' => array('@media screen { h1 { color:red; } }'),
-            'style in media type rule without specification' => array('@media { h1 { color:red; } }'),
-        );
+            ],
+            'style in "all" media type rule' => ['@media all {p {color: #000;}}'],
+            'style in "only screen" media type rule' => ['@media only screen { h1 { color:red; } }'],
+            'style in "only all" media type rule' => ['@media only all { h1 { color:red; } }'],
+            'style in "screen" media type rule' => ['@media screen { h1 { color:red; } }'],
+            'style in media type rule without specification' => ['@media { h1 { color:red; } }'],
+        ];
     }
 
     /**
@@ -1143,15 +1143,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function invalidMediaPreserveDataProvider()
     {
-        return array(
-            'style in "braille" type rule' => array('@media braille { h1 { color:red; } }'),
-            'style in "embossed" type rule' => array('@media embossed { h1 { color:red; } }'),
-            'style in "handheld" type rule' => array('@media handheld { h1 { color:red; } }'),
-            'style in "projection" type rule' => array('@media projection { h1 { color:red; } }'),
-            'style in "speech" type rule' => array('@media speech { h1 { color:red; } }'),
-            'style in "tty" type rule' => array('@media tty { h1 { color:red; } }'),
-            'style in "tv" type rule' => array('@media tv { h1 { color:red; } }'),
-        );
+        return [
+            'style in "braille" type rule' => ['@media braille { h1 { color:red; } }'],
+            'style in "embossed" type rule' => ['@media embossed { h1 { color:red; } }'],
+            'style in "handheld" type rule' => ['@media handheld { h1 { color:red; } }'],
+            'style in "projection" type rule' => ['@media projection { h1 { color:red; } }'],
+            'style in "speech" type rule' => ['@media speech { h1 { color:red; } }'],
+            'style in "tty" type rule' => ['@media tty { h1 { color:red; } }'],
+            'style in "tv" type rule' => ['@media tv { h1 { color:red; } }'],
+        ];
     }
 
     /**
