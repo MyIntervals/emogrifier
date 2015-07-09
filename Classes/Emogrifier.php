@@ -33,6 +33,11 @@ class Emogrifier
      * @var int
      */
     const CACHE_KEY_CSS_DECLARATION_BLOCK = 3;
+    
+    /**
+     * @var int
+     */
+    const CACHE_KEY_COMBINED_STYLES = 4;
 
     /**
      * for calculating nth-of-type and nth-child selectors
@@ -91,6 +96,7 @@ class Emogrifier
         self::CACHE_KEY_SELECTOR => array(),
         self::CACHE_KEY_XPATH => array(),
         self::CACHE_KEY_CSS_DECLARATION_BLOCK => array(),
+        self::CACHE_KEY_COMBINED_STYLES => [],
     );
 
     /**
@@ -530,11 +536,21 @@ class Emogrifier
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
         $combinedStyles = array_merge($oldStyles, $newStyles);
+
+        $cacheKey = serialize($combinedStyles);
+        if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
+            return $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey];
+        }
+
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
             $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
         }
-        return trim($style);
+        $trimmedStyle = substr($style, 0, -1);
+
+        $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
+
+        return $trimmedStyle;
     }
 
 
@@ -1040,7 +1056,7 @@ class Emogrifier
      *         the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationBlock($cssDeclarationBlock)
-    {
+    {                
         if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock])) {
             return $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock];
         }
