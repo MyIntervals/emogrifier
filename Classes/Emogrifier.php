@@ -35,6 +35,11 @@ class Emogrifier
     const CACHE_KEY_CSS_DECLARATION_BLOCK = 3;
 
     /**
+     * @var int
+     */
+    const CACHE_KEY_COMBINED_STYLES = 4;
+
+    /**
      * for calculating nth-of-type and nth-child selectors
      *
      * @var int
@@ -91,6 +96,7 @@ class Emogrifier
         self::CACHE_KEY_SELECTOR => [],
         self::CACHE_KEY_XPATH => [],
         self::CACHE_KEY_CSS_DECLARATION_BLOCK => [],
+        self::CACHE_KEY_COMBINED_STYLES => [],
     ];
 
     /**
@@ -342,6 +348,7 @@ class Emogrifier
         $this->clearCache(self::CACHE_KEY_SELECTOR);
         $this->clearCache(self::CACHE_KEY_XPATH);
         $this->clearCache(self::CACHE_KEY_CSS_DECLARATION_BLOCK);
+        $this->clearCache(self::CACHE_KEY_COMBINED_STYLES);
     }
 
     /**
@@ -361,6 +368,7 @@ class Emogrifier
             self::CACHE_KEY_SELECTOR,
             self::CACHE_KEY_XPATH,
             self::CACHE_KEY_CSS_DECLARATION_BLOCK,
+            self::CACHE_KEY_COMBINED_STYLES,
         ];
         if (!in_array($key, $allowedCacheKeys, true)) {
             throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
@@ -530,11 +538,21 @@ class Emogrifier
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
         $combinedStyles = array_merge($oldStyles, $newStyles);
+
+        $cacheKey = serialize($combinedStyles);
+        if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
+            return $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey];
+        }
+
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
             $style .= (strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ');
         }
-        return trim($style);
+        $trimmedStyle = rtrim($style, ' ');
+
+        $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
+
+        return $trimmedStyle;
     }
 
 
