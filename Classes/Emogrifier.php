@@ -187,7 +187,8 @@ class Emogrifier
     }
 
     /**
-     * Applies the CSS you submit to the HTML you submit.
+     * Applies $this->css to $this->html and returns the HTML with the CSS
+     * applied.
      *
      * This method places the CSS inline.
      *
@@ -202,6 +203,49 @@ class Emogrifier
         }
 
         $xmlDocument = $this->createXmlDocument();
+        $this->process($xmlDocument);
+
+        return $xmlDocument->saveHTML();
+    }
+
+    /**
+     * Applies $this->css to $this->html and returns only the HTML content
+     * within the <body> tag.
+     *
+     * This method places the CSS inline.
+     *
+     * @return string
+     *
+     * @throws \BadMethodCallException
+     */
+    public function emogrifyBodyContent()
+    {
+        if ($this->html === '') {
+            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
+        }
+
+        $xmlDocument = $this->createXmlDocument();
+        $this->process($xmlDocument);
+
+        $innerDocument = new \DOMDocument();
+        foreach ($xmlDocument->documentElement->getElementsByTagName('body')->item(0)->childNodes as $childNode) {
+            $innerDocument->appendChild($innerDocument->importNode($childNode, true));
+        }
+
+        return $innerDocument->saveHTML();
+    }
+
+    /**
+     * Applies $this->css to $xmlDocument.
+     *
+     * This method places the CSS inline.
+     *
+     * @param \DOMDocument $xmlDocument
+     *
+     * @return void
+     */
+    protected function process(\DOMDocument $xmlDocument)
+    {
         $xpath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
 
@@ -303,8 +347,6 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
-
-        return $xmlDocument->saveHTML();
     }
 
     /**

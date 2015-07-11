@@ -75,6 +75,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * @expectedException \BadMethodCallException
+     */
+    public function emogrifyBodyContentForNoDataSetReturnsThrowsException()
+    {
+        $this->subject->emogrifyBodyContent();
+    }
+
+    /**
+     * @test
+     *
+     * @expectedException \BadMethodCallException
+     */
+    public function emogrifyBodyContentForEmptyHtmlAndEmptyCssThrowsException()
+    {
+        $this->subject->setHtml('');
+        $this->subject->setCss('');
+
+        $this->subject->emogrifyBodyContent();
+    }
+
+    /**
+     * @test
      */
     public function emogrifyAddsHtmlTagIfNoHtmlTagAndNoHeadTagAreProvided()
     {
@@ -1517,6 +1540,47 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertContains(
             '<body><p></p></body>',
             $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyReturnsCompleteHtmlDocument()
+    {
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+
+        self::assertSame(
+            $this->html5DocumentType . self::LF .
+            '<html>' . self::LF .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . self::LF .
+            '<body><p></p></body>' . self::LF .
+            '</html>' . self::LF,
+            $this->subject->emogrify()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function emogrifyBodyContentReturnsBodyContentFromHtml()
+    {
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+        self::assertSame(
+            '<p></p>' . self::LF,
+            $this->subject->emogrifyBodyContent()
+        );
+    }
+    
+    /**
+     * @test
+     */
+    public function emogrifyBodyContentReturnsBodyContentFromContent()
+    {
+        $this->subject->setHtml('<p></p>');
+        self::assertSame(
+            '<p></p>' . self::LF,
+            $this->subject->emogrifyBodyContent()
         );
     }
 }
