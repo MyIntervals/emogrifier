@@ -1559,7 +1559,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
-    
+
     /**
      * @test
      */
@@ -1571,7 +1571,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrifyBodyContent()
         );
     }
-    
+
     /**
      * @test
      */
@@ -1581,6 +1581,79 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertSame(
             '<p></p>' . self::LF,
             $this->subject->emogrifyBodyContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInExternalCssOverwritesInlineCss()
+    {
+        $css = 'p { margin: 1px !important; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInExternalCssKeepsInlineCssForOtherAttributes()
+    {
+        $css = 'p { margin: 1px !important; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; text-align: center;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important; text-align: center;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyHandlesImportantStyleTagCaseInsensitive()
+    {
+        $css = 'p { margin: 1px !ImPorTant; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !ImPorTant;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss()
+    {
+        $css = 'p { margin: 1px !important; padding: 1px;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px !important; text-align: center;">some content</p>' .
+            '</body></html>';
+        $expected = '<p style="margin: 2px !important; text-align: center; padding: 1px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
         );
     }
 }
