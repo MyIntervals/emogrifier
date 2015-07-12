@@ -1656,4 +1656,73 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
+
+    /**
+     * @test
+     */
+    public function addExcludedSelectorRemovesMatchingElementsFromEmogrification()
+    {
+        $css = 'p { margin: 0; }';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p class="x"></p></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->addExcludedSelector('p.x');
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p class="x"></p>',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function addExcludedSelectorExcludesMatchingElementEventWithWhitespaceAroundSelector()
+    {
+        $css = 'p { margin: 0; }';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p class="x"></p></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->addExcludedSelector(' p.x ');
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p class="x"></p>',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function addExcludedSelectorKeepsNonMatchingElementsInEmogrification()
+    {
+        $css = 'p { margin: 0; }';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->addExcludedSelector('p.x');
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p style="margin: 0;"></p>',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function removeExcludedSelectorGetsMatchingElementsToBeEmogrifiedAgain()
+    {
+        $css = 'p { margin: 0; }';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p class="x"></p></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->addExcludedSelector('p.x');
+        $this->subject->removeExcludedSelector('p.x');
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p class="x" style="margin: 0;"></p>',
+            $html
+        );
+    }
 }

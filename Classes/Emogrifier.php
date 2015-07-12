@@ -79,6 +79,11 @@ class Emogrifier
     private $css = '';
 
     /**
+     * @var bool[]
+     */
+    private $excludedSelectors = [];
+
+    /**
      * @var string[]
      */
     private $unprocessableHtmlTags = ['wbr'];
@@ -312,6 +317,7 @@ class Emogrifier
 
             $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
         }
+        $excludedNodes = $this->getNodesToExclude($xpath);
 
         foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
             // query the body for the xpath selector
@@ -323,6 +329,10 @@ class Emogrifier
 
             /** @var \DOMElement $node */
             foreach ($nodesMatchingCssSelectors as $node) {
+                if (in_array($node, $excludedNodes, true)) {
+                    continue;
+                }
+
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
@@ -489,6 +499,34 @@ class Emogrifier
     }
 
     /**
+     * Adds a selector to exclude nodes from emogrification.
+     *
+     * Any nodes that match the selector will not have their style altered.
+     *
+     * @param string $selector the selector to exclude, e.g., ".editor"
+     *
+     * @return void
+     */
+    public function addExcludedSelector($selector)
+    {
+        $this->excludedSelectors[$selector] = true;
+    }
+
+    /**
+     * No longer excludes the nodes matching this selector from emogrification.
+     *
+     * @param string $selector the selector to no longer exclude, e.g., ".editor"
+     *
+     * @return void
+     */
+    public function removeExcludedSelector($selector)
+    {
+        if (isset($this->excludedSelectors[$selector])) {
+            unset($this->excludedSelectors[$selector]);
+        }
+    }
+
+    /**
      * This removes styles from your email that contain display:none.
      * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
      * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
@@ -601,7 +639,6 @@ class Emogrifier
 
         return $trimmedStyle;
     }
-
 
     /**
      * Copies the media part from CSS array parts to $xmlDocument.
@@ -1124,5 +1161,24 @@ class Emogrifier
         $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock] = $properties;
 
         return $properties;
+    }
+
+    /**
+     * Find the nodes that are not to be emogrified.
+     *
+     * @param \DOMXPath $xpath
+     *
+     * @return \DOMElement[]
+     */
+    private function getNodesToExclude(\DOMXPath $xpath)
+    {
+        $excludedNodes = [];
+        foreach (array_keys($this->excludedSelectors) as $selectorToExclude) {
+            foreach ($xpath->query($this->translateCssToXpath($selectorToExclude)) as $node) {
+                $excludedNodes[] = $node;
+            }
+        }
+
+        return $excludedNodes;
     }
 }
