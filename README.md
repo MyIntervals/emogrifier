@@ -90,6 +90,8 @@ calling the `emogrify` method:
   some others, you can use this method to define them.
 * `$emogrifier->removeAllowedMediaType(string $mediaName)` - You can use this
   method to remove media types that Emogrifier keeps.
+* `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
+  being affected by emogrification.
 
 
 ## Installing with Composer
