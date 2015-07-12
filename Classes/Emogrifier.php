@@ -488,17 +488,17 @@ class Emogrifier
         }
     }
 
-     /**
-      * This removes styles from your email that contain display:none.
-      * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
-      * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
-      * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
-      * to lowercase.
-      *
-      * @param \DOMXPath $xpath
-      *
-      * @return void
-      */
+    /**
+     * This removes styles from your email that contain display:none.
+     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
+     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
+     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
+     * to lowercase.
+     *
+     * @param \DOMXPath $xpath
+     *
+     * @return void
+     */
     private function removeInvisibleNodes(\DOMXPath $xpath)
     {
         $nodesWithStyleDisplayNone = $xpath->query(
@@ -581,6 +581,12 @@ class Emogrifier
     {
         $combinedStyles = array_merge($oldStyles, $newStyles);
 
+        foreach ($oldStyles as $attributeName => $attributeValue) {
+            if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
+                $combinedStyles[$attributeName] = $attributeValue;
+            }
+        }
+        
         $cacheKey = serialize($combinedStyles);
         if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
             return $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey];

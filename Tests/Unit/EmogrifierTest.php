@@ -1559,7 +1559,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrify()
         );
     }
-    
+
     /**
      * @test
      */
@@ -1571,7 +1571,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $this->subject->emogrifyBodyContent()
         );
     }
-    
+
     /**
      * @test
      */
@@ -1581,6 +1581,114 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertSame(
             '<p></p>' . self::LF,
             $this->subject->emogrifyBodyContent()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInExternalCssOverwritesInlineCss()
+    {
+        $css = 'p { margin: 1px !important;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; ">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInExternalCssDoesNotOverwriteImportantInInlineCss()
+    {
+        $css = 'p { margin: 1px !important;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px !important; ">some content</p></body></html>';
+        $expected = '<p style="margin: 2px !important;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInExternalCssDoesNotChangeOtherCss()
+    {
+        $css = 'p { margin: 1px !important; padding: 1px; }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; padding: 2px;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important; padding: 2px;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function handlesImportantCaseInsensitive()
+    {
+        $css = 'p { margin: 1px !ImPorTant;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px;">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !ImPorTant;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function importantInValueDoesNotChangePriority()
+    {
+        $css = 'p { background-image: url(\'!important.jpg\'); }';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="background-image: url(\'original.jpg\')">some content</p></body></html>';
+        $expected = '<p style="background-image: url(\'original.jpg\');">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function ignoresWhitespaceAfterImportant()
+    {
+        $css = 'p { margin: 1px !important' . self::LF . ' ;}';
+        $html = $this->html5DocumentType . self::LF .
+            '<html><head</head><body><p style="margin: 2px; ">some content</p></body></html>';
+        $expected = '<p style="margin: 1px !important;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
         );
     }
 }
