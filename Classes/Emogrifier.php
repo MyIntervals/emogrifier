@@ -281,45 +281,9 @@ class Emogrifier
         }
 
         $cssParts = $this->splitCssAndMediaQuery($allCss);
-
-        $cssKey = md5($cssParts['css']);
-        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
-            // process the CSS file for selectors and definitions
-            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $cssParts['css'], $matches, PREG_SET_ORDER);
-
-            $allSelectors = [];
-            foreach ($matches as $key => $selectorString) {
-                // if there is a blank definition, skip
-                if (trim($selectorString[2]) === '') {
-                    continue;
-                }
-
-                // else split by commas and duplicate attributes so we can sort by selector precedence
-                $selectors = explode(',', $selectorString[1]);
-                foreach ($selectors as $selector) {
-                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
-                    // only allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)
-                    ) {
-                        continue;
-                    }
-
-                    $allSelectors[] = ['selector' => trim($selector),
-                        'attributes' => trim($selectorString[2]),
-                        // keep track of where it appears in the file, since order is important
-                        'line' => $key,
-                    ];
-                }
-            }
-
-            // now sort the selectors by precedence
-            usort($allSelectors, [$this,'sortBySelectorPrecedence']);
-
-            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
-        }
+        $selectors = $this->parseSelectors($cssParts['css']);
         $excludedNodes = $this->getNodesToExclude($xpath);
-
-        foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
+        foreach ($selectors as $value) {
             // query the body for the xpath selector
             $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
             // ignore invalid selectors
@@ -356,7 +320,54 @@ class Emogrifier
             $this->removeInvisibleNodes($xpath);
         }
 
-        $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
+        $this->copyCssWithMediaToStyleNode($cssParts['media'], $xmlDocument);
+    }
+
+    /**
+     * Parse a list of selectors from a string of css.
+     *
+     * @param string $css a string of raw CSS code
+     *
+     * @return array
+     */
+    private function parseSelectors($css)
+    {
+        $cssKey = md5($css);
+        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
+            // process the CSS file for selectors and definitions
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+
+            $allSelectors = [];
+            foreach ($matches as $key => $selectorString) {
+                // if there is a blank definition, skip
+                if (!strlen(trim($selectorString[2]))) {
+                    continue;
+                }
+
+                // else split by commas and duplicate attributes so we can sort by selector precedence
+                $selectors = explode(',', $selectorString[1]);
+                foreach ($selectors as $selector) {
+                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
+                    // only allow structural pseudo-classes
+                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
+                        continue;
+                    }
+
+                    $allSelectors[] = ['selector' => trim($selector),
+                        'attributes' => trim($selectorString[2]),
+                        // keep track of where it appears in the file, since order is important
+                        'line' => $key,
+                    ];
+                }
+            }
+
+            // now sort the selectors by precedence
+            usort($allSelectors, [$this,'sortBySelectorPrecedence']);
+
+            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
+        }
+
+        return $this->caches[self::CACHE_KEY_CSS][$cssKey];
     }
 
     /**
@@ -643,16 +654,34 @@ class Emogrifier
     /**
      * Copies the media part from CSS array parts to $xmlDocument.
      *
-     * @param string[] $cssParts
-     * @param \DOMDocument $xmlDocument
+     * @param string $mediaCss a string of CSS
+     * @param \DOMDocument $xmlDocument the document to match against
      *
      * @return void
      */
-    public function copyCssWithMediaToStyleNode(array $cssParts, \DOMDocument $xmlDocument)
+    public function copyCssWithMediaToStyleNode($mediaCss, \DOMDocument $xmlDocument)
     {
-        if (isset($cssParts['media']) && $cssParts['media'] !== '') {
-            $this->addStyleElementToDocument($xmlDocument, $cssParts['media']);
+        if ($mediaCss === '') {
+            return;
         }
+
+        $xpath = new \DOMXPath($xmlDocument);
+        $retainedMediaQueries = [];
+        // Split the CSS into individual media queries.
+        preg_match_all('#(?<query>@media[^{]*\{(?<css>(.*?)\})(\s*)\})#', $mediaCss, $mediaQueries);
+        foreach ($mediaQueries['css'] as $key => $mediaQuery) {
+            // Check if any of the selectors inside the media query apply to the
+            // document.
+            $selectors = $this->parseSelectors($mediaQuery);
+            foreach ($selectors as $selector) {
+                $nodesMatchingSelector = $xpath->query($this->translateCssToXpath($selector['selector']));
+                if ($nodesMatchingSelector && $nodesMatchingSelector->length !== 0) {
+                    $retainedMediaQueries[] = $mediaQueries['query'][$key];
+                }
+            }
+        }
+        // Add only the media queries which have relevance for the document.
+        $this->addStyleElementToDocument($xmlDocument, implode('', $retainedMediaQueries));
     }
 
     /**
