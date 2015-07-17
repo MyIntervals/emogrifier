@@ -1008,7 +1008,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function addAllowedMediaTypeKeepsStylesForTheGivenMediaType()
     {
-        $css = '@media braille { html {} }';
+        $css = '@media braille { html { some-property: value; } }';
 
         $html = $this->html5DocumentType . self::LF . '<html></html>';
         $this->subject->setHtml($html);
@@ -1111,7 +1111,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWithValidMediaQueryContainsInnerCss($css)
     {
-        $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1></html>';
+        $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1><p></p></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
@@ -1131,7 +1131,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyForHtmlWithValidMediaQueryContainsInnerCss($css)
     {
         $html = $this->html5DocumentType . PHP_EOL . '<html><style type="text/css">' . $css
-            . '</style><h1></h1></html>';
+            . '</style><h1></h1><p></p></html>';
         $this->subject->setHtml($html);
 
         self::assertContains(
@@ -1641,6 +1641,40 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function irrelevantMediaQueriesAreRemoved()
+    {
+        $uselessQuery = '@media all and (max-width: 500px) { em { color:red; } }';
+        $this->subject->setCss($uselessQuery);
+
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains(
+            $uselessQuery,
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function relevantMediaQueriesAreRetained()
+    {
+        $usefulQuery = '@media all and (max-width: 500px) { p { color:red; } }';
+        $this->subject->setCss($usefulQuery);
+
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            $usefulQuery,
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
     public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss()
     {
         $css = 'p { margin: 1px !important; padding: 1px;}';
@@ -1723,6 +1757,23 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertContains(
             '<p class="x" style="margin: 0;"></p>',
             $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emptyMediaQueriesAreRemoved()
+    {
+        $emptyQuery = '@media all and (max-width: 500px) { }';
+        $this->subject->setCss($emptyQuery);
+
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains(
+            $emptyQuery,
+            $result
         );
     }
 }
