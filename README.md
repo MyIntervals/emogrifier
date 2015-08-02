@@ -71,6 +71,11 @@ merge both:
 Emogrifier automatically adds a Content-Type meta tag to set the charset for
 the document (if it is not provided).
 
+If you would like to get back only the content of the BODY element instead of
+the complete HTML document, you can use the `emogrifyBodyContent` instead:
+
+    $bodyContent = $emogrifier->emogrifyBodyContent();
+
 
 ## Options
 
