@@ -281,47 +281,10 @@ class Emogrifier
         }
 
         $cssParts = $this->splitCssAndMediaQuery($allCss);
-
-        $cssKey = md5($cssParts['css']);
-        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
-            // process the CSS file for selectors and definitions
-            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $cssParts['css'], $matches, PREG_SET_ORDER);
-
-            $allSelectors = [];
-            foreach ($matches as $key => $selectorString) {
-                // if there is a blank definition, skip
-                if (trim($selectorString[2]) === '') {
-                    continue;
-                }
-
-                // else split by commas and duplicate attributes so we can sort by selector precedence
-                $selectors = explode(',', $selectorString[1]);
-                foreach ($selectors as $selector) {
-                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
-                    // only allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)
-                    ) {
-                        continue;
-                    }
-
-                    $allSelectors[] = ['selector' => trim($selector),
-                        'attributes' => trim($selectorString[2]),
-                        // keep track of where it appears in the file, since order is important
-                        'line' => $key,
-                    ];
-                }
-            }
-
-            // now sort the selectors by precedence
-            usort($allSelectors, [$this,'sortBySelectorPrecedence']);
-
-            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
-        }
         $excludedNodes = $this->getNodesToExclude($xpath);
-
-        foreach ($this->caches[self::CACHE_KEY_CSS][$cssKey] as $value) {
+        foreach ($this->parseSelectors($cssParts['css']) as $selector) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($value['selector']));
+            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($selector['selector']));
             // ignore invalid selectors
             if ($nodesMatchingCssSelectors === false) {
                 continue;
@@ -340,7 +303,7 @@ class Emogrifier
                 } else {
                     $oldStyleDeclarations = [];
                 }
-                $newStyleDeclarations = $this->parseCssDeclarationBlock($value['attributes']);
+                $newStyleDeclarations = $this->parseCssDeclarationBlock($selector['attributes']);
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -356,7 +319,54 @@ class Emogrifier
             $this->removeInvisibleNodes($xpath);
         }
 
-        $this->copyCssWithMediaToStyleNode($cssParts, $xmlDocument);
+        $this->copyCssWithMediaToStyleNode($xmlDocument, $xpath, $cssParts['media']);
+    }
+
+    /**
+     * Parses a list of selectors from a string of CSS.
+     *
+     * @param string $css a string of raw CSS code
+     *
+     * @return string[][] an array of string sub-arrays with the keys "selector", "attributes", and "line"
+     */
+    private function parseSelectors($css)
+    {
+        $cssKey = md5($css);
+        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
+            // process the CSS file for selectors and definitions
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+
+            $allSelectors = [];
+            foreach ($matches as $key => $selectorString) {
+                // if there is a blank definition, skip
+                if (!strlen(trim($selectorString[2]))) {
+                    continue;
+                }
+
+                // else split by commas and duplicate attributes so we can sort by selector precedence
+                $selectors = explode(',', $selectorString[1]);
+                foreach ($selectors as $selector) {
+                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
+                    // only allow structural pseudo-classes
+                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
+                        continue;
+                    }
+
+                    $allSelectors[] = [
+                        'selector' => trim($selector),
+                        'attributes' => trim($selectorString[2]),
+                        // keep track of where it appears in the file, since order is important
+                        'line' => $key,
+                    ];
+                }
+            }
+
+            usort($allSelectors, [$this, 'sortBySelectorPrecedence']);
+
+            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
+        }
+
+        return $this->caches[self::CACHE_KEY_CSS][$cssKey];
     }
 
     /**
@@ -641,18 +651,67 @@ class Emogrifier
     }
 
     /**
-     * Copies the media part from CSS array parts to $xmlDocument.
+     * Applies $css to $xmlDocument, limited to the media queries that actually apply to the document.
      *
-     * @param string[] $cssParts
-     * @param \DOMDocument $xmlDocument
+     * @param \DOMDocument $xmlDocument the document to match against
+     * @param \DOMXPath $xpath
+     * @param string $css a string of CSS
      *
      * @return void
      */
-    public function copyCssWithMediaToStyleNode(array $cssParts, \DOMDocument $xmlDocument)
+    public function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xpath, $css)
     {
-        if (isset($cssParts['media']) && $cssParts['media'] !== '') {
-            $this->addStyleElementToDocument($xmlDocument, $cssParts['media']);
+        if ($css === '') {
+            return;
         }
+
+        $mediaQueriesRelevantForDocument = [];
+
+        foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
+            foreach ($this->parseSelectors($mediaQuery['css']) as $selector) {
+                if ($this->existsMatchForCssSelector($xpath, $selector['selector'])) {
+                    $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
+                }
+            }
+        }
+
+        $this->addStyleElementToDocument($xmlDocument, implode($mediaQueriesRelevantForDocument));
+    }
+
+    /**
+     * Extracts the media queries from $css.
+     *
+     * @param string $css
+     *
+     * @return string[][] numeric array with string sub-arrays with the keys "css" and "query"
+     */
+    private function extractMediaQueriesFromCss($css)
+    {
+        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#', $css, $mediaQueries);
+
+        $result = [];
+        foreach (array_keys($mediaQueries['css']) as $key) {
+            $result[] = [
+                'css' => $mediaQueries['css'][$key],
+                'query' => $mediaQueries['query'][$key],
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Checks whether there is at least one matching element for $cssSelector.
+     *
+     * @param \DOMXPath $xpath
+     * @param string $cssSelector
+     *
+     * @return bool
+     */
+    private function existsMatchForCssSelector(\DOMXPath $xpath, $cssSelector)
+    {
+        $nodesMatchingSelector = $xpath->query($this->translateCssToXpath($cssSelector));
+
+        return $nodesMatchingSelector !== false && $nodesMatchingSelector->length !== 0;
     }
 
     /**
