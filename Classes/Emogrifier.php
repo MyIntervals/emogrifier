@@ -659,7 +659,7 @@ class Emogrifier
      *
      * @return void
      */
-    public function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xpath, $css)
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xpath, $css)
     {
         if ($css === '') {
             return;
