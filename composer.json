@@ -30,6 +30,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.3.0",
+        "typo3-ci/typo3sniffpool": "~2.1.0",
         "phpunit/phpunit": "~4.7.0"
     },
     "autoload": {
