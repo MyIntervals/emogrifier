@@ -1085,28 +1085,30 @@ class Emogrifier
      */
     private function translateNthChild(array $match)
     {
-        $result = $this->parseNth($match);
+        $parseResult = $this->parseNth($match);
 
-        if (isset($result[self::MULTIPLIER])) {
-            if ($result[self::MULTIPLIER] < 0) {
-                $result[self::MULTIPLIER] = abs($result[self::MULTIPLIER]);
-                return sprintf(
+        if (isset($parseResult[self::MULTIPLIER])) {
+            if ($parseResult[self::MULTIPLIER] < 0) {
+                $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
+                $xPathExpression = sprintf(
                     '*[(last() - position()) mod %u = %u]/self::%s',
-                    $result[self::MULTIPLIER],
-                    $result[self::INDEX],
+                    $parseResult[self::MULTIPLIER],
+                    $parseResult[self::INDEX],
                     $match[1]
                 );
             } else {
-                return sprintf(
+                $xPathExpression = sprintf(
                     '*[position() mod %u = %u]/self::%s',
-                    $result[self::MULTIPLIER],
-                    $result[self::INDEX],
+                    $parseResult[self::MULTIPLIER],
+                    $parseResult[self::INDEX],
                     $match[1]
                 );
             }
         } else {
-            return sprintf('*[%u]/self::%s', $result[self::INDEX], $match[1]);
+            $xPathExpression = sprintf('*[%u]/self::%s', $parseResult[self::INDEX], $match[1]);
         }
+
+        return $xPathExpression;
     }
 
     /**
@@ -1116,28 +1118,30 @@ class Emogrifier
      */
     private function translateNthOfType(array $match)
     {
-        $result = $this->parseNth($match);
+        $parseResult = $this->parseNth($match);
 
-        if (isset($result[self::MULTIPLIER])) {
-            if ($result[self::MULTIPLIER] < 0) {
-                $result[self::MULTIPLIER] = abs($result[self::MULTIPLIER]);
-                return sprintf(
+        if (isset($parseResult[self::MULTIPLIER])) {
+            if ($parseResult[self::MULTIPLIER] < 0) {
+                $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
+                $xPathExpression = sprintf(
                     '%s[(last() - position()) mod %u = %u]',
                     $match[1],
-                    $result[self::MULTIPLIER],
-                    $result[self::INDEX]
+                    $parseResult[self::MULTIPLIER],
+                    $parseResult[self::INDEX]
                 );
             } else {
-                return sprintf(
+                $xPathExpression = sprintf(
                     '%s[position() mod %u = %u]',
                     $match[1],
-                    $result[self::MULTIPLIER],
-                    $result[self::INDEX]
+                    $parseResult[self::MULTIPLIER],
+                    $parseResult[self::INDEX]
                 );
             }
         } else {
-            return sprintf('%s[%u]', $match[1], $result[self::INDEX]);
+            $xPathExpression = sprintf('%s[%u]', $match[1], $parseResult[self::INDEX]);
         }
+
+        return $xPathExpression;
     }
 
     /**
@@ -1149,11 +1153,11 @@ class Emogrifier
     {
         if (in_array(strtolower($match[2]), ['even','odd'], true)) {
             $index = strtolower($match[2]) === 'even' ? 0 : 1;
-            return [self::MULTIPLIER => 2, self::INDEX => $index];
+            $result = [self::MULTIPLIER => 2, self::INDEX => $index];
         } elseif (stripos($match[2], 'n') === false) {
             // if there is a multiplier
             $index = (int) str_replace(' ', '', $match[2]);
-            return [self::INDEX => $index];
+            $result = [self::INDEX => $index];
         } else {
             if (isset($match[3])) {
                 $multipleTerm = str_replace($match[3], '', $match[2]);
@@ -1177,8 +1181,10 @@ class Emogrifier
                 $index += abs($multiplier);
             }
 
-            return [self::MULTIPLIER => $multiplier, self::INDEX => $index];
+            $result = [self::MULTIPLIER => $multiplier, self::INDEX => $index];
         }
+
+        return $result;
     }
 
     /**
