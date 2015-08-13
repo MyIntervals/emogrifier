@@ -13,11 +13,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    const LF = "\n";
-
-    /**
-     * @var string
-     */
     private $html4TransitionalDocumentType = '';
 
     /**
@@ -727,7 +722,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'two declarations separated by semicolon and space'
                 => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declaration separated by semicolon and Linefeed' => [
-                'color: #000;' . self::LF . 'width: 3px;', 'color: #000; width: 3px;'
+                'color: #000;' . PHP_EOL . 'width: 3px;', 'color: #000; width: 3px;'
             ],
         ];
     }
@@ -1543,11 +1538,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
 
         self::assertSame(
-            $this->html5DocumentType . self::LF .
-            '<html>' . self::LF .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . self::LF .
-            '<body><p></p></body>' . self::LF .
-            '</html>' . self::LF,
+            $this->html5DocumentType . PHP_EOL .
+            '<html>' . PHP_EOL .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . PHP_EOL .
+            '<body><p></p></body>' . PHP_EOL .
+            '</html>' . PHP_EOL,
             $this->subject->emogrify()
         );
     }
@@ -1559,7 +1554,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
         self::assertSame(
-            '<p></p>' . self::LF,
+            '<p></p>' . PHP_EOL,
             $this->subject->emogrifyBodyContent()
         );
     }
@@ -1571,7 +1566,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->setHtml('<p></p>');
         self::assertSame(
-            '<p></p>' . self::LF,
+            '<p></p>' . PHP_EOL,
             $this->subject->emogrifyBodyContent()
         );
     }
