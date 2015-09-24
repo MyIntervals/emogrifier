@@ -1763,4 +1763,191 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $result
         );
     }
+
+    /**
+     * @test
+     */
+    public function multiLineMediaQuery()
+    {
+        $mediaQuery = "@media all and (max-width: 500px) {\r\n" .
+                ".medium {font-size:18px;}\r\n" .
+                ".small {font-size:14px;}\r\n" .
+                '}';
+        $this->subject->setCss($mediaQuery);
+
+        $this->subject->setHtml($this->html5DocumentType . '<html><body>' .
+                '<p class="medium">medium</p>' .
+                '<p class="small">small</p>' .
+                '</body></html>');
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            $mediaQuery,
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapBackgroundColor2BgColor()
+    {
+        $css = 'body {background-color: red;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body bgcolor="red" style="background-color: red;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapBackgroundNot2BgColor()
+    {
+        $css = 'body {background: url(bg.png) top;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body style="background: url(bg.png) top;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapBackground2BgColor()
+    {
+        $css = 'body {background: red top;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body bgcolor="red" style="background: red top;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapWidthHeight2WidthHeight()
+    {
+        $css = 'body {width: 100%; height: 200px;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body width="100%" height="200" style="width: 100%; height: 200px;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapMarginAuto2AlignCenter()
+    {
+        $css = '.logo {margin: 0 auto;}';
+        $this->subject->setHtml($this->html5DocumentType .
+                '<html><body><img src="logo.png" class="logo"></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<img src="logo.png" class="logo" align="center" style="margin: 0 auto;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapTextAlign2Align()
+    {
+        $css = '.mid {text-align: center;} .plain {text-align: interit;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body>' .
+                '<p class="mid">mid</p>' .
+                '<p class="plain">plain</p>' .
+                '</body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p class="mid" align="center" style="text-align: center;">mid</p>',
+            $html
+        );
+        self::assertContains(
+            '<p class="plain" style="text-align: interit;">plain</p>',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapFloatRight2AlignCenter()
+    {
+        $css = '.logo {float: right;}';
+        $this->subject->setHtml($this->html5DocumentType .
+                '<html><body><img src="logo.png" class="logo"></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<img src="logo.png" class="logo" align="right" style="float: right;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapBorder2Border()
+    {
+        $css = '.logo {border: none;}';
+        $this->subject->setHtml($this->html5DocumentType .
+                '<html><body><img src="logo.png" class="logo"></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<img src="logo.png" class="logo" border="0" style="border: none;">',
+            $html
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function mapBorderSpacing2CellSpacing()
+    {
+        $css = '.items {border-spacing: 0;}';
+        $this->subject->setHtml($this->html5DocumentType .
+                '<html><body><table class="items"><tr><td></td></tr></table></body></html>');
+        $this->subject->setCss($css);
+        $this->subject->enableCss2HtmlMapping();
+        $html = $this->subject->emogrify();
+
+        self::assertContains(
+            '<table class="items" cellspacing="0" style="border-spacing: 0;">',
+            $html
+        );
+    }
 }

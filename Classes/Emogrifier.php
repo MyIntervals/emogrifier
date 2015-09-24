@@ -148,6 +148,14 @@ class Emogrifier
     private $shouldKeepInvisibleNodes = true;
 
     /**
+     * Determines whether CSS styles that have an equivalent HTML attribute
+     * should be mapped and attached to those elements.
+     *
+     * @var bool
+     */
+    private $shouldMapCss2Html = false;
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -304,6 +312,9 @@ class Emogrifier
                     $oldStyleDeclarations = [];
                 }
                 $newStyleDeclarations = $this->parseCssDeclarationBlock($selector['attributes']);
+                if ($this->shouldMapCss2Html) {
+                    $this->mapStyles2HtmlAttrs($newStyleDeclarations, $node);
+                }
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -320,6 +331,77 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xpath, $cssParts['media']);
+    }
+
+    /**
+     * Applies $newStyles to $node.
+     *
+     * This method maps CSS styles to HTML attributes and adds those to the
+     * node.
+     *
+     * @param string[] $newStyles the new CSS styles taken from the global styles
+     *                            to be applied to this node.
+     * @param \DOMNode $node      node to apply styles to.
+     *
+     * @return void
+     */
+    private function mapStyles2HtmlAttrs(array $newStyles, \DOMNode $node)
+    {
+        foreach ($newStyles as $styleName => $styleValue) {
+            // Strip !important indicator
+            $styleValue = trim(str_replace('!important', '', $styleValue));
+            if ($styleName === 'background-color') {
+                // Always override HTML attributes. CSS takes precedence.
+                $node->setAttribute('bgcolor', $styleValue);
+            } elseif ($styleName === 'background') {
+                // Parse out the color, if any
+                $styles = explode(' ', $styleValue);
+                $first = $styles[0];
+                if (!is_numeric(substr($first, 0, 1)) && substr($first, 0, 3) !== 'url') {
+                    // This is not a position or image, assume it's a color
+                    $node->setAttribute('bgcolor', $first);
+                }
+            } elseif ($styleName === 'width') {
+                $width = preg_replace('/[^0-9.%]/', '', $styleValue);
+                $node->setAttribute('width', $width);
+            } elseif ($styleName === 'height') {
+                $height = preg_replace('/[^0-9.%]/', '', $styleValue);
+                $node->setAttribute('height', $height);
+            } elseif ($styleName === 'margin' && ($node->nodeName === 'table' || $node->nodeName === 'img')) {
+                $margins = preg_split('/\s+/', $styleValue);
+                if (count($margins) === 1) {
+                    if ($margins[0] == 'auto') {
+                        $node->setAttribute('align', 'center');
+                    }
+                } elseif (count($margins) === 2 || count($margins) === 3) {
+                    if ($margins[1] == 'auto') {
+                        $node->setAttribute('align', 'center');
+                    }
+                } else {
+                    if ($margins[1] === 'auto' && $margins[3] === 'auto') {
+                        $node->setAttribute('align', 'center');
+                    }
+                }
+            } elseif ($styleName === 'text-align' &&
+                        ($node->nodeName === 'p' || $node->nodeName === 'td' || $node->nodeName === 'div')) {
+                if ($styleValue === 'left' || $styleValue === 'right' ||
+                        $styleValue === 'center' || $styleValue === 'justify') {
+                    // Only set values that are valid for the align attribute
+                    $node->setAttribute('align', $styleValue);
+                }
+            } elseif ($styleName === 'float' && ($node->nodeName === 'table' || $node->nodeName === 'img')) {
+                if ($styleValue === 'left' || $styleValue === 'right') {
+                    // Only set values that are valid for the align attribute
+                    $node->setAttribute('align', $styleValue);
+                }
+            } elseif ($styleName === 'border') {
+                if ($styleValue === 'none' || $styleValue === '0') {
+                    $node->setAttribute('border', '0');
+                }
+            } elseif ($styleName === 'border-spacing' && $node->nodeName === 'table') {
+                $node->setAttribute('cellspacing', $styleValue);
+            }
+        }
     }
 
     /**
@@ -397,6 +479,17 @@ class Emogrifier
     public function disableInvisibleNodeRemoval()
     {
         $this->shouldKeepInvisibleNodes = false;
+    }
+
+    /**
+     * Enables the attachment/override of HTML attributes for which a
+     * corresponding CSS property has been set.
+     *
+     * @return void
+     */
+    public function enableCss2HtmlMapping()
+    {
+        $this->shouldMapCss2Html = true;
     }
 
     /**
@@ -671,6 +764,7 @@ class Emogrifier
             foreach ($this->parseSelectors($mediaQuery['css']) as $selector) {
                 if ($this->existsMatchForCssSelector($xpath, $selector['selector'])) {
                     $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
+                    break;
                 }
             }
         }
@@ -687,8 +781,7 @@ class Emogrifier
      */
     private function extractMediaQueriesFromCss($css)
     {
-        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#', $css, $mediaQueries);
-
+        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#s', $css, $mediaQueries);
         $result = [];
         foreach (array_keys($mediaQueries['css']) as $key) {
             $result[] = [
