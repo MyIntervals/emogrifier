@@ -1763,4 +1763,81 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $result
         );
     }
+
+    /**
+     * @test
+     */
+    public function multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce()
+    {
+        $css = "@media all {\r\n" .
+            ".medium {font-size:18px;}\r\n" .
+            ".small {font-size:14px;}\r\n" .
+            '}';
+        $this->subject->setCss($css);
+        $this->subject->setHtml($this->html5DocumentType . '<html><body>' .
+            '<p class="medium">medium</p>' .
+            '<p class="small">small</p>' .
+            '</body></html>');
+
+        $result = $this->subject->emogrify();
+
+        self::assertSame(
+            1,
+            substr_count($result, '<style type="text/css">' . $css . '</style>')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce()
+    {
+        $css = "@media all {\n" .
+            ".medium {font-size:18px;}\n" .
+            ".small {font-size:14px;}\n" .
+            '}';
+        $this->subject->setCss($css);
+        $this->subject->setHtml(
+            $this->html5DocumentType . '<html><body>' .
+            '<p class="medium">medium</p>' .
+            '<p class="small">small</p>' .
+            '</body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertSame(
+            1,
+            substr_count($result, '<style type="text/css">' . $css . '</style>')
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function multipleMediaQueriesAreAppliedOnlyOnce()
+    {
+        $css = "@media all {\n" .
+            ".medium {font-size:18px;\n" .
+            ".small {font-size:14px;}\n" .
+            '}' .
+            "@media screen {\n" .
+            ".medium {font-size:24px;}\n" .
+            ".small {font-size:18px;}\n" .
+            '}';
+        $this->subject->setCss($css);
+        $this->subject->setHtml(
+            $this->html5DocumentType . '<html><body>' .
+            '<p class="medium">medium</p>' .
+            '<p class="small">small</p>' .
+            '</body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertSame(
+            1,
+            substr_count($result, '<style type="text/css">' . $css . '</style>')
+        );
+    }
 }
