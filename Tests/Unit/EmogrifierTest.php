@@ -1769,16 +1769,16 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function multiLineMediaQuery()
     {
-        $mediaQuery = "@media all and (max-width: 500px) {\r\n"
-                . ".medium {font-size:18px;}\r\n"
-                . ".small {font-size:14px;}\r\n"
-                . "}";
+        $mediaQuery = "@media all and (max-width: 500px) {\r\n" .
+                ".medium {font-size:18px;}\r\n" .
+                ".small {font-size:14px;}\r\n" .
+                '}';
         $this->subject->setCss($mediaQuery);
 
-        $this->subject->setHtml($this->html5DocumentType . '<html><body>'
-                . '<p class="medium">medium</p>'
-                . '<p class="small">small</p>'
-                . '</body></html>');
+        $this->subject->setHtml($this->html5DocumentType . '<html><body>' .
+                '<p class="medium">medium</p>' .
+                '<p class="small">small</p>' .
+                '</body></html>');
         $result = $this->subject->emogrify();
 
         self::assertContains(
