@@ -1840,4 +1840,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             substr_count($result, '<style type="text/css">' . $css . '</style>')
         );
     }
+
+    /**
+     * @test
+     */
+    public function dataUrisAreConserved()
+    {
+        $html = $this->html5DocumentType . '<html></html>';
+        $this->subject->setHtml($html);
+        $styleRule = 'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk' .
+            'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR' .
+            'VFAQAAICJEhN/q8Xjoug7D4RA+qsFgwDjn9QYiTiaT+Xx+OByOx+NqtapjWq0WjEajekPTtCAIiIiIyrKMoqiOMQxDlVqyLMt1XQ' .
+            'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt' .
+            'ut53nj8bip8m6345wLIQCgKIowDIuikAoz6Wm3233mjHPe6XRe5UROJqImIWPwh/pvZMbYM2GKorx5oUw6m+v1miTJ+XzO8/x+v7' .
+            '+UtizrM8+GYahVVSFik9/jxy6rqlJN02SM1cmI+GbbQghd178AAO2FXws6LwMAAAAASUVORK5CYII=);';
+        $this->subject->setCss('html {' . $styleRule . '}');
+
+        self::assertContains(
+            '<html style="' . $styleRule . '">',
+            $this->subject->emogrify()
+        );
+    }
 }
