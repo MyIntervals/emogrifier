@@ -1213,14 +1213,20 @@ class Emogrifier
         }
 
         $properties = [];
-        $declarations = explode(';', $cssDeclarationBlock);
+        /* Replace the semicolon in base64-encoded data uris with a @ to prevent breaking
+         * up these declarations
+         */
+        $mangledDeclarations = str_replace(';base64', '@base64', $cssDeclarationBlock);
+        $declarations = explode(';', $mangledDeclarations);
         foreach ($declarations as $declaration) {
             $matches = [];
             if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
                 continue;
             }
             $propertyName = strtolower($matches[1]);
-            $propertyValue = $matches[2];
+            /* Put the ; back in front of the base64 declaration
+             */
+            $propertyValue = str_replace('@base64', ';base64', $matches[2]);
             $properties[$propertyName] = $propertyValue;
         }
         $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock] = $properties;
