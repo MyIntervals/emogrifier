@@ -671,6 +671,7 @@ class Emogrifier
             foreach ($this->parseSelectors($mediaQuery['css']) as $selector) {
                 if ($this->existsMatchForCssSelector($xpath, $selector['selector'])) {
                     $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
+                    break;
                 }
             }
         }
@@ -687,8 +688,7 @@ class Emogrifier
      */
     private function extractMediaQueriesFromCss($css)
     {
-        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#', $css, $mediaQueries);
-
+        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#s', $css, $mediaQueries);
         $result = [];
         foreach (array_keys($mediaQueries['css']) as $key) {
             $result[] = [
