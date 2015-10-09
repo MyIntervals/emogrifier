@@ -104,6 +104,11 @@ calling the `emogrify` method:
   being affected by emogrification.
 
 
+## Requirements
+
+* PHP >= 5.4 or HHVM
+
+
 ## Installing with Composer
 
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally
