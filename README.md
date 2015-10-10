@@ -161,10 +161,10 @@ The following selectors are not implemented yet:
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like
   ISO8859-1 or ISO8859-15 are not supported.
-* **NEW:** Emogrifier now preserves all valuable @media queries. Media queries
+* Emogrifier now preserves all valuable @media queries. Media queries
   can be very useful in responsive email design. See
   [media query support](https://litmus.com/help/email-clients/media-query-support/).
-* **NEW:** Emogrifier will grab existing inline style attributes _and_ will
+* Emogrifier will grab existing inline style attributes _and_ will
   grab `<style>` blocks from your HTML, but it will not grab CSS files
   referenced in <link> elements. (The problem email clients are going to ignore
   these tags anyway, so why leave them in your HTML?)
