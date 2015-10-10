@@ -332,14 +332,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyForHtmlTagOnlyAndEmptyCssByDefaultReturnsHtmlTagWithHtml4DocumentType()
+    public function emogrifyForHtmlTagOnlyAndEmptyCssByDefaultAddsHtml5DocumentType()
     {
         $html = '<html></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('');
 
         self::assertContains(
-            $this->html4TransitionalDocumentType,
+            $this->html5DocumentType,
             $this->subject->emogrify()
         );
     }
