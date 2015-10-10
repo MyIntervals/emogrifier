@@ -106,7 +106,8 @@ calling the `emogrify` method:
 
 ## Requirements
 
-* PHP >= 5.4 or HHVM
+* PHP from 5.4 to 7.0 (with the mbstring extension)
+* or HHVM
 
 
 ## Installing with Composer
@@ -192,7 +193,6 @@ The following selectors are not implemented yet:
   (but not all of them). It does not support pseudo selectors. (Emogrifier
   works by converting CSS selectors to XPath selectors, and pseudo selectors
   cannot be converted accurately).
-* `!important` currently is not supported yet.
 
 
 ## Maintainer
