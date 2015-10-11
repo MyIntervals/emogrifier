@@ -353,7 +353,7 @@ class Emogrifier
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type)\\(/i', $selector)) {
+                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type\\()/i', $selector)) {
                         continue;
                     }
 
@@ -1012,8 +1012,8 @@ class Emogrifier
                 'child'            => '/',
                 'adjacent sibling' => '/following-sibling::*[1]/self::',
                 'descendant'       => '//',
-                ':first-child'     => '*[1]/self::\\1',
-                ':last-child'      => '*[last()]/self::\\1',
+                ':first-child'     => '\\1/*[1]',
+                ':last-child'      => '\\1/*[last()]',
                 'attribute only'   => '*[@\\1]',
                 'attribute'        => '\\1[@\\2]',
                 'exact attribute'  => '\\1[@\\2="\\3"]',

@@ -582,7 +582,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provide for selectors.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function selectorDataProvider()
     {
@@ -633,6 +633,17 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] not matches element without any attributes'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
+            'BODY:first-child matches first child'
+                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
+            'BODY:first-child not matches middle child'
+                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'BODY:first-child not matches last child'
+                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-3">#'],
+            'BODY:last-child not matches first child' => ['body:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'BODY:last-child not matches middle child'
+                => ['body:last-child {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'BODY:last-child matches last child'
+                => ['body:last-child {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
         ];
     }
 
@@ -640,11 +651,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $css the complete CSS
-     * @param string $containedHtml regular expression for the the HTML that needs to be contained in the merged HTML
+     * @param string $htmlRegularExpression regular expression for the the HTML that needs to be contained in the HTML
      *
      * @dataProvider selectorDataProvider
      */
-    public function emogrifierMatchesSelectors($css, $containedHtml)
+    public function emogrifierMatchesSelectors($css, $htmlRegularExpression)
     {
         $html = $this->html5DocumentType .
             '<html id="html">' .
@@ -654,13 +665,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '    <p class="p-3"><span title="buenas dias">some</span> more text</p>' .
             '  </body>' .
             '</html>';
-
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
+        $result = $this->subject->emogrify();
+
         self::assertRegExp(
-            $containedHtml,
-            $this->subject->emogrify()
+            $htmlRegularExpression,
+            $result
         );
     }
 
