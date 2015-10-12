@@ -679,7 +679,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for emogrifyDropsWhitespaceFromCssDeclarations.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function cssDeclarationWhitespaceDroppingDataProvider()
     {
@@ -692,6 +692,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'space before trailing semicolon' => [' color:#000 ;', 'color: #000;'],
             'space after trailing semicolon' => [' color:#000; ', 'color: #000;'],
             'space after property value, no trailing semicolon' => [' color:#000; ', 'color: #000;'],
+            'newline before property value, trailing semicolon' => ["\ncolor:#222; ", 'color: #222;'],
+            'newline before colon and after value, trailing semicolon' => ["color\n:#333\n; ", 'color: #333;'],
+            'newline after colon, trailing semicolon' => ["color:\n#333; ", 'color: #333;'],
         ];
     }
 
@@ -722,7 +725,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for emogrifyFormatsCssDeclarations.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function formattedCssDeclarationDataProvider()
     {
@@ -735,6 +738,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declaration separated by semicolon and Linefeed' => [
                 'color: #000;' . PHP_EOL . 'width: 3px;', 'color: #000; width: 3px;'
+            ],
+            'one declaration with leading dash in property name' => [
+                '-webkit-text-size-adjust:none;', '-webkit-text-size-adjust: none;'
             ],
         ];
     }
@@ -757,6 +763,42 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         self::assertContains(
             'html style="' . $expectedStyleAttributeContent . '">',
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * Data provider for emogrifyInvalidDeclaration.
+     *
+     * @return string[][]
+     */
+    public function invalidDeclarationDataProvider()
+    {
+        return [
+            'missing dash in property name' => ['font weight: bold;'],
+            'invalid character in property name' => ['-9webkit-text-size-adjust:none;'],
+            'missing :' => ['-webkit-text-size-adjust none'],
+            'missing value' => ['-webkit-text-size-adjust :'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     *
+     * @dataProvider invalidDeclarationDataProvider
+     */
+    public function emogrifyDropsInvalidDeclaration($cssDeclarationBlock)
+    {
+        $html = $this->html5DocumentType . '<html></html>';
+        $css = 'html {' . $cssDeclarationBlock . '}';
+
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            '<html style="">',
             $this->subject->emogrify()
         );
     }
@@ -1860,7 +1902,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $html = $this->html5DocumentType . '<html></html>';
         $this->subject->setHtml($html);
-        $styleRule = 'background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk' .
+        $styleRule = 'background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUC' .
+            'AIAAAAC64paAAABUk' .
             'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR' .
             'VFAQAAICJEhN/q8Xjoug7D4RA+qsFgwDjn9QYiTiaT+Xx+OByOx+NqtapjWq0WjEajekPTtCAIiIiIyrKMoqiOMQxDlVqyLMt1XQ' .
             'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt' .
