@@ -149,11 +149,8 @@ Emogrifier currently support the following
  * attribute presence
  * attribute value
  * attribute only
-
-The following selectors are implemented, but currently are broken:
-
- * first-child (currently broken)
- * last-child (currently broken)
+ * first-child
+ * last-child
 
 The following selectors are not implemented yet:
 
