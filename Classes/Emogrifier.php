@@ -32,7 +32,7 @@ class Emogrifier
     /**
      * @var int
      */
-    const CACHE_KEY_CSS_DECLARATION_BLOCK = 3;
+    const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 3;
 
     /**
      * @var int
@@ -100,7 +100,7 @@ class Emogrifier
         self::CACHE_KEY_CSS => [],
         self::CACHE_KEY_SELECTOR => [],
         self::CACHE_KEY_XPATH => [],
-        self::CACHE_KEY_CSS_DECLARATION_BLOCK => [],
+        self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
         self::CACHE_KEY_COMBINED_STYLES => [],
     ];
 
@@ -282,9 +282,10 @@ class Emogrifier
 
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xpath);
-        foreach ($this->parseSelectors($cssParts['css']) as $selector) {
+        $cssRules = $this->parseCssRules($cssParts['css']);
+        foreach ($cssRules as $cssRule) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($selector['selector']));
+            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($cssRule['selector']));
             // ignore invalid selectors
             if ($nodesMatchingCssSelectors === false) {
                 continue;
@@ -299,11 +300,11 @@ class Emogrifier
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
-                    $oldStyleDeclarations = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+                    $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
                 } else {
                     $oldStyleDeclarations = [];
                 }
-                $newStyleDeclarations = $this->parseCssDeclarationBlock($selector['attributes']);
+                $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -323,28 +324,32 @@ class Emogrifier
     }
 
     /**
-     * Parses a list of selectors from a string of CSS.
+     * Extracts and parses the individual rules from a CSS string.
      *
      * @param string $css a string of raw CSS code
      *
-     * @return string[][] an array of string sub-arrays with the keys "selector", "attributes", and "line"
+     * @return string[][] an array of string sub-arrays with the keys
+     *         "selector" (the CSS selector(s), e.g., "*" or "h1"),
+     *         "declarationsBLock" (the semicolon-separated CSS declarations for that selector(s),
+     *         e.g., "color: red; height: 4px;"),
+     *         and "line" (the line number e.g. 42)
      */
-    private function parseSelectors($css)
+    private function parseCssRules($css)
     {
         $cssKey = md5($css);
         if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
             preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
-            $allSelectors = [];
-            foreach ($matches as $key => $selectorString) {
-                // if there is a blank definition, skip
-                if (!strlen(trim($selectorString[2]))) {
+            $cssRules = [];
+            /** @var string[] $cssRule */
+            foreach ($matches as $key => $cssRule) {
+                $cssDeclaration = trim($cssRule[2]);
+                if ($cssDeclaration === '') {
                     continue;
                 }
 
-                // else split by commas and duplicate attributes so we can sort by selector precedence
-                $selectors = explode(',', $selectorString[1]);
+                $selectors = explode(',', $cssRule[1]);
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
@@ -352,18 +357,18 @@ class Emogrifier
                         continue;
                     }
 
-                    $allSelectors[] = [
+                    $cssRules[] = [
                         'selector' => trim($selector),
-                        'attributes' => trim($selectorString[2]),
+                        'declarationsBlock' => $cssDeclaration,
                         // keep track of where it appears in the file, since order is important
                         'line' => $key,
                     ];
                 }
             }
 
-            usort($allSelectors, [$this, 'sortBySelectorPrecedence']);
+            usort($cssRules, [$this, 'sortBySelectorPrecedence']);
 
-            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $allSelectors;
+            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
         }
 
         return $this->caches[self::CACHE_KEY_CSS][$cssKey];
@@ -409,7 +414,7 @@ class Emogrifier
         $this->clearCache(self::CACHE_KEY_CSS);
         $this->clearCache(self::CACHE_KEY_SELECTOR);
         $this->clearCache(self::CACHE_KEY_XPATH);
-        $this->clearCache(self::CACHE_KEY_CSS_DECLARATION_BLOCK);
+        $this->clearCache(self::CACHE_KEY_CSS_DECLARATIONS_BLOCK);
         $this->clearCache(self::CACHE_KEY_COMBINED_STYLES);
     }
 
@@ -429,7 +434,7 @@ class Emogrifier
             self::CACHE_KEY_CSS,
             self::CACHE_KEY_SELECTOR,
             self::CACHE_KEY_XPATH,
-            self::CACHE_KEY_CSS_DECLARATION_BLOCK,
+            self::CACHE_KEY_CSS_DECLARATIONS_BLOCK,
             self::CACHE_KEY_COMBINED_STYLES,
         ];
         if (!in_array($key, $allowedCacheKeys, true)) {
@@ -587,7 +592,7 @@ class Emogrifier
         // have to save the original HTML styles
         $nodePath = $node->getNodePath();
         if (!isset($this->styleAttributesForNodes[$nodePath])) {
-            $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationBlock($normalizedOriginalStyle);
+            $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
             $this->visitedNodes[$nodePath] = $node;
         }
 
@@ -603,7 +608,7 @@ class Emogrifier
     {
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
-            $currentStyleAttributes = $this->parseCssDeclarationBlock($node->getAttribute('style'));
+            $currentStyleAttributes = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
             $node->setAttribute(
                 'style',
                 $this->generateStyleStringFromDeclarationsArrays(
@@ -668,7 +673,7 @@ class Emogrifier
         $mediaQueriesRelevantForDocument = [];
 
         foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
-            foreach ($this->parseSelectors($mediaQuery['css']) as $selector) {
+            foreach ($this->parseCssRules($mediaQuery['css']) as $selector) {
                 if ($this->existsMatchForCssSelector($xpath, $selector['selector'])) {
                     $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
                     break;
@@ -972,84 +977,75 @@ class Emogrifier
     }
 
     /**
-     * Right now, we support all CSS 1 selectors and most CSS2/3 selectors.
+     * Maps a CSS selector to an XPath query string.
      *
      * @see http://plasmasturm.org/log/444/
      *
-     * @param string $paramCssSelector
+     * @param string $cssSelector a CSS selector
      *
-     * @return string
+     * @return string the corresponding XPath selector
      */
-    private function translateCssToXpath($paramCssSelector)
+    private function translateCssToXpath($cssSelector)
     {
-        $cssSelector = ' ' . $paramCssSelector . ' ';
-        $cssSelector = preg_replace_callback(
+        $paddedSelector = ' ' . $cssSelector . ' ';
+        $lowercasePaddedSelector = preg_replace_callback(
             '/\\s+\\w+\\s+/',
             function (array $matches) {
                 return strtolower($matches[0]);
             },
-            $cssSelector
+            $paddedSelector
         );
-        $cssSelector = trim($cssSelector);
-        $xpathKey = md5($cssSelector);
+        $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
+        $xpathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xpathKey])) {
-            // returns an Xpath selector
-            $search = [
-                // Matches any element that is a child of parent.
-                '/\\s+>\\s+/',
-                // Matches any element that is an adjacent sibling.
-                '/\\s+\\+\\s+/',
-                // Matches any element that is a descendant of an parent element element.
-                '/\\s+/',
-                // first-child pseudo-selector
-                '/([^\\/]+):first-child/i',
-                // last-child pseudo-selector
-                '/([^\\/]+):last-child/i',
-                // Matches attribute only selector
-                '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/',
-                // Matches element with attribute
-                '/(\\w)\\[(\\w+)\\]/',
-                // Matches element with EXACT attribute
-                '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
+            $cssSelectorMatches = [
+                'child'            => '/\\s+>\\s+/',
+                'adjacent sibling' => '/\\s+\\+\\s+/',
+                'descendant'       => '/\\s+/',
+                ':first-child'     => '/([^\\/]+):first-child/i',
+                ':last-child'      => '/([^\\/]+):last-child/i',
+                'attribute only'   => '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/',
+                'attribute'        => '/(\\w)\\[(\\w+)\\]/',
+                'exact attribute'  => '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
             ];
-            $replace = [
-                '/',
-                '/following-sibling::*[1]/self::',
-                '//',
-                '*[1]/self::\\1',
-                '*[last()]/self::\\1',
-                '*[@\\1]',
-                '\\1[@\\2]',
-                '\\1[@\\2="\\3"]',
+            $xPathReplacements = [
+                'child'            => '/',
+                'adjacent sibling' => '/following-sibling::*[1]/self::',
+                'descendant'       => '//',
+                ':first-child'     => '*[1]/self::\\1',
+                ':last-child'      => '*[last()]/self::\\1',
+                'attribute only'   => '*[@\\1]',
+                'attribute'        => '\\1[@\\2]',
+                'exact attribute'  => '\\1[@\\2="\\3"]',
             ];
 
-            $cssSelector = '//' . preg_replace($search, $replace, $cssSelector);
+            $roughXpath = '//' . preg_replace($cssSelectorMatches, $xPathReplacements, $trimmedLowercaseSelector);
 
-            $cssSelector = preg_replace_callback(
+            $xpathWithIdAttributeMatchers = preg_replace_callback(
                 self::ID_ATTRIBUTE_MATCHER,
                 [$this, 'matchIdAttributes'],
-                $cssSelector
+                $roughXpath
             );
-            $cssSelector = preg_replace_callback(
+            $xpathWithIdAttributeAndClassMatchers = preg_replace_callback(
                 self::CLASS_ATTRIBUTE_MATCHER,
                 [$this, 'matchClassAttributes'],
-                $cssSelector
+                $xpathWithIdAttributeMatchers
             );
 
             // Advanced selectors are going to require a bit more advanced emogrification.
             // When we required PHP 5.3, we could do this with closures.
-            $cssSelector = preg_replace_callback(
+            $xpathWithIdAttributeAndClassMatchers = preg_replace_callback(
                 '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
                 [$this, 'translateNthChild'],
-                $cssSelector
+                $xpathWithIdAttributeAndClassMatchers
             );
-            $cssSelector = preg_replace_callback(
+            $finalXpath = preg_replace_callback(
                 '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
                 [$this, 'translateNthOfType'],
-                $cssSelector
+                $xpathWithIdAttributeAndClassMatchers
             );
 
-            $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey] = $cssSelector;
+            $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey] = $finalXpath;
         }
         return $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey];
     }
@@ -1152,39 +1148,39 @@ class Emogrifier
     private function parseNth(array $match)
     {
         if (in_array(strtolower($match[2]), ['even','odd'], true)) {
+            // we have "even" or "odd"
             $index = strtolower($match[2]) === 'even' ? 0 : 1;
-            $result = [self::MULTIPLIER => 2, self::INDEX => $index];
-        } elseif (stripos($match[2], 'n') === false) {
+            return [self::MULTIPLIER => 2, self::INDEX => $index];
+        }
+        if (stripos($match[2], 'n') === false) {
             // if there is a multiplier
             $index = (int) str_replace(' ', '', $match[2]);
-            $result = [self::INDEX => $index];
-        } else {
-            if (isset($match[3])) {
-                $multipleTerm = str_replace($match[3], '', $match[2]);
-                $index = (int) str_replace(' ', '', $match[3]);
-            } else {
-                $multipleTerm = $match[2];
-                $index = 0;
-            }
-
-            $multiplier = (int) str_ireplace('n', '', $multipleTerm);
-
-            if (!strlen($multiplier)) {
-                $multiplier = 1;
-            } elseif ($multiplier === 0) {
-                return [self::INDEX => $index];
-            } else {
-                $multiplier = (int) $multiplier;
-            }
-
-            while ($index < 0) {
-                $index += abs($multiplier);
-            }
-
-            $result = [self::MULTIPLIER => $multiplier, self::INDEX => $index];
+            return [self::INDEX => $index];
         }
 
-        return $result;
+        if (isset($match[3])) {
+            $multipleTerm = str_replace($match[3], '', $match[2]);
+            $index = (int) str_replace(' ', '', $match[3]);
+        } else {
+            $multipleTerm = $match[2];
+            $index = 0;
+        }
+
+        $multiplier = str_ireplace('n', '', $multipleTerm);
+
+        if ($multiplier === '') {
+            $multiplier = 1;
+        } elseif ($multiplier === '0') {
+            return [self::INDEX => $index];
+        } else {
+            $multiplier = (int) $multiplier;
+        }
+
+        while ($index < 0) {
+            $index += abs($multiplier);
+        }
+
+        return [self::MULTIPLIER => $multiplier, self::INDEX => $index];
     }
 
     /**
@@ -1201,23 +1197,23 @@ class Emogrifier
      *   "color" => "#000"
      *   "font-weight" => "bold"
      *
-     * @param string $cssDeclarationBlock the CSS declaration block without the curly braces, may be empty
+     * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
      *
      * @return string[]
      *         the CSS declarations with the property names as array keys and the property values as array values
      */
-    private function parseCssDeclarationBlock($cssDeclarationBlock)
+    private function parseCssDeclarationsBlock($cssDeclarationsBlock)
     {
-        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock])) {
-            return $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock];
+        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
+            return $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
         }
 
         $properties = [];
 
         // Replace the semicolon in base64-encoded data URIs with a @ to prevent breaking
         // up these declarations.
-        $mangledDeclarations = str_replace(';base64', '@base64', $cssDeclarationBlock);
-        $declarations = explode(';', $mangledDeclarations);
+        $mangledDeclarationsBlock = str_replace(';base64', '@base64', $cssDeclarationsBlock);
+        $declarations = explode(';', $mangledDeclarationsBlock);
         foreach ($declarations as $declaration) {
             $matches = [];
             if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
@@ -1228,7 +1224,7 @@ class Emogrifier
             $propertyValue = str_replace('@base64', ';base64', $matches[2]);
             $properties[$propertyName] = $propertyValue;
         }
-        $this->caches[self::CACHE_KEY_CSS_DECLARATION_BLOCK][$cssDeclarationBlock] = $properties;
+        $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
 
         return $properties;
     }
