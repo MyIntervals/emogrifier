@@ -1900,14 +1900,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function dataUrisAreConserved()
+    public function dataUriMediaTypeDataProvider()
+    {
+        return [
+            'nothing' => [''],
+            ';charset=utf-8' => [';charset=utf-8'],
+            ';base64' => [';base64'],
+            ';charset=utf-8;base64' => [';charset=utf-8;base64'],
+        ];
+    }
+
+    /**
+     * @test
+     * @param string $dataUriMediaType
+     * @dataProvider dataUriMediaTypeDataProvider
+     */
+    public function dataUrisAreConserved($dataUriMediaType)
     {
         $html = $this->html5DocumentType . '<html></html>';
         $this->subject->setHtml($html);
-        $styleRule = 'background-image: url(data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAUC' .
-            'AIAAAAC64paAAABUk' .
+        $styleRule = 'background-image: url(data:image/png' . $dataUriMediaType .
+            ',iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk' .
             'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR' .
             'VFAQAAICJEhN/q8Xjoug7D4RA+qsFgwDjn9QYiTiaT+Xx+OByOx+NqtapjWq0WjEajekPTtCAIiIiIyrKMoqiOMQxDlVqyLMt1XQ' .
             'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt' .
@@ -1915,9 +1930,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '+UtizrM8+GYahVVSFik9/jxy6rqlJN02SM1cmI+GbbQghd178AAO2FXws6LwMAAAAASUVORK5CYII=);';
         $this->subject->setCss('html {' . $styleRule . '}');
 
+        $result = $this->subject->emogrify();
+
         self::assertContains(
             '<html style="' . $styleRule . '">',
-            $this->subject->emogrify()
+            $result
         );
     }
 }
