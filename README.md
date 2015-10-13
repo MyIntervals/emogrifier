@@ -183,7 +183,7 @@ The following selectors are not implemented yet:
   this, consider running your HTML through
   [Tidy](http://php.net/manual/en/book.tidy.php) before you pass it to
   Emogrifier.
-* Emogrifier automatically converts the provided (X)HTML into HTML, i.e.,
+* Emogrifier automatically converts the provided (X)HTML into HTML5, i.e.,
   self-closing tags will lose their slash. To keep your HTML valid, it is
   recommended to use HTML5 instead of one of the XHTML variants.
 * Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors

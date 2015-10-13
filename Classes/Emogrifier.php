@@ -71,6 +71,11 @@ class Emogrifier
     /**
      * @var string
      */
+    const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
+
+    /**
+     * @var string
+     */
     private $html = '';
 
     /**
@@ -859,7 +864,7 @@ class Emogrifier
 
     /**
      * Returns the HTML with the unprocessable HTML tags removed and
-     * with added Content-Type meta tag if needed.
+     * with added document type and Content-Type meta tag if needed.
      *
      * @return string the unified HTML
      *
@@ -868,8 +873,9 @@ class Emogrifier
     private function getUnifiedHtml()
     {
         $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
+        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
 
-        return $this->addContentTypeMetaTag($htmlWithoutUnprocessableTags);
+        return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
 
     /**
@@ -892,6 +898,23 @@ class Emogrifier
             '',
             $html
         );
+    }
+
+    /**
+     * Makes sure that the passed HTML has a document type.
+     *
+     * @param string $html
+     *
+     * @return string HTML with document type
+     */
+    private function ensureDocumentType($html)
+    {
+        $hasDocumentType = stripos($html, '<!DOCTYPE') !== false;
+        if ($hasDocumentType) {
+            return $html;
+        }
+
+        return self::DEFAULT_DOCUMENT_TYPE . $html;
     }
 
     /**
