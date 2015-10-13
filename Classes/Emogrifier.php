@@ -1209,19 +1209,16 @@ class Emogrifier
         }
 
         $properties = [];
+        $declarations = preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
 
-        // Replace the semicolon in base64-encoded data URIs with a @ to prevent breaking
-        // up these declarations.
-        $mangledDeclarationsBlock = str_replace(';base64', '@base64', $cssDeclarationsBlock);
-        $declarations = explode(';', $mangledDeclarationsBlock);
         foreach ($declarations as $declaration) {
             $matches = [];
-            if (!preg_match('/ *([A-Za-z\\-]+) *: *([^;]+) */', $declaration, $matches)) {
+            if (!preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/', trim($declaration), $matches)) {
                 continue;
             }
+
             $propertyName = strtolower($matches[1]);
-            // Put the semicolon back in front of the base64 declaration
-            $propertyValue = str_replace('@base64', ';base64', $matches[2]);
+            $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
         $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
