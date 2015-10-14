@@ -29,7 +29,7 @@ subject to breaking changes without deprecation notices.
   ([#156](https://github.com/jjriv/emogrifier/pull/156))
 - Preserve @media if necessary
   ([#62](https://github.com/jjriv/emogrifier/pull/62))
-- Add extraction of <style> blocks within the HTML
+- Add extraction of style blocks within the HTML
 - Add several new pseudo-selectors (first-child, last-child, nth-child,
   and nth-of-type)
 
