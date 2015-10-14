@@ -102,6 +102,10 @@ calling the `emogrify` method:
   method to remove media types that Emogrifier keeps.
 * `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
   being affected by emogrification.
+* `$emogrifier->enableCss2HtmlMapping()` - Some email clients don't support CSS
+  well, even if inline and prefer HTML attributes. This function allows you to
+  put properties such as height, width, background color and font color in your
+  CSS while the transformed content will have all the available HTML tags set.
 
 
 ## Requirements
