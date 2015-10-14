@@ -56,6 +56,8 @@ subject to breaking changes without deprecation notices.
 
 
 ### Fixed
+- Fix failing tests on Windows due to line endings
+  ([#263](https://github.com/jjriv/emogrifier/pull/263))
 - Parsing CSS declaration blocks
   ([#261](https://github.com/jjriv/emogrifier/pull/261))
 - Fix first-child and last-child selectors
