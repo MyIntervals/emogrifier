@@ -7,7 +7,7 @@ Emogrifier is in a pre-1.0 state. This means that its APIs and behavior are
 subject to breaking changes without deprecation notices.
 
 
-## [Unreleased][]
+## [1.0.0][] (2015-10-15)
 
 ### Added
 - Add branch alias ([#231](https://github.com/jjriv/emogrifier/pull/231))
@@ -90,6 +90,3 @@ subject to breaking changes without deprecation notices.
   ([#26](https://github.com/jjriv/emogrifier/pull/26))
 - Make removal of invisible nodes operate in a case-insensitive manner
 - Fix a bug that was overwriting existing inline styles from the original HTML
-
-
-### Security

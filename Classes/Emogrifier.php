@@ -6,10 +6,11 @@ namespace Pelago;
  *
  * For more information, please see the README.md file.
  *
- * @version 0.1.1
+ * @version 1.0.0
  *
  * @author Cameron Brooks
  * @author Jaime Prado
+ * @author Oliver Klee <typo3-coding@oliverklee.de>
  * @author Roman Ožana <ozana@omdesign.cz>
  */
 class Emogrifier
