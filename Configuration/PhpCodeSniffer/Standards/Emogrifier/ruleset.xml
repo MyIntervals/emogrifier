@@ -45,7 +45,6 @@
     <rule ref="TYPO3SniffPool.ControlStructures.DisallowEachInLoopCondition"/>
     <rule ref="TYPO3SniffPool.ControlStructures.DisallowElseIfConstruct"/>
     <rule ref="TYPO3SniffPool.ControlStructures.ExtraBracesByAssignmentInLoop"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.SwitchDeclaration"/>
     <rule ref="TYPO3SniffPool.ControlStructures.TernaryConditionalOperator"/>
     <rule ref="TYPO3SniffPool.ControlStructures.UnusedVariableInForEachLoop"/>
 
@@ -131,6 +130,5 @@
     <rule ref="Squiz.WhiteSpace.PropertyLabelSpacing"/>
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
     <rule ref="TYPO3SniffPool.WhiteSpace.NoWhitespaceAtInDecrement"/>
-    <rule ref="TYPO3SniffPool.WhiteSpace.ScopeClosingBrace"/>
     <rule ref="TYPO3SniffPool.WhiteSpace.WhitespaceAfterCommentSigns"/>
 </ruleset>
