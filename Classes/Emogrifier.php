@@ -257,7 +257,7 @@ class Emogrifier
      */
     protected function process(\DOMDocument $xmlDocument)
     {
-        $xpath = new \DOMXPath($xmlDocument);
+        $xPath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
 
         // Before be begin processing the CSS file, parse the document and normalize all existing CSS attributes.
@@ -266,7 +266,7 @@ class Emogrifier
         // Also store a reference of nodes with existing inline styles so we don't overwrite them.
         $this->purgeVisitedNodes();
 
-        $nodesWithStyleAttributes = $xpath->query('//*[@style]');
+        $nodesWithStyleAttributes = $xPath->query('//*[@style]');
         if ($nodesWithStyleAttributes !== false) {
             /** @var \DOMElement $node */
             foreach ($nodesWithStyleAttributes as $node) {
@@ -283,15 +283,15 @@ class Emogrifier
         $allCss = $this->css;
 
         if ($this->isStyleBlocksParsingEnabled) {
-            $allCss .= $this->getCssFromAllStyleNodes($xpath);
+            $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
 
         $cssParts = $this->splitCssAndMediaQuery($allCss);
-        $excludedNodes = $this->getNodesToExclude($xpath);
+        $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xpath->query($this->translateCssToXpath($cssRule['selector']));
+            $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
             // ignore invalid selectors
             if ($nodesMatchingCssSelectors === false) {
                 continue;
@@ -323,10 +323,10 @@ class Emogrifier
         }
 
         if ($this->shouldKeepInvisibleNodes) {
-            $this->removeInvisibleNodes($xpath);
+            $this->removeInvisibleNodes($xPath);
         }
 
-        $this->copyCssWithMediaToStyleNode($xmlDocument, $xpath, $cssParts['media']);
+        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
     }
 
     /**
@@ -554,13 +554,13 @@ class Emogrifier
      * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
      * to lowercase.
      *
-     * @param \DOMXPath $xpath
+     * @param \DOMXPath $xPath
      *
      * @return void
      */
-    private function removeInvisibleNodes(\DOMXPath $xpath)
+    private function removeInvisibleNodes(\DOMXPath $xPath)
     {
-        $nodesWithStyleDisplayNone = $xpath->query(
+        $nodesWithStyleDisplayNone = $xPath->query(
             '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]'
         );
         if ($nodesWithStyleDisplayNone->length === 0) {
@@ -665,12 +665,12 @@ class Emogrifier
      * Applies $css to $xmlDocument, limited to the media queries that actually apply to the document.
      *
      * @param \DOMDocument $xmlDocument the document to match against
-     * @param \DOMXPath $xpath
+     * @param \DOMXPath $xPath
      * @param string $css a string of CSS
      *
      * @return void
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xpath, $css)
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
         if ($css === '') {
             return;
@@ -680,7 +680,7 @@ class Emogrifier
 
         foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
             foreach ($this->parseCssRules($mediaQuery['css']) as $selector) {
-                if ($this->existsMatchForCssSelector($xpath, $selector['selector'])) {
+                if ($this->existsMatchForCssSelector($xPath, $selector['selector'])) {
                     $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
                     break;
                 }
@@ -713,14 +713,14 @@ class Emogrifier
     /**
      * Checks whether there is at least one matching element for $cssSelector.
      *
-     * @param \DOMXPath $xpath
+     * @param \DOMXPath $xPath
      * @param string $cssSelector
      *
      * @return bool
      */
-    private function existsMatchForCssSelector(\DOMXPath $xpath, $cssSelector)
+    private function existsMatchForCssSelector(\DOMXPath $xPath, $cssSelector)
     {
-        $nodesMatchingSelector = $xpath->query($this->translateCssToXpath($cssSelector));
+        $nodesMatchingSelector = $xPath->query($this->translateCssToXpath($cssSelector));
 
         return $nodesMatchingSelector !== false && $nodesMatchingSelector->length !== 0;
     }
@@ -728,13 +728,13 @@ class Emogrifier
     /**
      * Returns CSS content.
      *
-     * @param \DOMXPath $xpath
+     * @param \DOMXPath $xPath
      *
      * @return string
      */
-    private function getCssFromAllStyleNodes(\DOMXPath $xpath)
+    private function getCssFromAllStyleNodes(\DOMXPath $xPath)
     {
-        $styleNodes = $xpath->query('//style');
+        $styleNodes = $xPath->query('//style');
 
         if ($styleNodes === false) {
             return '';
@@ -1020,8 +1020,8 @@ class Emogrifier
             $paddedSelector
         );
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
-        $xpathKey = md5($trimmedLowercaseSelector);
-        if (!isset($this->caches[self::CACHE_KEY_XPATH][$xpathKey])) {
+        $xPathKey = md5($trimmedLowercaseSelector);
+        if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
             $cssSelectorMatches = [
                 'child'            => '/\\s+>\\s+/',
                 'adjacent sibling' => '/\\s+\\+\\s+/',
@@ -1045,33 +1045,33 @@ class Emogrifier
 
             $roughXpath = '//' . preg_replace($cssSelectorMatches, $xPathReplacements, $trimmedLowercaseSelector);
 
-            $xpathWithIdAttributeMatchers = preg_replace_callback(
+            $xPathWithIdAttributeMatchers = preg_replace_callback(
                 self::ID_ATTRIBUTE_MATCHER,
                 [$this, 'matchIdAttributes'],
                 $roughXpath
             );
-            $xpathWithIdAttributeAndClassMatchers = preg_replace_callback(
+            $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
                 self::CLASS_ATTRIBUTE_MATCHER,
                 [$this, 'matchClassAttributes'],
-                $xpathWithIdAttributeMatchers
+                $xPathWithIdAttributeMatchers
             );
 
             // Advanced selectors are going to require a bit more advanced emogrification.
             // When we required PHP 5.3, we could do this with closures.
-            $xpathWithIdAttributeAndClassMatchers = preg_replace_callback(
+            $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
                 '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
                 [$this, 'translateNthChild'],
-                $xpathWithIdAttributeAndClassMatchers
+                $xPathWithIdAttributeAndClassMatchers
             );
             $finalXpath = preg_replace_callback(
                 '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
                 [$this, 'translateNthOfType'],
-                $xpathWithIdAttributeAndClassMatchers
+                $xPathWithIdAttributeAndClassMatchers
             );
 
-            $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey] = $finalXpath;
+            $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
         }
-        return $this->caches[self::CACHE_KEY_SELECTOR][$xpathKey];
+        return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
     /**
@@ -1253,15 +1253,15 @@ class Emogrifier
     /**
      * Find the nodes that are not to be emogrified.
      *
-     * @param \DOMXPath $xpath
+     * @param \DOMXPath $xPath
      *
      * @return \DOMElement[]
      */
-    private function getNodesToExclude(\DOMXPath $xpath)
+    private function getNodesToExclude(\DOMXPath $xPath)
     {
         $excludedNodes = [];
         foreach (array_keys($this->excludedSelectors) as $selectorToExclude) {
-            foreach ($xpath->query($this->translateCssToXpath($selectorToExclude)) as $node) {
+            foreach ($xPath->query($this->translateCssToXpath($selectorToExclude)) as $node) {
                 $excludedNodes[] = $node;
             }
         }
