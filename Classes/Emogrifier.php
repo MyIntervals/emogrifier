@@ -100,7 +100,7 @@ class Emogrifier
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
     /**
-     * @var array[]
+     * @var mixed[]
      */
     private $caches = [
         self::CACHE_KEY_CSS => [],
@@ -121,7 +121,7 @@ class Emogrifier
      * the styles to apply to the nodes with the XPath paths as array keys for the outer array
      * and the attribute names/values as key/value pairs for the inner array
      *
-     * @var array[]
+     * @var string[][]
      */
     private $styleAttributesForNodes = [];
 
