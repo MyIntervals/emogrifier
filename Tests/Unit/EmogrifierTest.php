@@ -971,7 +971,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for things that should be left out when applying the CSS.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function unneededCssThingsDataProvider()
     {
@@ -1013,7 +1013,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Data provider for media rules.
      *
-     * @return array[]
+     * @return string[][]
      */
     public function mediaRulesDataProvider()
     {
@@ -1130,7 +1130,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Valid media query which need to be preserved
      *
-     * @return array[]
+     * @return string[][]
      */
     public function validMediaPreserveDataProvider()
     {
@@ -1218,7 +1218,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Invalid media query which need to be strip
      *
-     * @return array[]
+     * @return string[][]
      */
     public function invalidMediaPreserveDataProvider()
     {
