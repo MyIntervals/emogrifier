@@ -3,8 +3,26 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
-Emogrifier is in a pre-1.0 state. This means that its APIs and behavior are
-subject to breaking changes without deprecation notices.
+
+## 1.1.0 (unreleased)
+
+### Added
+
+
+### Changed
+
+
+### Deprecated
+
+
+### Removed
+
+
+### Fixed
+
+
+### Security
+
 
 
 ## 1.0.0 (2015-10-15)
