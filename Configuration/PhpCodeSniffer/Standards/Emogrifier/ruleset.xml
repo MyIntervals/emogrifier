@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<ruleset name="PPW Coding Standard">
+<ruleset name="Emogrifier Coding Standard">
     <description>This is the coding standard used for the Emogrifier code.
         This standard has been tested with to work with PHP_CodeSniffer >= 2.3.0.
     </description>
