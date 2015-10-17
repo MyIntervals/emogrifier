@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Deprecated
+- Support for PHP 5.4 will be removed in Emogrifier 2.0.
 
 
 ### Removed
