@@ -29,12 +29,12 @@ into inline style attributes in your HTML code.
 
 - [How it works](#how-it-works)
 - [Usage](#usage)
+- [Options](#options)
+- [Requirements](#requirements)
 - [Installing with Composer](#installing-with-composer)
-- [Usage](#usage)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
 - [Maintainer](#maintainer)
-- [Contributing](#contributing)
 
 
 ## How it Works
