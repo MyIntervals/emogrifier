@@ -1022,28 +1022,26 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $cssSelectorMatches = [
-                'child'            => '/\\s+>\\s+/',
-                'adjacent sibling' => '/\\s+\\+\\s+/',
-                'descendant'       => '/\\s+/',
-                ':first-child'     => '/([^\\/]+):first-child/i',
-                ':last-child'      => '/([^\\/]+):last-child/i',
-                'attribute only'   => '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/',
-                'attribute'        => '/(\\w)\\[(\\w+)\\]/',
-                'exact attribute'  => '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/',
-            ];
-            $xPathReplacements = [
-                'child'            => '/',
-                'adjacent sibling' => '/following-sibling::*[1]/self::',
-                'descendant'       => '//',
-                ':first-child'     => '\\1/*[1]',
-                ':last-child'      => '\\1/*[last()]',
-                'attribute only'   => '*[@\\1]',
-                'attribute'        => '\\1[@\\2]',
-                'exact attribute'  => '\\1[@\\2="\\3"]',
+            $xPathRules = [
+                // child
+                '/\\s+>\\s+/'                              => '/',
+                // adjacent sibling
+                '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
+                // descendant
+                '/\\s+/'                                   => '//',
+                // :first-child
+                '/([^\\/]+):first-child/i'                 => '\\1/*[1]',
+                // :last-child
+                '/([^\\/]+):last-child/i'                  => '\\1/*[last()]',
+                // attribute only
+                '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/'  => '*[@\\1]',
+                // attribute
+                '/(\\w)\\[(\\w+)\\]/'                      => '\\1[@\\2]',
+                // exact attribute
+                '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
             ];
 
-            $roughXpath = '//' . preg_replace($cssSelectorMatches, $xPathReplacements, $trimmedLowercaseSelector);
+            $roughXpath = '//' . preg_replace(array_keys($xPathRules), $xPathRules, $trimmedLowercaseSelector);
 
             $xPathWithIdAttributeMatchers = preg_replace_callback(
                 self::ID_ATTRIBUTE_MATCHER,
