@@ -835,7 +835,7 @@ class Emogrifier
 
         $stateSelectors = '';
         $cssWithoutStateSelectors = preg_replace_callback(
-            '/[A-Za-z0-9_\-\.\,\s\*]+:(hover|visited|link|active)[A-Za-z0-9_\-\.\,\s\*\:]*{[^}]*}/',
+            '/[A-Za-z0-9_\-\.\,\s\*\#]+:(hover|visited|link|active)[A-Za-z0-9_\-\.\,\s\*\:\#]*{[^}]*}/',
             function ($matches) use (&$stateSelectors) {
                 $stateSelectors .= $matches[0];
             },
