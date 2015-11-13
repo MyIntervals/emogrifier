@@ -162,6 +162,13 @@ class Emogrifier
     private $appendStylesToBody = true;
 
     /**
+     * Determines whether the css should be added as a style element as a back up for some email providers
+     *
+     * @var bool
+     */
+    private $shouldAppendCssAsStyleNode = true;
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -335,6 +342,9 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+        if($this->shouldAppendCssAsStyleNode) {
+            $this->addStyleElementToDocument($xmlDocument, $cssParts['css']);
+        }
     }
 
     /**
@@ -386,6 +396,16 @@ class Emogrifier
         }
 
         return $this->caches[self::CACHE_KEY_CSS][$cssKey];
+    }
+
+    /**
+     * Disables duplicating the CSS into a style block after in-lining
+     *
+     * @return void
+     */
+    public function disableBackupCssNode()
+    {
+        $this->shouldAppendCssAsStyleNode = false;
     }
 
     /**
