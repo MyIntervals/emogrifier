@@ -813,8 +813,13 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
+        $body = $document->getElementsByTagName('body')->item(0);
+        if (!$body) {
+            $body = $document->createElement('body');
+            $document->insertBefore($body);
+        }
+
         if ($this->appendStylesToBody) {
-            $body = $document->getElementsByTagName('body')->item(0);
             $body->insertBefore($styleElement, $body->firstChild);
         } else {
             $head = $this->getOrCreateHeadElement($document);
