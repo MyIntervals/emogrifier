@@ -154,6 +154,14 @@ class Emogrifier
     private $shouldKeepInvisibleNodes = true;
 
     /**
+     * Determines if the body element should store the style blocks for media otherwise it should be stored in the
+     * head element for outputted html
+     *
+     * @var bool
+     */
+    private $appendStylesToBody = true;
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -769,8 +777,13 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $head = $this->getOrCreateHeadElement($document);
-        $head->appendChild($styleElement);
+        if ($this->appendStylesToBody) {
+            $body = $document->getElementsByTagName('body')->item(0);
+            $body->insertBefore($styleElement, $body->childNodes->item(0));
+        } else {
+            $head = $this->getOrCreateHeadElement($document);
+            $head->appendChild($styleElement);
+        }
     }
 
     /**
