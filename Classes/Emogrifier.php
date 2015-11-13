@@ -418,6 +418,11 @@ class Emogrifier
         $this->shouldKeepInvisibleNodes = false;
     }
 
+    public function appendStylesToHead()
+    {
+        $this->appendStylesToBody = false;
+    }
+
     /**
      * Clears all caches.
      *
@@ -779,7 +784,7 @@ class Emogrifier
 
         if ($this->appendStylesToBody) {
             $body = $document->getElementsByTagName('body')->item(0);
-            $body->insertBefore($styleElement, $body->childNodes->item(0));
+            $body->insertBefore($styleElement, $body->firstChild);
         } else {
             $head = $this->getOrCreateHeadElement($document);
             $head->appendChild($styleElement);
