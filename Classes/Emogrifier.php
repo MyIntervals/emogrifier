@@ -327,7 +327,9 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
-        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media'], $cssParts['states']);
+        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+
+        $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
     }
 
     /**
@@ -670,7 +672,7 @@ class Emogrifier
      * @param string $css a string of CSS
      * @param string $stateCss a string of CSS containing states
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css, $stateCss)
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
         if ($css === '') {
             return;
@@ -688,7 +690,6 @@ class Emogrifier
         }
 
         $this->addStyleElementToDocument($xmlDocument, implode('', $mediaQueriesRelevantForDocument));
-        $this->addStyleElementToDocument($xmlDocument, $stateCss);
     }
 
     /**
