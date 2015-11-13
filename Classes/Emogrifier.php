@@ -12,6 +12,7 @@ namespace Pelago;
  * @author Jaime Prado
  * @author Oliver Klee <typo3-coding@oliverklee.de>
  * @author Roman Ožana <ozana@omdesign.cz>
+ * @author Peter Fox <peter.fox@peterfox.me>
  */
 class Emogrifier
 {
@@ -342,6 +343,7 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+        $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
         if($this->shouldAppendCssAsStyleNode) {
             $this->addStyleElementToDocument($xmlDocument, $cssParts['css']);
         }
@@ -700,8 +702,7 @@ class Emogrifier
      * @param \DOMDocument $xmlDocument the document to match against
      * @param \DOMXPath $xPath
      * @param string $css a string of CSS
-     *
-     * @return void
+     * @param string $stateCss a string of CSS containing states
      */
     private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
@@ -720,7 +721,7 @@ class Emogrifier
             }
         }
 
-        $this->addStyleElementToDocument($xmlDocument, implode($mediaQueriesRelevantForDocument));
+        $this->addStyleElementToDocument($xmlDocument, implode('', $mediaQueriesRelevantForDocument));
     }
 
     /**
@@ -870,15 +871,24 @@ class Emogrifier
             $cssWithoutComments
         );
 
+        $stateSelectors = '';
+        $cssWithoutStateSelectors = preg_replace_callback(
+            '/[A-Za-z0-9_\-\.\,\s\*\#]+:(hover|visited|link|active)[A-Za-z0-9_\-\.\,\s\*\:\#]*{[^}]*}/',
+            function ($matches) use (&$stateSelectors) {
+                $stateSelectors .= $matches[0];
+            },
+            $cssForAllowedMediaTypes
+        );
+
         // filter the CSS
         $search = [
             'import directives' => '/^\\s*@import\\s[^;]+;/misU',
             'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         ];
 
-        $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
+        $cleanedCss = preg_replace($search, '', $cssWithoutStateSelectors);
 
-        return ['css' => $cleanedCss, 'media' => $media];
+        return ['css' => $cleanedCss, 'media' => $media, 'states' => $stateSelectors];
     }
 
     /**
@@ -1130,10 +1140,10 @@ class Emogrifier
     private function matchClassAttributes(array $match)
     {
         return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
-            implode(
-                '"," "))][contains(concat(" ",@class," "),concat(" ","',
-                explode('.', substr($match[2], 1))
-            ) . '"," "))]';
+        implode(
+            '"," "))][contains(concat(" ",@class," "),concat(" ","',
+            explode('.', substr($match[2], 1))
+        ) . '"," "))]';
     }
 
     /**
