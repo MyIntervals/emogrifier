@@ -673,6 +673,16 @@ class Emogrifier
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
+        // recalculate styles based on sub keys from classes e.g. padding:0; should override padding-top:10px; set by previous classes
+        foreach (array_keys($newStyles) as $newAttribute) {
+            foreach (array_keys($oldStyles) as $oldAttribute) {
+                // if a old attribute starts with the new attribute key then remove it from the old styles
+                if ($newAttribute === "" || strrpos($oldAttribute, $newAttribute, -strlen($oldAttribute)) !== FALSE) {
+                    unset($oldStyles[$oldAttribute]);
+                }
+            }
+        }
+
         $combinedStyles = array_merge($oldStyles, $newStyles);
         $cacheKey = serialize($combinedStyles);
         if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
