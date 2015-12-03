@@ -343,8 +343,10 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
-        $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
-        if($this->shouldAppendCssAsStyleNode) {
+        if (strlen($cssParts['states'])) {
+            $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
+        }
+        if($this->shouldAppendCssAsStyleNode && strlen($cssParts['css']) > 0) {
             $this->addStyleElementToDocument($xmlDocument, $cssParts['css']);
         }
     }
@@ -731,7 +733,10 @@ class Emogrifier
             }
         }
 
-        $this->addStyleElementToDocument($xmlDocument, implode('', $mediaQueriesRelevantForDocument));
+        $media = implode('', $mediaQueriesRelevantForDocument);
+        if (strlen($media) > 0) {
+            $this->addStyleElementToDocument($xmlDocument, implode('', $mediaQueriesRelevantForDocument));
+        }
     }
 
     /**
