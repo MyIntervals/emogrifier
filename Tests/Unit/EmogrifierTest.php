@@ -1907,6 +1907,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 '.test { padding: 1px; padding-top: 10px; } .test-p { padding : 2px; }',
                 '<p class="test test-p" style="padding: 2px;">'
             ],
+            'padding class inverted' => [
+                '.test-p { padding : 2px; } .test { padding: 1px; padding-top: 10px; }',
+                '<p class="test test-p" style="padding: 2px;">'
+            ],
             'padding-top !important' => [
                 '.test { padding: 1px; padding-top: 10px !important; } .test-p { padding : 2px; }',
                 '<p class="test test-p" style="padding: 2px; padding-top: 10px !important;">'
@@ -1955,7 +1959,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifierAddsCssStylesAsStyleNode()
+    public function emogrifierAddsCopyOfCssStylesAsStyleNode()
     {
         $this->subject->appendStylesToHead();
         $this->subject->setCss(
