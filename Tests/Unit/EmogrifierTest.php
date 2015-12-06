@@ -1913,4 +1913,68 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             ],
         ];
     }
+
+    /**
+     * @test
+     */
+    public function emogrifierAddsStylesToBody()
+    {
+        $this->subject->setCss(
+            'p { color: blue; }'
+        );
+        $this->subject->setHtml(
+            $this->html5DocumentType . '<html><body><p></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains("<body>\n<style type=\"text/css\">", $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifierAddsStylesToHead()
+    {
+        $this->subject->appendStylesToHead();
+        $this->subject->setCss(
+            'p { color: blue; }'
+        );
+        $this->subject->setHtml(
+            $this->html5DocumentType . '<html><body><p></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            "<style type=\"text/css\">p { color: blue; }</style>\n</head>",
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifierAddsCssStylesAsStyleNode()
+    {
+        $this->subject->appendStylesToHead();
+        $this->subject->setCss(
+            'p { color: blue; }'
+        );
+        $this->subject->setHtml(
+            $this->html5DocumentType .
+            '<html><body><style type="text/css">p { padding: 10px; }</style><p></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            'p { color: blue; }',
+            $result
+        );
+        self::assertContains(
+            'p { padding: 10px; }',
+            $result
+        );
+    }
 }

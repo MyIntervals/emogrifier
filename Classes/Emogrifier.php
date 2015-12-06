@@ -690,8 +690,7 @@ class Emogrifier
             // And the new style includes an override like padding: 5px;
             // And is not tagged as !important
             $attributeNameSpace = explode('-', $attributeName);
-            if (
-                count($attributeNameSpace) > 1 &&
+            if (count($attributeNameSpace) > 1 &&
                 isset($newStyles[$attributeNameSpace[0]])
                 && !(strtolower(substr($attributeValue, -10)) === '!important')
             ) {
