@@ -346,7 +346,7 @@ class Emogrifier
         if (strlen($cssParts['states'])) {
             $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
         }
-        if($this->shouldAppendCssAsStyleNode && strlen($cssParts['css']) > 0) {
+        if ($this->shouldAppendCssAsStyleNode && strlen(preg_replace('/\s+/', '', $cssParts['css'])) > 0) {
             $this->addStyleElementToDocument($xmlDocument, $cssParts['css']);
         }
     }
@@ -675,16 +675,6 @@ class Emogrifier
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
-        // recalculate styles based on sub keys from classes e.g. padding:0; should override padding-top:10px; set by previous classes
-        foreach (array_keys($newStyles) as $newAttribute) {
-            foreach (array_keys($oldStyles) as $oldAttribute) {
-                // if a old attribute starts with the new attribute key then remove it from the old styles
-                if ($newAttribute === "" || strrpos($oldAttribute, $newAttribute, -strlen($oldAttribute)) !== FALSE) {
-                    unset($oldStyles[$oldAttribute]);
-                }
-            }
-        }
-
         $combinedStyles = array_merge($oldStyles, $newStyles);
         $cacheKey = serialize($combinedStyles);
         if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
@@ -694,6 +684,17 @@ class Emogrifier
         foreach ($oldStyles as $attributeName => $attributeValue) {
             if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
                 $combinedStyles[$attributeName] = $attributeValue;
+            }
+        }
+
+        // recalculate styles based on sub keys from classes e.g. padding:0; should
+        // override padding-top:10px; set by previous classes
+        foreach (array_keys($newStyles) as $newAttribute) {
+            foreach (array_keys($oldStyles) as $oldAttribute) {
+                // if a old attribute starts with the new attribute key then remove it from the old styles
+                if ($newAttribute === '' || strrpos($oldAttribute, $newAttribute, -strlen($oldAttribute)) !== false) {
+                    unset($oldStyles[$oldAttribute]);
+                }
             }
         }
 

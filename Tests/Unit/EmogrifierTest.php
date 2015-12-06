@@ -954,6 +954,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyFiltersUnneededCssThings($css, $markerNotExpectedInHtml)
     {
         $html = $this->html5DocumentType . '<html><p>foo</p></html>';
+        $this->subject->disableBackupCssNode();
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
@@ -1006,6 +1007,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->html5DocumentType . '<html></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
+        $this->subject->disableBackupCssNode();
         $this->subject->removeAllowedMediaType('screen');
 
         $result = $this->subject->emogrify();
@@ -1063,6 +1065,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepExistingHeadElementAddStyleElement()
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
+        $this->subject->appendStylesToHead();
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
@@ -1184,6 +1187,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWithInvalidMediaQueryaNotContainsInnerCss($css)
     {
         $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->disableBackupCssNode();
         $this->subject->setHtml($html);
         $this->subject->setCss($css);
 
@@ -1221,6 +1225,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $html = $this->html5DocumentType . PHP_EOL . '<html><style type="text/css">' . $css .
             '</style><h1></h1></html>';
+        $this->subject->disableBackupCssNode();
         $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
@@ -1723,6 +1728,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emptyMediaQueriesAreRemoved()
     {
         $emptyQuery = '@media all and (max-width: 500px) { }';
+        $this->subject->disableBackupCssNode();
         $this->subject->setCss($emptyQuery);
         $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
 
