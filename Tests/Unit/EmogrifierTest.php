@@ -1062,16 +1062,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepExistingHeadElementAddStyleElement()
+    public function emogrifyDoesNotAddEmptyStyleElements()
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
-        $this->subject->appendStylesToHead();
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<style type="text/css">', $result);
+        self::assertNotContains('<style type="text/css">', $result);
     }
 
     /**
@@ -1851,5 +1850,67 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '<html style="' . $styleRule . '">',
             $result
         );
+    }
+
+    /**
+     * @test
+     * @dataProvider cssStateDataProvider()
+     */
+    public function emogrifierKeepsStateSelectors($css)
+    {
+        $this->subject->disableBackupCssNode();
+        $this->subject->setCss($css);
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><p></p></body></html>');
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains($css, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function cssStateDataProvider()
+    {
+        return [
+            'active' => ['p:active { color: blue }'],
+            'hover' => ['p:hover { color: blue }'],
+            'link' => ['p:link { color: blue }'],
+            'visited' => ['p:visited { color: blue }'],
+        ];
+    }
+
+    /**
+     * @test
+     * @dataProvider cssSubKeyDataProvider()
+     */
+    public function emogrifierOverridesCssSubKeys($css, $resultingNode)
+    {
+        $this->subject->disableBackupCssNode();
+        $this->subject->setCss($css);
+        $this->subject->setHtml(
+            $this->html5DocumentType . '<html><body><p class="test test-p"></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains($resultingNode, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function cssSubKeyDataProvider()
+    {
+        return [
+            'padding' => [
+                '.test { padding: 1px; padding-top: 10px; } .test-p { padding : 2px; }',
+                '<p class="test test-p" style="padding: 2px;">'
+            ],
+            'padding-top !important' => [
+                '.test { padding: 1px; padding-top: 10px !important; } .test-p { padding : 2px; }',
+                '<p class="test test-p" style="padding: 2px; padding-top: 10px !important;">'
+            ],
+        ];
     }
 }

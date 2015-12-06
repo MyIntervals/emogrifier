@@ -682,19 +682,21 @@ class Emogrifier
         }
 
         foreach ($oldStyles as $attributeName => $attributeValue) {
+            // If the new style has an !important tag
             if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
                 $combinedStyles[$attributeName] = $attributeValue;
             }
-        }
-
-        // recalculate styles based on sub keys from classes e.g. padding:0; should
-        // override padding-top:10px; set by previous classes
-        foreach (array_keys($newStyles) as $newAttribute) {
-            foreach (array_keys($oldStyles) as $oldAttribute) {
-                // if a old attribute starts with the new attribute key then remove it from the old styles
-                if ($newAttribute === '' || strrpos($oldAttribute, $newAttribute, -strlen($oldAttribute)) !== false) {
-                    unset($oldStyles[$oldAttribute]);
-                }
+            // If the attribute is apart of a namespace e.g. padding-top: 10px;
+            // And the new style includes an override like padding: 5px;
+            // And is not tagged as !important
+            $attributeNameSpace = explode('-', $attributeName);
+            if (
+                count($attributeNameSpace) > 1 &&
+                isset($newStyles[$attributeNameSpace[0]])
+                && !(strtolower(substr($attributeValue, -10)) === '!important')
+            ) {
+                // Remove the attribute with the namespace e.g. padding-top: 10px;
+                unset($combinedStyles[$attributeName]);
             }
         }
 
