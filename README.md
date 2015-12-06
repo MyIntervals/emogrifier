@@ -102,7 +102,10 @@ calling the `emogrify` method:
   method to remove media types that Emogrifier keeps.
 * `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
   being affected by emogrification.
-
+* `$emogrifier->appendStylesToHead()` - By default, Emogrifier stores any styles in the top of the body
+  using this option it will instead be stored at the bottom of the head.
+* `$emogrifier->disableBackupCssNode()` - By default, Emogrifier Stores a copy of the CSS that was inlined
+  into a style node, if you don't want this you can disable it with this method.
 
 ## Requirements
 
@@ -164,6 +167,9 @@ The following selectors are not implemented yet:
 * Emogrifier now preserves all valuable @media queries. Media queries
   can be very useful in responsive email design. See
   [media query support](https://litmus.com/help/email-clients/media-query-support/).
+* Emogrifier now preserves all stateful selectors e.g. :hover, :active, :link and :visited queries
+  which can be useful to bring interactive elements to email designs.
+* Emogrifier can work with namespaced override and apply the correct ones e.g. padding should override previous padding-top.  
 * Emogrifier will grab existing inline style attributes _and_ will
   grab `<style>` blocks from your HTML, but it will not grab CSS files
   referenced in <link> elements. (The problem email clients are going to ignore

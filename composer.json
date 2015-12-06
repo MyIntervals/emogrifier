@@ -22,6 +22,10 @@
         {
             "name": "Roman Ožana",
             "email": "ozana@omdesign.cz"
+        },
+        {
+            "name": "Peter Fox",
+            "email": "peter.fox@peterfox.me"
         }
     ],
     "require": {

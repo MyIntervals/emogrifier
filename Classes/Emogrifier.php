@@ -464,6 +464,11 @@ class Emogrifier
         $this->shouldKeepInvisibleNodes = false;
     }
 
+    /**
+     * Adds Styles to the head of the files over the body node
+     *
+     * @return void
+     */
     public function appendStylesToHead()
     {
         $this->appendStylesToBody = false;
