@@ -668,7 +668,9 @@ class Emogrifier
 
         foreach ($oldStyles as $attributeName => $attributeValue) {
             if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
-                $combinedStyles[$attributeName] = $attributeValue;
+                if (strtolower(substr($newStyles[$attributeName], -10)) !== '!important') {
+                    $combinedStyles[$attributeName] = $attributeValue;
+                }
             }
         }
 
