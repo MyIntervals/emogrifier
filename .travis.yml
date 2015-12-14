@@ -5,7 +5,7 @@ language: php
 cache:
   directories:
   - vendor
-  
+
 env:
   global:
     secure: nOIIWvxRsDlkg+5H21dmVeqvFbweOAk3l3ZiyZO1m5XuGuuZR9yj10oOudee8m0hzJ7e9eoZ+dfB3t8lmK0fTRTB6w0G7RuGiQb89ief3Zhs1vOveYOgS5yfTMRym57iluxsLeCe7AxWmy7+0fWAvx1qL7bKp+THGK9yv/aj9eM=
@@ -16,6 +16,11 @@ php:
   - 5.6
   - 7.0
   - hhvm
+
+matrix:
+  allow_failures:
+    - fast_finish: true
+    - php: 7.0
 
 before_script:
   - composer install
