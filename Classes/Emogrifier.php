@@ -12,6 +12,7 @@ namespace Pelago;
  * @author Jaime Prado
  * @author Oliver Klee <typo3-coding@oliverklee.de>
  * @author Roman Ožana <ozana@omdesign.cz>
+ * @author Peter Fox <peter.fox@peterfox.me>
  */
 class Emogrifier
 {
@@ -154,6 +155,21 @@ class Emogrifier
     private $shouldKeepInvisibleNodes = true;
 
     /**
+     * Determines if the body element should store the style blocks for media otherwise it should be stored in the
+     * head element for outputted html
+     *
+     * @var bool
+     */
+    private $appendStylesToBody = true;
+
+    /**
+     * Determines whether the css should be added as a style element as a back up for some email providers
+     *
+     * @var bool
+     */
+    private $shouldAppendCssAsStyleNode = true;
+
+    /*
      * @var string[]
      */
     private $xPathRules = [
@@ -349,6 +365,12 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+        if (strlen($cssParts['states'])) {
+            $this->addStyleElementToDocument($xmlDocument, $cssParts['states']);
+        }
+        if ($this->shouldAppendCssAsStyleNode && strlen(preg_replace('/\s+/', '', $cssParts['css'])) > 0) {
+            $this->addStyleElementToDocument($xmlDocument, $cssParts['css']);
+        }
     }
 
     /**
@@ -403,6 +425,16 @@ class Emogrifier
     }
 
     /**
+     * Disables duplicating the CSS into a style block after in-lining
+     *
+     * @return void
+     */
+    public function disableBackupCssNode()
+    {
+        $this->shouldAppendCssAsStyleNode = false;
+    }
+
+    /**
      * Disables the parsing of inline styles.
      *
      * @return void
@@ -430,6 +462,16 @@ class Emogrifier
     public function disableInvisibleNodeRemoval()
     {
         $this->shouldKeepInvisibleNodes = false;
+    }
+
+    /**
+     * Adds Styles to the head of the files over the body node
+     *
+     * @return void
+     */
+    public function appendStylesToHead()
+    {
+        $this->appendStylesToBody = false;
     }
 
     /**
@@ -667,8 +709,20 @@ class Emogrifier
         }
 
         foreach ($oldStyles as $attributeName => $attributeValue) {
+            // If the new style has an !important tag
             if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
                 $combinedStyles[$attributeName] = $attributeValue;
+            }
+            // If the attribute is apart of a namespace e.g. padding-top: 10px;
+            // And the new style includes an override like padding: 5px;
+            // And is not tagged as !important
+            $attributeNameSpace = explode('-', $attributeName);
+            if (count($attributeNameSpace) > 1 &&
+                isset($newStyles[$attributeNameSpace[0]])
+                && !(strtolower(substr($attributeValue, -10)) === '!important')
+            ) {
+                // Remove the attribute with the namespace e.g. padding-top: 10px;
+                unset($combinedStyles[$attributeName]);
             }
         }
 
@@ -689,8 +743,7 @@ class Emogrifier
      * @param \DOMDocument $xmlDocument the document to match against
      * @param \DOMXPath $xPath
      * @param string $css a string of CSS
-     *
-     * @return void
+     * @param string $stateCss a string of CSS containing states
      */
     private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
@@ -709,7 +762,10 @@ class Emogrifier
             }
         }
 
-        $this->addStyleElementToDocument($xmlDocument, implode($mediaQueriesRelevantForDocument));
+        $media = implode('', $mediaQueriesRelevantForDocument);
+        if (strlen($media) > 0) {
+            $this->addStyleElementToDocument($xmlDocument, implode('', $mediaQueriesRelevantForDocument));
+        }
     }
 
     /**
@@ -791,8 +847,18 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $head = $this->getOrCreateHeadElement($document);
-        $head->appendChild($styleElement);
+        $body = $document->getElementsByTagName('body')->item(0);
+        if (!$body) {
+            $body = $document->createElement('body');
+            $document->insertBefore($body);
+        }
+
+        if ($this->appendStylesToBody) {
+            $body->insertBefore($styleElement, $body->firstChild);
+        } else {
+            $head = $this->getOrCreateHeadElement($document);
+            $head->appendChild($styleElement);
+        }
     }
 
     /**
@@ -854,15 +920,24 @@ class Emogrifier
             $cssWithoutComments
         );
 
+        $stateSelectors = '';
+        $cssWithoutStateSelectors = preg_replace_callback(
+            '/[A-Za-z0-9_\-\.\,\s\*\#]+:(hover|visited|link|active)[A-Za-z0-9_\-\.\,\s\*\:\#]*{[^}]*}/',
+            function ($matches) use (&$stateSelectors) {
+                $stateSelectors .= $matches[0];
+            },
+            $cssForAllowedMediaTypes
+        );
+
         // filter the CSS
         $search = [
             'import directives' => '/^\\s*@import\\s[^;]+;/misU',
             'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         ];
 
-        $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
+        $cleanedCss = preg_replace($search, '', $cssWithoutStateSelectors);
 
-        return ['css' => $cleanedCss, 'media' => $media];
+        return ['css' => $cleanedCss, 'media' => $media, 'states' => $stateSelectors];
     }
 
     /**
@@ -1096,10 +1171,10 @@ class Emogrifier
     private function matchClassAttributes(array $match)
     {
         return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
-            implode(
-                '"," "))][contains(concat(" ",@class," "),concat(" ","',
-                explode('.', substr($match[2], 1))
-            ) . '"," "))]';
+        implode(
+            '"," "))][contains(concat(" ",@class," "),concat(" ","',
+            explode('.', substr($match[2], 1))
+        ) . '"," "))]';
     }
 
     /**
