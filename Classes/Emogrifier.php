@@ -12,6 +12,7 @@ namespace Pelago;
  * @author Jaime Prado
  * @author Oliver Klee <typo3-coding@oliverklee.de>
  * @author Roman Ožana <ozana@omdesign.cz>
+ * @author Sander Kruger <s.kruger@invessel.com>
  */
 class Emogrifier
 {
@@ -176,6 +177,42 @@ class Emogrifier
     ];
 
     /**
+     * Determines whether CSS styles that have an equivalent HTML attribute
+     * should be mapped and attached to those elements.
+     *
+     * @var bool
+     */
+    private $shouldMapCssToHtml = false;
+
+    /**
+     * This multi-level array contains simple mappings of CSS properties to
+     * HTML attributes. If a mapping only applies to certain HTML nodes or
+     * only for certain values, the mapping is an object with a whitelist
+     * of nodes and values.
+     *
+     * @var mixed[][]
+     */
+    private $cssToHtmlMap = [
+        'background-color' => [
+            'attribute' => 'bgcolor',
+        ],
+        'text-align' => [
+            'attribute' => 'align',
+            'nodes' => ['p', 'div', 'td'],
+            'values' => ['left', 'right', 'center', 'justify'],
+        ],
+        'float' => [
+            'attribute' => 'align',
+            'nodes' => ['table', 'img'],
+            'values' => ['left', 'right'],
+        ],
+        'border-spacing' => [
+            'attribute' => 'cellspacing',
+            'nodes' => ['table'],
+        ],
+    ];
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -333,6 +370,9 @@ class Emogrifier
                     $oldStyleDeclarations = [];
                 }
                 $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
+                if ($this->shouldMapCssToHtml) {
+                    $this->mapCssToHtmlAttributes($newStyleDeclarations, $node);
+                }
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -349,6 +389,146 @@ class Emogrifier
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+    }
+
+    /**
+     * Applies $styles to $node.
+     *
+     * This method maps CSS styles to HTML attributes and adds those to the
+     * node.
+     *
+     * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
+     * @param \DOMNode $node   node to apply styles to
+     *
+     * @return void
+     */
+    private function mapCssToHtmlAttributes(array $styles, \DOMNode $node)
+    {
+        foreach ($styles as $property => $value) {
+            // Strip !important indicator
+            $value = trim(str_replace('!important', '', $value));
+            $this->mapCssToHtmlAttribute($property, $value, $node);
+        }
+    }
+
+    /**
+     * Tries to apply the CSS style to $node as an attribute.
+     *
+     * This method maps a CSS rule to HTML attributes and adds those to the node.
+     *
+     * @param string $property the name of the CSS property to map
+     * @param string $value    the value of the style rule to map
+     * @param \DOMNode $node   node to apply styles to
+     *
+     * @return void
+     */
+    private function mapCssToHtmlAttribute($property, $value, \DOMNode $node)
+    {
+        if (!$this->mapSimpleCssProperty($property, $value, $node)) {
+            $this->mapComplexCssProperty($property, $value, $node);
+        }
+    }
+
+    /**
+     * Looks up the CSS property in the mapping table and maps it if it matches the conditions.
+     *
+     * @param string $property the name of the CSS property to map
+     * @param string $value    the value of the style rule to map
+     * @param \DOMNode $node   node to apply styles to
+     *
+     * @return bool true if the property cab be mapped using the simple mapping table
+     */
+    private function mapSimpleCssProperty($property, $value, \DOMNode $node)
+    {
+        if (!isset($this->cssToHtmlMap[$property])) {
+            return false;
+        }
+
+        $mapping = $this->cssToHtmlMap[$property];
+        $nodesMatch = !isset($mapping['nodes']) || in_array($node->nodeName, $mapping['nodes'], true);
+        $valuesMatch = !isset($mapping['values']) || in_array($value, $mapping['values'], true);
+        if (!$nodesMatch || !$valuesMatch) {
+            return false;
+        }
+
+        $node->setAttribute($mapping['attribute'], $value);
+
+        return true;
+    }
+
+    /**
+     * Maps CSS properties that need special transformation to an HTML attribute.
+     *
+     * @param string $property the name of the CSS property to map
+     * @param string $value    the value of the style rule to map
+     * @param \DOMNode $node   node to apply styles to
+     *
+     * @return void
+     */
+    private function mapComplexCssProperty($property, $value, \DOMNode $node)
+    {
+        $nodeName = $node->nodeName;
+        $isTable = $nodeName === 'table';
+        $isImage = $nodeName === 'img';
+        $isTableOrImage = $isTable || $isImage;
+
+        switch ($property) {
+            case 'background':
+                // Parse out the color, if any
+                $styles = explode(' ', $value);
+                $first = $styles[0];
+                if (!is_numeric(substr($first, 0, 1)) && substr($first, 0, 3) !== 'url') {
+                    // This is not a position or image, assume it's a color
+                    $node->setAttribute('bgcolor', $first);
+                }
+                break;
+            case 'width':
+                // intentional fall-through
+            case 'height':
+                // Remove 'px'. This regex only conserves numbers and %
+                $number = preg_replace('/[^0-9.%]/', '', $value);
+                $node->setAttribute($property, $number);
+                break;
+            case 'margin':
+                if ($isTableOrImage) {
+                    $margins = $this->parseCssShorthandValue($value);
+                    if ($margins['left'] === 'auto' && $margins['right'] === 'auto') {
+                        $node->setAttribute('align', 'center');
+                    }
+                }
+                break;
+            case 'border':
+                if ($isTableOrImage) {
+                    if ($value === 'none' || $value === '0') {
+                        $node->setAttribute('border', '0');
+                    }
+                }
+                break;
+            default:
+        }
+    }
+
+    /**
+     * Parses a shorthand CSS value and splits it into individual values
+     *
+     * @param string $value a string of CSS value with 1, 2, 3 or 4 sizes
+     *                      For example: padding: 0 auto;
+     *                      '0 auto' is split into top: 0, left: auto, bottom: 0,
+     *                      right: auto.
+     *
+     * @return string[] an array of values for top, right, bottom and left (using these as associative array keys)
+     */
+    private function parseCssShorthandValue($value)
+    {
+        $values = preg_split('/\\s+/', $value);
+
+        $css = [];
+        $css['top'] = $values[0];
+        $css['right'] = (count($values) > 1) ? $values[1] : $css['top'];
+        $css['bottom'] = (count($values) > 2) ? $values[2] : $css['top'];
+        $css['left'] = (count($values) > 3) ? $values[3] : $css['right'];
+
+        return $css;
     }
 
     /**
@@ -430,6 +610,17 @@ class Emogrifier
     public function disableInvisibleNodeRemoval()
     {
         $this->shouldKeepInvisibleNodes = false;
+    }
+
+    /**
+     * Enables the attachment/override of HTML attributes for which a
+     * corresponding CSS property has been set.
+     *
+     * @return void
+     */
+    public function enableCssToHtmlMapping()
+    {
+        $this->shouldMapCssToHtml = true;
     }
 
     /**
