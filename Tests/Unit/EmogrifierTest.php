@@ -1614,6 +1614,24 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function secondImportantStyleTagShouldOverwriteFirstOne()
+    {
+        $css = 'p { margin: 1px !important; } p { margin: 2px !important; }';
+        $html = $this->html5DocumentType .
+            '<html><head</head><body><p>some content</p></body></html>';
+        $expected = '<p style="margin: 2px !important;">';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        self::assertContains(
+            $expected,
+            $this->subject->emogrify()
+        );
+    }
+
+    /**
+     * @test
+     */
     public function irrelevantMediaQueriesAreRemoved()
     {
         $uselessQuery = '@media all and (max-width: 500px) { em { color:red; } }';
