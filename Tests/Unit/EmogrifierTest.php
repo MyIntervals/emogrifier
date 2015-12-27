@@ -570,9 +570,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child'
                 => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector BODY > SPAN not matches grandchild'
+            'child selector BODY > SPAN does not match grandchild'
                 => ['body > span {' . $styleRule . '} ', '#<span>#'],
-            'adjacent selector P + P not matches first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
             'adjacent selector P + P matches second P'
                 => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
@@ -585,7 +585,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] matches element with matching attribute'
                 => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
-            'attribute presence selector SPAN[title] not matches element without any attributes'
+            'attribute presence selector SPAN[title] does not match element without any attributes'
                 => ['span[title] {' . $styleRule . '} ', '#<span>#'],
             'attribute value selector [id="html"] matches element with matching attribute value' => [
                 '[id="html"] {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'
@@ -593,21 +593,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'attribute value selector SPAN[title] matches element with matching attribute value' => [
                 'span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title] not matches element with other attribute value'
+            'attribute value selector SPAN[title] does not match element with other attribute value'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
-            'attribute value selector SPAN[title] not matches element without any attributes'
+            'attribute value selector SPAN[title] does not match element without any attributes'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
-            'BODY:first-child matches first child'
-                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
-            'BODY:first-child not matches middle child'
-                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
-            'BODY:first-child not matches last child'
-                => ['body:first-child {' . $styleRule . '} ', '#<p class="p-3">#'],
-            'BODY:last-child not matches first child' => ['body:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
-            'BODY:last-child not matches middle child'
-                => ['body:last-child {' . $styleRule . '} ', '#<p class="p-2">#'],
-            'BODY:last-child matches last child'
-                => ['body:last-child {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'P:first-child matches first child with matching tag'
+                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
+            'DIV:first-child does not match first child with mismatching tag'
+                => ['div:first-child {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'P:first-child does not match middle child'
+                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'P:first-child does not match last child'
+                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-3">#'],
+            'P:last-child does not match first child' => ['p:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'P:last-child does not match middle child'
+                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'P:last-child matches last child'
+                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'DIV:last-child does not match last child with mismatching tag'
+                => ['div:last-child {' . $styleRule . '} ', '#<p class="p-3">#'],
         ];
     }
 
