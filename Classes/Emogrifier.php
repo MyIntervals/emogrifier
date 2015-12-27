@@ -858,7 +858,12 @@ class Emogrifier
         }
 
         foreach ($oldStyles as $attributeName => $attributeValue) {
-            if (isset($newStyles[$attributeName]) && strtolower(substr($attributeValue, -10)) === '!important') {
+            if (!isset($newStyles[$attributeName])) {
+                continue;
+            }
+
+            $newAttributeValue = $newStyles[$attributeName];
+            if ($this->attributeValueIsImportant($attributeValue) && !$this->attributeValueIsImportant($newAttributeValue)) {
                 $combinedStyles[$attributeName] = $attributeValue;
             }
         }
@@ -872,6 +877,18 @@ class Emogrifier
         $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
 
         return $trimmedStyle;
+    }
+
+    /**
+     * Checks whether $attributeValue is marked as !important.
+     *
+     * @param string $attributeValue
+     *
+     * @return bool
+     */
+    private function attributeValueIsImportant($attributeValue)
+    {
+        return strtolower(substr(trim($attributeValue), -10)) === '!important';
     }
 
     /**

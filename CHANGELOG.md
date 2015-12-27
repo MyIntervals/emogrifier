@@ -22,6 +22,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Second !important rule needs to overwrite the first one
+  ([#292](https://github.com/jjriv/emogrifier/pull/292))
 
 
 ### Security

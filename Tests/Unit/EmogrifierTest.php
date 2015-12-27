@@ -1614,6 +1614,63 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function secondImportantStyleOverwritesFirstOne()
+    {
+        $css = 'p { margin: 1px !important; } p { margin: 2px !important; }';
+        $html = $this->html5DocumentType .
+            '<html><head</head><body><p>some content</p></body></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p style="margin: 2px !important;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function secondNonImportantStyleOverwritesFirstOne()
+    {
+        $css = 'p { margin: 1px; } p { margin: 2px; }';
+        $html = $this->html5DocumentType .
+            '<html><head</head><body><p>some content</p></body></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p style="margin: 2px;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function secondNonImportantStyleNotOverwritesFirstImportantOne()
+    {
+        $css = 'p { margin: 1px !important; } p { margin: 2px; }';
+        $html = $this->html5DocumentType .
+            '<html><head</head><body><p>some content</p></body></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            '<p style="margin: 1px !important;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
     public function irrelevantMediaQueriesAreRemoved()
     {
         $uselessQuery = '@media all and (max-width: 500px) { em { color:red; } }';
