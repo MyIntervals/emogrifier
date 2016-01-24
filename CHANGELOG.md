@@ -19,6 +19,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Removed
+- Removed composer dependency from PHP mbstring extension
+  (Actual code dependency were removed a lot of time ago)
 
 
 ### Fixed
