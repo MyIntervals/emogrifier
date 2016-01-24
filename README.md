@@ -110,7 +110,7 @@ calling the `emogrify` method:
 
 ## Requirements
 
-* PHP from 5.4 to 7.0 (with the mbstring extension)
+* PHP from 5.4 to 7.0
 * or HHVM
 
 
