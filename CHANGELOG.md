@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Changed
+- Remove composer dependency from PHP mbstring extension
+  (Actual code dependency were removed a lot of time ago)
+  ([#295](https://github.com/jjriv/emogrifier/pull/295))
 
 
 ### Deprecated
