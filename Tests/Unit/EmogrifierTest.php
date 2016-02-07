@@ -2067,4 +2067,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $html
         );
     }
+ 
+    /**
+     * @test
+     */
+    public function emogrifierMapsClassWithLineFeedInAttrib()
+    {
+        $css = '.test {color: red;}';
+        $this->subject->setHtml($this->html5DocumentType . "<html><body><div class='test\n'></div></body></html>");
+        $this->subject->setCss($css);
+
+        $html = $this->subject->emogrify();
+
+	self::assertContains('style="color: red;', $html );
+    }
+    
+    
 }

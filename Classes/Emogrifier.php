@@ -1303,9 +1303,9 @@ class Emogrifier
      */
     private function matchClassAttributes(array $match)
     {
-        return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
+        return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",normalize-space(@class)," "),concat(" ","' .
             implode(
-                '"," "))][contains(concat(" ",@class," "),concat(" ","',
+                '"," "))][contains(concat(" ",normalize-space(@class)," "),concat(" ","',
                 explode('.', substr($match[2], 1))
             ) . '"," "))]';
     }
