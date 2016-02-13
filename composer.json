@@ -25,7 +25,8 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0"
+        "php": ">=5.4.0",
+        "pelago/emogrifier": "@dev"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.3.4",

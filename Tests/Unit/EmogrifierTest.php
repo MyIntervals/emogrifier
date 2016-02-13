@@ -1759,6 +1759,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+    /**
      * @test
      */
     public function removeExcludedSelectorGetsMatchingElementsToBeEmogrifiedAgain()
@@ -2070,17 +2071,35 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
  
     /**
      * @test
+     * @param string $attribute the class attribute value
+     * @dataProvider cssClassesWithWhitespaceDataProvider
      */
-    public function emogrifierMapsClassWithLineFeedInAttrib()
+    public function emogrifierMapsClassWithWiteSpaceInAttribute($attribute)
     {
-        $css = '.test {color: red;}';
-        $this->subject->setHtml($this->html5DocumentType . "<html><body><div class='test\n'></div></body></html>");
+        $css = '* {color: red;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><div class="'.$attribute.'"></div></body></html>');
         $this->subject->setCss($css);
 
         $html = $this->subject->emogrify();
 
-	self::assertContains('style="color: red;', $html );
+			self::assertContains('style="color: red;"', $html );
     }
-    
+
+	/*
+	* Data provider for class attributes with embedded whitespace
+	* @return string[][]
+	*/
+	public function cssClassesWithWhitespaceDataProvider() {
+		return [
+		    'leading space' 	=> [" test"],
+		    'trailing space' => ["test "],
+		    'leading NL' 		=> ["\ntest"],
+		    'trailing NL' 	=> ["test\n"],
+		    'leading tab' 	=> ["\ttest"],
+		    'trailing tab'	=> ["\rtest"],
+		    'leading CRLF'	=> ["\r\ntest"],
+		    'trailing CRLF'  => ["test\r\n"]
+		];
+	}   
     
 }
