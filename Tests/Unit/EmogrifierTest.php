@@ -2076,7 +2076,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifierMapsClassWithWiteSpaceInAttribute($attribute)
     {
-        $css = '* {color: red;}';
+        $css = '.test {color: red;}';
         $this->subject->setHtml($this->html5DocumentType . '<html><body><div class="'.$attribute.'"></div></body></html>');
         $this->subject->setCss($css);
 
