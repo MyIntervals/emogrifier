@@ -162,6 +162,8 @@ class Emogrifier
         '/\\s+>\\s+/'                              => '/',
         // adjacent sibling
         '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
+        // general sibling
+        '/\\s+\\~\\s+/'                            => '/following-sibling::*/self::',
         // descendant
         '/\\s+/'                                   => '//',
         // :first-child
