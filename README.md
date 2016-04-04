@@ -155,6 +155,7 @@ Emogrifier currently support the following
  * attribute only
  * first-child
  * last-child
+ * [wildcard selector](https://www.w3.org/TR/2012/WD-selectors4-20120823/#attribute-substrings)
 
 The following selectors are not implemented yet:
 

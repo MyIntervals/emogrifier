@@ -609,6 +609,30 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['body:last-child {' . $styleRule . '} ', '#<p class="p-2">#'],
             'BODY:last-child matches last child'
                 => ['body:last-child {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'wildcard selector [class*=P] matches first P element'    =>
+                ['[class*=p] {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P] matches second P element'    =>
+                ['[class*=p] {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P] matches third P element'    =>
+                ['[class*=p] {' . $styleRule . '} ', '#<p class="p-3" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P-] matches first P elements'    =>
+                ['[class*=p-] {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P-] matches second P elements'    =>
+                ['[class*=p-] {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P-] matches second P elements'    =>
+                ['[class*=p-] {' . $styleRule . '} ', '#<p class="p-3" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P-3] not matches first P elements'    =>
+                ['[class*=p-3] {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'wildcard selector [class*=P-3] not matches second P elements'    =>
+                ['[class*=p-3] {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'wildcard selector [class*=P-3] matches third P elements'    =>
+                ['[class*=p-3] {' . $styleRule . '} ', '#<p class="p-3" ' . $styleAttribute . '>#'],
+            'wildcard selector [class*=P-4] not matches first P element'    =>
+                ['[class*=p-4] {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'wildcard selector [class*=P-4] not matches second P element'    =>
+                ['[class*=p-4] {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'wildcard selector [class*=P-4] not matches third P element'    =>
+                ['[class*=p-4] {' . $styleRule . '} ', '#<p class="p-3">#'],
         ];
     }
 
