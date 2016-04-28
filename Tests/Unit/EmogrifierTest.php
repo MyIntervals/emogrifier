@@ -1184,7 +1184,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function emogrifyWithInvalidMediaQueryaNotContainsInnerCss($css)
+    public function emogrifyWithInvalidMediaQueryNotContainsInnerCss($css)
     {
         $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1></html>';
         $this->subject->setHtml($html);
@@ -1247,6 +1247,38 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertNotContains('style="color: red"', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyIgnoresEmptyMediaQuery()
+    {
+        $css = '@media screen {} @media tv { h1 { color: red; } }';
+        $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains('style="color: red"', $result);
+        self::assertNotContains('@media screen', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyIgnoresMediaQueryWithWhitespaceOnly()
+    {
+        $css = '@media screen { } @media tv { h1 { color: red; } }';
+        $html = $this->html5DocumentType . PHP_EOL . '<html><h1></h1></html>';
+        $this->subject->setHtml($html);
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains('style="color: red"', $result);
+        self::assertNotContains('@media screen', $result);
     }
 
     /**
@@ -1845,7 +1877,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function multipleMediaQueriesAreAppliedOnlyOnce()
     {
         $css = "@media all {\n" .
-            ".medium {font-size:18px;\n" .
+            ".medium {font-size:18px;}\n" .
             ".small {font-size:14px;}\n" .
             '}' .
             "@media screen {\n" .

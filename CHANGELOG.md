@@ -25,6 +25,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Ignore empty media queries
+  ([#307](https://github.com/jjriv/emogrifier/pull/307))
+  ([#237](https://github.com/jjriv/emogrifier/issues/237))
 - Ignore pseudo-class when combined with pseudo-element
   ([#308](https://github.com/jjriv/emogrifier/pull/308))
 - First-child and last-child selectors are broken
