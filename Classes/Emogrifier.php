@@ -922,6 +922,8 @@ class Emogrifier
 
     /**
      * Extracts the media queries from $css.
+     * Skips empty media queries.
+     * @link http://stackoverflow.com/questions/36910664/recursive-subroutine-regex-to-match-css-media-queries/36911319#36911319
      *
      * @param string $css
      *
@@ -929,14 +931,17 @@ class Emogrifier
      */
     private function extractMediaQueriesFromCss($css)
     {
-        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#s', $css, $mediaQueries);
+        preg_match_all('/@media\b[^{]*({((?:[^{}]+|(?1))*)})/', $css, $mediaQueries, PREG_SET_ORDER);
         $result = [];
-        foreach (array_keys($mediaQueries['css']) as $key) {
-            $result[] = [
-                'css' => $mediaQueries['css'][$key],
-                'query' => $mediaQueries['query'][$key],
-            ];
+        foreach ($mediaQueries as $query) {
+            if (!empty(trim($query[2]))) {
+                $result[] = [
+                    'css'   => trim($query[2]),
+                    'query' => $query[0],
+                ];
+            }
         }
+
         return $result;
     }
 
