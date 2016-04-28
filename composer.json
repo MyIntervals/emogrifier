@@ -24,23 +24,22 @@
             "email": "ozana@omdesign.cz"
         }
     ],
-    "config": {
-        "preferred-install": "dist",
-        "github-oauth": {
-            "github.com": "6e9eb0240520b7fb1531eaeaed3a6ecab0bcf8b8"
-        }
-    },
     "require": {
-        "php": ">=5.4.0",
-        "ext-mbstring": "*"
+        "php": ">=5.4.0"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "~2.3.0",
-        "phpunit/phpunit": "~4.6.0"
+        "squizlabs/php_codesniffer": "2.3.4",
+        "typo3-ci/typo3sniffpool": "2.1.1",
+        "phpunit/phpunit": "4.8.11"
     },
     "autoload": {
         "psr-4": {
             "Pelago\\": "Classes/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1.x-dev"
         }
     }
 }
