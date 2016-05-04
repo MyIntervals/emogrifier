@@ -25,6 +25,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Ignore pseudo-class when combined with pseudo-element
+  ([#308](https://github.com/jjriv/emogrifier/pull/308))
 - First-child and last-child selectors are broken
   ([#293](https://github.com/jjriv/emogrifier/pull/293))
 - Second !important rule needs to overwrite the first one

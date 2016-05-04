@@ -561,7 +561,10 @@ class Emogrifier
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
-                    if (strpos($selector, ':') !== false && !preg_match('/:\\S+\\-(child|type\\()/i', $selector)) {
+                    $hasPseudoElement = strpos($selector, '::') !== false;
+                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
+                    $hasSupportedPseudoClass = (bool)preg_match('/:\\S+\\-(child|type\\()/i', $selector);
+                    if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }
 
