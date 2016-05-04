@@ -2066,4 +2066,17 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $html
         );
     }
+
+    /**
+     * @test
+     */
+    public function emogrifierParsePseudoSelector()
+    {
+        $css = 'div:last-child::after {float: right;}';
+        $this->subject->setHtml($this->html5DocumentType . '<html><body><div></div></body></html>');
+        $this->subject->setCss($css);
+
+        $html = $this->subject->emogrify();
+        self::assertContains('<div></div>', $html);
+    }
 }
