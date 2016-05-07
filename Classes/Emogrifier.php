@@ -1384,7 +1384,7 @@ class Emogrifier
      */
     private function parseNth(array $match)
     {
-        if (in_array(strtolower($match[2]), ['even','odd'], true)) {
+        if (in_array(strtolower($match[2]), ['even', 'odd'], true)) {
             // we have "even" or "odd"
             $index = strtolower($match[2]) === 'even' ? 0 : 1;
             return [self::MULTIPLIER => 2, self::INDEX => $index];

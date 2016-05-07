@@ -398,7 +398,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagNotRemovesGivenTagWithContent()
     {
-
         $html = $this->html5DocumentType . '<html><p>foobar</p></html>';
         $this->subject->setHtml($html);
 
