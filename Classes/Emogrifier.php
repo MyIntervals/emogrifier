@@ -863,7 +863,9 @@ class Emogrifier
             }
 
             $newAttributeValue = $newStyles[$attributeName];
-            if ($this->attributeValueIsImportant($attributeValue) && !$this->attributeValueIsImportant($newAttributeValue)) {
+            if ($this->attributeValueIsImportant($attributeValue)
+                && !$this->attributeValueIsImportant($newAttributeValue)
+            ) {
                 $combinedStyles[$attributeName] = $attributeValue;
             }
         }
@@ -1160,7 +1162,6 @@ class Emogrifier
         $hasContentTypeMetaTag = stristr($html, 'Content-Type') !== false;
         if ($hasContentTypeMetaTag) {
             return $html;
-
         }
 
         // We are trying to insert the meta tag to the right spot in the DOM.

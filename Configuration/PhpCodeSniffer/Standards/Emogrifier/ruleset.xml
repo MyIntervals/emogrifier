@@ -36,28 +36,16 @@
     <rule ref="Squiz.Commenting.EmptyCatchComment"/>
     <rule ref="Squiz.Commenting.FunctionCommentThrowTag"/>
     <rule ref="Squiz.Commenting.PostStatementComment"/>
-    <rule ref="TYPO3SniffPool.Commenting.ClassComment"/>
-    <rule ref="TYPO3SniffPool.Commenting.DoubleSlashCommentsInNewLine"/>
-    <rule ref="TYPO3SniffPool.Commenting.SpaceAfterDoubleSlash"/>
 
     <!-- Control structures -->
     <rule ref="PEAR.ControlStructures.ControlSignature"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.DisallowEachInLoopCondition"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.DisallowElseIfConstruct"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.ExtraBracesByAssignmentInLoop"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.TernaryConditionalOperator"/>
-    <rule ref="TYPO3SniffPool.ControlStructures.UnusedVariableInForEachLoop"/>
 
     <!-- Debug -->
     <rule ref="Generic.Debug.ClosureLinter"/>
-    <rule ref="TYPO3SniffPool.Debug.DebugCode"/>
 
     <!-- Files -->
     <rule ref="Generic.Files.OneClassPerFile"/>
     <rule ref="Generic.Files.OneInterfacePerFile"/>
-    <rule ref="TYPO3SniffPool.Files.FileExtension"/>
-    <rule ref="TYPO3SniffPool.Files.Filename"/>
-    <rule ref="TYPO3SniffPool.Files.IncludingFile"/>
     <rule ref="Zend.Files.ClosingTag"/>
 
     <!-- Formatting -->
@@ -77,8 +65,6 @@
     <!-- Naming conventions -->
     <rule ref="Generic.NamingConventions.ConstructorName"/>
     <rule ref="PEAR.NamingConventions.ValidClassName"/>
-    <rule ref="TYPO3SniffPool.NamingConventions.ValidFunctionName"/>
-    <rule ref="TYPO3SniffPool.NamingConventions.ValidVariableName"/>
 
     <!-- Objects -->
     <rule ref="Squiz.Objects.ObjectMemberComma"/>
@@ -112,14 +98,9 @@
     <!-- Scope -->
     <rule ref="Squiz.Scope.MemberVarScope"/>
     <rule ref="Squiz.Scope.StaticThisUsage"/>
-    <rule ref="TYPO3SniffPool.Scope.AlwaysReturn">
-        <exclude-pattern>*/Tests/*</exclude-pattern>
-    </rule>
 
     <!--Strings-->
     <rule ref="Squiz.Strings.DoubleQuoteUsage"/>
-    <rule ref="TYPO3SniffPool.Strings.ConcatenationSpacing"/>
-    <rule ref="TYPO3SniffPool.Strings.UnnecessaryStringConcat"/>
 
     <!-- Whitespace -->
     <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent"/>
@@ -129,6 +110,4 @@
     <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
     <rule ref="Squiz.WhiteSpace.PropertyLabelSpacing"/>
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
-    <rule ref="TYPO3SniffPool.WhiteSpace.NoWhitespaceAtInDecrement"/>
-    <rule ref="TYPO3SniffPool.WhiteSpace.WhitespaceAfterCommentSigns"/>
 </ruleset>
