@@ -165,9 +165,9 @@ class Emogrifier
         // descendant
         '/\\s+/'                                   => '//',
         // :first-child
-        '/([^\\/]+):first-child/i'                 => '\\1/*[1]',
+        '/([^\\/]+):first-child/i'                 => '*[1]/self::\\1',
         // :last-child
-        '/([^\\/]+):last-child/i'                  => '\\1/*[last()]',
+        '/([^\\/]+):last-child/i'                  => '*[last()]/self::\\1',
         // attribute only
         '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/'  => '*[@\\1]',
         // attribute
