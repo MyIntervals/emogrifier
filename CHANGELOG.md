@@ -60,7 +60,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Add extraction of style blocks within the HTML
 - Add several new pseudo-selectors (first-child, last-child, nth-child,
   and nth-of-type)
-
+- Fix matching whitepace in class name attributes 
 
 ### Changed
 - Make HTML5 the default document type
