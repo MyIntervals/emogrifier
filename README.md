@@ -159,6 +159,7 @@ Emogrifier currently support the following
 The following selectors are not implemented yet:
 
  * universal
+ * pseudo-elements (will never be supported)
 
 
 ## Caveats
