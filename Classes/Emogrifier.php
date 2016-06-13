@@ -926,7 +926,7 @@ class Emogrifier
     }
 
     /**
-     * Extracts the media queries from $css.
+     * Extracts the media queries from $css while skipping empty media queries.
      *
      * @param string $css
      *
@@ -934,15 +934,19 @@ class Emogrifier
      */
     private function extractMediaQueriesFromCss($css)
     {
-        preg_match_all('#(?<query>@media[^{]*\\{(?<css>(.*?)\\})(\\s*)\\})#s', $css, $mediaQueries);
-        $result = [];
-        foreach (array_keys($mediaQueries['css']) as $key) {
-            $result[] = [
-                'css' => $mediaQueries['css'][$key],
-                'query' => $mediaQueries['query'][$key],
-            ];
+        preg_match_all('/@media\\b[^{]*({((?:[^{}]+|(?1))*)})/', $css, $rawMediaQueries, PREG_SET_ORDER);
+        $parsedQueries = [];
+
+        foreach ($rawMediaQueries as $mediaQuery) {
+            if ($mediaQuery[2] !== '') {
+                $parsedQueries[] = [
+                    'css'   => $mediaQuery[2],
+                    'query' => $mediaQuery[0],
+                ];
+            }
         }
-        return $result;
+
+        return $parsedQueries;
     }
 
     /**
