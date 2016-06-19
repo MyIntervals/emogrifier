@@ -577,6 +577,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
                 => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'general selector P ~ P not matches first P' => ['p ~ p {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'general selector P ~ P matches second P' =>
+                ['p ~ p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
+            'general selector P ~ P matches third P' =>
+                ['p ~ p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'general selector .P-1 ~ P not matches first P' =>
+                ['.p-1 ~ p {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'general selector .P-1 ~ P matches second P' =>
+                ['.p-1 ~ p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
+            'general selector .P-1 ~ P matches third P' =>
+                ['.p-1 ~ p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'general selector .P-2 ~ P not matches first P'    =>
+                ['.p-2 ~ p {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'general selector .P-2 ~ P not matches second P'    =>
+                ['.p-2 ~ p {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'general selector .P-2 ~ P matches third P'    =>
+                ['.p-2 ~ p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            'general selector .P-3 ~ P not matches first P'    =>
+                ['.p-3 ~ p {' . $styleRule . '} ', '#<p class="p-1">#'],
+            'general selector .P-3 ~ P not matches second P'    =>
+                ['.p-3 ~ p {' . $styleRule . '} ', '#<p class="p-2">#'],
+            'general selector .P-3 ~ P not matches third P'    =>
+                ['.p-3 ~ p {' . $styleRule . '} ', '#<p class="p-3">#'],
             'ID selector #HTML' => ['#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'type and ID selector HTML#HTML'
                 => ['html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],

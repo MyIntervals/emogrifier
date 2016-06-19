@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 1.1.0 (unreleased)
 
 ### Added
+- Add support for the general sibling combinator
+  ([#302](https://github.com/jjriv/emogrifier/pull/302))
 - Add CSS to HTML attribute mapper
   ([#288](https://github.com/jjriv/emogrifier/pull/288))
 

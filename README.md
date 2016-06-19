@@ -155,6 +155,7 @@ Emogrifier currently support the following
  * attribute only
  * first-child
  * last-child
+ * [general sibling combinator](https://www.w3.org/wiki/CSS/Selectors/combinators/general)
 
 The following selectors are not implemented yet:
 
