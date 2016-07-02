@@ -569,7 +569,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'descendant selector BODY SPAN'
                 => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child'
-                => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            'child selector P > SPAN matches direct child without spaces'
+            => ['p >span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector BODY > SPAN does not match grandchild'
                 => ['body > span {' . $styleRule . '} ', '#<span>#'],
             'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
@@ -597,6 +599,21 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] does not match element without any attributes'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
+            'attribute value selector SPAN[title~] matches element with an attribute value containing a specified word' => [
+                'span[title~="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title^] matches element with attribute value begins with a specified value' => [
+                'span[title^="bon"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title$] matches element whose attribute value ends with a specified value' => [
+                'span[title$="jour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title*] matches element whose attribute value contains a specified value' => [
+                'span[title*="njou"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title|] matches element with the specified attribute starting with the specified value' => [
+                'p[class|="p"] {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'
+            ],
             'P:first-child matches first child with matching tag'
                 => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
             'DIV:first-child does not match first child with mismatching tag'

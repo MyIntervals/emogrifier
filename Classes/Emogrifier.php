@@ -159,7 +159,7 @@ class Emogrifier
      */
     private $xPathRules = [
         // child
-        '/\\s+>\\s+/'                              => '/',
+        '/\\s*>\\s*/'                              => '/',
         // adjacent sibling
         '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
         // descendant
@@ -174,6 +174,16 @@ class Emogrifier
         '/(\\w)\\[(\\w+)\\]/'                      => '\\1[@\\2]',
         // exact attribute
         '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
+        // element attribute~=
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
+        // element attribute^=
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
+        // element attribute$=
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
+        // element attribute*=
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
+        // element attribute|=
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
     ];
 
     /**
