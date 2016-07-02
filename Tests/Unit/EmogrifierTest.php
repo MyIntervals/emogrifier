@@ -569,7 +569,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'descendant selector BODY SPAN'
                 => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child'
-                => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            'child selector P > SPAN matches direct child without spaces'
+            => ['p >span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector BODY > SPAN does not match grandchild'
                 => ['body > span {' . $styleRule . '} ', '#<span>#'],
             'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
