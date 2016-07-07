@@ -152,6 +152,7 @@ Emogrifier currently support the following
  * adjacent
  * attribute presence
  * attribute value
+ * attribute value with ~
  * attribute only
  * first-child
  * last-child
