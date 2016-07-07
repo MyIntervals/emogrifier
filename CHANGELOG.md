@@ -25,6 +25,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Allow spaces around the > in the direct child selector
+  ([#322](https://github.com/jjriv/emogrifier/pull/322))
 - Ignore empty media queries
   ([#307](https://github.com/jjriv/emogrifier/pull/307))
   ([#237](https://github.com/jjriv/emogrifier/issues/237))
