@@ -159,7 +159,7 @@ class Emogrifier
      */
     private $xPathRules = [
         // child
-        '/\\s+>\\s+/'                              => '/',
+        '/\\s*>\\s*/'                              => '/',
         // adjacent sibling
         '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
         // descendant
