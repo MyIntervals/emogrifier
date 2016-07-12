@@ -153,6 +153,7 @@ Emogrifier currently support the following
  * attribute presence
  * attribute value
  * attribute value with ~
+ * attribute value with ^
  * attribute only
  * first-child
  * last-child

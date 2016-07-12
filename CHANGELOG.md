@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Support the attr~=value selector
   ([#323](https://github.com/jjriv/emogrifier/pull/323))
+- Support the attr^=value selector
+  ([#323](https://github.com/jjriv/emogrifier/pull/324))
 - Add CSS to HTML attribute mapper
   ([#288](https://github.com/jjriv/emogrifier/pull/288))
 

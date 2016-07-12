@@ -606,6 +606,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'attribute value selector SPAN[title~] matches element with an attribute value with that word as first of two' => [
                 'span[title~="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
+            'attribute value selector SPAN[title^] matches element with an attribute value begins that word' => [
+                'span[title^="bonj"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title^] matches element with an attribute value begins that word and contains other words' => [
+                'span[title^="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+            ],
             'attribute value selector SPAN[title] does not match element with other attribute value'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] does not match element without any attributes'
