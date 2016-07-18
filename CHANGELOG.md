@@ -29,6 +29,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Ignore value with words more than one in the attribute selector
+  ([#326](https://github.com/jjriv/emogrifier/pull/326))
 - Ignore spaces around the > in the direct child selector
   ([#322](https://github.com/jjriv/emogrifier/pull/322))
 - Ignore empty media queries
