@@ -28,6 +28,7 @@ in `<link>` elements. Emogrifier solves this problem by converting CSS styles
 into inline style attributes in your HTML code.
 
 - [How it works](#how-it-works)
+- [Install](#install)
 - [Usage](#usage)
 - [Options](#options)
 - [Requirements](#requirements)
@@ -42,6 +43,14 @@ into inline style attributes in your HTML code.
 Emogrifier automagically transmogrifies your HTML by parsing your CSS and
 inserting your CSS definitions into tags within your HTML based on your CSS
 selectors.
+
+
+## Install
+
+For install, you can use composer as below
+```
+composer require pelago/emogrifie
+```
 
 
 ## Usage
