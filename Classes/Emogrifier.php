@@ -163,7 +163,7 @@ class Emogrifier
         // adjacent sibling
         '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
         // descendant
-        '/\\s+/'                                   => '//',
+        '/\\s+(?=.*[^\\]]{1}$)/'                   => '//',
         // :first-child
         '/([^\\/]+):first-child/i'                 => '*[1]/self::\\1',
         // :last-child
@@ -173,7 +173,7 @@ class Emogrifier
         // attribute
         '/(\\w)\\[(\\w+)\\]/'                      => '\\1[@\\2]',
         // exact attribute
-        '/(\\w)\\[(\\w+)\\=[\'"]?(\\w+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
+        '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
         // element attribute~=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
         // element attribute^=
