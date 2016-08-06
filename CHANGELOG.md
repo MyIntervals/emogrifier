@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Support the attr*=value selector
   ([#330](https://github.com/jjriv/emogrifier/pull/330))
+- Support the attr$=value selector
+  ([#329](https://github.com/jjriv/emogrifier/pull/329))
 - Support the attr^=value selector
   ([#324](https://github.com/jjriv/emogrifier/pull/324))
 - Support the attr~=value selector
