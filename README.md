@@ -165,6 +165,7 @@ Emogrifier currently support the following
  * attribute value
  * attribute value with ~
  * attribute value with ^
+ * attribute value with *
  * attribute only
  * first-child
  * last-child
