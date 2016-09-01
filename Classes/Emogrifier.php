@@ -911,13 +911,14 @@ class Emogrifier
      *
      * @return void
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css, $imports = '')
     {
-        if ($css === '') {
+        if ($css === '' && $imports === '') {
             return;
         }
 
         $mediaQueriesRelevantForDocument = [];
+        !$imports ?: $mediaQueriesRelevantForDocument[] = "\n".$imports."\n";
 
         foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
             foreach ($this->parseCssRules($mediaQuery['css']) as $selector) {
@@ -1077,6 +1078,14 @@ class Emogrifier
             $cssWithoutComments
         );
 
+		//Keep @imports
+		$imports = '';
+		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+		if( !empty($importsMatches[0]) ){
+			$importsArray = reset($importsMatches);
+			$imports = implode("\n", array_map('trim', $importsArray));
+		}
+
         // filter the CSS
         $search = [
             'import directives' => '/^\\s*@import\\s[^;]+;/misU',
@@ -1085,7 +1094,7 @@ class Emogrifier
 
         $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
 
-        return ['css' => $cleanedCss, 'media' => $media];
+        return ['css' => $cleanedCss, 'media' => $media, 'imports' => $imports];
     }
 
     /**
