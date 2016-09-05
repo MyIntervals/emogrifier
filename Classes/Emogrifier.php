@@ -394,7 +394,7 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
-        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media'], $cssParts['imports']);
     }
 
     /**
@@ -911,7 +911,7 @@ class Emogrifier
      *
      * @return void
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css, $imports = '')
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css, $imports)
     {
         if ($css === '' && $imports === '') {
             return;
@@ -1078,13 +1078,13 @@ class Emogrifier
             $cssWithoutComments
         );
 
-		//Keep @imports
-		$imports = '';
-		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
-		if( !empty($importsMatches[0]) ){
-			$importsArray = reset($importsMatches);
-			$imports = implode("\n", array_map('trim', $importsArray));
-		}
+	//Keep @imports
+	$imports = '';
+	preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+	if( !empty($importsMatches[0]) ){
+		$importsArray = reset($importsMatches);
+		$imports = implode("\n", array_map('trim', $importsArray));
+	}
 
         // filter the CSS
         $search = [
