@@ -630,6 +630,18 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'attribute value selector SPAN[title^] matches element with an attribute value that begins that word and contains other words' => [
                 'span[title^="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
+            'attribute value selector SPAN[title$] matches element with an attribute value that is exactly that word' => [
+                'span[title$="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title$] matches element with an attribute value with two words' => [
+                'span[title$="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title$] matches element with an attribute value that end that word' => [
+                'span[title$="jour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+            ],
+            'attribute value selector SPAN[title$] matches element with an attribute value that end that word and contains other words' => [
+                'span[title$="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+            ],
             'attribute value selector SPAN[title] does not match element with other attribute value'
                 => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] does not match element without any attributes'
