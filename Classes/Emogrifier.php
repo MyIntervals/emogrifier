@@ -1082,7 +1082,7 @@ class Emogrifier
 	$imports = '';
 	preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
 	if( !empty($importsMatches[0]) ){
-		$importsArray = reset($importsMatches);
+		$importsArray = $importsMatches[0];
 		$imports = implode("\n", array_map('trim', $importsArray));
 	}
 
