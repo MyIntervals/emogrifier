@@ -351,7 +351,7 @@ class Emogrifier
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
  		
- 	$cssImports = $this->extractImportsFromCss($allCss);
+ 		$cssImports = $this->extractImportsFromCss($allCss);
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -395,7 +395,7 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
-	$this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
+		$this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
     }
 
