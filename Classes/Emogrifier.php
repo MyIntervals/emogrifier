@@ -984,15 +984,15 @@ class Emogrifier
      */
     private function extractImportsFromCss($css)
     {
-	$imports = '';
+		$imports = '';
+		
+		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+		if( !empty($importsMatches[0]) ){
+			$importsArray = $importsMatches[0];
+			$imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
+		}
 	
-	preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
-	if( !empty($importsMatches[0]) ){
-		$importsArray = $importsMatches[0];
-		$imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
-	}
-	
-	return $imports;
+		return $imports;
     }	
 
     /**
