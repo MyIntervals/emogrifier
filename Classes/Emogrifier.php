@@ -350,7 +350,8 @@ class Emogrifier
         if ($this->isStyleBlocksParsingEnabled) {
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
-
+ 		
+		$cssImports = $this->extractImportsFromCss($allCss);
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -394,7 +395,8 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
-        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media'], $cssParts['imports']);
+		$this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
+        $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
     }
 
     /**
@@ -911,14 +913,13 @@ class Emogrifier
      *
      * @return void
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css, $imports)
+    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
-        if ($css === '' && $imports === '') {
+        if ($css === '') {
             return;
         }
 
         $mediaQueriesRelevantForDocument = [];
-        !$imports ?: $mediaQueriesRelevantForDocument[] = "\n".$imports."\n";
 
         foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
             foreach ($this->parseCssRules($mediaQuery['css']) as $selector) {
@@ -931,6 +932,24 @@ class Emogrifier
 
         $this->addStyleElementToDocument($xmlDocument, implode($mediaQueriesRelevantForDocument));
     }
+	
+	/**
+	 * Applies $css to $xmlDocument, limited to the @import that actually apply to the document.
+	 *
+	 * @param \DOMDocument $xmlDocument the document to match against
+	 * @param \DOMXPath $xPath
+	 * @param string $css a string of CSS
+	 *
+	 * @return void
+	 */
+	private function copyImportsToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
+	{
+		if ($css === '') {
+			return;
+		}
+		
+		$this->addStyleElementToDocument($xmlDocument, $css);
+	}
 
     /**
      * Extracts the media queries from $css while skipping empty media queries.
@@ -955,6 +974,27 @@ class Emogrifier
 
         return $parsedQueries;
     }
+	
+	/**
+     * Extracts the imports from $css
+     *
+     * @param string $css
+     *
+     * @return string, css @imports
+     */
+    private function extractImportsFromCss($css)
+    {
+		$imports = '';
+		
+		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+		if( !empty($importsMatches[0]) ){
+			$importsArray = $importsMatches[0];
+			$imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
+		}
+		
+		return $imports;
+    
+	}	
 
     /**
      * Checks whether there is at least one matching element for $cssSelector.
@@ -1055,8 +1095,8 @@ class Emogrifier
      *
      *   "css" => "h1 { color:red; }"
      *   "media" => "@media { h1 {}}"
-     *
-     * @param string $css
+     *	 
+	 * @param string $css
      *
      * @return string[]
      */
@@ -1077,15 +1117,7 @@ class Emogrifier
             },
             $cssWithoutComments
         );
-
-	//Keep @imports
-	$imports = '';
-	preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
-	if( !empty($importsMatches[0]) ){
-		$importsArray = $importsMatches[0];
-		$imports = implode("\n", array_map('trim', $importsArray));
-	}
-
+		
         // filter the CSS
         $search = [
             'import directives' => '/^\\s*@import\\s[^;]+;/misU',
@@ -1094,7 +1126,7 @@ class Emogrifier
 
         $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
 
-        return ['css' => $cleanedCss, 'media' => $media, 'imports' => $imports];
+        return ['css' => $cleanedCss, 'media' => $media];
     }
 
     /**
