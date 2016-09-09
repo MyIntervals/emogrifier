@@ -351,7 +351,7 @@ class Emogrifier
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
  		
- 		$cssImports = $this->extractImportsFromCss($allCss);
+ 	$cssImports = $this->extractImportsFromCss($allCss);
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -395,7 +395,7 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
-		$this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
+	$this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
     }
 
@@ -934,20 +934,20 @@ class Emogrifier
     }
 	
 	/**
-	 * Applies $css to $xmlDocument, limited to the @import that actually apply to the document.
-	 *
-	 * @param \DOMDocument $xmlDocument the document to match against
-	 * @param \DOMXPath $xPath
-	 * @param string $css a string of CSS
-	 *
-	 * @return void
-	 */
+	* Applies $css to $xmlDocument, limited to the @import that actually apply to the document.
+	*
+	* @param \DOMDocument $xmlDocument the document to match against
+	* @param \DOMXPath $xPath
+	* @param string $css a string of CSS
+	*
+	* @return void
+	*/
 	private function copyImportsToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
 	{
 		if ($css === '') {
 			return;
 		}
-		
+	
 		$this->addStyleElementToDocument($xmlDocument, $css);
 	}
 
@@ -984,15 +984,15 @@ class Emogrifier
      */
     private function extractImportsFromCss($css)
     {
-		$imports = '';
+	$imports = '';
 	
-		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
-		if( !empty($importsMatches[0]) ){
-			$importsArray = $importsMatches[0];
-			$imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
-		}
-		
-		return $imports;
+	preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+	if( !empty($importsMatches[0]) ){
+		$importsArray = $importsMatches[0];
+		$imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
+	}
+	
+	return $imports;
     }	
 
     /**
