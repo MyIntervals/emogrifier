@@ -351,7 +351,7 @@ class Emogrifier
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
  		
-		$cssImports = $this->extractImportsFromCss($allCss);
+ 		$cssImports = $this->extractImportsFromCss($allCss);
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -975,7 +975,7 @@ class Emogrifier
         return $parsedQueries;
     }
 	
-	/**
+    /**
      * Extracts the imports from $css
      *
      * @param string $css
@@ -985,7 +985,7 @@ class Emogrifier
     private function extractImportsFromCss($css)
     {
 		$imports = '';
-		
+	
 		preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
 		if( !empty($importsMatches[0]) ){
 			$importsArray = $importsMatches[0];
@@ -993,8 +993,7 @@ class Emogrifier
 		}
 		
 		return $imports;
-    
-	}	
+    }	
 
     /**
      * Checks whether there is at least one matching element for $cssSelector.
