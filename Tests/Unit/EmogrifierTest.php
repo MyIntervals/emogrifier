@@ -984,7 +984,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         return [
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
-            '@import directive' => ['@import "foo.css";', '@import'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
             'style in "embossed" media type rule' => ['@media embossed {p {color: #000;}}', '#000'],
