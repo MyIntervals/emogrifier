@@ -163,6 +163,7 @@ Emogrifier currently support the following
  * adjacent
  * attribute presence
  * attribute value
+ * attribute value with |
  * attribute value with ~
  * attribute value with ^
  * attribute value with *
