@@ -20,6 +20,8 @@ matrix:
     env: CODE_SNIFFER=yes
   - php: 7.0
     env: CODE_SNIFFER=yes
+  - php: 7.1
+    env: CODE_SNIFFER=yes
   - php: hhvm
     env: CODE_SNIFFER=yes
 
