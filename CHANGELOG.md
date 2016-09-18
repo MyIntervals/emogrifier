@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
-## 1.1.0 (unreleased)
+## 1.1.0 (2016-09-18)
 
 ### Added
 - Add support for PHP 7.1
@@ -30,6 +30,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Deprecated
+- Support for PHP 5.5 will be removed in Emogrifier 3.0.
 - Support for PHP 5.4 will be removed in Emogrifier 2.0.
 
 
