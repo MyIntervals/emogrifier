@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 
+## x.y.z (unreleased)
+
+### Added
+
+
+### Changed
+
+
+### Deprecated
+- Support for PHP 5.5 will be removed in Emogrifier 3.0.
+- Support for PHP 5.4 will be removed in Emogrifier 2.0.
+
+
+### Removed
+
+
+### Fixed
+
+
+### Security
+
+
+
 ## 1.1.0 (2016-09-18)
 
 ### Added
@@ -34,9 +57,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Support for PHP 5.4 will be removed in Emogrifier 2.0.
 
 
-### Removed
-
-
 ### Fixed
 - Ignore value with words more than one in the attribute selector
   ([#327](https://github.com/jjriv/emogrifier/pull/327))
@@ -51,9 +71,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   ([#293](https://github.com/jjriv/emogrifier/pull/293))
 - Second !important rule needs to overwrite the first one
   ([#292](https://github.com/jjriv/emogrifier/pull/292))
-
-
-### Security
 
 
 
