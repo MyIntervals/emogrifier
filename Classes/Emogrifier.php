@@ -175,15 +175,18 @@ class Emogrifier
         // exact attribute
         '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
         // element attribute~=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/'
+            => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
         // element attribute^=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
         // element attribute*=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
         // element attribute$=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/' => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
+            => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
         // element attribute|=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/' => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
+            => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
     ];
 
     /**
@@ -572,8 +575,8 @@ class Emogrifier
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
-                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool)preg_match('/:\\S+\\-(child|type\\()/i', $selector);
+                    $hasAnyPseudoClass = (bool) preg_match('/:[a-zA-Z]/', $selector);
+                    $hasSupportedPseudoClass = (bool) preg_match('/:\\S+\\-(child|type\\()/i', $selector);
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }

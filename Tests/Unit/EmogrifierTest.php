@@ -598,57 +598,63 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 'span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] matches element with matching attribute value two words' => [
-                'span[title="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
+                    . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] matches element with matching attribute value four words' => [
-                'span[title="buenas dias bom dia"] {' . $styleRule . '} ', '#<span title="buenas dias bom dia" ' . $styleAttribute . '>#'
+                'span[title="buenas dias bom dia"] {' . $styleRule . '} ', '#<span title="buenas dias bom dia" '
+                    . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title~] matches element with an attribute value with just that word' => [
                 'span[title~="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title~] matches element with an attribute value with that word as second of two' => [
+            'attribute value selector SPAN[title~] matches element with attribute value with that word as 2nd of 2' => [
                 'span[title~="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title~] matches element with an attribute value with that word as first of two' => [
+            'attribute value selector SPAN[title~] matches element with attribute value with that word as 1st of 2' => [
                 'span[title~="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with an attribute value with just that word' => [
                 'span[title*="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title*] matches element with an attribute value with that word as second of two' => [
+            'attribute value selector SPAN[title*] matches element with attribute value with that word as 2nd of 2' => [
                 'span[title*="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with an attribute value with parts two words' => [
                 'span[title*="enas di"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title^] matches element with an attribute value that is exactly that word' => [
+            'attribute value selector SPAN[title^] matches element with attribute value that is exactly that word' => [
                 'span[title^="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title^] matches element with an attribute value that begins that word' => [
                 'span[title^="bonj"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title^] matches element with an attribute value that begins that word and contains other words' => [
+            'attribute value selector SPAN[title^] matches element with an attribute value that begins that word '
+            . 'and contains other words' => [
                 'span[title^="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title$] matches element with an attribute value that is exactly that word' => [
+            'attribute value selector SPAN[title$] matches element with attribute value that is exactly that word' => [
                 'span[title$="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with an attribute value with two words' => [
-                'span[title$="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title$="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
+                    . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with an attribute value that end that word' => [
                 'span[title$="jour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title$] matches element with an attribute value that end that word and contains other words' => [
+            'attribute value selector SPAN[title$] matches element with an attribute value that end that word '
+            . 'and contains other words' => [
                 'span[title$="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title|] matches element with an attribute value that is exactly that word' => [
+            'attribute value selector SPAN[title|] matches element with attribute value that is exactly that word' => [
                 'span[title|="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title|] matches element with an attribute value with two words' => [
-                'span[title|="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title|="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
+                    . $styleAttribute . '>#'
             ],
-            'attribute value selector SPAN[title|] matches element with an attribute value with two words with hypen' => [
+            'attribute value selector SPAN[title|] matches element with an attribute value with 2 words with hypen' => [
                 'span[title|="avez"] {' . $styleRule . '} ', '#<span title="avez-vous" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] does not match element with other attribute value'
