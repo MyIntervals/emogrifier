@@ -58,6 +58,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Method emogrifyBodyContent() doesn't keeps utf8 umlauts
+  ([#349](https://github.com/jjriv/emogrifier/pull/349))
 - Ignore value with words more than one in the attribute selector
   ([#327](https://github.com/jjriv/emogrifier/pull/327))
 - Ignore spaces around the > in the direct child selector

@@ -315,7 +315,7 @@ class Emogrifier
             $innerDocument->appendChild($innerDocument->importNode($childNode, true));
         }
 
-        return $innerDocument->saveHTML();
+        return html_entity_decode($innerDocument->saveHTML());
     }
 
     /**
