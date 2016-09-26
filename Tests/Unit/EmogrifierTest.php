@@ -1667,6 +1667,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function emogrifyBodyContentKeepsUtf8Umlauts()
+    {
+        $umlautString = 'Küss die Hand, schöne Frau.';
+        $html = '<p>' . $umlautString . '</p>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrifyBodyContent();
+
+        self::assertContains($umlautString, $result);
+    }
+
+    /**
+     * @test
+     */
     public function importantInExternalCssOverwritesInlineCss()
     {
         $css = 'p { margin: 1px !important; }';
