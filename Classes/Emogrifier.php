@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelago;
 
 /**
@@ -42,14 +43,14 @@ class Emogrifier
     const CACHE_KEY_COMBINED_STYLES = 4;
 
     /**
-     * for calculating nth-of-type and nth-child selectors
+     * for calculating nth-of-type and nth-child selectors.
      *
      * @var int
      */
     const INDEX = 0;
 
     /**
-     * for calculating nth-of-type and nth-child selectors
+     * for calculating nth-of-type and nth-child selectors.
      *
      * @var int
      */
@@ -112,7 +113,7 @@ class Emogrifier
     ];
 
     /**
-     * the visited nodes with the XPath paths as array keys
+     * the visited nodes with the XPath paths as array keys.
      *
      * @var \DOMElement[]
      */
@@ -120,7 +121,7 @@ class Emogrifier
 
     /**
      * the styles to apply to the nodes with the XPath paths as array keys for the outer array
-     * and the attribute names/values as key/value pairs for the inner array
+     * and the attribute names/values as key/value pairs for the inner array.
      *
      * @var string[][]
      */
@@ -159,19 +160,19 @@ class Emogrifier
      */
     private $xPathRules = [
         // child
-        '/\\s*>\\s*/'                              => '/',
+        '/\\s*>\\s*/' => '/',
         // adjacent sibling
-        '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
+        '/\\s+\\+\\s+/' => '/following-sibling::*[1]/self::',
         // descendant
-        '/\\s+(?=.*[^\\]]{1}$)/'                   => '//',
+        '/\\s+(?=.*[^\\]]{1}$)/' => '//',
         // :first-child
-        '/([^\\/]+):first-child/i'                 => '*[1]/self::\\1',
+        '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
         // :last-child
-        '/([^\\/]+):last-child/i'                  => '*[last()]/self::\\1',
+        '/([^\\/]+):last-child/i' => '*[last()]/self::\\1',
         // attribute only
-        '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/'  => '*[@\\1]',
+        '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/' => '*[@\\1]',
         // attribute
-        '/(\\w)\\[(\\w+)\\]/'                      => '\\1[@\\2]',
+        '/(\\w)\\[(\\w+)\\]/' => '\\1[@\\2]',
         // exact attribute
         '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
         // element attribute~=
@@ -229,7 +230,7 @@ class Emogrifier
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
-     * @param string $css the CSS to merge, must be UTF-8-encoded
+     * @param string $css  the CSS to merge, must be UTF-8-encoded
      */
     public function __construct($html = '', $css = '')
     {
@@ -249,8 +250,6 @@ class Emogrifier
      * Sets the HTML to emogrify.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
-     *
-     * @return void
      */
     public function setHtml($html)
     {
@@ -261,8 +260,6 @@ class Emogrifier
      * Sets the CSS to merge with the HTML.
      *
      * @param string $css the CSS to merge, must be UTF-8-encoded
-     *
-     * @return void
      */
     public function setCss($css)
     {
@@ -324,8 +321,6 @@ class Emogrifier
      * This method places the CSS inline.
      *
      * @param \DOMDocument $xmlDocument
-     *
-     * @return void
      */
     protected function process(\DOMDocument $xmlDocument)
     {
@@ -358,6 +353,7 @@ class Emogrifier
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
 
+        $cssImports = $this->extractImportsFromCss($allCss);
         $cssParts = $this->splitCssAndMediaQuery($allCss);
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -401,6 +397,7 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
+        $this->copyImportsToStyleNode($xmlDocument, $xPath, $cssImports);
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
     }
 
@@ -412,8 +409,6 @@ class Emogrifier
      *
      * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
      * @param \DOMNode $node   node to apply styles to
-     *
-     * @return void
      */
     private function mapCssToHtmlAttributes(array $styles, \DOMNode $node)
     {
@@ -429,11 +424,9 @@ class Emogrifier
      *
      * This method maps a CSS rule to HTML attributes and adds those to the node.
      *
-     * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
-     *
-     * @return void
+     * @param string   $property the name of the CSS property to map
+     * @param string   $value    the value of the style rule to map
+     * @param \DOMNode $node     node to apply styles to
      */
     private function mapCssToHtmlAttribute($property, $value, \DOMNode $node)
     {
@@ -445,9 +438,9 @@ class Emogrifier
     /**
      * Looks up the CSS property in the mapping table and maps it if it matches the conditions.
      *
-     * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
+     * @param string   $property the name of the CSS property to map
+     * @param string   $value    the value of the style rule to map
+     * @param \DOMNode $node     node to apply styles to
      *
      * @return bool true if the property cab be mapped using the simple mapping table
      */
@@ -472,11 +465,9 @@ class Emogrifier
     /**
      * Maps CSS properties that need special transformation to an HTML attribute.
      *
-     * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
-     *
-     * @return void
+     * @param string   $property the name of the CSS property to map
+     * @param string   $value    the value of the style rule to map
+     * @param \DOMNode $node     node to apply styles to
      */
     private function mapComplexCssProperty($property, $value, \DOMNode $node)
     {
@@ -522,7 +513,7 @@ class Emogrifier
     }
 
     /**
-     * Parses a shorthand CSS value and splits it into individual values
+     * Parses a shorthand CSS value and splits it into individual values.
      *
      * @param string $value a string of CSS value with 1, 2, 3 or 4 sizes
      *                      For example: padding: 0 auto;
@@ -550,10 +541,10 @@ class Emogrifier
      * @param string $css a string of raw CSS code
      *
      * @return string[][] an array of string sub-arrays with the keys
-     *         "selector" (the CSS selector(s), e.g., "*" or "h1"),
-     *         "declarationsBLock" (the semicolon-separated CSS declarations for that selector(s),
-     *         e.g., "color: red; height: 4px;"),
-     *         and "line" (the line number e.g. 42)
+     *                    "selector" (the CSS selector(s), e.g., "*" or "h1"),
+     *                    "declarationsBLock" (the semicolon-separated CSS declarations for that selector(s),
+     *                    e.g., "color: red; height: 4px;"),
+     *                    and "line" (the line number e.g. 42)
      */
     private function parseCssRules($css)
     {
@@ -600,8 +591,6 @@ class Emogrifier
 
     /**
      * Disables the parsing of inline styles.
-     *
-     * @return void
      */
     public function disableInlineStyleAttributesParsing()
     {
@@ -610,8 +599,6 @@ class Emogrifier
 
     /**
      * Disables the parsing of <style> blocks.
-     *
-     * @return void
      */
     public function disableStyleBlocksParsing()
     {
@@ -620,8 +607,6 @@ class Emogrifier
 
     /**
      * Disables the removal of elements with `display: none` properties.
-     *
-     * @return void
      */
     public function disableInvisibleNodeRemoval()
     {
@@ -631,8 +616,6 @@ class Emogrifier
     /**
      * Enables the attachment/override of HTML attributes for which a
      * corresponding CSS property has been set.
-     *
-     * @return void
      */
     public function enableCssToHtmlMapping()
     {
@@ -641,8 +624,6 @@ class Emogrifier
 
     /**
      * Clears all caches.
-     *
-     * @return void
      */
     private function clearAllCaches()
     {
@@ -658,8 +639,6 @@ class Emogrifier
      *
      * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH
      *                 or CACHE_KEY_CSS_DECLARATION_BLOCK
-     *
-     * @return void
      *
      * @throws \InvalidArgumentException
      */
@@ -681,8 +660,6 @@ class Emogrifier
 
     /**
      * Purges the visited nodes.
-     *
-     * @return void
      */
     private function purgeVisitedNodes()
     {
@@ -699,8 +676,6 @@ class Emogrifier
      * Note: The tags will not be removed if they have any content.
      *
      * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
      */
     public function addUnprocessableHtmlTag($tagName)
     {
@@ -711,8 +686,6 @@ class Emogrifier
      * Drops a tag from the removal list.
      *
      * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
      */
     public function removeUnprocessableHtmlTag($tagName)
     {
@@ -726,8 +699,6 @@ class Emogrifier
      * Marks a media query type to keep.
      *
      * @param string $mediaName the media type name, e.g., "braille"
-     *
-     * @return void
      */
     public function addAllowedMediaType($mediaName)
     {
@@ -738,8 +709,6 @@ class Emogrifier
      * Drops a media query type from the allowed list.
      *
      * @param string $mediaName the tag name, e.g., "braille"
-     *
-     * @return void
      */
     public function removeAllowedMediaType($mediaName)
     {
@@ -754,8 +723,6 @@ class Emogrifier
      * Any nodes that match the selector will not have their style altered.
      *
      * @param string $selector the selector to exclude, e.g., ".editor"
-     *
-     * @return void
      */
     public function addExcludedSelector($selector)
     {
@@ -766,8 +733,6 @@ class Emogrifier
      * No longer excludes the nodes matching this selector from emogrification.
      *
      * @param string $selector the selector to no longer exclude, e.g., ".editor"
-     *
-     * @return void
      */
     public function removeExcludedSelector($selector)
     {
@@ -784,8 +749,6 @@ class Emogrifier
      * to lowercase.
      *
      * @param \DOMXPath $xPath
-     *
-     * @return void
      */
     private function removeInvisibleNodes(\DOMXPath $xPath)
     {
@@ -810,8 +773,6 @@ class Emogrifier
      * Normalizes the value of the "style" attribute and saves it.
      *
      * @param \DOMElement $node
-     *
-     * @return void
      */
     private function normalizeStyleAttributes(\DOMElement $node)
     {
@@ -835,9 +796,7 @@ class Emogrifier
     }
 
     /**
-     * Merges styles from styles attributes and style nodes and applies them to the attribute nodes
-     *
-     * @return void
+     * Merges styles from styles attributes and style nodes and applies them to the attribute nodes.
      */
     private function fillStyleAttributesWithMergedStyles()
     {
@@ -913,10 +872,8 @@ class Emogrifier
      * Applies $css to $xmlDocument, limited to the media queries that actually apply to the document.
      *
      * @param \DOMDocument $xmlDocument the document to match against
-     * @param \DOMXPath $xPath
-     * @param string $css a string of CSS
-     *
-     * @return void
+     * @param \DOMXPath    $xPath
+     * @param string       $css         a string of CSS
      */
     private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
     {
@@ -939,6 +896,22 @@ class Emogrifier
     }
 
     /**
+     * Applies $css to $xmlDocument, limited to the @import that actually apply to the document.
+     *
+     * @param \DOMDocument $xmlDocument the document to match against
+     * @param \DOMXPath    $xPath
+     * @param string       $css         a string of CSS
+     */
+    private function copyImportsToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
+    {
+        if ($css === '') {
+            return;
+        }
+
+        $this->addStyleElementToDocument($xmlDocument, $css);
+    }
+
+    /**
      * Extracts the media queries from $css while skipping empty media queries.
      *
      * @param string $css
@@ -953,7 +926,7 @@ class Emogrifier
         foreach ($rawMediaQueries as $mediaQuery) {
             if ($mediaQuery[2] !== '') {
                 $parsedQueries[] = [
-                    'css'   => $mediaQuery[2],
+                    'css' => $mediaQuery[2],
                     'query' => $mediaQuery[0],
                 ];
             }
@@ -963,10 +936,30 @@ class Emogrifier
     }
 
     /**
+     * Extracts the imports from $css.
+     *
+     * @param string $css
+     *
+     * @return string, css @imports
+     */
+    private function extractImportsFromCss($css)
+    {
+        $imports = '';
+
+        preg_match_all('/^\\s*@import\\s[^;]+;/misU', $css, $importsMatches, PREG_PATTERN_ORDER);
+        if (!empty($importsMatches[0])) {
+            $importsArray = $importsMatches[0];
+            $imports = "\n" . implode("\n", array_map('trim', $importsArray)) . "\n";
+        }
+
+        return $imports;
+    }
+
+    /**
      * Checks whether there is at least one matching element for $cssSelector.
      *
      * @param \DOMXPath $xPath
-     * @param string $cssSelector
+     * @param string    $cssSelector
      *
      * @return bool
      */
@@ -1010,9 +1003,7 @@ class Emogrifier
      * @see https://github.com/jjriv/emogrifier/issues/103
      *
      * @param \DOMDocument $document
-     * @param string $css
-     *
-     * @return void
+     * @param string       $css
      */
     protected function addStyleElementToDocument(\DOMDocument $document, $css)
     {
@@ -1046,7 +1037,7 @@ class Emogrifier
     }
 
     /**
-     * Splits input CSS code to an array where:
+     * Splits input CSS code to an array where:.
      *
      * - key "css" will be contains clean CSS code
      * - key "media" will be contains all valuable media queries
@@ -1061,7 +1052,7 @@ class Emogrifier
      *
      *   "css" => "h1 { color:red; }"
      *   "media" => "@media { h1 {}}"
-     *
+     *	 
      * @param string $css
      *
      * @return string[]
@@ -1102,7 +1093,7 @@ class Emogrifier
      */
     private function createXmlDocument()
     {
-        $xmlDocument = new \DOMDocument;
+        $xmlDocument = new \DOMDocument();
         $xmlDocument->encoding = 'UTF-8';
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
@@ -1219,6 +1210,7 @@ class Emogrifier
         // selectors with greater precedence get sorted last.
         $precedenceForEquals = ($a['line'] < $b['line'] ? -1 : 1);
         $precedenceForNotEquals = ($precedenceA < $precedenceB ? -1 : 1);
+
         return ($precedenceA === $precedenceB) ? $precedenceForEquals : $precedenceForNotEquals;
     }
 
@@ -1234,7 +1226,7 @@ class Emogrifier
             $precedence = 0;
             $value = 100;
             // ids: worth 100, classes: worth 10, elements: worth 1
-            $search = ['\\#','\\.',''];
+            $search = ['\\#', '\\.', ''];
 
             foreach ($search as $s) {
                 if (trim($selector) === '') {
@@ -1304,6 +1296,7 @@ class Emogrifier
 
             $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
         }
+
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
@@ -1407,11 +1400,13 @@ class Emogrifier
         if (in_array(strtolower($match[2]), ['even', 'odd'], true)) {
             // we have "even" or "odd"
             $index = strtolower($match[2]) === 'even' ? 0 : 1;
+
             return [self::MULTIPLIER => 2, self::INDEX => $index];
         }
         if (stripos($match[2], 'n') === false) {
             // if there is a multiplier
             $index = (int) str_replace(' ', '', $match[2]);
+
             return [self::INDEX => $index];
         }
 
@@ -1457,7 +1452,7 @@ class Emogrifier
      * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
      *
      * @return string[]
-     *         the CSS declarations with the property names as array keys and the property values as array values
+     *                  the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationsBlock($cssDeclarationsBlock)
     {
