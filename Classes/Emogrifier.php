@@ -504,9 +504,12 @@ class Emogrifier
             case 'width':
                 // intentional fall-through
             case 'height':
-                // Remove 'px'. This regex only conserves numbers and %
-                $number = preg_replace('/[^0-9.%]/', '', $value);
-                $node->setAttribute($property, $number);
+                // Only parse values in px and %, but not values like "auto".
+                if (preg_match('/^\d+(px|%)$/', $value)) {
+                    // Remove 'px'. This regex only conserves numbers and %
+                    $number = preg_replace('/[^0-9.%]/', '', $value);
+                    $node->setAttribute($property, $number);
+                }
                 break;
             case 'margin':
                 if ($isTableOrImage) {

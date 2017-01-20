@@ -2059,6 +2059,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['<table></table>', 'table {float: none;}', 'align'],
             'p.border-spacing'
                 => ['<p>Hello</p>', 'p {border-spacing: 5px;}', 'cellspacing'],
+            'height: auto'
+                => ['<img src="logo.png" alt="">', 'img {width: 110px; height: auto;}', 'height'],
+            'width: auto'
+                => ['<img src="logo.png" alt="">', 'img {width: auto; height: 110px;}', 'width'],
         ];
     }
 

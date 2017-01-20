@@ -23,6 +23,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Ignore "auto" width and height
+  ([#365](https://github.com/jjriv/emogrifier/pull/365))
 
 
 ### Security
