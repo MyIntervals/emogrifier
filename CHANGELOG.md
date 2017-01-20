@@ -7,7 +7,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
-
 - Handling invalid xPath expression warnings
   ([#361](https://github.com/jjriv/emogrifier/pull/361))
 
@@ -26,6 +25,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Security
+
+
 
 ## 1.1.0 (2016-09-18)
 
