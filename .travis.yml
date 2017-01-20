@@ -25,8 +25,10 @@ matrix:
   - php: hhvm
     env: CODE_SNIFFER=yes
 
-before_script:
+install:
   - composer install
+
+before_script:
   - vendor/bin/phpcs --config-set encoding utf-8
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
