@@ -967,27 +967,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * @expectedException \InvalidArgumentException
      */
-    public function emogrifyIgnoresInvalidCssSelector()
+    public function emogrifyFailsOnInvalidCssSelector()
     {
+        // HHVM ignore custom error handler settings for libxml
+        // @see https://github.com/facebook/hhvm/issues/5790
+        if (defined('HHVM_VERSION')) {
+            $this->markTestSkipped('HHVM ignore custom error handler');
+        }
+
         $html = $this->html5DocumentType .
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>';
         $this->subject->setHtml($html);
 
-        $hasError = false;
-        set_error_handler(function ($errorNumber, $errorMessage) use (&$hasError) {
-            if ($errorMessage === 'DOMXPath::query(): Invalid expression') {
-                return true;
-            }
-
-            $hasError = true;
-            return true;
-        });
-
         $this->subject->emogrify();
-        restore_error_handler();
-
-        self::assertFalse($hasError);
     }
 
     /**
