@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Handling invalid xPath expression warnings
   ([#361](https://github.com/jjriv/emogrifier/pull/361))
 
+
 ### Changed
 
 
