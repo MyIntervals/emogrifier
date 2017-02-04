@@ -98,7 +98,9 @@ calling the `emogrify` method:
   "style" attributes to the HTML. The `<style>` blocks will then be removed
   from the HTML. If you want to disable this functionality so that Emogrifier
   leaves these `<style>` blocks in the HTML and does not parse them, you should
-  use this option.
+  use this option. If you use this option, the contents of the `<style>` blocks
+  will _not_ be applied as inline styles and any CSS you want Emogrifier to
+  use must be passed in as described in the [Usage section](#usage) above.
 * `$emogrifier->disableInlineStylesParsing()` - By default, Emogrifier
   preserves all of the "style" attributes on tags in the HTML you pass to it.
   However if you want to discard all existing inline styles in the HTML before
