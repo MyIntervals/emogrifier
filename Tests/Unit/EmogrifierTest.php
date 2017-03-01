@@ -611,6 +611,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'attribute value selector SPAN[title*] matches element with an attribute value with parts two words' => [
                 'span[title*="enas di"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
+            'attribute value selector SPAN[title*] matches element with an attribute value with odd characters' => [
+                'span[title*=": subtitle; author"] {' . $styleRule . '} ', '#<span title="title: subtitle; author" ' . $styleAttribute . '>#'
+            ],
             'attribute value selector SPAN[title^] matches element with attribute value that is exactly that word' => [
                 'span[title^="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
@@ -656,14 +659,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'P:first-child does not match middle child'
                 => ['p:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
             'P:first-child does not match last child'
-                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-5">#'],
+                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-6">#'],
             'P:last-child does not match first child' => ['p:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
             'P:last-child does not match middle child'
                 => ['p:last-child {' . $styleRule . '} ', '#<p class="p-3">#'],
             'P:last-child matches last child'
-                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-5" style="' . $styleRule . '">#'],
+                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-6" style="' . $styleRule . '">#'],
             'DIV:last-child does not match last child with mismatching tag'
-                => ['div:last-child {' . $styleRule . '} ', '#<p class="p-5">#'],
+                => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
         ];
     }
 
@@ -684,6 +687,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '    <p class="p-3"><span title="buenas dias">some</span> more text</p>' .
             '    <p class="p-4"><span title="avez-vous">some</span> more text</p>' .
             '    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>' .
+            '    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>' .
             '  </body>' .
             '</html>';
         $this->subject->setHtml($html);
