@@ -23,6 +23,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Allow colon (:) and semi-colon (;) when using the *= selector
+  ([#371](https://github.com/jjriv/emogrifier/pull/371))
 - Ignore "auto" width and height
   ([#365](https://github.com/jjriv/emogrifier/pull/365))
 
