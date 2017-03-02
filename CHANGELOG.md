@@ -7,8 +7,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
-- Handling invalid xPath expression warnings
-  ([#361](https://github.com/jjriv/emogrifier/pull/361))
 
 
 ### Changed
@@ -23,13 +21,29 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+
+
+### Security
+
+
+
+## 1.2.0 (2017-03-02)
+
+### Added
+- Handling invalid xPath expression warnings
+  ([#361](https://github.com/jjriv/emogrifier/pull/361))
+
+
+### Deprecated
+- Support for PHP 5.5 will be removed in Emogrifier 3.0.
+- Support for PHP 5.4 will be removed in Emogrifier 2.0.
+
+
+### Fixed
 - Allow colon (:) and semi-colon (;) when using the *= selector
   ([#371](https://github.com/jjriv/emogrifier/pull/371))
 - Ignore "auto" width and height
   ([#365](https://github.com/jjriv/emogrifier/pull/365))
-
-
-### Security
 
 
 

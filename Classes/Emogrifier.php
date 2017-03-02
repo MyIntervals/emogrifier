@@ -6,7 +6,7 @@ namespace Pelago;
  *
  * For more information, please see the README.md file.
  *
- * @version 1.1.0
+ * @version 1.2.0
  *
  * @author Cameron Brooks
  * @author Jaime Prado
