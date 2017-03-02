@@ -677,7 +677,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifierMatchesSelectors($css, $htmlRegularExpression)
     {
-        $html =  '<html id="html">' .
+        $html = '<html id="html">' .
             '  <body>' .
             '    <p class="p-1"><span>some text</span></p>' .
             '    <p class="p-2"><span title="bonjour">some</span> text</p>' .
