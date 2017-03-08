@@ -2121,4 +2121,21 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         self::assertContains('<div></div>', $html);
     }
+
+    /**
+     * @test
+     */
+    public function attributeSelectorDisabledDoesWork()
+    {
+        $this->subject->setHtml('<html><body><input disabled></body></html>');
+        $this->subject->setCss('
+            button[disabled],
+            html input[disabled] {
+              cursor: default;
+            }');
+
+        $html = $this->subject->emogrify();
+
+        self::assertContains('cursor:', $html);
+    }
 }
