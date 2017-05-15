@@ -226,6 +226,13 @@ class Emogrifier
     ];
 
     /**
+     * Array container errors that are generated when processing
+     *
+     * @var \Exception[]
+     */
+    private $errors = [];
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -366,35 +373,40 @@ class Emogrifier
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
-            // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
-            // ignore invalid selectors
-            if ($nodesMatchingCssSelectors === false) {
-                continue;
-            }
-
-            /** @var \DOMElement $node */
-            foreach ($nodesMatchingCssSelectors as $node) {
-                if (in_array($node, $excludedNodes, true)) {
+            try {
+                // query the body for the xpath selector
+                $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
+                // ignore invalid selectors
+                if ($nodesMatchingCssSelectors === false) {
                     continue;
                 }
 
-                // if it has a style attribute, get it, process it, and append (overwrite) new stuff
-                if ($node->hasAttribute('style')) {
-                    // break it up into an associative array
-                    $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
-                } else {
-                    $oldStyleDeclarations = [];
+                /** @var \DOMElement $node */
+                foreach ($nodesMatchingCssSelectors as $node) {
+                    if (in_array($node, $excludedNodes, true)) {
+                        continue;
+                    }
+
+                    // if it has a style attribute, get it, process it, and append (overwrite) new stuff
+                    if ($node->hasAttribute('style')) {
+                        // break it up into an associative array
+                        $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+                    } else {
+                        $oldStyleDeclarations = [];
+                    }
+                    $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
+                    if ($this->shouldMapCssToHtml) {
+                        $this->mapCssToHtmlAttributes($newStyleDeclarations, $node);
+                    }
+                    $node->setAttribute(
+                        'style',
+                        $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
+                    );
                 }
-                $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
-                if ($this->shouldMapCssToHtml) {
-                    $this->mapCssToHtmlAttributes($newStyleDeclarations, $node);
-                }
-                $node->setAttribute(
-                    'style',
-                    $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
-                );
+            }catch(\Exception $e){
+                $this->errors[] = $e;
             }
+
         }
 
         restore_error_handler();
@@ -1542,5 +1554,12 @@ class Emogrifier
 
         // the normal error handling continues when handler return false
         return false;
+    }
+
+    /**
+     * @return \Exception[]
+     */
+    public function getErrors(){
+        return $this->errors;
     }
 }
