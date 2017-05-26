@@ -18,6 +18,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Removed
+- Drop support for HHVM
+  ([#386](https://github.com/jjriv/emogrifier/pull/386))
 
 
 ### Fixed

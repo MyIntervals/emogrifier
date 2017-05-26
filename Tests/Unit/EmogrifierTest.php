@@ -952,12 +952,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForInvalidCssSelectorThrowsException()
     {
-        // HHVM ignores custom error handler settings for libxml.
-        // @see https://github.com/facebook/hhvm/issues/5790
-        if (defined('HHVM_VERSION')) {
-            $this->markTestSkipped('HHVM ignore custom error handler');
-        }
-
         $this->subject->setHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
