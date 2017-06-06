@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
-
+- Added setting for putting the media query style block to <body> vs <head>
 
 ### Changed
 

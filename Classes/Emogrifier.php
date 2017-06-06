@@ -155,6 +155,17 @@ class Emogrifier
     private $shouldKeepInvisibleNodes = true;
 
     /**
+     * Determines whether media query style blocks should be added to the body versus the head of the HTML.
+     * 
+     * If set to true, the <style> blocks will be added to the <body>
+     * 
+     * If set to false, the <style> blocks will be added to the <head>
+     *
+     * @var bool
+     */
+    private $shouldAddStyleToBody = false;
+
+    /**
      * @var string[]
      */
     private $xPathRules = [
@@ -649,6 +660,16 @@ class Emogrifier
     }
 
     /**
+     * Adds media query styles to <body> instead of <head>
+     *
+     * @return void
+     */
+    public function addStyleToBody()
+    {
+        $this->shouldAddStyleToBody = true;
+    }
+
+    /**
      * Clears all caches.
      *
      * @return void
@@ -1030,8 +1051,20 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $head = $this->getOrCreateHeadElement($document);
-        $head->appendChild($styleElement);
+        if ($this->shouldAddStyleToBody) {
+            $body = $this->getBodyElement($document);
+            $body->appendChild($styleElement);
+            if ($body->hasChildNodes()) {
+                $body->insertBefore($styleElement,$body->firstChild);
+            }
+            else {
+                $body->appendChild($styleElement);
+            }
+        }
+        else {
+            $head = $this->getOrCreateHeadElement($document);
+            $head->appendChild($styleElement);
+        }
     }
 
     /**
@@ -1052,6 +1085,20 @@ class Emogrifier
         }
 
         return $head;
+    }
+
+    /**
+     * Returns the existing body element in $document.
+     *
+     * @param \DOMDocument $document
+     *
+     * @return \DOMNode the body element
+     */
+    private function getBodyElement(\DOMDocument $document)
+    {
+        $body = $document->getElementsByTagName('body')->item(0);
+
+        return $body;
     }
 
     /**
