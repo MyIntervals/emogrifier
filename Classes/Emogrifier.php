@@ -367,8 +367,11 @@ class Emogrifier
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
             // query the body for the xpath selector
-            $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
-            // ignore invalid selectors
+            try {
+                $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
+            } catch (\InvalidArgumentException $e) {
+                $nodesMatchingCssSelectors = false;
+            }            // ignore invalid selectors
             if ($nodesMatchingCssSelectors === false) {
                 continue;
             }
