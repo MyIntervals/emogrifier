@@ -226,6 +226,13 @@ class Emogrifier
     ];
 
     /**
+     * If true, allow debug Exception to be thrown.
+     *
+     * @var bool
+     */
+    private $debug = false;
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -366,12 +373,8 @@ class Emogrifier
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
-            try {
-                // query the body for the xpath selector
-                $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
-            } catch (\InvalidArgumentException $e) {
-                $nodesMatchingCssSelectors = false;
-            }
+            // query the body for the xpath selector
+            $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
             // ignore invalid selectors
             if ($nodesMatchingCssSelectors === false) {
                 continue;
@@ -1533,18 +1536,32 @@ class Emogrifier
     public function handleXpathError($type, $message, $file, $line, array $context)
     {
         if ($type === E_WARNING && isset($context['cssRule']['selector'])) {
-            throw new \InvalidArgumentException(
-                sprintf(
-                    '%s in selector >> %s << in %s on line %s',
-                    $message,
-                    $context['cssRule']['selector'],
-                    $file,
-                    $line
-                )
-            );
+            if ($this->debug) {
+                throw new \InvalidArgumentException(
+                    sprintf(
+                        '%s in selector >> %s << in %s on line %s',
+                        $message,
+                        $context['cssRule']['selector'],
+                        $file,
+                        $line
+                    )
+                );
+            } else {
+                return false;
+            }
         }
 
         // the normal error handling continues when handler return false
         return false;
+    }
+
+    /**
+     * Set debug mode.
+     *
+     * @param bool $debug set to true to enable debug mode
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 }

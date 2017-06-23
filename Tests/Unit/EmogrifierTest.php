@@ -956,7 +956,24 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
 
+        $this->subject->setDebug(true);
         $this->subject->emogrify();
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyIgnoreInvalidCssSelectors()
+    {
+        $html = '<html><style type="text/css">' .
+            'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
+            '<body><p></p></body></html>';
+
+        $this->subject->setHtml($html);
+
+        $html = $this->subject->emogrify();
+        self::assertContains('color: red', $html);
+        self::assertContains('background-color: blue', $html);
     }
 
     /**
