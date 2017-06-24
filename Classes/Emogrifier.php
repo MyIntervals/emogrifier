@@ -1533,22 +1533,18 @@ class Emogrifier
      *
      * @throws \InvalidArgumentException
      */
-    public function handleXpathError($type, $message, $file, $line, array $context)
+     public function handleXpathError($type, $message, $file, $line, array $context)
     {
-        if ($type === E_WARNING && isset($context['cssRule']['selector'])) {
-            if ($this->debug) {
-                throw new \InvalidArgumentException(
-                    sprintf(
-                        '%s in selector >> %s << in %s on line %s',
-                        $message,
-                        $context['cssRule']['selector'],
-                        $file,
-                        $line
-                    )
-                );
-            } else {
-                return false;
-            }
+        if ($this->debug && $type === E_WARNING && isset($context['cssRule']['selector'])) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    '%s in selector >> %s << in %s on line %s',
+                    $message,
+                    $context['cssRule']['selector'],
+                    $file,
+                    $line
+                )
+            );
         }
 
         // the normal error handling continues when handler return false
