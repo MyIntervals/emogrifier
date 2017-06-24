@@ -1533,7 +1533,7 @@ class Emogrifier
      *
      * @throws \InvalidArgumentException
      */
-     public function handleXpathError($type, $message, $file, $line, array $context)
+    public function handleXpathError($type, $message, $file, $line, array $context)
     {
         if ($this->debug && $type === E_WARNING && isset($context['cssRule']['selector'])) {
             throw new \InvalidArgumentException(
