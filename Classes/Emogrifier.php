@@ -226,7 +226,7 @@ class Emogrifier
     ];
 
     /**
-     * If true, allow debug Exception to be thrown.
+     * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
      *
      * @var bool
      */
@@ -1556,9 +1556,11 @@ class Emogrifier
     }
 
     /**
-     * Set debug mode.
+     * Sets the debug mode.
      *
      * @param bool $debug set to true to enable debug mode
+     *
+     * @return void
      */
     public function setDebug($debug)
     {
