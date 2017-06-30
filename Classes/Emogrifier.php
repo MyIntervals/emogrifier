@@ -226,6 +226,13 @@ class Emogrifier
     ];
 
     /**
+     * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
+     *
+     * @var bool
+     */
+    private $debug = false;
+
+    /**
      * The constructor.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
@@ -1528,7 +1535,7 @@ class Emogrifier
      */
     public function handleXpathError($type, $message, $file, $line, array $context)
     {
-        if ($type === E_WARNING && isset($context['cssRule']['selector'])) {
+        if ($this->debug && $type === E_WARNING && isset($context['cssRule']['selector'])) {
             throw new \InvalidArgumentException(
                 sprintf(
                     '%s in selector >> %s << in %s on line %s',
@@ -1542,5 +1549,17 @@ class Emogrifier
 
         // the normal error handling continues when handler return false
         return false;
+    }
+
+    /**
+     * Sets the debug mode.
+     *
+     * @param bool $debug set to true to enable debug mode
+     *
+     * @return void
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
     }
 }
