@@ -950,7 +950,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function emogrifyForInvalidCssSelectorThrowsException()
+    public function emogrifyInDebugModeForInvalidCssSelectorThrowsException()
     {
         $this->subject->setHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
@@ -963,7 +963,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyIgnoreInvalidCssSelectors()
+    public function emogrifyNotInDebugModeIgnoresInvalidCssSelectors()
     {
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
