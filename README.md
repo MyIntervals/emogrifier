@@ -215,7 +215,7 @@ The following selectors are not implemented yet:
   cannot be converted accurately).
 
 
-## Maintainer
+## Maintainers
 
-Emogrifier is maintained by the good people at
-[Pelago](http://www.pelagodesign.com/), info AT pelagodesign DOT com.
+* [Oliver Klee](https://github.com/oliverklee)
+* [John Reeve](https://github.com/jjriv)
