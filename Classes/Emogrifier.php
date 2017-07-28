@@ -592,7 +592,7 @@ class Emogrifier
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
                     $hasAnyPseudoClass = (bool) preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool) preg_match('/:\\S+\\-(child|type\\()/i', $selector);
+                    $hasSupportedPseudoClass = (bool) preg_match('/:(\S+\-(child|type\()|not\([[:ascii:]]*\))/i', $selector);
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }
@@ -1289,38 +1289,58 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $roughXpath = '//' . preg_replace(
-                array_keys($this->xPathRules),
-                $this->xPathRules,
-                $trimmedLowercaseSelector
-            );
-            $xPathWithIdAttributeMatchers = preg_replace_callback(
-                self::ID_ATTRIBUTE_MATCHER,
-                [$this, 'matchIdAttributes'],
-                $roughXpath
-            );
-            $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
-                self::CLASS_ATTRIBUTE_MATCHER,
-                [$this, 'matchClassAttributes'],
-                $xPathWithIdAttributeMatchers
-            );
+            list($trimmedLowercaseSelector, $notSelector) = explode(':not', $trimmedLowercaseSelector);
 
-            // Advanced selectors are going to require a bit more advanced emogrification.
-            // When we required PHP 5.3, we could do this with closures.
-            $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
-                '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
-                [$this, 'translateNthChild'],
-                $xPathWithIdAttributeAndClassMatchers
-            );
-            $finalXpath = preg_replace_callback(
-                '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
-                [$this, 'translateNthOfType'],
-                $xPathWithIdAttributeAndClassMatchers
-            );
+            $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
+
+            if ($notSelector) {
+                $notSelector = trim($notSelector, '()');
+                $finalXpath = $finalXpath . '[not(' . $this->translateCssToXpathPass($notSelector, true) . ')]';
+            }
 
             $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
         }
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+    }
+
+    private function translateCssToXpathPass($trimmedLowercaseSelector, $inline = false)
+    {
+        $roughXpath = preg_replace(
+                array_keys($this->xPathRules),
+                $this->xPathRules,
+                $trimmedLowercaseSelector
+            );
+
+        $xPathWithIdAttributeMatchers = preg_replace_callback(
+            self::ID_ATTRIBUTE_MATCHER,
+            [$this, 'matchIdAttributes'],
+            $roughXpath
+        );
+
+        $matchClassAttributesCallback = [$this, 'matchClassAttributes'];
+        if ($inline) {
+            $matchClassAttributesCallback = [$this, 'matchClassAttributesInline'];
+        }
+        $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
+            self::CLASS_ATTRIBUTE_MATCHER,
+            $matchClassAttributesCallback,
+            $xPathWithIdAttributeMatchers
+        );
+
+        // Advanced selectors are going to require a bit more advanced emogrification.
+        // When we required PHP 5.3, we could do this with closures.
+        $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
+            '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
+            [$this, 'translateNthChild'],
+            $xPathWithIdAttributeAndClassMatchers
+        );
+        $finalXpath = preg_replace_callback(
+            '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
+            [$this, 'translateNthOfType'],
+            $xPathWithIdAttributeAndClassMatchers
+        );
+
+        return $finalXpath;
     }
 
     /**
@@ -1340,11 +1360,21 @@ class Emogrifier
      */
     private function matchClassAttributes(array $match)
     {
-        return ($match[1] !== '' ? $match[1] : '*') . '[contains(concat(" ",@class," "),concat(" ","' .
+        return ($match[1] !== '' ? $match[1] : '*') . '[' . $this->matchClassAttributesInline($match) . ']';
+    }
+
+    /**
+     * @param string[] $match
+     *
+     * @return string
+     */
+    private function matchClassAttributesInline(array $match)
+    {
+        return 'contains(concat(" ",@class," "),concat(" ","' .
             implode(
                 '"," "))][contains(concat(" ",@class," "),concat(" ","',
                 explode('.', substr($match[2], 1))
-            ) . '"," "))]';
+            ) . '"," "))';
     }
 
     /**
