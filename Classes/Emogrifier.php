@@ -1289,7 +1289,10 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            list($trimmedLowercaseSelector, $notSelector) = explode(':not', $trimmedLowercaseSelector);
+            $notSelector = null;
+            if (strstr($trimmedLowercaseSelector, ':not')) {
+                list($trimmedLowercaseSelector, $notSelector) = explode(':not', $trimmedLowercaseSelector);
+            }
 
             $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
 
