@@ -592,7 +592,10 @@ class Emogrifier
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
                     $hasAnyPseudoClass = (bool) preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool) preg_match('/:(\S+\-(child|type\()|not\([[:ascii:]]*\))/i', $selector);
+                    $hasSupportedPseudoClass = (bool) preg_match(
+                        '/:(\S+\-(child|type\()|not\([[:ascii:]]*\))/i',
+                        $selector
+                    );
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }
@@ -1309,10 +1312,10 @@ class Emogrifier
     private function translateCssToXpathPass($trimmedLowercaseSelector, $inline = false)
     {
         $roughXpath = preg_replace(
-                array_keys($this->xPathRules),
-                $this->xPathRules,
-                $trimmedLowercaseSelector
-            );
+            array_keys($this->xPathRules),
+            $this->xPathRules,
+            $trimmedLowercaseSelector
+        );
 
         $xPathWithIdAttributeMatchers = preg_replace_callback(
             self::ID_ATTRIBUTE_MATCHER,
