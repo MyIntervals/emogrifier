@@ -5,6 +5,7 @@ language: php
 cache:
   directories:
   - vendor
+  - $HOME/.composer/cache
 
 env:
   global:
@@ -13,20 +14,16 @@ env:
 matrix:
   include:
   - php: 5.4
-    env: CODE_SNIFFER=yes
   - php: 5.5
-    env: CODE_SNIFFER=yes
   - php: 5.6
-    env: CODE_SNIFFER=yes
   - php: 7.0
-    env: CODE_SNIFFER=yes
   - php: 7.1
-    env: CODE_SNIFFER=yes
-  - php: hhvm
-    env: CODE_SNIFFER=yes
+
+install:
+  - composer install
 
 before_script:
-  - composer install
+  - phpenv config-rm xdebug.ini
   - vendor/bin/phpcs --config-set encoding utf-8
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
@@ -34,6 +31,6 @@ script:
   # Run PHP lint on all PHP files.
   - find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
   # Check the coding style.
-  - if [[ "CODE_SNIFFER" == "yes" ]]; then vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/; fi
+  - vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/
   # Run the unit tests.
   - vendor/bin/phpunit Tests/

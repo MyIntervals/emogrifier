@@ -1,9 +1,13 @@
 {
     "name": "pelago/emogrifier",
     "description": "Converts CSS styles into inline style attributes in your HTML code",
-    "tags": ["email", "css", "pre-processing"],
+    "keywords": [
+        "email",
+        "css",
+        "pre-processing"
+    ],
+    "homepage": "https://www.myintervals.com/emogrifier.php",
     "license": "MIT",
-    "homepage": "http://www.pelagodesign.com/sidecar/emogrifier/",
     "authors": [
         {
             "name": "John Reeve",
@@ -25,7 +29,7 @@
         }
     ],
     "require": {
-        "php": ">=5.4.0,<=7.1.99"
+        "php": ">=5.4.0, <=7.1.99"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "2.6.0",
@@ -38,7 +42,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2.x-dev"
+            "dev-master": "1.3.x-dev"
         }
     }
 }

@@ -5,13 +5,40 @@ clean-up to Emogrifier are more than welcome.
 
 When you contribute, please take the following things into account:
 
+
 ## Contributor Code of Conduct
 
 Please note that this project is released with a
 [Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this
 project, you agree to abide by its terms.
 
+
 ## General workflow
+
+This is the workflow for contributing changes to Emogrifier:
+
+1. [Fork the Emogrifier Git repository](https://guides.github.com/activities/forking/).
+2. Clone your forked repository and
+   [install the development dependencies](#install-the-development-dependencies).
+3. Add a local remote "upstream" so you will be able to
+   [synchronize your fork with the original Emogrifier repository](https://help.github.com/articles/syncing-a-fork/).
+4. Create a local branch for your changes.
+5. [Add unit tests for your changes](#unit-test-your-changes).
+   These tests should fail without your changes.
+6. Add your changes. Your added unit tests now should pass, and no other tests
+   should be broken. Check that your changes follow the same
+   [coding style](#coding-style) as the rest of the project.
+7. Add a changelog entry.
+8. [Commit](#git-commits) and push your changes.
+9. [Create a pull request](https://help.github.com/articles/about-pull-requests/)
+   for your changes. Check that the Travis build is green. (If it is not, fix the
+   problems listed by Travis.)
+10. [Request a review](https://help.github.com/articles/about-pull-request-reviews/)
+    from @oliverklee.
+11. Together with him, polish your changes until they are ready to be merged.
+
+
+## About code reviews
 
 After you have submitted a pull request, the Emogrifier team will review your
 changes. This will probably result in quite a few comments on ways to improve
@@ -68,7 +95,7 @@ code documentation.
 
 ## Git commits
 
-Git commits should have a <= 50 character summary, optionally followed by a
+Commit message should have a <= 50 character summary, optionally followed by a
 blank line and a more in depth description of 79 characters per line.
 
 [Please squash related commits together](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
@@ -81,3 +108,9 @@ Please use grammatically correct, complete sentences in the commit messages.
 Also, please prefix the subject line of the commit message with either
 [FEATURE], [TASK], [BUGFIX] OR [CLEANUP]. This makes it faster to see what
 a commit is about.
+
+
+## Creating pull requests (PRs)
+
+When you create a pull request, please
+[make your PR editable](https://github.com/blog/2247-improving-collaboration-with-forks).
