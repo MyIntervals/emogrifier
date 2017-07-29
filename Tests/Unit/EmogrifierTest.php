@@ -1071,7 +1071,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function addAllowedMediaTypeKeepsStylesForTheGivenMediaType()
     {
         $css = '@media braille { html { some-property: value; } }';
-        $this->subject->setHtml('<html></html>');
+        $this->subject->setHtml('<html><body></body></html>');
         $this->subject->setCss($css);
         $this->subject->addAllowedMediaType('braille');
 
@@ -1111,13 +1111,30 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepExistingHeadElementAddStyleElement()
     {
-        $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
+        $html = $this->html5DocumentType . '<html><head><!-- original content --></head><body></body></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html {} }');
 
         $result = $this->subject->emogrify();
 
         self::assertContains('<style type="text/css">', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyMoveStyleElementFromHeadToBody()
+    {
+        $html = $this->html5DocumentType .
+            '<html><head><style>@media all { html {  color: red; } }</style></head><body></body></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body><style type="text/css">@media all { html {  color: red; } }</style></body>',
+            $result
+        );
     }
 
     /**

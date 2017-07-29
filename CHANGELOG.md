@@ -7,9 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
-- Added setting for putting the media query style block to <body> vs <head>
 - Debug mode. Throw debug exceptions only if debug is active.
   ([#392](https://github.com/jjriv/emogrifier/pull/392))
+- Added setting for putting the media query style block to <body> vs <head>
+  ([#359](https://github.com/jjriv/emogrifier/pull/359))
 
 ### Changed
 

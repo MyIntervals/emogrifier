@@ -119,10 +119,6 @@ calling the `emogrify` method:
   well, even if inline and prefer HTML attributes. This function allows you to
   put properties such as height, width, background color and font color in your
   CSS while the transformed content will have all the available HTML tags set.
-* `$emogrifier->addStyleToBody()` - By default, Emogrifier will append a `<style>`
-  block with all media queries to the `<head>` of the HTML.  If you wand to append
-  it to the top of the `<body>` instead, use this option.  This is useful because many
-  email clients will completely drop the `<head>` block from all emails.
 
 
 ## Requirements
