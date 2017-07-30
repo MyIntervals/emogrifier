@@ -670,6 +670,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 => ['p:last-child {' . $styleRule . '} ', '#<p class="p-6" style="' . $styleRule . '">#'],
             'DIV:last-child does not match last child with mismatching tag'
                 => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
+            'P:not(.p-6) matches all but P.p-6'
+                => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-6">#'],
         ];
     }
 

@@ -9,7 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Debug mode. Throw debug exceptions only if debug is active.
   ([#392](https://github.com/jjriv/emogrifier/pull/392))
-
+- Support for CSS :not() selector.
+  ([#395](https://github.com/jjriv/emogrifier/pull/395))
 
 ### Changed
 
