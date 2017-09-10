@@ -1038,29 +1038,9 @@ class Emogrifier
         $styleElement->appendChild($styleAttribute);
 
         $body = $this->getBodyElement($document);
-        if ($body) {
+        if ($body !== null) {
             $body->appendChild($styleElement);
         }
-    }
-
-    /**
-     * Returns the existing or creates a new head element in $document.
-     *
-     * @param \DOMDocument $document
-     *
-     * @return \DOMNode the head element
-     */
-    private function getOrCreateHeadElement(\DOMDocument $document)
-    {
-        $head = $document->getElementsByTagName('head')->item(0);
-
-        if ($head === null) {
-            $head = $document->createElement('head');
-            $html = $document->getElementsByTagName('html')->item(0);
-            $html->insertBefore($head, $document->getElementsByTagName('body')->item(0));
-        }
-
-        return $head;
     }
 
     /**
@@ -1068,7 +1048,7 @@ class Emogrifier
      *
      * @param \DOMDocument $document
      *
-     * @return \DOMNode the body element
+     * @return \DOMNode|null the body element
      */
     private function getBodyElement(\DOMDocument $document)
     {
