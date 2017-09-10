@@ -7,10 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
-- Debug mode. Throw debug exceptions only if debug is active.
-  ([#392](https://github.com/jjriv/emogrifier/pull/392))
 - Added setting for putting the media query style block to <body> vs <head>
   ([#396](https://github.com/jjriv/emogrifier/pull/396))
+- Debug mode. Throw debug exceptions only if debug is active.
+  ([#392](https://github.com/jjriv/emogrifier/pull/392))
 - PHP 7.2 support ([#398](https://github.com/jjriv/emogrifier/pull/398))
   - Allow PHP 7.2 in composer.json, cleaner PHP version constraint
   - Test in Travis for PHP 7.2
