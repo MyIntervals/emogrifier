@@ -31,7 +31,6 @@ into inline style attributes in your HTML code.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Options](#options)
-- [Requirements](#requirements)
 - [Installing with Composer](#installing-with-composer)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
@@ -119,12 +118,6 @@ calling the `emogrify` method:
   well, even if inline and prefer HTML attributes. This function allows you to
   put properties such as height, width, background color and font color in your
   CSS while the transformed content will have all the available HTML tags set.
-
-
-## Requirements
-
-* PHP from 5.4 to 7.0
-* or HHVM
 
 
 ## Installing with Composer
