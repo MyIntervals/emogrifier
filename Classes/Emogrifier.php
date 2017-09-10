@@ -1299,7 +1299,7 @@ class Emogrifier
 
             $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
 
-            if ($notSelector) {
+            if ($notSelector !== '') {
                 $finalXpath = $finalXpath . '[not(' . $this->translateCssToXpathPass($notSelector, true) . ')]';
             }
 
