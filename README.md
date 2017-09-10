@@ -166,6 +166,7 @@ Emogrifier currently support the following
  * attribute only
  * first-child
  * last-child
+ * not
 
 The following selectors are not implemented yet:
 

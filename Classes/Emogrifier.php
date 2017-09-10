@@ -1309,6 +1309,13 @@ class Emogrifier
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
+    /**
+     * @param string $trimmedLowercaseSelector
+     *
+     * @param bool $inline If set to true it only outputs inline part of xPath class selector. Needed for :not selector
+     *
+     * @return string
+     */
     private function translateCssToXpathPass($trimmedLowercaseSelector, $inline = false)
     {
         $roughXpath = preg_replace(
