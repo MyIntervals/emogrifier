@@ -1292,21 +1292,37 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $notSelector = null;
-            if (strstr($trimmedLowercaseSelector, ':not')) {
+            $notSelector = $this->extractNotSelector($trimmedLowercaseSelector);
+            if (strpos($trimmedLowercaseSelector, ':not') !== false) {
                 list($trimmedLowercaseSelector, $notSelector) = explode(':not', $trimmedLowercaseSelector);
             }
 
             $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
 
             if ($notSelector) {
-                $notSelector = trim($notSelector, '()');
                 $finalXpath = $finalXpath . '[not(' . $this->translateCssToXpathPass($notSelector, true) . ')]';
             }
 
             $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
         }
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+    }
+
+    /**
+     * @param string $trimmedLowercaseSelector Whole CSS selector. :not selector part will be removed
+     *
+     * @return string :not selector content or empty string
+     */
+    private function extractNotSelector(&$trimmedLowercaseSelector)
+    {
+        $notSelector = '';
+
+        if (strpos($trimmedLowercaseSelector, ':not') !== null) {
+            list($trimmedLowercaseSelector, $notSelector) = explode(':not', $trimmedLowercaseSelector);
+            $notSelector = trim($notSelector, '()');
+        }
+
+        return $notSelector;
     }
 
     /**
@@ -1369,7 +1385,7 @@ class Emogrifier
     /**
      * @param string[] $match
      *
-     * @return string
+     * @return string xPath class attribute query wrapped in element selector
      */
     private function matchClassAttributes(array $match)
     {
@@ -1379,7 +1395,7 @@ class Emogrifier
     /**
      * @param string[] $match
      *
-     * @return string
+     * @return string xPath class attribute query
      */
     private function matchClassAttributesInline(array $match)
     {
