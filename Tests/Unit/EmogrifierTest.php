@@ -671,9 +671,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'DIV:last-child does not match last child with mismatching tag'
                 => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
             'P:not(.p-6) matches all but P.p-6'
-            => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-6">#'],
+                => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-6">#'],
             'P:not(.p-6) matches all but P.p-6 check if other paragraphs got style applied'
-            => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-5" ' . $styleAttribute . '>#'],
+                => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-5" ' . $styleAttribute . '>#'],
         ];
     }
 
