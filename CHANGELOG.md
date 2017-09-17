@@ -28,6 +28,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Silence purposefully ignored PHP Warnings
+  ([#400](https://github.com/MyIntervals/emogrifier/pull/400))
 
 
 ### Security
