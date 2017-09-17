@@ -30,6 +30,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 - Silence purposefully ignored PHP Warnings
   ([#400](https://github.com/MyIntervals/emogrifier/pull/400))
+- Fix media regex parsing
+  ([#320](https://github.com/MyIntervals/emogrifier/pull/320))
 
 
 ### Security
