@@ -1147,7 +1147,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "only screen" media type rule' => ['@media only screen { h1 { color:red; } }'],
             'style in "only all" media type rule' => ['@media only all { h1 { color:red; } }'],
             'style in "screen" media type rule' => ['@media screen { h1 { color:red; } }'],
+            'style in "print" media type rule' => ['@media print { * { color:#000 !important; } }'],
             'style in media type rule without specification' => ['@media { h1 { color:red; } }'],
+            'style with multiple media type rules' => [
+                '@media all { p { color: #000; } }' .
+                '@media only screen { h1 { color:red; } }' .
+                '@media only all { h1 { color:red; } }' .
+                '@media print { * { color:#000 !important; } }' .
+                '@media { h1 { color:red; } }'
+            ],
         ];
     }
 
@@ -1165,7 +1173,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains($css, $result);
+        self::assertContains('<style type="text/css">' . $css . '</style>', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider validMediaPreserveDataProvider
+     */
+    public function emogrifyWithValidMinifiedMediaQueryContainsInnerCss($css)
+    {
+        // Minify CSS by removing unnecessary whitespace.
+        $css = preg_replace('/\s*{\s*/', '{', $css);
+        $css = preg_replace('/;?\s*}\s*/', '}', $css);
+        $css = preg_replace('/@media{/', '@media {', $css);
+
+        $this->subject->setHtml('<html><h1></h1><p></p></html>');
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1181,7 +1211,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains($css, $result);
+        self::assertContains('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
