@@ -406,9 +406,6 @@ class Emogrifier
                     $oldStyleDeclarations = [];
                 }
                 $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
-                if ($this->shouldMapCssToHtml) {
-                    $this->mapCssToHtmlAttributes($newStyleDeclarations, $node);
-                }
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -422,11 +419,45 @@ class Emogrifier
             $this->fillStyleAttributesWithMergedStyles();
         }
 
+        if ($this->shouldMapCssToHtml) {
+            $this->mapAllInlineStylesToHtmlAttributes($xPath);
+        }
+
         if ($this->shouldKeepInvisibleNodes) {
             $this->removeInvisibleNodes($xPath);
         }
 
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+    }
+
+    /**
+     * Searches for all nodes with a style attribute, transforms the CSS found
+     * to HTML attributes and adds those attributes to each node.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    private function mapAllInlineStylesToHtmlAttributes(\DOMXPath $xPath)
+    {
+        $nodesWithStyleAttributes = $xPath->query('//*[@style]');
+        if ($nodesWithStyleAttributes === false) {
+            if ($this->debug) {
+                throw new \RuntimeException(
+                    'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
+                    1508437884
+                );
+            }
+            return;
+        }
+
+        /** @var \DOMElement $node */
+        foreach ($nodesWithStyleAttributes as $node) {
+            $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+            $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
+        }
     }
 
     /**

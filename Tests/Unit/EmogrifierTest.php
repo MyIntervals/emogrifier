@@ -1997,10 +1997,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->enableCssToHtmlMapping();
         $html = $this->subject->emogrify();
 
-        self::assertContains(
-            '<' . $tagName . ' ' . $attributes,
-            $html
-        );
+        self::assertRegExp('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attributes, '/') . '/', $html);
     }
 
     /**
@@ -2120,5 +2117,50 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '<body>' . $style . '</body>',
             $result
         );
+    }
+
+    /**
+     * Asserts that $html contains a $tagName tag with the $attribute attribute.
+     *
+     * @param string $html the HTML string we are searching in
+     * @param string $tagName the HTML tag we are looking for
+     * @param string $attribute the attribute we are looking for (with or even without a value)
+     */
+    private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
+    {
+        self::assertTrue(
+            preg_match('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attribute, '/') . '/', $html) > 0
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyPrefersInlineStyleOverCssBlockStyleForHtmlAttributesMapping()
+    {
+        $this->subject->setHtml(
+            '<html><head><style>p {width:1px}</style></head><body><p style="width:2px"></p></body></html>'
+        );
+        $this->subject->enableCssToHtmlMapping();
+
+        $result = $this->subject->emogrify();
+
+        $this->assertHtmlStringContainsTagWithAttribute($result, 'p', 'width="2"');
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyCorrectsHtmlAttributesMappingWhenMultipleMatchingRulesAndLastRuleIsAuto()
+    {
+        $this->subject->setHtml(
+            '<html><head><style>p {width:1px}</style></head><body><p class="autoWidth"></p></body></html>'
+        );
+        $this->subject->setCss('p.autoWidth {width:auto}');
+        $this->subject->enableCssToHtmlMapping();
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<p class="autoWidth" style="width: auto;">', $result);
     }
 }

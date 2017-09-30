@@ -30,6 +30,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Fixed mapped html attribute values
+  ([#405](https://github.com/MyIntervals/emogrifier/pull/405))
 - Make sure the HTML always has a BODY element
   ([#410](https://github.com/MyIntervals/emogrifier/pull/410))
 - Make inline style priority higher than css block priority
