@@ -844,7 +844,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsCssAfterExistingStyle()
+    public function emogrifyAddsCssBeforeExistingStyle()
     {
         $styleAttributeValue = 'color: #ccc;';
         $this->subject->setHtml('<html style="' . $styleAttributeValue . '"></html>');
@@ -855,7 +855,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            'style="' . $styleAttributeValue . ' ' . $cssDeclarations . '"',
+            'style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"',
             $result
         );
     }
@@ -1456,7 +1456,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="text-align: center; padding-bottom: 1px; padding-top: 0;">', $result);
+        self::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
     }
 
     /**
@@ -1474,7 +1474,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            '<p style="text-align: center; margin: 0; padding-top: 1px; padding-bottom: 3px;">',
+            '<p style="margin: 0; padding-top: 1px; padding-bottom: 3px; text-align: center;">',
             $result
         );
     }
@@ -1492,7 +1492,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="text-align: center; margin: 0; padding-bottom: 1px;">', $result);
+        self::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $result);
     }
 
     /**
@@ -1793,7 +1793,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 2px !important; text-align: center; padding: 1px;">', $result);
+        self::assertContains('<p style="margin: 2px !important; padding: 1px; text-align: center;">', $result);
     }
 
     /**
@@ -2163,5 +2163,19 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $html = $this->subject->emogrify();
 
         self::assertContains('<div></div>', $html);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsInlineStylePriorityVersusStyleBlockRules()
+    {
+        $this->subject->setHtml(
+            '<html><head><style>p {padding:10px}</style></head><body><p style="padding-left:20px"></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
     }
 }
