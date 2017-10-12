@@ -49,7 +49,7 @@
     <rule ref="Zend.Files.ClosingTag"/>
 
     <!-- Formatting -->
-    <rule ref="Generic.Formatting.SpaceAfterCast"/>
+    <rule ref="Generic.Formatting.NoSpaceAfterCast"/>
     <rule ref="PEAR.Formatting.MultiLineAssignment"/>
 
     <!-- Functions -->

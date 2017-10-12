@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelago;
 
 /**
@@ -159,34 +160,34 @@ class Emogrifier
      */
     private $xPathRules = [
         // child
-        '/\\s*>\\s*/'                              => '/',
+        '/\\s*>\\s*/' => '/',
         // adjacent sibling
-        '/\\s+\\+\\s+/'                            => '/following-sibling::*[1]/self::',
+        '/\\s+\\+\\s+/' => '/following-sibling::*[1]/self::',
         // descendant
-        '/\\s+(?=.*[^\\]]{1}$)/'                   => '//',
+        '/\\s+(?=.*[^\\]]{1}$)/' => '//',
         // :first-child
-        '/([^\\/]+):first-child/i'                 => '*[1]/self::\\1',
+        '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
         // :last-child
-        '/([^\\/]+):last-child/i'                  => '*[last()]/self::\\1',
+        '/([^\\/]+):last-child/i' => '*[last()]/self::\\1',
         // attribute only
-        '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/'  => '*[@\\1]',
+        '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/' => '*[@\\1]',
         // attribute
-        '/(\\w)\\[(\\w+)\\]/'                      => '\\1[@\\2]',
+        '/(\\w)\\[(\\w+)\\]/' => '\\1[@\\2]',
         // exact attribute
         '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
         // element attribute~=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/'
-            => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
+        => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
         // element attribute^=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
         // element attribute*=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
         // element attribute$=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
-            => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
+        => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
         // element attribute|=
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
-            => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
+        => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
     ];
 
     /**
@@ -434,7 +435,7 @@ class Emogrifier
      * node.
      *
      * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
-     * @param \DOMNode $node   node to apply styles to
+     * @param \DOMNode $node node to apply styles to
      *
      * @return void
      */
@@ -453,8 +454,8 @@ class Emogrifier
      * This method maps a CSS rule to HTML attributes and adds those to the node.
      *
      * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
+     * @param string $value the value of the style rule to map
+     * @param \DOMNode $node node to apply styles to
      *
      * @return void
      */
@@ -469,8 +470,8 @@ class Emogrifier
      * Looks up the CSS property in the mapping table and maps it if it matches the conditions.
      *
      * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
+     * @param string $value the value of the style rule to map
+     * @param \DOMNode $node node to apply styles to
      *
      * @return bool true if the property cab be mapped using the simple mapping table
      */
@@ -496,8 +497,8 @@ class Emogrifier
      * Maps CSS properties that need special transformation to an HTML attribute.
      *
      * @param string $property the name of the CSS property to map
-     * @param string $value    the value of the style rule to map
-     * @param \DOMNode $node   node to apply styles to
+     * @param string $value the value of the style rule to map
+     * @param \DOMNode $node node to apply styles to
      *
      * @return void
      */
@@ -601,8 +602,8 @@ class Emogrifier
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
-                    $hasAnyPseudoClass = (bool) preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool) preg_match('/:\\S+\\-(child|type\\()/i', $selector);
+                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
+                    $hasSupportedPseudoClass = (bool)preg_match('/:\\S+\\-(child|type\\()/i', $selector);
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }
@@ -979,7 +980,7 @@ class Emogrifier
         foreach ($rawMediaQueries as $mediaQuery) {
             if ($mediaQuery[2] !== '') {
                 $parsedQueries[] = [
-                    'css'   => $mediaQuery[2],
+                    'css' => $mediaQuery[2],
                     'query' => $mediaQuery[0],
                 ];
             }
@@ -1260,7 +1261,7 @@ class Emogrifier
             $precedence = 0;
             $value = 100;
             // ids: worth 100, classes: worth 10, elements: worth 1
-            $search = ['\\#','\\.',''];
+            $search = ['\\#', '\\.', ''];
 
             foreach ($search as $s) {
                 if (trim($selector) === '') {
@@ -1437,13 +1438,13 @@ class Emogrifier
         }
         if (stripos($match[2], 'n') === false) {
             // if there is a multiplier
-            $index = (int) str_replace(' ', '', $match[2]);
+            $index = (int)str_replace(' ', '', $match[2]);
             return [self::INDEX => $index];
         }
 
         if (isset($match[3])) {
             $multipleTerm = str_replace($match[3], '', $match[2]);
-            $index = (int) str_replace(' ', '', $match[3]);
+            $index = (int)str_replace(' ', '', $match[3]);
         } else {
             $multipleTerm = $match[2];
             $index = 0;
@@ -1456,7 +1457,7 @@ class Emogrifier
         } elseif ($multiplier === '0') {
             return [self::INDEX => $index];
         } else {
-            $multiplier = (int) $multiplier;
+            $multiplier = (int)$multiplier;
         }
 
         while ($index < 0) {
