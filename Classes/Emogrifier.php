@@ -355,9 +355,12 @@ class Emogrifier
             foreach ($nodesWithStyleAttributes as $node) {
                 if ($this->isInlineStyleAttributesParsingEnabled) {
                     $this->normalizeStyleAttributes($node);
-                } else {
-                    $node->removeAttribute('style');
                 }
+                // Remove style attribute in every case, so we can add them back (if inline style attributes
+                // parsing is enabled) to the end of the style list, thus keeping the right priority of CSS rules;
+                // else original inline style rules may remain at the beginning of the final inline style definition
+                // of a node, which may give not the desired results
+                $node->removeAttribute('style');
             }
         }
 
