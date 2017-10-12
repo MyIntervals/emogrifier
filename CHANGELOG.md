@@ -28,6 +28,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Make inline style priority higher than css block priority
+  ([#404](https://github.com/MyIntervals/emogrifier/pull/404))
 - Fix media regex parsing
   ([#402](https://github.com/MyIntervals/emogrifier/pull/402))
 - Silence purposefully ignored PHP Warnings
