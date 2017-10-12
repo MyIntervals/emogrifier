@@ -1,4 +1,5 @@
 <?php
+
 namespace Pelago\Tests\Unit;
 
 use Pelago\Emogrifier;
@@ -256,9 +257,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertContains($umlautString, $result);
     }
 
-   /**
-    * @test
-    */
+    /**
+     * @test
+     */
     public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithoutHead()
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
@@ -270,9 +271,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertContains($umlautString, $result);
     }
 
-   /**
-    * @test
-    */
+    /**
+     * @test
+     */
     public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithHtmlAndWithoutHead()
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
@@ -284,9 +285,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         self::assertContains($umlautString, $result);
     }
 
-   /**
-    * @test
-    */
+    /**
+     * @test
+     */
     public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithHead()
     {
         $umlautString = 'Küss die Hand, schöne Frau.';
@@ -543,133 +544,154 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         return [
             'universal selector HTML'
-                => ['* {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
+            => ['* {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'universal selector BODY'
-                => ['* {' . $styleRule . '} ', '#<body ' . $styleAttribute . '>#'],
+            => ['* {' . $styleRule . '} ', '#<body ' . $styleAttribute . '>#'],
             'universal selector P'
-                => ['* {' . $styleRule . '} ', '#<p[^>]*' . $styleAttribute . '>#'],
+            => ['* {' . $styleRule . '} ', '#<p[^>]*' . $styleAttribute . '>#'],
             'type selector matches first P'
-                => ['p {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
+            => ['p {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'type selector matches second P'
-                => ['p {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
+            => ['p {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
             'descendant selector P SPAN'
-                => ['p span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'descendant selector BODY SPAN'
-                => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child'
-                => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child without space after >'
-                => ['p >span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p >span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child without space before >'
-                => ['p> span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p> span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector P > SPAN matches direct child without space before or after >'
-                => ['p>span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
+            => ['p>span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
             'child selector BODY > SPAN does not match grandchild'
-                => ['body > span {' . $styleRule . '} ', '#<span>#'],
+            => ['body > span {' . $styleRule . '} ', '#<span>#'],
             'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
             'adjacent selector P + P matches second P'
-                => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
+            => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
-                => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
+            => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
             'ID selector #HTML' => ['#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'type and ID selector HTML#HTML'
-                => ['html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
+            => ['html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
             'class selector .P-1' => ['.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'type and class selector P.P-1'
-                => ['p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
+            => ['p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] matches element with matching attribute'
-                => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
+            => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] does not match element without any attributes'
-                => ['span[title] {' . $styleRule . '} ', '#<span>#'],
+            => ['span[title] {' . $styleRule . '} ', '#<span>#'],
             'attribute value selector [id="html"] matches element with matching attribute value' => [
-                '[id="html"] {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'
+                '[id="html"] {' . $styleRule . '} ',
+                '#<html id="html" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] matches element with matching attribute value' => [
-                'span[title="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] matches element with matching attribute value two words' => [
-                'span[title="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
-                    . $styleAttribute . '>#'
+                'span[title="buenas dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" '
+                . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] matches element with matching attribute value four words' => [
-                'span[title="buenas dias bom dia"] {' . $styleRule . '} ', '#<span title="buenas dias bom dia" '
-                    . $styleAttribute . '>#'
+                'span[title="buenas dias bom dia"] {' . $styleRule . '} ',
+                '#<span title="buenas dias bom dia" '
+                . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title~] matches element with an attribute value with just that word' => [
-                'span[title~="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title~="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title~] matches element with attribute value with that word as 2nd of 2' => [
-                'span[title~="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title~="dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title~] matches element with attribute value with that word as 1st of 2' => [
-                'span[title~="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title~="buenas"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with an attribute value with just that word' => [
-                'span[title*="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title*="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with attribute value with that word as 2nd of 2' => [
-                'span[title*="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title*="dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with an attribute value with parts two words' => [
-                'span[title*="enas di"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title*="enas di"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title*] matches element with an attribute value with odd characters' => [
-                'span[title*=": subtitle; author"] {' . $styleRule . '} ', '#<span title="title: subtitle; author" '
-                    . $styleAttribute . '>#'
+                'span[title*=": subtitle; author"] {' . $styleRule . '} ',
+                '#<span title="title: subtitle; author" '
+                . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title^] matches element with attribute value that is exactly that word' => [
-                'span[title^="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title^="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title^] matches element with an attribute value that begins that word' => [
-                'span[title^="bonj"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title^="bonj"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title^] matches element with an attribute value that begins that word '
             . 'and contains other words' => [
-                'span[title^="buenas"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title^="buenas"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with attribute value that is exactly that word' => [
-                'span[title$="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title$="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with an attribute value with two words' => [
-                'span[title$="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
-                    . $styleAttribute . '>#'
+                'span[title$="buenas dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" '
+                . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with an attribute value that end that word' => [
-                'span[title$="jour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title$="jour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title$] matches element with an attribute value that end that word '
             . 'and contains other words' => [
-                'span[title$="dias"] {' . $styleRule . '} ', '#<span title="buenas dias" ' . $styleAttribute . '>#'
+                'span[title$="dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title|] matches element with attribute value that is exactly that word' => [
-                'span[title|="bonjour"] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'
+                'span[title|="bonjour"] {' . $styleRule . '} ',
+                '#<span title="bonjour" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title|] matches element with an attribute value with two words' => [
-                'span[title|="buenas dias"] {' . $styleRule . '} ', '#<span title="buenas dias" '
-                    . $styleAttribute . '>#'
+                'span[title|="buenas dias"] {' . $styleRule . '} ',
+                '#<span title="buenas dias" '
+                . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title|] matches element with an attribute value with 2 words with hypen' => [
-                'span[title|="avez"] {' . $styleRule . '} ', '#<span title="avez-vous" ' . $styleAttribute . '>#'
+                'span[title|="avez"] {' . $styleRule . '} ',
+                '#<span title="avez-vous" ' . $styleAttribute . '>#'
             ],
             'attribute value selector SPAN[title] does not match element with other attribute value'
-                => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
+            => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
             'attribute value selector SPAN[title] does not match element without any attributes'
-                => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
+            => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
             'P:first-child matches first child with matching tag'
-                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
+            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
             'DIV:first-child does not match first child with mismatching tag'
-                => ['div:first-child {' . $styleRule . '} ', '#<p class="p-1">#'],
+            => ['div:first-child {' . $styleRule . '} ', '#<p class="p-1">#'],
             'P:first-child does not match middle child'
-                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
+            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
             'P:first-child does not match last child'
-                => ['p:first-child {' . $styleRule . '} ', '#<p class="p-6">#'],
+            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-6">#'],
             'P:last-child does not match first child' => ['p:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
             'P:last-child does not match middle child'
-                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-3">#'],
+            => ['p:last-child {' . $styleRule . '} ', '#<p class="p-3">#'],
             'P:last-child matches last child'
-                => ['p:last-child {' . $styleRule . '} ', '#<p class="p-6" style="' . $styleRule . '">#'],
+            => ['p:last-child {' . $styleRule . '} ', '#<p class="p-6" style="' . $styleRule . '">#'],
             'DIV:last-child does not match last child with mismatching tag'
-                => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
+            => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
         ];
     }
 
@@ -762,15 +784,18 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'one declaration with space in property value' => ['margin: 0 4px;', 'margin: 0 4px;'],
             'two declarations separated by semicolon' => ['color: #000;width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon and space'
-                => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
+            => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon and linefeed' => [
-                'color: #000;' . self::LF . 'width: 3px;', 'color: #000; width: 3px;'
+                'color: #000;' . self::LF . 'width: 3px;',
+                'color: #000; width: 3px;'
             ],
             'two declarations separated by semicolon and Windows line ending' => [
-                "color: #000;\r\nwidth: 3px;", 'color: #000; width: 3px;'
+                "color: #000;\r\nwidth: 3px;",
+                'color: #000; width: 3px;'
             ],
             'one declaration with leading dash in property name' => [
-                '-webkit-text-size-adjust:none;', '-webkit-text-size-adjust: none;'
+                '-webkit-text-size-adjust:none;',
+                '-webkit-text-size-adjust: none;'
             ],
         ];
     }
@@ -1445,6 +1470,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Emogrify was handling case differently for passed in CSS vs CSS parsed from style blocks.
+     *
      * @test
      */
     public function emogrifyAppliesCssWithMixedCaseAttributesInStyleBlock()
@@ -1461,6 +1487,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Passed in CSS sets the order, but style block CSS overrides values.
+     *
      * @test
      */
     public function emogrifyMergesCssWithMixedCaseAttribute()
@@ -1994,72 +2021,72 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'background-color => bgcolor'
-                => ['<p>hi</p>', 'p {background-color: red;}', 'p', 'bgcolor="red"'],
+            => ['<p>hi</p>', 'p {background-color: red;}', 'p', 'bgcolor="red"'],
             'background-color (with !important) => bgcolor'
-                => ['<p>hi</p>', 'p {background-color: red !important;}', 'p', 'bgcolor="red"'],
+            => ['<p>hi</p>', 'p {background-color: red !important;}', 'p', 'bgcolor="red"'],
             'p.text-align => align'
-                => ['<p>hi</p>', 'p {text-align: justify;}', 'p', 'align="'],
+            => ['<p>hi</p>', 'p {text-align: justify;}', 'p', 'align="'],
             'div.text-align => align'
-                => ['<div>hi</div>', 'div {text-align: justify;}', 'div', 'align="'],
+            => ['<div>hi</div>', 'div {text-align: justify;}', 'div', 'align="'],
             'td.text-align => align'
-                => ['<table><tr><td>hi</td></tr></table>', 'td {text-align: justify;}', 'td', 'align="'],
+            => ['<table><tr><td>hi</td></tr></table>', 'td {text-align: justify;}', 'td', 'align="'],
             'text-align: left => align=left'
-                => ['<p>hi</p>', 'p {text-align: left;}', 'p', 'align="left"'],
+            => ['<p>hi</p>', 'p {text-align: left;}', 'p', 'align="left"'],
             'text-align: right => align=right'
-                => ['<p>hi</p>', 'p {text-align: right;}', 'p', 'align="right"'],
+            => ['<p>hi</p>', 'p {text-align: right;}', 'p', 'align="right"'],
             'text-align: center => align=center'
-                => ['<p>hi</p>', 'p {text-align: center;}', 'p', 'align="center"'],
+            => ['<p>hi</p>', 'p {text-align: center;}', 'p', 'align="center"'],
             'text-align: justify => align:justify'
-                => ['<p>hi</p>', 'p {text-align: justify;}', 'p', 'align="justify"'],
+            => ['<p>hi</p>', 'p {text-align: justify;}', 'p', 'align="justify"'],
             'img.float: right => align=right'
-                => ['<img>', 'img {float: right;}', 'img', 'align="right"'],
+            => ['<img>', 'img {float: right;}', 'img', 'align="right"'],
             'img.float: left => align=left'
-                => ['<img>', 'img {float: left;}', 'img', 'align="left"'],
+            => ['<img>', 'img {float: left;}', 'img', 'align="left"'],
             'table.float: right => align=right'
-                => ['<table></table>', 'table {float: right;}', 'table', 'align="right"'],
+            => ['<table></table>', 'table {float: right;}', 'table', 'align="right"'],
             'table.float: left => align=left'
-                => ['<table></table>', 'table {float: left;}', 'table', 'align="left"'],
+            => ['<table></table>', 'table {float: left;}', 'table', 'align="left"'],
             'table.border-spacing: 0 => cellspacing=0'
-                => ['<table><tr><td></td></tr></table>', 'table {border-spacing: 0;}', 'table', 'cellspacing="0"'],
+            => ['<table><tr><td></td></tr></table>', 'table {border-spacing: 0;}', 'table', 'cellspacing="0"'],
             'background => bgcolor'
-                => ['<p>Bonjour</p>', 'p {background: red top;}', 'p', 'bgcolor="red"'],
+            => ['<p>Bonjour</p>', 'p {background: red top;}', 'p', 'bgcolor="red"'],
             'width with px'
-                => ['<p>Hello</p>', 'p {width: 100px;}', 'p', 'width="100"'],
+            => ['<p>Hello</p>', 'p {width: 100px;}', 'p', 'width="100"'],
             'width with %'
-                => ['<p>Hello</p>', 'p {width: 50%;}', 'p', 'width="50%"'],
+            => ['<p>Hello</p>', 'p {width: 50%;}', 'p', 'width="50%"'],
             'height with px'
-                => ['<p>Hello</p>', 'p {height: 100px;}', 'p', 'height="100"'],
+            => ['<p>Hello</p>', 'p {height: 100px;}', 'p', 'height="100"'],
             'height with %'
-                => ['<p>Hello</p>', 'p {height: 50%;}', 'p', 'height="50%"'],
+            => ['<p>Hello</p>', 'p {height: 50%;}', 'p', 'height="50%"'],
             'img.margin: 0 auto (= horizontal centering) => align=center'
-                => ['<img>', 'img {margin: 0 auto;}', 'img', 'align="center"'],
+            => ['<img>', 'img {margin: 0 auto;}', 'img', 'align="center"'],
             'img.margin: auto (= horizontal centering) => align=center'
-                => ['<img>', 'img {margin: auto;}', 'img', 'align="center"'],
+            => ['<img>', 'img {margin: auto;}', 'img', 'align="center"'],
             'img.margin: 10 auto 30 auto (= horizontal centering) => align=center'
-                => ['<img>', 'img {margin: 10 auto 30 auto;}', 'img', 'align="center"'],
+            => ['<img>', 'img {margin: 10 auto 30 auto;}', 'img', 'align="center"'],
             'table.margin: 0 auto (= horizontal centering) => align=center'
-                => ['<table></table>', 'table {margin: 0 auto;}', 'table', 'align="center"'],
+            => ['<table></table>', 'table {margin: 0 auto;}', 'table', 'align="center"'],
             'table.margin: auto (= horizontal centering) => align=center'
-                => ['<table></table>', 'table {margin: auto;}', 'table', 'align="center"'],
+            => ['<table></table>', 'table {margin: auto;}', 'table', 'align="center"'],
             'table.margin: 10 auto 30 auto (= horizontal centering) => align=center'
-                => ['<table></table>', 'table {margin: 10 auto 30 auto;}', 'table', 'align="center"'],
+            => ['<table></table>', 'table {margin: 10 auto 30 auto;}', 'table', 'align="center"'],
             'img.border: none => border=0'
-                => ['<img>', 'img {border: none;}', 'img', 'border="0"'],
+            => ['<img>', 'img {border: none;}', 'img', 'border="0"'],
             'img.border: 0 => border=0'
-                => ['<img>', 'img {border: none;}', 'img', 'border="0"'],
+            => ['<img>', 'img {border: none;}', 'img', 'border="0"'],
             'table.border: none => border=0'
-                => ['<table></table>', 'table {border: none;}', 'table', 'border="0"'],
+            => ['<table></table>', 'table {border: none;}', 'table', 'border="0"'],
             'table.border: 0 => border=0'
-                => ['<table></table>', 'table {border: none;}', 'table', 'border="0"'],
+            => ['<table></table>', 'table {border: none;}', 'table', 'border="0"'],
         ];
     }
 
     /**
      * @test
-     * @param string $body          The HTML
-     * @param string $css           The complete CSS
-     * @param string $tagName       The name of the tag that should be modified
-     * @param string $attributes    The attributes that are expected on the element
+     * @param string $body The HTML
+     * @param string $css The complete CSS
+     * @param string $tagName The name of the tag that should be modified
+     * @param string $attributes The attributes that are expected on the element
      *
      * @dataProvider matchingCssToHtmlMappingDataProvider
      */
@@ -2086,38 +2113,38 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'background URL'
-                => ['<p>Hello</p>', 'p {background: url(bg.png);}', 'bgcolor'],
+            => ['<p>Hello</p>', 'p {background: url(bg.png);}', 'bgcolor'],
             'background URL with position'
-                => ['<p>Hello</p>', 'p {background: url(bg.png) top;}', 'bgcolor'],
+            => ['<p>Hello</p>', 'p {background: url(bg.png) top;}', 'bgcolor'],
             'img.margin: 10 5 30 auto (= no horizontal centering)'
-                => ['<img>', 'img {margin: 10 5 30 auto;}', 'align'],
+            => ['<img>', 'img {margin: 10 5 30 auto;}', 'align'],
             'p.margin: auto'
-                => ['<p>Bonjour</p>', 'p {margin: auto;}', 'align'],
+            => ['<p>Bonjour</p>', 'p {margin: auto;}', 'align'],
             'p.border: none'
-                => ['<p>Bonjour</p>', 'p {border: none;}', 'border'],
+            => ['<p>Bonjour</p>', 'p {border: none;}', 'border'],
             'img.border: 1px solid black'
-                => ['<p>Bonjour</p>', 'p {border: 1px solid black;}', 'border'],
+            => ['<p>Bonjour</p>', 'p {border: 1px solid black;}', 'border'],
             'span.text-align'
-                => ['<span>hi</span>', 'span {text-align: justify;}', 'align'],
+            => ['<span>hi</span>', 'span {text-align: justify;}', 'align'],
             'text-align: inherit'
-                => ['<p>hi</p>', 'p {text-align: inherit;}', 'align'],
+            => ['<p>hi</p>', 'p {text-align: inherit;}', 'align'],
             'span.float'
-                => ['<span>hi</span>', 'span {float: right;}', 'align'],
+            => ['<span>hi</span>', 'span {float: right;}', 'align'],
             'float: none'
-                => ['<table></table>', 'table {float: none;}', 'align'],
+            => ['<table></table>', 'table {float: none;}', 'align'],
             'p.border-spacing'
-                => ['<p>Hello</p>', 'p {border-spacing: 5px;}', 'cellspacing'],
+            => ['<p>Hello</p>', 'p {border-spacing: 5px;}', 'cellspacing'],
             'height: auto'
-                => ['<img src="logo.png" alt="">', 'img {width: 110px; height: auto;}', 'height'],
+            => ['<img src="logo.png" alt="">', 'img {width: 110px; height: auto;}', 'height'],
             'width: auto'
-                => ['<img src="logo.png" alt="">', 'img {width: auto; height: 110px;}', 'width'],
+            => ['<img src="logo.png" alt="">', 'img {width: auto; height: 110px;}', 'width'],
         ];
     }
 
     /**
      * @test
-     * @param string $body      the HTML
-     * @param string $css       the complete CSS
+     * @param string $body the HTML
+     * @param string $css the complete CSS
      * @param string $attribute the attribute that must not be present on this element
      *
      * @dataProvider notMatchingCssToHtmlMappingDataProvider
