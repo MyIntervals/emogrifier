@@ -2171,7 +2171,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepsInlineStylePriorityVersusStyleBlockRules()
     {
         $this->subject->setHtml(
-            '<html><head><style>p {padding:10px}</style></head><body><p style="padding-left:20px"></p></body></html>'
+            '<html><head><style>p {padding: 10px};</style></head><body><p style="padding-left: 20px;"></p></body></html>'
         );
 
         $result = $this->subject->emogrify();
