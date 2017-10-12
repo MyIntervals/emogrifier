@@ -56,7 +56,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \BadMethodCallException
      */
-    public function emogrifyForNoDataSetReturnsThrowsException()
+    public function emogrifyForNoDataSetThrowsException()
     {
         $this->subject->emogrify();
     }
@@ -79,7 +79,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \BadMethodCallException
      */
-    public function emogrifyBodyContentForNoDataSetReturnsThrowsException()
+    public function emogrifyBodyContentForNoDataSetThrowsException()
     {
         $this->subject->emogrifyBodyContent();
     }
@@ -98,11 +98,27 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyAddsHtmlTagIfNoHtmlTagAndNoHeadTagAreProvided()
+    public function contentWithoutHtmlTagDataProvider()
     {
-        $this->subject->setHtml('<p>Hello</p>');
+        return [
+            'doctype only' => ['<!DOCTYPE html>'],
+            'body content only' => ['<p>Hello</p>'],
+            'HEAD element' => ['<head></head>'],
+            'BODY element' => ['<body></body>'],
+            'HEAD AND BODY element' => ['<head></head><body></body>'],
+        ];
+    }
+
+    /**
+     * @test
+     * @param string $html
+     * @dataProvider contentWithoutHtmlTagDataProvider
+     */
+    public function emogrifyAddsMissingHtmlTag($html)
+    {
+        $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
 
@@ -110,23 +126,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyAddsHtmlTagIfHeadTagIsProvidedButNoHtmlTaqg()
+    public function contentWithoutHeadTagDataProvider()
     {
-        $this->subject->setHtml('<head><title>Hello</title></head><p>World</p>');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains('<html>', $result);
+        return [
+            'doctype only' => ['<!DOCTYPE html>'],
+            'body content only' => ['<p>Hello</p>'],
+            'BODY element' => ['<body></body>'],
+        ];
     }
 
     /**
      * @test
+     * @param string $html
+     * @dataProvider contentWithoutHeadTagDataProvider
      */
-    public function emogrifyAddsHeadTagIfNoHtmlTagAndNoHeadTagAreProvided()
+    public function emogrifyAddsMissingHeadTag($html)
     {
-        $this->subject->setHtml('<p>Hello</p>');
+        $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
 
@@ -136,13 +154,38 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsHtmlTagIfHtmlTagIsProvidedButNoHeadTaqg()
+    public function emogrifyWithNonEmptyContentAddsMissingBodyTag()
     {
-        $this->subject->setHtml('<html></head><p>World</p></html>');
+        $this->subject->setHtml('<p>Hello</p>');
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<head>', $result);
+        self::assertContains('<body>', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function contentWithoutBodyTagDataProvider()
+    {
+        return [
+            'doctype only' => ['<!DOCTYPE html>'],
+            'HEAD element' => ['<head></head>'],
+        ];
+    }
+
+    /**
+     * @test
+     * @param string $html
+     * @dataProvider contentWithoutBodyTagDataProvider
+     */
+    public function emogrifyWithEmptyContentNotAddsMissingBodyTag($html)
+    {
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains('<body>', $result);
     }
 
     /**
