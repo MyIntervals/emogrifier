@@ -1300,11 +1300,12 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $roughXpath = '//' . preg_replace(
-                array_keys($this->xPathRules),
-                $this->xPathRules,
-                $trimmedLowercaseSelector
-            );
+            $roughXpath = '//' .
+                preg_replace(
+                    array_keys($this->xPathRules),
+                    $this->xPathRules,
+                    $trimmedLowercaseSelector
+                );
             $xPathWithIdAttributeMatchers = preg_replace_callback(
                 self::ID_ATTRIBUTE_MATCHER,
                 [$this, 'matchIdAttributes'],
