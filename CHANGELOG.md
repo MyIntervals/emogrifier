@@ -28,6 +28,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Make sure the HTML always has a BODY element
+  ([#410](https://github.com/MyIntervals/emogrifier/pull/410))
 - Make inline style priority higher than css block priority
   ([#404](https://github.com/MyIntervals/emogrifier/pull/404))
 - Fix media regex parsing

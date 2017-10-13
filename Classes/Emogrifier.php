@@ -294,6 +294,7 @@ class Emogrifier
         }
 
         $xmlDocument = $this->createXmlDocument();
+        $this->ensureExistenceOfBodyElement($xmlDocument);
         $this->process($xmlDocument);
 
         return $xmlDocument->saveHTML();
@@ -1050,6 +1051,22 @@ class Emogrifier
 
         $head = $this->getOrCreateHeadElement($document);
         $head->appendChild($styleElement);
+    }
+
+    /**
+     * Checks that $document has a BODY element and adds it if it is missing.
+     *
+     * @param \DOMDocument $document
+     */
+    private function ensureExistenceOfBodyElement(\DOMDocument $document)
+    {
+        if ($document->getElementsByTagName('body')->item(0) !== null) {
+            return;
+        }
+
+        $htmlElement = $document->getElementsByTagName('html')->item(0);
+
+        $htmlElement->appendChild($document->createElement('body'));
     }
 
     /**
