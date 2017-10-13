@@ -19,16 +19,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    private $html4TransitionalDocumentType = '';
-
-    /**
-     * @var string
-     */
-    private $xhtml1StrictDocumentType = '';
-
-    /**
-     * @var string
-     */
     private $html5DocumentType = '<!DOCTYPE html>';
 
     /**
@@ -43,11 +33,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->html4TransitionalDocumentType = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" ' .
-            '"http://www.w3.org/TR/REC-html40/loose.dtd">';
-        $this->xhtml1StrictDocumentType = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
-            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
-
         $this->subject = new Emogrifier();
     }
 
@@ -190,197 +175,63 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyKeepsDollarSignsAndSquareBrackets()
+    public function specialCharactersDataProvider()
     {
-        $templateMarker = '$[USER:NAME]$';
-        $html = '<html><p>' . $templateMarker . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($templateMarker, $result);
+        return [
+            'template markers with dollar signs and square brackets' => ['$[USER:NAME]$'],
+            'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
+            'HTML entities' => ['a &amp; b &gt; c'],
+        ];
     }
 
     /**
      * @test
+     * @param string $codeNotToBeChanged
+     * @dataProvider specialCharactersDataProvider
      */
-    public function emogrifyKeepsUtf8UmlautsInHtml5()
+    public function emogrifyKeepsSpecialCharacters($codeNotToBeChanged)
     {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $html = $this->html5DocumentType . '<html><p>' . $umlautString . '</p></html>';
+        $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
 
-        self::assertContains($umlautString, $result);
+        self::assertContains($codeNotToBeChanged, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function documentTypeDataProvider()
+    {
+        return [
+            'HTML5' => ['<!DOCTYPE html>'],
+            'XHTML 1 strict' => [
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+            ],
+            'HTML 4 transitional' => [
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" ' .
+                '"http://www.w3.org/TR/REC-html40/loose.dtd">'
+            ],
+        ];
     }
 
     /**
      * @test
+     * @param string $documentType
+     * @dataProvider documentTypeDataProvider
      */
-    public function emogrifyKeepsUtf8UmlautsInXhtml()
+    public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType($documentType)
     {
-        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
-        $html = $this->xhtml1StrictDocumentType . '<html<p>' . $umlautString . '</p></html>';
+        $html = $documentType . '<html></html>';
         $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
 
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsUtf8UmlautsInHtml4()
-    {
-        $umlautString = 'Öösel läks õunu täis ämber uhkelt ümber.';
-        $html = $this->html4TransitionalDocumentType . '<html><p>' . $umlautString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsHtmlEntities()
-    {
-        $entityString = 'a &amp; b &gt; c';
-        $html = '<html><p>' . $entityString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($entityString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsHtmlEntitiesInXhtml()
-    {
-        $entityString = 'a &amp; b &gt; c';
-        $html = $this->xhtml1StrictDocumentType . '<html<p>' . $entityString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($entityString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsHtmlEntitiesInHtml4()
-    {
-        $entityString = 'a &amp; b &gt; c';
-        $html = $this->html5DocumentType . '<html><p>' . $entityString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($entityString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsUtf8UmlautsWithoutDocumentType()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $html = '<html><head></head><p>' . $umlautString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithoutHead()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $html = '<p>' . $umlautString . '</p>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithHtmlAndWithoutHead()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $html = '<html><p>' . $umlautString . '</p></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepsUtf8UmlautsWithoutDocumentTypeAndWithoutHtmlAndWithHead()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $html = '<head></head><p>' . $umlautString . '</p>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($umlautString, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyForHtmlTagOnlyAndEmptyCssByDefaultAddsHtml5DocumentType()
-    {
-        $html = '<html></html>';
-        $this->subject->setHtml($html);
-        $this->subject->setCss('');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($this->html5DocumentType, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType()
-    {
-        $html = $this->xhtml1StrictDocumentType . '<html></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($this->xhtml1StrictDocumentType, $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyForHtmlTagWithXhtml5DocumentTypeKeepsDocumentType()
-    {
-        $html = $this->html5DocumentType . '<html></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains($this->html5DocumentType, $result);
+        self::assertContains($documentType, $result);
     }
 
     /**
@@ -1628,7 +1479,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForXhtmlDocumentTypeConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag()
     {
-        $this->subject->setHtml($this->xhtml1StrictDocumentType . '<html><body><br/></body></html>');
+        $this->subject->setHtml(
+            '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
+            '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">' .
+            '<html><body><br/></body></html>'
+        );
 
         $result = $this->subject->emogrify();
 
