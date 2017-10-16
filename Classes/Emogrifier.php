@@ -1052,8 +1052,8 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $head = $this->getOrCreateHeadElement($document);
-        $head->appendChild($styleElement);
+        $bodyElement = $this->getBodyElement($document);
+        $bodyElement->appendChild($styleElement);
     }
 
     /**
@@ -1070,6 +1070,30 @@ class Emogrifier
         $htmlElement = $document->getElementsByTagName('html')->item(0);
 
         $htmlElement->appendChild($document->createElement('body'));
+    }
+
+    /**
+     * Returns the BODY element.
+     *
+     * This method assumes that there always is a BODY element.
+     *
+     * @param \DOMDocument $document
+     *
+     * @return \DOMElement
+     *
+     * @throws \BadMethodCallException
+     */
+    private function getBodyElement(\DOMDocument $document)
+    {
+        $bodyElement = $document->getElementsByTagName('body')->item(0);
+        if ($bodyElement === null) {
+            throw new \BadMethodCallException(
+                'getBodyElement method may only be called after ensureExistenceOfBodyElement has been called.',
+                1508173775427
+            );
+        }
+
+        return $bodyElement;
     }
 
     /**

@@ -1029,7 +1029,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepExistingHeadElementAddStyleElement()
+    public function emogrifyAddsStyleElementToBody()
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
         $this->subject->setHtml($html);
@@ -1037,7 +1037,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<style type="text/css">', $result);
+        self::assertContains('<body><style type="text/css">', $result);
     }
 
     /**
@@ -2103,5 +2103,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyMovesStyleElementFromHeadToBody()
+    {
+        $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
+        $html = '<html><head>' . $style . '</head></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains(
+            '<body>' . $style . '</body>',
+            $result
+        );
     }
 }
