@@ -294,6 +294,7 @@ class Emogrifier
         }
 
         $xmlDocument = $this->createXmlDocument();
+        $this->ensureExistenceOfBodyElement($xmlDocument);
         $this->process($xmlDocument);
 
         return $xmlDocument->saveHTML();
@@ -1051,30 +1052,68 @@ class Emogrifier
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $bodyElement = $this->createAndGetBodyElement($document);
+        $bodyElement = $this->getBodyElement($document);
         $bodyElement->appendChild($styleElement);
     }
 
     /**
-     * Checks that $document has a BODY element, and adds it if it is missing,
-     * and returns it.
+     * Checks that $document has a BODY element and adds it if it is missing.
      *
      * @param \DOMDocument $document
-     *
-     * @return \DOMNode the body element
      */
-    private function createAndGetBodyElement(\DOMDocument $document)
+    private function ensureExistenceOfBodyElement(\DOMDocument $document)
     {
-        $bodyElement = $document->getElementsByTagName('body')->item(0);
-        if ($bodyElement !== null) {
-            return $bodyElement;
+        if ($document->getElementsByTagName('body')->item(0) !== null) {
+            return;
         }
 
         $htmlElement = $document->getElementsByTagName('html')->item(0);
-        $bodyElement = $document->createElement('body');
-        $htmlElement->appendChild($bodyElement);
-      
+
+        $htmlElement->appendChild($document->createElement('body'));
+    }
+
+    /**
+     * Returns the BODY element.
+     *
+     * This method assumes that there always is a BODY element.
+     *
+     * @param \DOMDocument $document
+     *
+     * @return \DOMElement
+     *
+     * @throws \BadMethodCallException
+     */
+    private function getBodyElement(\DOMDocument $document)
+    {
+        $bodyElement = $document->getElementsByTagName('body')->item(0);
+        if ($bodyElement === null) {
+            throw new \BadMethodCallException(
+                'getBodyElement method may only be called after ensureExistenceOfBodyElement has been called.',
+                1508173775427
+            );
+        }
+
         return $bodyElement;
+    }
+
+    /**
+     * Returns the existing or creates a new head element in $document.
+     *
+     * @param \DOMDocument $document
+     *
+     * @return \DOMNode the head element
+     */
+    private function getOrCreateHeadElement(\DOMDocument $document)
+    {
+        $head = $document->getElementsByTagName('head')->item(0);
+
+        if ($head === null) {
+            $head = $document->createElement('head');
+            $html = $document->getElementsByTagName('html')->item(0);
+            $html->insertBefore($head, $document->getElementsByTagName('body')->item(0));
+        }
+
+        return $head;
     }
 
     /**
