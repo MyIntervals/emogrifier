@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 - Support for CSS :not() selector.
   ([#395](https://github.com/jjriv/emogrifier/pull/395))
+- Automatically move <style> block from <head> to <body>
+  ([#396](https://github.com/jjriv/emogrifier/pull/396))
 - PHP 7.2 support ([#398](https://github.com/jjriv/emogrifier/pull/398))
   - Allow PHP 7.2 in composer.json, cleaner PHP version constraint
   - Test in Travis for PHP 7.2
@@ -30,6 +32,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Make sure the HTML always has a BODY element
+  ([#410](https://github.com/MyIntervals/emogrifier/pull/410))
+- Make inline style priority higher than css block priority
+  ([#404](https://github.com/MyIntervals/emogrifier/pull/404))
+- Fix media regex parsing
+  ([#402](https://github.com/MyIntervals/emogrifier/pull/402))
+- Silence purposefully ignored PHP Warnings
+  ([#400](https://github.com/MyIntervals/emogrifier/pull/400))
 
 
 ### Security
