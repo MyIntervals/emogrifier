@@ -289,15 +289,7 @@ class Emogrifier
      */
     public function emogrify()
     {
-        if ($this->html === '') {
-            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
-        }
-
-        $xmlDocument = $this->createXmlDocument();
-        $this->ensureExistenceOfBodyElement($xmlDocument);
-        $this->process($xmlDocument);
-
-        return $xmlDocument->saveHTML();
+        return $this->createAndProcessXmlDocument()->saveHTML();
     }
 
     /**
@@ -312,19 +304,30 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
+        $xmlDocument = $this->createAndProcessXmlDocument();
+        $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
+
+        return str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+    }
+
+    /**
+     * Creates an XML document from $this->html and emogrifies ist.
+     *
+     * @return \DOMDocument
+     *
+     * @throws \BadMethodCallException
+     */
+    private function createAndProcessXmlDocument()
+    {
         if ($this->html === '') {
-            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
+            throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
 
-        $xmlDocument = $this->createXmlDocument();
+        $xmlDocument = $this->createRawXmlDocument();
+        $this->ensureExistenceOfBodyElement($xmlDocument);
         $this->process($xmlDocument);
 
-        $innerDocument = new \DOMDocument();
-        foreach ($xmlDocument->documentElement->getElementsByTagName('body')->item(0)->childNodes as $childNode) {
-            $innerDocument->appendChild($innerDocument->importNode($childNode, true));
-        }
-
-        return html_entity_decode($innerDocument->saveHTML());
+        return $xmlDocument;
     }
 
     /**
@@ -1202,7 +1205,7 @@ class Emogrifier
      *
      * @return \DOMDocument
      */
-    private function createXmlDocument()
+    private function createRawXmlDocument()
     {
         $xmlDocument = new \DOMDocument;
         $xmlDocument->encoding = 'UTF-8';

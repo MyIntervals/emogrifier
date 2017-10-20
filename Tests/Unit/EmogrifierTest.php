@@ -202,6 +202,21 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @param string $codeNotToBeChanged
+     * @dataProvider specialCharactersDataProvider
+     */
+    public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
+    {
+        $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrifyBodyContent();
+
+        self::assertContains($codeNotToBeChanged, $result);
+    }
+
+    /**
      * @return string[][]
      */
     public function documentTypeDataProvider()
@@ -1554,10 +1569,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        self::assertSame(
-            '<p></p>' . self::LF,
-            $result
-        );
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -1569,23 +1581,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        self::assertSame(
-            '<p></p>' . self::LF,
-            $result
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyBodyContentKeepsUtf8Umlauts()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $this->subject->setHtml('<p>' . $umlautString . '</p>');
-
-        $result = $this->subject->emogrifyBodyContent();
-
-        self::assertContains($umlautString, $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
