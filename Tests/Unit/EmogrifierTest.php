@@ -239,7 +239,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      * @param string $documentType
      * @dataProvider documentTypeDataProvider
      */
-    public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType($documentType)
+    public function emogrifyForHtmlWithDocumentTypeKeepsDocumentType($documentType)
     {
         $html = $documentType . '<html></html>';
         $this->subject->setHtml($html);
@@ -252,7 +252,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsContentTypeMetaTag()
+    public function emogrifyAddsMissingContentTypeMetaTag()
     {
         $this->subject->setHtml('<p>Hello</p>');
 
@@ -264,14 +264,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyForExistingContentTypeMetaTagNotAddsSecondContentTypeMetaTag()
+    public function emogrifyNotAddsSecondContentTypeMetaTag()
     {
-        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
-            '<body><p>Hello</p></body></html>';
+        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
         $this->subject->setHtml($html);
 
-        $numberOfContentTypeMetaTags = substr_count($this->subject->emogrify(), 'Content-Type');
+        $result = $this->subject->emogrify();
 
+        $numberOfContentTypeMetaTags = substr_count($result, 'Content-Type');
         self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
@@ -285,13 +285,13 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('foobar', $result);
+        self::assertNotContains('<wbr', $result);
     }
 
     /**
      * @test
      */
-    public function addUnprocessableTagCausesGivenEmptyTagToBeRemoved()
+    public function addUnprocessableTagRemovesEmptyTag()
     {
         $this->subject->setHtml('<html><p></p></html>');
 
@@ -304,7 +304,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addUnprocessableTagNotRemovesGivenTagWithContent()
+    public function addUnprocessableTagNotRemovesNonEmptyTag()
     {
         $this->subject->setHtml('<html><p>foobar</p></html>');
 
@@ -317,9 +317,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function removeUnprocessableHtmlTagCausesTagToStayAgain()
+    public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
     {
-        $this->subject->setHtml('<html><p>foo<br/><span>bar</span></p></html>');
+        $this->subject->setHtml('<html><p></p></html>');
 
         $this->subject->addUnprocessableHtmlTag('p');
         $this->subject->removeUnprocessableHtmlTag('p');
@@ -329,68 +329,93 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyCanAddMatchingElementRuleOnHtmlElementFromCss()
+    public function matchedCssDataProvider()
     {
-        $this->subject->setHtml('<html></html>');
-        $styleRule = 'color: #000;';
-        $this->subject->setCss('html {' . $styleRule . '}');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains(
-            '<html style="' . $styleRule . '">',
-            $result
-        );
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'text-align: left;'.
+        return [
+            'type selector matches one element' => ['html { %1$s }', '<html style="%1$s">'],
+            'type selector matches first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
+            'type selector matches second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'two declarations from one rul applied to one element' => [
+                'html { %1$s %2$s }',
+                '<html style="%1$s %2$s">',
+            ],
+        ];
     }
 
     /**
      * @test
+     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @dataProvider matchedCssDataProvider
      */
-    public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss()
+    public function emogrifyAppliesCssToMatchingElements($css, $expectedHtml)
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('p {color:#000;}');
+        $cssDeclaration1 = 'color: red;';
+        $cssDeclaration2 = 'text-align: left;';
+        $html = '
+            <html>
+                <body>
+                    <p class="p-1"><span>some text</span></p>
+                    <p class="p-2"><span title="bonjour">some</span> text</p>
+                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+                </body>
+            </html>
+            ';
+        $this->subject->setHtml($html);
+        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<html>', $result);
+        self::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonMatchedCssDataProvider()
+    {
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'text-align: left;'.
+        return [
+            'type selector not matches other type' => ['html { %1$s }', '<body>'],
+        ];
     }
 
     /**
      * @test
+     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @dataProvider nonMatchedCssDataProvider
      */
-    public function emogrifyCanMatchTwoElements()
+    public function emogrifyNotAppliesCssToNonMatchingElements($css, $expectedHtml)
     {
-        $this->subject->setHtml('<html><p></p><p></p></html>');
-        $styleRule = 'color: #000;';
-        $this->subject->setCss('p {' . $styleRule . '}');
+        $cssDeclaration1 = 'color: red;';
+        $cssDeclaration2 = 'text-align: left;';
+        $html = '
+            <html>
+                <body>
+                    <p class="p-1"><span>some text</span></p>
+                    <p class="p-2"><span title="bonjour">some</span> text</p>
+                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+                </body>
+            </html>
+            ';
+        $this->subject->setHtml($html);
+        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        self::assertSame(
-            2,
-            substr_count($result, '<p style="' . $styleRule . '">')
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyCanAssignTwoStyleRulesFromSameMatcherToElement()
-    {
-        $this->subject->setHtml('<html><p></p></html>');
-        $styleRulesIn = 'color:#000; text-align:left;';
-        $this->subject->setCss('p {' . $styleRulesIn . '}');
-
-        $result = $this->subject->emogrify();
-
-        $styleRulesOut = 'color: #000; text-align: left;';
-        self::assertContains(
-            '<p style="' . $styleRulesOut . '">',
-            $result
-        );
+        self::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
