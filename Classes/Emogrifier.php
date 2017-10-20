@@ -603,8 +603,8 @@ class Emogrifier
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
-                    $hasAnyPseudoClass = (bool) preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool) preg_match(
+                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
+                    $hasSupportedPseudoClass = (bool)preg_match(
                         '/:(\S+\-(child|type\()|not\([[:ascii:]]*\))/i',
                         $selector
                     );
@@ -1351,7 +1351,10 @@ class Emogrifier
                 $finalXpath = $finalXpath . '[not(' . $this->translateCssToXpathPass($notSelector, true) . ')]';
             }
 
-        return $finalXpath;
+            $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
+        }
+
+        return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
     /**
