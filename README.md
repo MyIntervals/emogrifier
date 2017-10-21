@@ -147,30 +147,35 @@ See https://getcomposer.org/ for more information and documentation.
 
 ## Supported CSS selectors
 
-Emogrifier currently support the following
-[CSS selectors](http://www.w3.org/TR/CSS2/selector.html):
+Emogrifier currently supports the following
+[CSS selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors):
 
- * ID
- * class
- * type
- * descendant
- * child
- * adjacent
- * attribute presence
- * attribute value
- * attribute value with |
- * attribute value with ~
- * attribute value with ^
- * attribute value with *
- * attribute value with $
- * attribute only
- * first-child
- * last-child
+ * [type](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors)
+ * [class](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)
+ * [ID](https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors)
+ * [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
+    * presence
+    * exact value match
+    * value with `~`
+    * value with `|`
+    * value with `^`
+    * value with `$`
+    * value with `*`
+ * [adjacent](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors)
+ * [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
+ * [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
+ * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+   * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
+   * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
 
 The following selectors are not implemented yet:
 
- * universal
- * pseudo-elements (will never be supported)
+ * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors)
+ * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
+ * [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_selectors)
+ * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
+   (some of them will never be supported)
+ * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
 
 
 ## Caveats
