@@ -1619,7 +1619,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 1px !important;">', $result);
+        self::assertContains('<p style="margin: 1px;">', $result);
     }
 
     /**
@@ -1634,7 +1634,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 1px !important; text-align: center;">', $result);
+        self::assertContains('<p style="text-align: center; margin: 1px;">', $result);
     }
 
     /**
@@ -1661,7 +1661,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            '<p style="margin: 2px !important;">',
+            '<p style="margin: 2px;">',
             $result
         );
     }
@@ -1693,7 +1693,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            '<p style="margin: 1px !important;">',
+            '<p style="margin: 1px;">',
             $result
         );
     }
@@ -1740,7 +1740,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 2px !important; padding: 1px; text-align: center;">', $result);
+        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
     }
 
     /**
@@ -2183,5 +2183,73 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains('<p class="autoWidth" style="width: auto;">', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function cssForImportantRuleRemovalDataProvider()
+    {
+        return [
+            'one !important rule only' => [
+                'width: 1px !important',
+                'width: 1px;'
+            ],
+            'multiple !important rules only' => [
+                'width: 1px !important; height: 1px !important',
+                'width: 1px; height: 1px;'
+            ],
+            'multiple declarations, one !important rule at the beginning' => [
+                'width: 1px !important; height: 1px; color: red',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, one !important rule somewhere in the middle' => [
+                'height: 1px; width: 1px !important; color: red',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, one !important rule at the end' => [
+                'height: 1px; color: red; width: 1px !important',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, multiple !important rules at the beginning' => [
+                'width: 1px !important; height: 1px !important; color: red; float: left',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple consecutive !important rules somewhere in the middle (#1)' => [
+                'color: red; width: 1px !important; height: 1px !important; float: left',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple consecutive !important rules somewhere in the middle (#2)' => [
+                'color: red; width: 1px !important; height: 1px !important; float: left; clear: both',
+                'color: red; float: left; clear: both; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple not consecutive !important rules somewhere in the middle' => [
+                'color: red; width: 1px !important; clear: both; height: 1px !important; float: left',
+                'color: red; clear: both; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple !important rules at the end' => [
+                'color: red; float: left; width: 1px !important; height: 1px !important',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $originalStyleAttributeContent
+     * @param string $expectedStyleAttributeContent
+     *
+     * @dataProvider cssForImportantRuleRemovalDataProvider
+     */
+    public function emogrifyRemovesImportantRule($originalStyleAttributeContent, $expectedStyleAttributeContent)
+    {
+        $this->subject->setHtml(
+            '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
     }
 }

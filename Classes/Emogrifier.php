@@ -372,7 +372,6 @@ class Emogrifier
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         $allCss = $this->css;
-
         if ($this->isStyleBlocksParsingEnabled) {
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
@@ -400,7 +399,6 @@ class Emogrifier
                 if (in_array($node, $excludedNodes, true)) {
                     continue;
                 }
-
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
@@ -416,8 +414,6 @@ class Emogrifier
             }
         }
 
-        restore_error_handler();
-
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
@@ -430,7 +426,11 @@ class Emogrifier
             $this->removeInvisibleNodes($xPath);
         }
 
+        $this->removeImportantAnnotationFromAllInlineStyles($xPath);
+
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+
+        restore_error_handler();
     }
 
     /**
@@ -461,6 +461,86 @@ class Emogrifier
             $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
             $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
         }
+    }
+
+    /**
+     * Searches for all nodes with a style attribute and removes the "!important" annotations out of
+     * the inline style declarations, eventually by rearranging declarations.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    private function removeImportantAnnotationFromAllInlineStyles(\DOMXPath $xPath)
+    {
+        try {
+            $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
+        } catch (\RuntimeException $e) {
+            if ($this->debug) {
+                throw($e);
+            }
+            return;
+        }
+        foreach ($nodesWithStyleAttribute as $node) {
+            $this->removeImportantAnnotationFromNodeInlineStyle($node);
+        }
+    }
+
+    /**
+     * Removes the "!important" annotations out of the inline style declarations,
+     * eventually by rearranging declarations.
+     * Rearranging needed when !important shorthand properties are followed by some of their
+     * not !important expanded-version properties.
+     * For example "font: 12px serif !important; font-size: 13px;" must be reordered
+     * to "font-size: 13px; font: 12px serif;" in order to remain correct.
+     *
+     * @param \DOMElement $node
+     *
+     * @return void
+     */
+    private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node)
+    {
+        $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+        $regularStyleDeclarations = [];
+        $importantStyleDeclarations = [];
+        foreach ($inlineStyleDeclarations as $property => $value) {
+            if ($this->attributeValueIsImportant($value)) {
+                $importantStyleDeclarations[$property] = trim(str_replace('!important', '', $value));
+            } else {
+                $regularStyleDeclarations[$property] = $value;
+            }
+        }
+        $inlineStyleDeclarationsInNewOrder = array_merge(
+            $regularStyleDeclarations,
+            $importantStyleDeclarations
+        );
+        $node->setAttribute(
+            'style',
+            $this->generateStyleStringFromSingleDeclarationsArray($inlineStyleDeclarationsInNewOrder)
+        );
+    }
+
+    /**
+     * Returns a list with all DOM nodes that have a style attribute.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return \DOMNodeList
+     *
+     * @throws \RuntimeException
+     */
+    private function getAllNodesWithStyleAttribute(\DOMXPath $xPath)
+    {
+        $nodesWithStyleAttribute = $xPath->query('//*[@style]');
+        if ($nodesWithStyleAttribute === false) {
+            throw new \RuntimeException(
+                'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
+                1508961431
+            );
+        }
+        return $nodesWithStyleAttribute;
     }
 
     /**
@@ -960,6 +1040,18 @@ class Emogrifier
         $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
 
         return $trimmedStyle;
+    }
+
+    /**
+     * Generates a CSS style string suitable to be used inline from the $styleDeclarations property => value array.
+     *
+     * @param string[] $styleDeclarations
+     *
+     * @return string
+     */
+    private function generateStyleStringFromSingleDeclarationsArray(array $styleDeclarations)
+    {
+        return $this->generateStyleStringFromDeclarationsArrays([], $styleDeclarations);
     }
 
     /**

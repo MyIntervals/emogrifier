@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
+- Automatically remove !important annotations from final inline style declarations
+  ([#420](https://github.com/MyIntervals/emogrifier/pull/420))
 - Automatically move <style> block from <head> to <body>
   ([#396](https://github.com/MyIntervals/emogrifier/pull/396))
 - PHP 7.2 support ([#398](https://github.com/MyIntervals/emogrifier/pull/398))
