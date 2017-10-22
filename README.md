@@ -133,13 +133,13 @@ Run the following command for a local installation:
 
 Or for a global installation, run the following command:
 
-    composer require pelago/emogrifier:@dev
+    composer require pelago/emogrifier:^1.2.0
 
 You can also add follow lines to your `composer.json` and run the
 `composer update` command:
 
     "require": {
-      "pelago/emogrifier": "@dev"
+      "pelago/emogrifier": "^1.2.0"
     }
 
 See https://getcomposer.org/ for more information and documentation.
