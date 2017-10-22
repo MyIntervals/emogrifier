@@ -1385,18 +1385,34 @@ class Emogrifier
     }
 
     /**
+     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector.
+     *
      * @param string $trimmedLowercaseSelector
      *
      * @return string
      */
     private function translateCssToXpathPass($trimmedLowercaseSelector)
     {
-        $roughXpath = '//' .
-            preg_replace(
-                array_keys($this->xPathRules),
-                $this->xPathRules,
-                $trimmedLowercaseSelector
-            );
+        return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
+            $trimmedLowercaseSelector,
+            [$this, 'matchClassAttributes']
+        );
+    }
+
+    /**
+     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector while using
+     * $matchClassAttributesCallback as to match the class attributes.
+     *
+     * @param string $trimmedLowercaseSelector
+     * @param callable $matchClassAttributesCallback
+     *
+     * @return string
+     */
+    private function translateCssToXpathPassWithMatchClassAttributesCallback(
+        $trimmedLowercaseSelector,
+        callable $matchClassAttributesCallback
+    ) {
+        $roughXpath = preg_replace(array_keys($this->xPathRules), $this->xPathRules, $trimmedLowercaseSelector);
         $xPathWithIdAttributeMatchers = preg_replace_callback(
             self::ID_ATTRIBUTE_MATCHER,
             [$this, 'matchIdAttributes'],
@@ -1404,12 +1420,11 @@ class Emogrifier
         );
         $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
             self::CLASS_ATTRIBUTE_MATCHER,
-            [$this, 'matchClassAttributes'],
+            $matchClassAttributesCallback,
             $xPathWithIdAttributeMatchers
         );
 
         // Advanced selectors are going to require a bit more advanced emogrification.
-        // When we required PHP 5.3, we could do this with closures.
         $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
             '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
             [$this, 'translateNthChild'],
