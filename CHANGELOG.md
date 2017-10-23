@@ -21,10 +21,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Deprecated
 - Support for PHP 5.5 will be removed in Emogrifier 3.0.
-- Support for PHP 5.4 will be removed in Emogrifier 2.0.
+- Support for PHP 5.6 will be removed in Emogrifier 4.0.
 
 
 ### Removed
+- Drop support for PHP 5.4
+  ([#422](https://github.com/MyIntervals/emogrifier/pull/422))
 - Drop support for HHVM
   ([#386](https://github.com/jjriv/emogrifier/pull/386))
 
