@@ -346,28 +346,11 @@ class Emogrifier
         $xPath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
 
-        // Before be begin processing the CSS file, parse the document and normalize all existing CSS attributes.
-        // This changes 'DISPLAY: none' to 'display: none'.
-        // We wouldn't have to do this if DOMXPath supported XPath 2.0.
-        // Also store a reference of nodes with existing inline styles so we don't overwrite them.
         $this->purgeVisitedNodes();
 
         set_error_handler([$this, 'handleXpathError'], E_WARNING);
 
-        $nodesWithStyleAttributes = $xPath->query('//*[@style]');
-        if ($nodesWithStyleAttributes !== false) {
-            /** @var \DOMElement $node */
-            foreach ($nodesWithStyleAttributes as $node) {
-                if ($this->isInlineStyleAttributesParsingEnabled) {
-                    $this->normalizeStyleAttributes($node);
-                }
-                // Remove style attribute in every case, so we can add them back (if inline style attributes
-                // parsing is enabled) to the end of the style list, thus keeping the right priority of CSS rules;
-                // else original inline style rules may remain at the beginning of the final inline style definition
-                // of a node, which may give not the desired results
-                $node->removeAttribute('style');
-            }
-        }
+        $this->normalizeStyleAttributesOfAllNodes($xPath);
 
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
@@ -445,19 +428,17 @@ class Emogrifier
      */
     private function mapAllInlineStylesToHtmlAttributes(\DOMXPath $xPath)
     {
-        $nodesWithStyleAttributes = $xPath->query('//*[@style]');
-        if ($nodesWithStyleAttributes === false) {
+        try {
+            $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
+        } catch (\RuntimeException $e) {
             if ($this->debug) {
-                throw new \RuntimeException(
-                    'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
-                    1508437884
-                );
+                throw new \RuntimeException($e->getMessage(), 1508437884, $e);
             }
             return;
         }
 
         /** @var \DOMElement $node */
-        foreach ($nodesWithStyleAttributes as $node) {
+        foreach ($nodesWithStyleAttribute as $node) {
             $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
             $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
         }
@@ -479,10 +460,11 @@ class Emogrifier
             $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
         } catch (\RuntimeException $e) {
             if ($this->debug) {
-                throw($e);
+                throw new \RuntimeException($e->getMessage(), 1509193363, $e);
             }
             return;
         }
+
         foreach ($nodesWithStyleAttribute as $node) {
             $this->removeImportantAnnotationFromNodeInlineStyle($node);
         }
@@ -525,21 +507,15 @@ class Emogrifier
     /**
      * Returns a list with all DOM nodes that have a style attribute.
      *
+     * Can indirectly generate a \RuntimeException via method handleXpathError().
+     *
      * @param \DOMXPath $xPath
      *
      * @return \DOMNodeList
-     *
-     * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(\DOMXPath $xPath)
     {
         $nodesWithStyleAttribute = $xPath->query('//*[@style]');
-        if ($nodesWithStyleAttribute === false) {
-            throw new \RuntimeException(
-                'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
-                1508961431
-            );
-        }
         return $nodesWithStyleAttribute;
     }
 
@@ -948,6 +924,42 @@ class Emogrifier
             if ($node->parentNode && is_callable([$node->parentNode, 'removeChild'])) {
                 $node->parentNode->removeChild($node);
             }
+        }
+    }
+
+    /**
+     * Before we begin processing the CSS file, parse the document and normalize all existing CSS attributes.
+     * This changes 'DISPLAY: none' to 'display: none'.
+     * We wouldn't have to do this if DOMXPath supported XPath 2.0.
+     * Also store a reference of nodes with existing inline styles so we don't overwrite them.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    private function normalizeStyleAttributesOfAllNodes(\DOMXPath $xPath)
+    {
+        try {
+            $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
+        } catch (\RuntimeException $e) {
+            if ($this->debug) {
+                throw new \RuntimeException($e->getMessage(), 1509190518, $e);
+            }
+            return;
+        }
+
+        /** @var \DOMElement $node */
+        foreach ($nodesWithStyleAttribute as $node) {
+            if ($this->isInlineStyleAttributesParsingEnabled) {
+                $this->normalizeStyleAttributes($node);
+            }
+            // Remove style attribute in every case, so we can add them back (if inline style attributes
+            // parsing is enabled) to the end of the style list, thus keeping the right priority of CSS rules;
+            // else original inline style rules may remain at the beginning of the final inline style definition
+            // of a node, which may give not the desired results
+            $node->removeAttribute('style');
         }
     }
 
@@ -1737,9 +1749,9 @@ class Emogrifier
     }
 
     /**
-     * Handles invalid xPath expression warnings, generated by process() method,
-     * during querying \DOMDocument and trigger \InvalidArgumentException
-     * with invalid selector.
+     * Handles invalid xPath expression warnings, generated during the process() method,
+     * during querying \DOMDocument and trigger \InvalidArgumentException with invalid selector
+     * or \RuntimeException, depending on the source of the warning
      *
      * @param int $type
      * @param string $message
@@ -1750,6 +1762,7 @@ class Emogrifier
      * @return bool always false
      *
      * @throws \InvalidArgumentException
+     * @throws \RuntimeException
      */
     public function handleXpathError($type, $message, $file, $line, array $context)
     {
@@ -1758,12 +1771,21 @@ class Emogrifier
         if ($type === E_WARNING && isset($context['cssRule']['selector'])) {
             throw new \InvalidArgumentException(
                 sprintf(
-                    '%s in selector >> %s << in %s on line %s',
+                    '%1$s in selector >> %2$s << in %3$s on line %4$u',
                     $message,
                     $context['cssRule']['selector'],
                     $file,
                     $line
-                )
+                ),
+                1509279985
+            );
+        }
+
+        // Catches eventual warnings generated by method getAllNodesWithStyleAttribute()
+        if ($type === E_WARNING && isset($context['xPath'])) {
+            throw new \RuntimeException(
+                sprintf('%1$s in %2$s on line %3$u', $message, $file, $line),
+                1509280067
             );
         }
 
