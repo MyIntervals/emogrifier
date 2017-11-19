@@ -289,15 +289,7 @@ class Emogrifier
      */
     public function emogrify()
     {
-        if ($this->html === '') {
-            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
-        }
-
-        $xmlDocument = $this->createXmlDocument();
-        $this->ensureExistenceOfBodyElement($xmlDocument);
-        $this->process($xmlDocument);
-
-        return $xmlDocument->saveHTML();
+        return $this->createAndProcessXmlDocument()->saveHTML();
     }
 
     /**
@@ -312,19 +304,30 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
+        $xmlDocument = $this->createAndProcessXmlDocument();
+        $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
+
+        return str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+    }
+
+    /**
+     * Creates an XML document from $this->html and emogrifies ist.
+     *
+     * @return \DOMDocument
+     *
+     * @throws \BadMethodCallException
+     */
+    private function createAndProcessXmlDocument()
+    {
         if ($this->html === '') {
-            throw new \BadMethodCallException('Please set some HTML first before calling emogrify.', 1390393096);
+            throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
 
-        $xmlDocument = $this->createXmlDocument();
+        $xmlDocument = $this->createRawXmlDocument();
+        $this->ensureExistenceOfBodyElement($xmlDocument);
         $this->process($xmlDocument);
 
-        $innerDocument = new \DOMDocument();
-        foreach ($xmlDocument->documentElement->getElementsByTagName('body')->item(0)->childNodes as $childNode) {
-            $innerDocument->appendChild($innerDocument->importNode($childNode, true));
-        }
-
-        return html_entity_decode($innerDocument->saveHTML());
+        return $xmlDocument;
     }
 
     /**
@@ -369,7 +372,6 @@ class Emogrifier
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         $allCss = $this->css;
-
         if ($this->isStyleBlocksParsingEnabled) {
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
@@ -397,7 +399,6 @@ class Emogrifier
                 if (in_array($node, $excludedNodes, true)) {
                     continue;
                 }
-
                 // if it has a style attribute, get it, process it, and append (overwrite) new stuff
                 if ($node->hasAttribute('style')) {
                     // break it up into an associative array
@@ -406,9 +407,6 @@ class Emogrifier
                     $oldStyleDeclarations = [];
                 }
                 $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
-                if ($this->shouldMapCssToHtml) {
-                    $this->mapCssToHtmlAttributes($newStyleDeclarations, $node);
-                }
                 $node->setAttribute(
                     'style',
                     $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
@@ -416,17 +414,133 @@ class Emogrifier
             }
         }
 
-        restore_error_handler();
-
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
+        }
+
+        if ($this->shouldMapCssToHtml) {
+            $this->mapAllInlineStylesToHtmlAttributes($xPath);
         }
 
         if ($this->shouldKeepInvisibleNodes) {
             $this->removeInvisibleNodes($xPath);
         }
 
+        $this->removeImportantAnnotationFromAllInlineStyles($xPath);
+
         $this->copyCssWithMediaToStyleNode($xmlDocument, $xPath, $cssParts['media']);
+
+        restore_error_handler();
+    }
+
+    /**
+     * Searches for all nodes with a style attribute, transforms the CSS found
+     * to HTML attributes and adds those attributes to each node.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    private function mapAllInlineStylesToHtmlAttributes(\DOMXPath $xPath)
+    {
+        $nodesWithStyleAttributes = $xPath->query('//*[@style]');
+        if ($nodesWithStyleAttributes === false) {
+            if ($this->debug) {
+                throw new \RuntimeException(
+                    'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
+                    1508437884
+                );
+            }
+            return;
+        }
+
+        /** @var \DOMElement $node */
+        foreach ($nodesWithStyleAttributes as $node) {
+            $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+            $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
+        }
+    }
+
+    /**
+     * Searches for all nodes with a style attribute and removes the "!important" annotations out of
+     * the inline style declarations, eventually by rearranging declarations.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     *
+     * @throws \RuntimeException
+     */
+    private function removeImportantAnnotationFromAllInlineStyles(\DOMXPath $xPath)
+    {
+        try {
+            $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
+        } catch (\RuntimeException $e) {
+            if ($this->debug) {
+                throw($e);
+            }
+            return;
+        }
+        foreach ($nodesWithStyleAttribute as $node) {
+            $this->removeImportantAnnotationFromNodeInlineStyle($node);
+        }
+    }
+
+    /**
+     * Removes the "!important" annotations out of the inline style declarations,
+     * eventually by rearranging declarations.
+     * Rearranging needed when !important shorthand properties are followed by some of their
+     * not !important expanded-version properties.
+     * For example "font: 12px serif !important; font-size: 13px;" must be reordered
+     * to "font-size: 13px; font: 12px serif;" in order to remain correct.
+     *
+     * @param \DOMElement $node
+     *
+     * @return void
+     */
+    private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node)
+    {
+        $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+        $regularStyleDeclarations = [];
+        $importantStyleDeclarations = [];
+        foreach ($inlineStyleDeclarations as $property => $value) {
+            if ($this->attributeValueIsImportant($value)) {
+                $importantStyleDeclarations[$property] = trim(str_replace('!important', '', $value));
+            } else {
+                $regularStyleDeclarations[$property] = $value;
+            }
+        }
+        $inlineStyleDeclarationsInNewOrder = array_merge(
+            $regularStyleDeclarations,
+            $importantStyleDeclarations
+        );
+        $node->setAttribute(
+            'style',
+            $this->generateStyleStringFromSingleDeclarationsArray($inlineStyleDeclarationsInNewOrder)
+        );
+    }
+
+    /**
+     * Returns a list with all DOM nodes that have a style attribute.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return \DOMNodeList
+     *
+     * @throws \RuntimeException
+     */
+    private function getAllNodesWithStyleAttribute(\DOMXPath $xPath)
+    {
+        $nodesWithStyleAttribute = $xPath->query('//*[@style]');
+        if ($nodesWithStyleAttribute === false) {
+            throw new \RuntimeException(
+                'Possibly malformed DOMXPath query expression or invalid DOMXPath object.',
+                1508961431
+            );
+        }
+        return $nodesWithStyleAttribute;
     }
 
     /**
@@ -929,6 +1043,18 @@ class Emogrifier
     }
 
     /**
+     * Generates a CSS style string suitable to be used inline from the $styleDeclarations property => value array.
+     *
+     * @param string[] $styleDeclarations
+     *
+     * @return string
+     */
+    private function generateStyleStringFromSingleDeclarationsArray(array $styleDeclarations)
+    {
+        return $this->generateStyleStringFromDeclarationsArrays([], $styleDeclarations);
+    }
+
+    /**
      * Checks whether $attributeValue is marked as !important.
      *
      * @param string $attributeValue
@@ -1171,7 +1297,7 @@ class Emogrifier
      *
      * @return \DOMDocument
      */
-    private function createXmlDocument()
+    private function createRawXmlDocument()
     {
         $xmlDocument = new \DOMDocument;
         $xmlDocument->encoding = 'UTF-8';
@@ -1376,8 +1502,9 @@ class Emogrifier
     }
 
     /**
-     * @param string $trimmedLowercaseSelector
+     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector.
      *
+     * @param string $trimmedLowercaseSelector
      * @param bool $inline If set to true it only outputs inline part of xPath class selector. Needed for :not selector
      *
      * @return string
@@ -1407,7 +1534,6 @@ class Emogrifier
         );
 
         // Advanced selectors are going to require a bit more advanced emogrification.
-        // When we required PHP 5.3, we could do this with closures.
         $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
             '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
             [$this, 'translateNthChild'],

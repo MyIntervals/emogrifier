@@ -202,6 +202,21 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     * @param string $codeNotToBeChanged
+     * @dataProvider specialCharactersDataProvider
+     */
+    public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
+    {
+        $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrifyBodyContent();
+
+        self::assertContains($codeNotToBeChanged, $result);
+    }
+
+    /**
      * @return string[][]
      */
     public function documentTypeDataProvider()
@@ -224,7 +239,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      * @param string $documentType
      * @dataProvider documentTypeDataProvider
      */
-    public function emogrifyForHtmlTagWithXhtml1StrictDocumentTypeKeepsDocumentType($documentType)
+    public function emogrifyForHtmlWithDocumentTypeKeepsDocumentType($documentType)
     {
         $html = $documentType . '<html></html>';
         $this->subject->setHtml($html);
@@ -237,7 +252,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsContentTypeMetaTag()
+    public function emogrifyAddsMissingContentTypeMetaTag()
     {
         $this->subject->setHtml('<p>Hello</p>');
 
@@ -249,14 +264,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyForExistingContentTypeMetaTagNotAddsSecondContentTypeMetaTag()
+    public function emogrifyNotAddsSecondContentTypeMetaTag()
     {
-        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
-            '<body><p>Hello</p></body></html>';
+        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
         $this->subject->setHtml($html);
 
-        $numberOfContentTypeMetaTags = substr_count($this->subject->emogrify(), 'Content-Type');
+        $result = $this->subject->emogrify();
 
+        $numberOfContentTypeMetaTags = substr_count($result, 'Content-Type');
         self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
@@ -270,13 +285,13 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('foobar', $result);
+        self::assertNotContains('<wbr', $result);
     }
 
     /**
      * @test
      */
-    public function addUnprocessableTagCausesGivenEmptyTagToBeRemoved()
+    public function addUnprocessableTagRemovesEmptyTag()
     {
         $this->subject->setHtml('<html><p></p></html>');
 
@@ -289,7 +304,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addUnprocessableTagNotRemovesGivenTagWithContent()
+    public function addUnprocessableTagNotRemovesNonEmptyTag()
     {
         $this->subject->setHtml('<html><p>foobar</p></html>');
 
@@ -302,9 +317,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function removeUnprocessableHtmlTagCausesTagToStayAgain()
+    public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
     {
-        $this->subject->setHtml('<html><p>foo<br/><span>bar</span></p></html>');
+        $this->subject->setHtml('<html><p></p></html>');
 
         $this->subject->addUnprocessableHtmlTag('p');
         $this->subject->removeUnprocessableHtmlTag('p');
@@ -314,68 +329,93 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyCanAddMatchingElementRuleOnHtmlElementFromCss()
+    public function matchedCssDataProvider()
     {
-        $this->subject->setHtml('<html></html>');
-        $styleRule = 'color: #000;';
-        $this->subject->setCss('html {' . $styleRule . '}');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains(
-            '<html style="' . $styleRule . '">',
-            $result
-        );
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'text-align: left;'.
+        return [
+            'type selector matches one element' => ['html { %1$s }', '<html style="%1$s">'],
+            'type selector matches first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
+            'type selector matches second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'two declarations from one rul applied to one element' => [
+                'html { %1$s %2$s }',
+                '<html style="%1$s %2$s">',
+            ],
+        ];
     }
 
     /**
      * @test
+     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @dataProvider matchedCssDataProvider
      */
-    public function emogrifyNotAddsNotMatchingElementRuleOnHtmlElementFromCss()
+    public function emogrifyAppliesCssToMatchingElements($css, $expectedHtml)
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('p {color:#000;}');
+        $cssDeclaration1 = 'color: red;';
+        $cssDeclaration2 = 'text-align: left;';
+        $html = '
+            <html>
+                <body>
+                    <p class="p-1"><span>some text</span></p>
+                    <p class="p-2"><span title="bonjour">some</span> text</p>
+                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+                </body>
+            </html>
+            ';
+        $this->subject->setHtml($html);
+        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<html>', $result);
+        self::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonMatchedCssDataProvider()
+    {
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'text-align: left;'.
+        return [
+            'type selector not matches other type' => ['html { %1$s }', '<body>'],
+        ];
     }
 
     /**
      * @test
+     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @dataProvider nonMatchedCssDataProvider
      */
-    public function emogrifyCanMatchTwoElements()
+    public function emogrifyNotAppliesCssToNonMatchingElements($css, $expectedHtml)
     {
-        $this->subject->setHtml('<html><p></p><p></p></html>');
-        $styleRule = 'color: #000;';
-        $this->subject->setCss('p {' . $styleRule . '}');
+        $cssDeclaration1 = 'color: red;';
+        $cssDeclaration2 = 'text-align: left;';
+        $html = '
+            <html>
+                <body>
+                    <p class="p-1"><span>some text</span></p>
+                    <p class="p-2"><span title="bonjour">some</span> text</p>
+                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+                </body>
+            </html>
+            ';
+        $this->subject->setHtml($html);
+        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        self::assertSame(
-            2,
-            substr_count($result, '<p style="' . $styleRule . '">')
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyCanAssignTwoStyleRulesFromSameMatcherToElement()
-    {
-        $this->subject->setHtml('<html><p></p></html>');
-        $styleRulesIn = 'color:#000; text-align:left;';
-        $this->subject->setCss('p {' . $styleRulesIn . '}');
-
-        $result = $this->subject->emogrify();
-
-        $styleRulesOut = 'color: #000; text-align: left;';
-        self::assertContains(
-            '<p style="' . $styleRulesOut . '">',
-            $result
-        );
+        self::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
@@ -1558,10 +1598,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        self::assertSame(
-            '<p></p>' . self::LF,
-            $result
-        );
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -1573,23 +1610,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        self::assertSame(
-            '<p></p>' . self::LF,
-            $result
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyBodyContentKeepsUtf8Umlauts()
-    {
-        $umlautString = 'Küss die Hand, schöne Frau.';
-        $this->subject->setHtml('<p>' . $umlautString . '</p>');
-
-        $result = $this->subject->emogrifyBodyContent();
-
-        self::assertContains($umlautString, $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -1602,7 +1623,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 1px !important;">', $result);
+        self::assertContains('<p style="margin: 1px;">', $result);
     }
 
     /**
@@ -1617,7 +1638,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 1px !important; text-align: center;">', $result);
+        self::assertContains('<p style="text-align: center; margin: 1px;">', $result);
     }
 
     /**
@@ -1644,7 +1665,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            '<p style="margin: 2px !important;">',
+            '<p style="margin: 2px;">',
             $result
         );
     }
@@ -1676,7 +1697,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(
-            '<p style="margin: 1px !important;">',
+            '<p style="margin: 1px;">',
             $result
         );
     }
@@ -1723,7 +1744,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<p style="margin: 2px !important; padding: 1px; text-align: center;">', $result);
+        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
     }
 
     /**
@@ -2001,10 +2022,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->enableCssToHtmlMapping();
         $html = $this->subject->emogrify();
 
-        self::assertContains(
-            '<' . $tagName . ' ' . $attributes,
-            $html
-        );
+        self::assertRegExp('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attributes, '/') . '/', $html);
     }
 
     /**
@@ -2124,5 +2142,118 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '<body>' . $style . '</body>',
             $result
         );
+    }
+
+    /**
+     * Asserts that $html contains a $tagName tag with the $attribute attribute.
+     *
+     * @param string $html the HTML string we are searching in
+     * @param string $tagName the HTML tag we are looking for
+     * @param string $attribute the attribute we are looking for (with or even without a value)
+     */
+    private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
+    {
+        self::assertTrue(
+            preg_match('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attribute, '/') . '/', $html) > 0
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyPrefersInlineStyleOverCssBlockStyleForHtmlAttributesMapping()
+    {
+        $this->subject->setHtml(
+            '<html><head><style>p {width:1px}</style></head><body><p style="width:2px"></p></body></html>'
+        );
+        $this->subject->enableCssToHtmlMapping();
+
+        $result = $this->subject->emogrify();
+
+        $this->assertHtmlStringContainsTagWithAttribute($result, 'p', 'width="2"');
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyCorrectsHtmlAttributesMappingWhenMultipleMatchingRulesAndLastRuleIsAuto()
+    {
+        $this->subject->setHtml(
+            '<html><head><style>p {width:1px}</style></head><body><p class="autoWidth"></p></body></html>'
+        );
+        $this->subject->setCss('p.autoWidth {width:auto}');
+        $this->subject->enableCssToHtmlMapping();
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<p class="autoWidth" style="width: auto;">', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function cssForImportantRuleRemovalDataProvider()
+    {
+        return [
+            'one !important rule only' => [
+                'width: 1px !important',
+                'width: 1px;'
+            ],
+            'multiple !important rules only' => [
+                'width: 1px !important; height: 1px !important',
+                'width: 1px; height: 1px;'
+            ],
+            'multiple declarations, one !important rule at the beginning' => [
+                'width: 1px !important; height: 1px; color: red',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, one !important rule somewhere in the middle' => [
+                'height: 1px; width: 1px !important; color: red',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, one !important rule at the end' => [
+                'height: 1px; color: red; width: 1px !important',
+                'height: 1px; color: red; width: 1px;'
+            ],
+            'multiple declarations, multiple !important rules at the beginning' => [
+                'width: 1px !important; height: 1px !important; color: red; float: left',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple consecutive !important rules somewhere in the middle (#1)' => [
+                'color: red; width: 1px !important; height: 1px !important; float: left',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple consecutive !important rules somewhere in the middle (#2)' => [
+                'color: red; width: 1px !important; height: 1px !important; float: left; clear: both',
+                'color: red; float: left; clear: both; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple not consecutive !important rules somewhere in the middle' => [
+                'color: red; width: 1px !important; clear: both; height: 1px !important; float: left',
+                'color: red; clear: both; float: left; width: 1px; height: 1px;'
+            ],
+            'multiple declarations, multiple !important rules at the end' => [
+                'color: red; float: left; width: 1px !important; height: 1px !important',
+                'color: red; float: left; width: 1px; height: 1px;'
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $originalStyleAttributeContent
+     * @param string $expectedStyleAttributeContent
+     *
+     * @dataProvider cssForImportantRuleRemovalDataProvider
+     */
+    public function emogrifyRemovesImportantRule($originalStyleAttributeContent, $expectedStyleAttributeContent)
+    {
+        $this->subject->setHtml(
+            '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
+        );
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
     }
 }
