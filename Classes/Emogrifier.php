@@ -389,7 +389,7 @@ class Emogrifier
                 $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
             } catch (\InvalidArgumentException $e) {
                 if ($this->debug) {
-                    throw ($e);
+                    throw $e;
                 }
                 continue;
             }
@@ -479,7 +479,7 @@ class Emogrifier
             $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
         } catch (\RuntimeException $e) {
             if ($this->debug) {
-                throw($e);
+                throw $e;
             }
             return;
         }
@@ -705,6 +705,7 @@ class Emogrifier
             preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
 
             $cssRules = [];
+            /** @var string[][] $matches */
             /** @var string[] $cssRule */
             foreach ($matches as $key => $cssRule) {
                 $cssDeclaration = trim($cssRule[2]);
@@ -1107,6 +1108,7 @@ class Emogrifier
         preg_match_all('/@media\\b[^{]*({((?:[^{}]+|(?1))*)})/', $css, $rawMediaQueries, PREG_SET_ORDER);
         $parsedQueries = [];
 
+        /** @var string[][] $rawMediaQueries */
         foreach ($rawMediaQueries as $mediaQuery) {
             if ($mediaQuery[2] !== '') {
                 $parsedQueries[] = [
