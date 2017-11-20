@@ -22,6 +22,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
+- Optimize the string operations
+  ([#430](https://github.com/MyIntervals/emogrifier/pull/430))
+
 
 ### Deprecated
 - Support for PHP 5.5 will be removed in Emogrifier 3.0.
