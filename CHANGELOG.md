@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## x.y.z (unreleased)
 
 ### Added
+- Support for CSS :not() selector.
+  ([#395](https://github.com/jjriv/emogrifier/pull/395))
 - Automatically remove !important annotations from final inline style declarations
   ([#420](https://github.com/MyIntervals/emogrifier/pull/420))
 - Automatically move <style> block from <head> to <body>

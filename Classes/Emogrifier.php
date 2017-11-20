@@ -720,7 +720,7 @@ class Emogrifier
                     $hasPseudoElement = strpos($selector, '::') !== false;
                     $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
                     $hasSupportedPseudoClass = (bool)preg_match(
-                        '/:\\S+\\-(child|type\\()/i',
+                        '/:(\S+\-(child|type\()|not\([[:ascii:]]*\))/i',
                         $selector
                     );
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
@@ -1452,46 +1452,63 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
+            $notSelector = $this->extractNotSelector($trimmedLowercaseSelector);
             $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
+
+            if ($notSelector !== '') {
+                $finalXpath = $finalXpath . '[not(' . $this->translateCssToXpathPass($notSelector, true) . ')]';
+            }
+
             $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
         }
+
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+    }
+
+    /**
+     * @param string $trimmedLowercaseSelector Whole CSS selector. :not selector part will be removed
+     *
+     * @return string :not selector content or empty string
+     */
+    private function extractNotSelector(&$trimmedLowercaseSelector)
+    {
+        $notSelector = '';
+
+        if (strpos($trimmedLowercaseSelector, ':not') !== null) {
+            $explodedSelector = explode(':not', $trimmedLowercaseSelector);
+            list($trimmedLowercaseSelector, $notSelector) = array_pad($explodedSelector, 2, null);
+            $notSelector = trim($notSelector, '()');
+        }
+
+        return $notSelector;
     }
 
     /**
      * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector.
      *
      * @param string $trimmedLowercaseSelector
+     * @param bool $inline If set to true it only outputs inline part of xPath class selector. Needed for :not selector
      *
      * @return string
      */
-    private function translateCssToXpathPass($trimmedLowercaseSelector)
+    private function translateCssToXpathPass($trimmedLowercaseSelector, $inline = false)
     {
-        return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
-            $trimmedLowercaseSelector,
-            [$this, 'matchClassAttributes']
+        $roughXpath = preg_replace(
+            array_keys($this->xPathRules),
+            $this->xPathRules,
+            $trimmedLowercaseSelector
         );
-    }
 
-    /**
-     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector while using
-     * $matchClassAttributesCallback as to match the class attributes.
-     *
-     * @param string $trimmedLowercaseSelector
-     * @param callable $matchClassAttributesCallback
-     *
-     * @return string
-     */
-    private function translateCssToXpathPassWithMatchClassAttributesCallback(
-        $trimmedLowercaseSelector,
-        callable $matchClassAttributesCallback
-    ) {
-        $roughXpath = preg_replace(array_keys($this->xPathRules), $this->xPathRules, $trimmedLowercaseSelector);
         $xPathWithIdAttributeMatchers = preg_replace_callback(
             self::ID_ATTRIBUTE_MATCHER,
             [$this, 'matchIdAttributes'],
             $roughXpath
         );
+
+        $matchClassAttributesCallback = [$this, 'matchClassAttributes'];
+        if ($inline) {
+            $matchClassAttributesCallback = [$this, 'matchClassAttributesInline'];
+        }
         $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
             self::CLASS_ATTRIBUTE_MATCHER,
             $matchClassAttributesCallback,
