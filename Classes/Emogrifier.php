@@ -1223,26 +1223,6 @@ class Emogrifier
     }
 
     /**
-     * Returns the existing or creates a new head element in $document.
-     *
-     * @param \DOMDocument $document
-     *
-     * @return \DOMNode the head element
-     */
-    private function getOrCreateHeadElement(\DOMDocument $document)
-    {
-        $head = $document->getElementsByTagName('head')->item(0);
-
-        if ($head === null) {
-            $head = $document->createElement('head');
-            $html = $document->getElementsByTagName('html')->item(0);
-            $html->insertBefore($head, $document->getElementsByTagName('body')->item(0));
-        }
-
-        return $head;
-    }
-
-    /**
      * Splits input CSS code to an array where:
      *
      * - key "css" will be contains clean CSS code
