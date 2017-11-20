@@ -550,11 +550,11 @@ class Emogrifier
      * node.
      *
      * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
-     * @param \DOMNode $node node to apply styles to
+     * @param \DOMElement $node node to apply styles to
      *
      * @return void
      */
-    private function mapCssToHtmlAttributes(array $styles, \DOMNode $node)
+    private function mapCssToHtmlAttributes(array $styles, \DOMElement $node)
     {
         foreach ($styles as $property => $value) {
             // Strip !important indicator
@@ -570,11 +570,11 @@ class Emogrifier
      *
      * @param string $property the name of the CSS property to map
      * @param string $value the value of the style rule to map
-     * @param \DOMNode $node node to apply styles to
+     * @param \DOMElement $node node to apply styles to
      *
      * @return void
      */
-    private function mapCssToHtmlAttribute($property, $value, \DOMNode $node)
+    private function mapCssToHtmlAttribute($property, $value, \DOMElement $node)
     {
         if (!$this->mapSimpleCssProperty($property, $value, $node)) {
             $this->mapComplexCssProperty($property, $value, $node);
@@ -586,11 +586,11 @@ class Emogrifier
      *
      * @param string $property the name of the CSS property to map
      * @param string $value the value of the style rule to map
-     * @param \DOMNode $node node to apply styles to
+     * @param \DOMElement $node node to apply styles to
      *
      * @return bool true if the property cab be mapped using the simple mapping table
      */
-    private function mapSimpleCssProperty($property, $value, \DOMNode $node)
+    private function mapSimpleCssProperty($property, $value, \DOMElement $node)
     {
         if (!isset($this->cssToHtmlMap[$property])) {
             return false;
@@ -613,11 +613,11 @@ class Emogrifier
      *
      * @param string $property the name of the CSS property to map
      * @param string $value the value of the style rule to map
-     * @param \DOMNode $node node to apply styles to
+     * @param \DOMElement $node node to apply styles to
      *
      * @return void
      */
-    private function mapComplexCssProperty($property, $value, \DOMNode $node)
+    private function mapComplexCssProperty($property, $value, \DOMElement $node)
     {
         $nodeName = $node->nodeName;
         $isTable = $nodeName === 'table';
