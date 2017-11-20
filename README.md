@@ -167,6 +167,7 @@ Emogrifier currently supports the following
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
+   * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
 
 The following selectors are not implemented yet:
 
