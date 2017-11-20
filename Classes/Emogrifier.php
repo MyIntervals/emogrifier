@@ -1452,7 +1452,7 @@ class Emogrifier
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
         if (isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+            return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
         }
 
         $hasNotSelector = (bool)preg_match(
