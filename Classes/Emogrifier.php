@@ -720,7 +720,7 @@ class Emogrifier
                     $hasPseudoElement = strpos($selector, '::') !== false;
                     $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
                     $hasSupportedPseudoClass = (bool)preg_match(
-                        '/:\\S+\\-(child|type\\()/i',
+                        '/:(\\S+\\-(child|type\\()|not\\([[:ascii:]]*\\))/i',
                         $selector
                     );
                     if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
@@ -1451,10 +1451,26 @@ class Emogrifier
         );
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
-        if (!isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            $finalXpath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
-            $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $finalXpath;
+        if (isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
+            $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
         }
+
+        $hasNotSelector = (bool)preg_match(
+            '/^([^:]+):not\\(\\s*([[:ascii:]]+)\\s*\\)$/',
+            $trimmedLowercaseSelector,
+            $matches
+        );
+        if (!$hasNotSelector) {
+            $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
+        } else {
+            /** @var string[] $matches */
+            $partBeforeNot = $matches[1];
+            $notContents = $matches[2];
+            $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
+                '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
+        }
+        $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $xPath;
+
         return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
@@ -1470,6 +1486,21 @@ class Emogrifier
         return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
             $trimmedLowercaseSelector,
             [$this, 'matchClassAttributes']
+        );
+    }
+
+    /**
+     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector for inline usage.
+     *
+     * @param string $trimmedLowercaseSelector
+     *
+     * @return string
+     */
+    private function translateCssToXpathPassInline($trimmedLowercaseSelector)
+    {
+        return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
+            $trimmedLowercaseSelector,
+            [$this, 'matchClassAttributesInline']
         );
     }
 
