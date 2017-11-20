@@ -629,7 +629,7 @@ class Emogrifier
                 // Parse out the color, if any
                 $styles = explode(' ', $value);
                 $first = $styles[0];
-                if (!is_numeric(substr($first, 0, 1)) && substr($first, 0, 3) !== 'url') {
+                if (!is_numeric($first[0]) && strpos($first, 'url') !== 0) {
                     // This is not a position or image, assume it's a color
                     $node->setAttribute('bgcolor', $first);
                 }
@@ -702,7 +702,7 @@ class Emogrifier
         $cssKey = md5($css);
         if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
-            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mis', $css, $matches, PREG_SET_ORDER);
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $css, $matches, PREG_SET_ORDER);
 
             $cssRules = [];
             /** @var string[][] $matches */
@@ -1358,7 +1358,7 @@ class Emogrifier
      */
     private function addContentTypeMetaTag($html)
     {
-        $hasContentTypeMetaTag = stristr($html, 'Content-Type') !== false;
+        $hasContentTypeMetaTag = stripos($html, 'Content-Type') !== false;
         if ($hasContentTypeMetaTag) {
             return $html;
         }
