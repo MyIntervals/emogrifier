@@ -336,13 +336,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
         // like 'color: red;' or 'text-align: left;'.
         return [
-            'type selector matches one element' => ['html { %1$s }', '<html style="%1$s">'],
-            'type selector matches first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
-            'type selector matches second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
-            'two declarations from one rul applied to one element' => [
+            'two declarations from one rule can apply to one element' => [
                 'html { %1$s %2$s }',
                 '<html style="%1$s %2$s">',
             ],
+            'two identical matchers with different rules get combined' => [
+                'p { %1$s } p { %2$s }',
+                '<p class="p-1" style="%1$s %2$s">',
+            ],
+            'two different matchers rules matching the same element get combined' => [
+                'p { %1$s } .p-1 { %2$s }',
+                '<p class="p-1" style="%1$s %2$s">',
+            ],
+            'type selector matches one element' => ['html { %1$s }', '<html style="%1$s">'],
+            'type selector matches first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
+            'type selector matches second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'attribute presence selector' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
         ];
     }
 
@@ -385,6 +394,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         // like 'color: red;' or 'text-align: left;'.
         return [
             'type selector not matches other type' => ['html { %1$s }', '<body>'],
+            'attribute presence selector not matches element without that attribute' => ['[title] { %1$s }', '<span>'],
         ];
     }
 
@@ -419,56 +429,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     */
-    public function emogrifyCanMatchAttributeOnlySelector()
-    {
-        $this->subject->setHtml('<html><p hidden="hidden"></p></html>');
-        $this->subject->setCss('[hidden] { color:red; }');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains('<p hidden="hidden" style="color: red;">', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyCanAssignStyleRulesFromTwoIdenticalMatchersToElement()
-    {
-        $this->subject->setHtml('<html><p></p></html>');
-        $styleRule1 = 'color: #000;';
-        $styleRule2 = 'text-align: left;';
-        $this->subject->setCss('p {' . $styleRule1 . '}  p {' . $styleRule2 . '}');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains(
-            '<p style="' . $styleRule1 . ' ' . $styleRule2 . '">',
-            $result
-        );
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyCanAssignStyleRulesFromTwoDifferentMatchersToElement()
-    {
-        $this->subject->setHtml('<html><p class="x"></p></html>');
-        $styleRule1 = 'color: #000;';
-        $styleRule2 = 'text-align: left;';
-        $this->subject->setCss('p {' . $styleRule1 . '} .x {' . $styleRule2 . '}');
-
-        $result = $this->subject->emogrify();
-
-        self::assertContains(
-            '<p class="x" style="' . $styleRule1 . ' ' . $styleRule2 . '">',
-            $result
-        );
-    }
-
-    /**
-     * Data provide for selectors.
+     * Data provider for selectors.
      *
      * @return string[][]
      */
