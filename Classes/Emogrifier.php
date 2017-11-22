@@ -354,9 +354,8 @@ class Emogrifier
 
         set_error_handler([$this, 'handleXpathError'], E_WARNING);
 
-        $nodesWithStyleAttributes = $this->getAllNodesWithStyleAttribute($xPath);
         /** @var \DOMElement $node */
-        foreach ($nodesWithStyleAttributes as $node) {
+        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
             if ($this->isInlineStyleAttributesParsingEnabled) {
                 $this->normalizeStyleAttributes($node);
             }
@@ -441,9 +440,8 @@ class Emogrifier
      */
     private function mapAllInlineStylesToHtmlAttributes(\DOMXPath $xPath)
     {
-        $nodesWithStyleAttributes = $this->getAllNodesWithStyleAttribute($xPath);
         /** @var \DOMElement $node */
-        foreach ($nodesWithStyleAttributes as $node) {
+        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
             $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
             $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
         }
@@ -459,8 +457,7 @@ class Emogrifier
      */
     private function removeImportantAnnotationFromAllInlineStyles(\DOMXPath $xPath)
     {
-        $nodesWithStyleAttribute = $this->getAllNodesWithStyleAttribute($xPath);
-        foreach ($nodesWithStyleAttribute as $node) {
+        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
             $this->removeImportantAnnotationFromNodeInlineStyle($node);
         }
     }
