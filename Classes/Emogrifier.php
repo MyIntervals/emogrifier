@@ -346,25 +346,11 @@ class Emogrifier
         $xPath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
 
-        // Before be begin processing the CSS file, parse the document and normalize all existing CSS attributes.
-        // This changes 'DISPLAY: none' to 'display: none'.
-        // We wouldn't have to do this if DOMXPath supported XPath 2.0.
-        // Also store a reference of nodes with existing inline styles so we don't overwrite them.
         $this->purgeVisitedNodes();
 
         set_error_handler([$this, 'handleXpathError'], E_WARNING);
 
-        /** @var \DOMElement $node */
-        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
-            if ($this->isInlineStyleAttributesParsingEnabled) {
-                $this->normalizeStyleAttributes($node);
-            }
-            // Remove style attribute in every case, so we can add them back (if inline style attributes
-            // parsing is enabled) to the end of the style list, thus keeping the right priority of CSS rules;
-            // else original inline style rules may remain at the beginning of the final inline style definition
-            // of a node, which may give not the desired results
-            $node->removeAttribute('style');
-        }
+        $this->normalizeStyleAttributesOfAllNodes($xPath);
 
         // grab any existing style blocks from the html and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
@@ -914,6 +900,31 @@ class Emogrifier
             if ($node->parentNode && is_callable([$node->parentNode, 'removeChild'])) {
                 $node->parentNode->removeChild($node);
             }
+        }
+    }
+
+    /**
+     * Before we begin processing the CSS file, parse the document and normalize all existing CSS attributes.
+     * This changes 'DISPLAY: none' to 'display: none'.
+     * We wouldn't have to do this if DOMXPath supported XPath 2.0.
+     * Also store a reference of nodes with existing inline styles so we don't overwrite them.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     */
+    private function normalizeStyleAttributesOfAllNodes(\DOMXPath $xPath)
+    {
+        /** @var \DOMElement $node */
+        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
+            if ($this->isInlineStyleAttributesParsingEnabled) {
+                $this->normalizeStyleAttributes($node);
+            }
+            // Remove style attribute in every case, so we can add them back (if inline style attributes
+            // parsing is enabled) to the end of the style list, thus keeping the right priority of CSS rules;
+            // else original inline style rules may remain at the beginning of the final inline style definition
+            // of a node, which may give not the desired results
+            $node->removeAttribute('style');
         }
     }
 
