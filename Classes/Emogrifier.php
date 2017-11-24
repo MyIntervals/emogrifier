@@ -1565,21 +1565,21 @@ class Emogrifier
             if ($parseResult[self::MULTIPLIER] < 0) {
                 $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
                 $xPathExpression = sprintf(
-                    '*[(last() - position()) mod %u = %u]/self::%s',
+                    '*[(last() - position()) mod %1%u = %2$u]/self::%3$s',
                     $parseResult[self::MULTIPLIER],
                     $parseResult[self::INDEX],
                     $match[1]
                 );
             } else {
                 $xPathExpression = sprintf(
-                    '*[position() mod %u = %u]/self::%s',
+                    '*[position() mod %1$u = %2$u]/self::%3$s',
                     $parseResult[self::MULTIPLIER],
                     $parseResult[self::INDEX],
                     $match[1]
                 );
             }
         } else {
-            $xPathExpression = sprintf('*[%u]/self::%s', $parseResult[self::INDEX], $match[1]);
+            $xPathExpression = sprintf('*[%1$u]/self::%2$s', $parseResult[self::INDEX], $match[1]);
         }
 
         return $xPathExpression;
@@ -1598,21 +1598,21 @@ class Emogrifier
             if ($parseResult[self::MULTIPLIER] < 0) {
                 $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
                 $xPathExpression = sprintf(
-                    '%s[(last() - position()) mod %u = %u]',
+                    '%1$s[(last() - position()) mod %2$u = %3$u]',
                     $match[1],
                     $parseResult[self::MULTIPLIER],
                     $parseResult[self::INDEX]
                 );
             } else {
                 $xPathExpression = sprintf(
-                    '%s[position() mod %u = %u]',
+                    '%1$s[position() mod %2$u = %3$u]',
                     $match[1],
                     $parseResult[self::MULTIPLIER],
                     $parseResult[self::INDEX]
                 );
             }
         } else {
-            $xPathExpression = sprintf('%s[%u]', $match[1], $parseResult[self::INDEX]);
+            $xPathExpression = sprintf('%1$s[%2$u]', $match[1], $parseResult[self::INDEX]);
         }
 
         return $xPathExpression;
