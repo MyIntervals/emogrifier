@@ -345,9 +345,7 @@ class Emogrifier
     {
         $xPath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
-
         $this->purgeVisitedNodes();
-
         set_error_handler([$this, 'handleXpathError'], E_WARNING);
 
         $this->normalizeStyleAttributesOfAllNodes($xPath);
@@ -904,10 +902,10 @@ class Emogrifier
     }
 
     /**
-     * Before we begin processing the CSS file, parse the document and normalize all existing CSS attributes.
+     * Parses the document and normalizes all existing CSS attributes.
      * This changes 'DISPLAY: none' to 'display: none'.
      * We wouldn't have to do this if DOMXPath supported XPath 2.0.
-     * Also store a reference of nodes with existing inline styles so we don't overwrite them.
+     * Also stores a reference of nodes with existing inline styles so we don't overwrite them.
      *
      * @param \DOMXPath $xPath
      *
