@@ -1768,6 +1768,46 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function emogrifyThrowsInvalidArgumentExceptionForInvalidExcludedSelectorInDebugMode()
+    {
+        $this->subject->setHtml('<html></html>');
+        $this->subject->addExcludedSelector('..p');
+        $this->subject->setDebug(true);
+        $this->subject->emogrify();
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyIgnoresInvalidExcludedSelectorWhenNotInDebugMode()
+    {
+        $this->subject->setHtml('<html><p class="x"></p></html>');
+        $this->subject->addExcludedSelector('..p');
+        $result = $this->subject->emogrify();
+        self::assertContains('<p class="x"></p>', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyIgnoresOnlyInvalidExcludedSelectorWhenNotInDebugMode()
+    {
+        $this->subject->setHtml('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
+        $this->subject->setCss('p { color: red };');
+        $this->subject->addExcludedSelector('p.x');
+        $this->subject->addExcludedSelector('..p');
+        $this->subject->addExcludedSelector('p.z');
+        $result = $this->subject->emogrify();
+        self::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="y" style="color: red;"></p>', $result);
+        self::assertContains('<p class="z"></p>', $result);
+    }
+
+    /**
+     * @test
      */
     public function emptyMediaQueriesAreRemoved()
     {

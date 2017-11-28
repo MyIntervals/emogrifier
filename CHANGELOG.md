@@ -39,6 +39,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Throw (the correct) exception for invalid excluded selectors
+  ([#437](https://github.com/MyIntervals/emogrifier/pull/437))
 - emogrifyBody must not encode umlaut entities
   ([#414](https://github.com/MyIntervals/emogrifier/pull/414))
 - Fix mapped HTML attribute values
