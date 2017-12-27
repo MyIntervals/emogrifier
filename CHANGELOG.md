@@ -39,6 +39,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
+- Handle invalid/unrecognized selectors in media query blocks
+  ([#442](https://github.com/MyIntervals/emogrifier/pull/442))
 - Throw (the correct) exception for invalid excluded selectors
   ([#437](https://github.com/MyIntervals/emogrifier/pull/437))
 - emogrifyBody must not encode umlaut entities
