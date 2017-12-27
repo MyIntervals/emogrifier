@@ -11,10 +11,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
   ([#431](https://github.com/jjriv/emogrifier/pull/431))
 - Automatically remove !important annotations from final inline style declarations
   ([#420](https://github.com/MyIntervals/emogrifier/pull/420))
-- Automatically move <style> block from <head> to <body>
+- Automatically move `<style>` block from `<head>` to `<body>`
   ([#396](https://github.com/MyIntervals/emogrifier/pull/396))
 - PHP 7.2 support ([#398](https://github.com/MyIntervals/emogrifier/pull/398))
-  - Allow PHP 7.2 in composer.json, cleaner PHP version constraint
+  - Allow PHP 7.2 in `composer.json`, cleaner PHP version constraint
   - Test in Travis for PHP 7.2
 - Debug mode. Throw debug exceptions only if debug is active.
   ([#392](https://github.com/MyIntervals/emogrifier/pull/392))
@@ -72,7 +72,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Fixed
-- Allow colon (:) and semi-colon (;) when using the *= selector
+- Allow colon (`:`) and semi-colon (`;`) when using the `*=` selector
   ([#371](https://github.com/MyIntervals/emogrifier/pull/371))
 - Ignore "auto" width and height
   ([#365](https://github.com/MyIntervals/emogrifier/pull/365))
