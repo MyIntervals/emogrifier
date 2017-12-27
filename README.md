@@ -153,6 +153,7 @@ Emogrifier currently supports the following
  * [type](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors)
  * [class](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)
  * [ID](https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors)
+ * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors):
  * [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
     * presence
     * exact value match
