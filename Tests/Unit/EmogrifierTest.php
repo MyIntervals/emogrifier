@@ -2257,4 +2257,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
     }
+
+    /**
+     * @test
+     *
+     * @expectedException \InvalidArgumentException
+     */
+    public function emogrifyThrowsInvalidArgumentExceptionForInvalidSelectorsInMediaQueryBlocksInDebugMode()
+    {
+        $this->subject->setHtml('<html></html>');
+        $this->subject->setCss('@media screen {p^^ {color: red;}}');
+        $this->subject->setDebug(true);
+        $this->subject->emogrify();
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocksInNonDebugMode()
+    {
+        $this->subject->setHtml('<html></html>');
+        $css = '@media screen {p^^ {color: red;}}';
+        $this->subject->setCss($css);
+        $result = $this->subject->emogrify();
+        $this->assertContains($css, $result);
+    }
 }
