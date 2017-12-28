@@ -21,7 +21,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Changed
-
+- Always enable the debug mode in the tests
+  ([#448](https://github.com/MyIntervals/emogrifier/pull/448))
 - Optimize the string operations
   ([#430](https://github.com/MyIntervals/emogrifier/pull/430))
 
