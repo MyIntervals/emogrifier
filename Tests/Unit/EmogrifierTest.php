@@ -336,7 +336,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
         // like 'color: red;' or 'text-align: left;'.
         return [
-            'two declarations from one rule can apply to one element' => [
+            'two declarations from one rule can apply to the same element' => [
                 'html { %1$s %2$s }',
                 '<html style="%1$s %2$s">',
             ],
@@ -348,10 +348,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 'p { %1$s } .p-1 { %2$s }',
                 '<p class="p-1" style="%1$s %2$s">',
             ],
-            'type selector matches one element' => ['html { %1$s }', '<html style="%1$s">'],
-            'type selector matches first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
-            'type selector matches second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
-            'attribute presence selector' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
+            'type => one element' => ['html { %1$s }', '<html style="%1$s">'],
+            'type => first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
+            'type => second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'class => with class' => ['.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
+            'two classes s=> with both classes' => [
+                '.p-5.additional-class { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">'
+            ],
+            'type & class => type with class' => ['p.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
+            'ID => with ID' => ['#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
+            'type & ID => type with ID' => ['p#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
+            'universal => HTML' => ['* { %1$s }', '<html style="%1$s">'],
+            'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
+            'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
+            'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],
+            'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
+            'attribute presence => with attribute' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
+            'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
+            'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
         ];
     }
 
@@ -372,7 +387,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                     <p class="p-2"><span title="bonjour">some</span> text</p>
                     <p class="p-3"><span title="buenas dias">some</span> more text</p>
                     <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                     <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
                 </body>
             </html>
@@ -393,8 +408,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
         // like 'color: red;' or 'text-align: left;'.
         return [
-            'type selector not matches other type' => ['html { %1$s }', '<body>'],
-            'attribute presence selector not matches element without that attribute' => ['[title] { %1$s }', '<span>'],
+            'type => not other type' => ['html { %1$s }', '<body>'],
+            'class => not other class' => ['.p-2 { %1$s }', '<p class="p-1">'],
+            'class => not without class' => ['.p-2 { %1$s }', '<body>'],
+            'two classes => not only first class' => ['.p-1.another-class { %1$s }', '<p class="p-1">'],
+            'two classes => not only second class' => ['.another-class.p-1 { %1$s }', '<p class="p-1">'],
+            'type & class => not only type' => ['html.p-1 { %1$s }', '<html>'],
+            'type & class => not only class' => ['html.p-1 { %1$s }', '<p class="p-1">'],
+            'ID => not other ID' => ['#yeah { %1$s }', '<p class="p-4" id="p4">'],
+            'ID => not without ID' => ['#yeah { %1$s }', '<span>'],
+            'type & ID => not other type with that ID' => ['html#p4 { %1$s }', '<p class="p-4" id="p4">'],
+            'type & ID => not that type with other ID' => ['p#p5 { %1$s }', '<p class="p-4" id="p4">'],
+            'attribute presence => not element without that attribute' => ['[title] { %1$s }', '<span>'],
+            'child => not grandchild' => ['html > span { %1$s }', '<span>'],
+            'child => not parent' => ['span > html { %1$s }', '<html>'],
+            'descendant => not sibling' => ['span span { %1$s }', '<span>'],
+            'descendant => not parent' => ['p body { %1$s }', '<body>'],
         ];
     }
 
@@ -415,7 +444,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                     <p class="p-2"><span title="bonjour">some</span> text</p>
                     <p class="p-3"><span title="buenas dias">some</span> more text</p>
                     <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>
+                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                     <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
                 </body>
             </html>
@@ -439,41 +468,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $styleAttribute = 'style="' . $styleRule . '"';
 
         return [
-            'universal selector HTML'
-            => ['* {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
-            'universal selector BODY'
-            => ['* {' . $styleRule . '} ', '#<body ' . $styleAttribute . '>#'],
-            'universal selector P'
-            => ['* {' . $styleRule . '} ', '#<p[^>]*' . $styleAttribute . '>#'],
-            'type selector matches first P'
-            => ['p {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
-            'type selector matches second P'
-            => ['p {' . $styleRule . '} ', '#<p class="p-2" ' . $styleAttribute . '>#'],
-            'descendant selector P SPAN'
-            => ['p span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'descendant selector BODY SPAN'
-            => ['body span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector P > SPAN matches direct child'
-            => ['p > span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector P > SPAN matches direct child without space after >'
-            => ['p >span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector P > SPAN matches direct child without space before >'
-            => ['p> span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector P > SPAN matches direct child without space before or after >'
-            => ['p>span {' . $styleRule . '} ', '#<span ' . $styleAttribute . '>#'],
-            'child selector BODY > SPAN does not match grandchild'
-            => ['body > span {' . $styleRule . '} ', '#<span>#'],
             'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
             'adjacent selector P + P matches second P'
             => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
             => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
-            'ID selector #HTML' => ['#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
-            'type and ID selector HTML#HTML'
-            => ['html#html {' . $styleRule . '} ', '#<html id="html" ' . $styleAttribute . '>#'],
-            'class selector .P-1' => ['.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
-            'type and class selector P.P-1'
-            => ['p.p-1 {' . $styleRule . '} ', '#<p class="p-1" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] matches element with matching attribute'
             => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
             'attribute presence selector SPAN[title] does not match element without any attributes'
