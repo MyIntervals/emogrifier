@@ -34,6 +34,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->subject = new Emogrifier();
+        $this->subject->setDebug(true);
     }
 
     /**
@@ -876,11 +877,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyInDebugModeForInvalidCssSelectorThrowsException()
     {
+        $this->subject->setDebug(true);
+
         $this->subject->setHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
 
-        $this->subject->setDebug(true);
         $this->subject->emogrify();
     }
 
@@ -889,13 +891,32 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotInDebugModeIgnoresInvalidCssSelectors()
     {
+        $this->subject->setDebug(false);
+
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
             '<body><p></p></body></html>';
-
         $this->subject->setHtml($html);
 
         $html = $this->subject->emogrify();
+
+        self::assertContains('color: red', $html);
+        self::assertContains('background-color: blue', $html);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyByDefaultIgnoresInvalidCssSelectors()
+    {
+        $subject = new Emogrifier();
+
+        $html = '<html><style type="text/css">' .
+            'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
+            '<body><p></p></body></html>';
+        $subject->setHtml($html);
+
+        $html = $subject->emogrify();
         self::assertContains('color: red', $html);
         self::assertContains('background-color: blue', $html);
     }
@@ -1770,36 +1791,46 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function emogrifyThrowsInvalidArgumentExceptionForInvalidExcludedSelectorInDebugMode()
+    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidExcludedSelector()
     {
+        $this->subject->setDebug(true);
+
         $this->subject->setHtml('<html></html>');
         $this->subject->addExcludedSelector('..p');
-        $this->subject->setDebug(true);
+
         $this->subject->emogrify();
     }
 
     /**
      * @test
      */
-    public function emogrifyIgnoresInvalidExcludedSelectorWhenNotInDebugMode()
+    public function emogrifyNotInDebugModeIgnoresInvalidExcludedSelector()
     {
+        $this->subject->setDebug(false);
+
         $this->subject->setHtml('<html><p class="x"></p></html>');
         $this->subject->addExcludedSelector('..p');
+
         $result = $this->subject->emogrify();
+
         self::assertContains('<p class="x"></p>', $result);
     }
 
     /**
      * @test
      */
-    public function emogrifyIgnoresOnlyInvalidExcludedSelectorWhenNotInDebugMode()
+    public function emogrifyNotInDebugModeIgnoresOnlyInvalidExcludedSelector()
     {
+        $this->subject->setDebug(false);
+
         $this->subject->setHtml('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
         $this->subject->setCss('p { color: red };');
         $this->subject->addExcludedSelector('p.x');
         $this->subject->addExcludedSelector('..p');
         $this->subject->addExcludedSelector('p.z');
+
         $result = $this->subject->emogrify();
+
         self::assertContains('<p class="x"></p>', $result);
         self::assertContains('<p class="y" style="color: red;"></p>', $result);
         self::assertContains('<p class="z"></p>', $result);
@@ -2262,23 +2293,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function emogrifyThrowsInvalidArgumentExceptionForInvalidSelectorsInMediaQueryBlocksInDebugMode()
+    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidSelectorsInMediaQueryBlocks()
     {
+        $this->subject->setDebug(true);
+
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss('@media screen {p^^ {color: red;}}');
-        $this->subject->setDebug(true);
+
         $this->subject->emogrify();
     }
 
     /**
      * @test
      */
-    public function emogrifyKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocksInNonDebugMode()
+    public function emogrifyNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks()
     {
+        $this->subject->setDebug(false);
+
         $this->subject->setHtml('<html></html>');
         $css = '@media screen {p^^ {color: red;}}';
         $this->subject->setCss($css);
+
         $result = $this->subject->emogrify();
+
         $this->assertContains($css, $result);
     }
 }
