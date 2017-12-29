@@ -49,7 +49,7 @@ selectors.
 For installing emogrifier, either add pelago/emogrifier to your
 project's composer.json, or you can use composer as below:
 
-```
+```bash
 composer require pelago/emogrifier
 ```
 
@@ -59,24 +59,31 @@ composer require pelago/emogrifier
 First, you provide Emogrifier with the HTML and CSS you would like to merge.
 This can happen directly during instantiation:
 
-    $html = '<html><h1>Hello world!</h1></html>';
-    $css = 'h1 {font-size: 32px;}';
-    $emogrifier = new \Pelago\Emogrifier($html, $css);
+```php
+$html = '<html><h1>Hello world!</h1></html>';
+$css = 'h1 {font-size: 32px;}';
+$emogrifier = new \Pelago\Emogrifier($html, $css);
+```
 
 You could also use the setters for providing this data after instantiation:
 
-    $emogrifier = new \Pelago\Emogrifier();
+```php
+$emogrifier = new \Pelago\Emogrifier();
 
-    $html = '<html><h1>Hello world!</h1></html>';
-    $css = 'h1 {font-size: 32px;}';
+$html = '<html><h1>Hello world!</h1></html>';
+$css = 'h1 {font-size: 32px;}';
 
-    $emogrifier->setHtml($html);
-    $emogrifier->setCss($css);
+$emogrifier->setHtml($html);
+$emogrifier->setCss($css);
+```
+
 
 After you have set the HTML and CSS, you can call the `emogrify` method to
 merge both:
 
-    $mergedHtml = $emogrifier->emogrify();
+```php
+$mergedHtml = $emogrifier->emogrify();
+```
 
 Emogrifier automatically adds a Content-Type meta tag to set the charset for
 the document (if it is not provided).
@@ -84,7 +91,9 @@ the document (if it is not provided).
 If you would like to get back only the content of the BODY element instead of
 the complete HTML document, you can use the `emogrifyBodyContent` instead:
 
-    $bodyContent = $emogrifier->emogrifyBodyContent();
+```php
+$bodyContent = $emogrifier->emogrifyBodyContent();
+```
 
 
 ## Options
@@ -125,22 +134,30 @@ calling the `emogrify` method:
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally
 or install [Composer](https://getcomposer.org/) globally:
 
-    curl -s https://getcomposer.org/installer | php
+```bash
+curl -s https://getcomposer.org/installer | php
+```
 
 Run the following command for a local installation:
 
-    php composer.phar require pelago/emogrifier:@dev
+```bash
+php composer.phar require pelago/emogrifier:@dev
+```
 
 Or for a global installation, run the following command:
 
-    composer require pelago/emogrifier:^1.2.0
+```bash
+composer require pelago/emogrifier:^1.2.0
+```
 
 You can also add follow lines to your `composer.json` and run the
 `composer update` command:
 
-    "require": {
-      "pelago/emogrifier": "^1.2.0"
-    }
+```json
+"require": {
+  "pelago/emogrifier": "^1.2.0"
+}
+```
 
 See https://getcomposer.org/ for more information and documentation.
 
