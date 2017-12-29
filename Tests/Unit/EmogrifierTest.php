@@ -182,7 +182,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function specialCharactersDataProvider()
     {
         return [
-            'template markers with dollar signs and square brackets' => ['$[USER:NAME]$'],
+            'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
             'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
             'HTML entities' => ['a &amp; b &gt; c'],
         ];
@@ -367,6 +367,185 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],
             'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'attribute presence => with attribute' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
+            'attribute exact value, double quotes => with exact attribute match' => [
+                '[title="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'attribute exact value, single quotes => with exact match' => [
+                '[title=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            // broken: attribute exact value without quotes => with exact match
+            // broken: attribute exact two-word value, double quotes => with exact attribute value match
+            // broken: attribute exact two-word value, single quotes => with exact attribute value match
+            // broken: attribute exact value with ~, double quotes => exact attribute match
+            // broken: attribute exact value with ~, single quotes => exact attribute match
+            // broken: attribute exact value with ~, no quotes => exact attribute match
+            // broken: attribute value with |, double quotes => with exact match
+            // broken: attribute value with |, single quotes => with exact match
+            // broken: attribute value with |, no quotes => with exact match
+            // broken: attribute value with ^, double quotes => with exact match
+            // broken: attribute value with ^, single quotes => with exact match
+            // broken: attribute value with ^, no quotes => with exact match
+            // broken: attribute value with $, double quotes => with exact match
+            // broken: attribute value with $, single quotes => with exact match
+            // broken: attribute value with $, no quotes => with exact match
+            // broken: attribute value with *, double quotes => with exact match
+            // broken: attribute value with *, single quotes => with exact match
+            // broken: attribute value with *, no quotes => with exact match
+            'type & attribute exact value, double quotes => with type & exact attribute value match' => [
+                'span[title="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute exact value, single quotes => with type & exact attribute value match' => [
+                'span[title=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute exact value without quotes => with type & exact attribute value match' => [
+                'span[title=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute exact two-word value, double quotes => with type & exact attribute value match' => [
+                'span[title="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute exact four-word value, double quotes => with type & exact attribute value match' => [
+                'span[title="buenas dias bom dia"] { %1$s }',
+                '<span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'type & attribute exact two-word value, single quotes => with type & exact attribute value match' => [
+                'span[title=\'buenas dias\'] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute exact four-word value, single quotes => with type & exact attribute value match' => [
+                'span[title=\'buenas dias bom dia\'] { %1$s }',
+                '<span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & exact attribute match' => [
+                'span[title~="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ~, single quotes => with type & exact attribute match' => [
+                'span[title~=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ~, no quotes => with type & exact attribute match' => [
+                'span[title~=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & word as 1st of 2 in attribute' => [
+                'span[title~="buenas"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & word as 2nd of 2 in attribute' => [
+                'span[title~="dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & word as 1st of 4 in attribute' => [
+                'span[title~="buenas"] { %1$s }',
+                '<span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & word as 2nd of 4 in attribute' => [
+                'span[title~="dias"] { %1$s }',
+                '<span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'type & attribute value with ~, double quotes => with type & word as last of 4 in attribute' => [
+                'span[title~="dia"] { %1$s }',
+                '<span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'type & attribute value with |, double quotes => with exact match' => [
+                'span[title|="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with |, single quotes => with exact match' => [
+                'span[title|=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with |, no quotes => with exact match' => [
+                'span[title|=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & two-word attribute value with |, double quotes => with exact match' => [
+                'span[title|="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with |, double quotes => with match before hyphen & another word' => [
+                'span[title|="avez"] { %1$s }',
+                '<span title="avez-vous" style="%1$s">',
+            ],
+            'type & attribute value with ^, double quotes => with exact match' => [
+                'span[title^="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ^, single quotes => with exact match' => [
+                'span[title^=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ^, no quotes => with exact match' => [
+                'span[title^=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            // broken: type & two-word attribute value with ^, double quotes => with exact match
+            'type & attribute value with ^, double quotes => with prefix math' => [
+                'span[title^="bon"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with ^, double quotes => with match before another word' => [
+                'span[title^="buenas"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with $, double quotes => with exact match' => [
+                'span[title$="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with $, single quotes => with exact match' => [
+                'span[title$=\'bonjour\'] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with $, no quotes => with exact match' => [
+                'span[title$=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & two-word attribute value with $, double quotes => with exact match' => [
+                'span[title$="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with $, double quotes => with suffix math' => [
+                'span[title$="jour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with $, double quotes => with match after another word' => [
+                'span[title$="dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & two-word attribute value with *, double quotes => with exact match' => [
+                'span[title*="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with *, double quotes => with prefix math' => [
+                'span[title*="bon"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with *, double quotes => with suffix math' => [
+                'span[title*="jour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with *, double quotes => with substring math' => [
+                'span[title*="njo"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'type & attribute value with *, double quotes => with match before another word' => [
+                'span[title*="buenas"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & attribute value with *, double quotes => with match after another word' => [
+                'span[title*="dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'type & special characters attribute value with *, double quotes => with substring match' => [
+                'span[title*=": subtitle; author"] { %1$s }',
+                '<span title="title: subtitle; author" style="%1$s">',
+            ],
             'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
             'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
         ];
@@ -422,6 +601,43 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'type & ID => not other type with that ID' => ['html#p4 { %1$s }', '<p class="p-4" id="p4">'],
             'type & ID => not that type with other ID' => ['p#p5 { %1$s }', '<p class="p-4" id="p4">'],
             'attribute presence => not element without that attribute' => ['[title] { %1$s }', '<span>'],
+            'attribute exact value => not element without that attribute' => ['[title="bonjour"] { %1$s }', '<span>'],
+            'attribute exact value => not element with different attribute value' => [
+                '[title="hi"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'attribute exact value => not element with only substring match in attribute value' => [
+                '[title="njo"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with ~ => not element with only prefix match in attribute value' => [
+                'span[title~="bon"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with |, double quotes => not element with match after another word & hyphen' => [
+                'span[title|="vous"] { %1$s }',
+                '<span title="avez-vous">',
+            ],
+            'type & attribute value with ^ => not element with only substring match in attribute value' => [
+                'span[title^="njo"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with ^, double quotes => not element with only suffix match in attribute value' => [
+                'span[title^="jour"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with $ => not element with only substring match in attribute value' => [
+                'span[title$="njo"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with $, double quotes => not element with only prefix match in attribute value' => [
+                'span[title$="bon"] { %1$s }',
+                '<span title="bonjour">',
+            ],
+            'type & attribute value with * => not element with different attribute value' => [
+                'span[title*="hi"] { %1$s }',
+                '<span title="bonjour">',
+            ],
             'child => not grandchild' => ['html > span { %1$s }', '<span>'],
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
@@ -475,105 +691,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
             'adjacent selector P + P matches third P'
             => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
-            'attribute presence selector SPAN[title] matches element with matching attribute'
-            => ['span[title] {' . $styleRule . '} ', '#<span title="bonjour" ' . $styleAttribute . '>#'],
-            'attribute presence selector SPAN[title] does not match element without any attributes'
-            => ['span[title] {' . $styleRule . '} ', '#<span>#'],
-            'attribute value selector [id="html"] matches element with matching attribute value' => [
-                '[id="html"] {' . $styleRule . '} ',
-                '#<html id="html" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title] matches element with matching attribute value' => [
-                'span[title="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title] matches element with matching attribute value two words' => [
-                'span[title="buenas dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" '
-                . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title] matches element with matching attribute value four words' => [
-                'span[title="buenas dias bom dia"] {' . $styleRule . '} ',
-                '#<span title="buenas dias bom dia" '
-                . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title~] matches element with an attribute value with just that word' => [
-                'span[title~="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title~] matches element with attribute value with that word as 2nd of 2' => [
-                'span[title~="dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title~] matches element with attribute value with that word as 1st of 2' => [
-                'span[title~="buenas"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title*] matches element with an attribute value with just that word' => [
-                'span[title*="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title*] matches element with attribute value with that word as 2nd of 2' => [
-                'span[title*="dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title*] matches element with an attribute value with parts two words' => [
-                'span[title*="enas di"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title*] matches element with an attribute value with odd characters' => [
-                'span[title*=": subtitle; author"] {' . $styleRule . '} ',
-                '#<span title="title: subtitle; author" '
-                . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title^] matches element with attribute value that is exactly that word' => [
-                'span[title^="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title^] matches element with an attribute value that begins that word' => [
-                'span[title^="bonj"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title^] matches element with an attribute value that begins that word '
-            . 'and contains other words' => [
-                'span[title^="buenas"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title$] matches element with attribute value that is exactly that word' => [
-                'span[title$="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title$] matches element with an attribute value with two words' => [
-                'span[title$="buenas dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" '
-                . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title$] matches element with an attribute value that end that word' => [
-                'span[title$="jour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title$] matches element with an attribute value that end that word '
-            . 'and contains other words' => [
-                'span[title$="dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title|] matches element with attribute value that is exactly that word' => [
-                'span[title|="bonjour"] {' . $styleRule . '} ',
-                '#<span title="bonjour" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title|] matches element with an attribute value with two words' => [
-                'span[title|="buenas dias"] {' . $styleRule . '} ',
-                '#<span title="buenas dias" '
-                . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title|] matches element with an attribute value with 2 words with hypen' => [
-                'span[title|="avez"] {' . $styleRule . '} ',
-                '#<span title="avez-vous" ' . $styleAttribute . '>#'
-            ],
-            'attribute value selector SPAN[title] does not match element with other attribute value'
-            => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span title="buenas dias">#'],
-            'attribute value selector SPAN[title] does not match element without any attributes'
-            => ['span[title="bonjour"] {' . $styleRule . '} ', '#<span>#'],
             'P:first-child matches first child with matching tag'
             => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
             'DIV:first-child does not match first child with mismatching tag'
@@ -684,13 +801,13 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'one declaration with dash in property name' => ['font-weight: bold;', 'font-weight: bold;'],
             'one declaration with space in property value' => ['margin: 0 4px;', 'margin: 0 4px;'],
             'two declarations separated by semicolon' => ['color: #000;width: 3px;', 'color: #000; width: 3px;'],
-            'two declarations separated by semicolon and space'
+            'two declarations separated by semicolon & space'
             => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
-            'two declarations separated by semicolon and linefeed' => [
+            'two declarations separated by semicolon & linefeed' => [
                 'color: #000;' . self::LF . 'width: 3px;',
                 'color: #000; width: 3px;'
             ],
-            'two declarations separated by semicolon and Windows line ending' => [
+            'two declarations separated by semicolon & Windows line ending' => [
                 "color: #000;\r\nwidth: 3px;",
                 'color: #000; width: 3px;'
             ],
