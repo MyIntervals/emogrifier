@@ -34,7 +34,7 @@ into inline style attributes in your HTML code.
 - [Installing with Composer](#installing-with-composer)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
-- [Maintainer](#maintainer)
+- [Maintainers](#maintainers)
 
 
 ## How it Works
@@ -218,4 +218,5 @@ The following selectors are not implemented yet:
 ## Maintainers
 
 * [Oliver Klee](https://github.com/oliverklee)
+* [Zoli Szabó](https://github.com/zoliszabo)
 * [John Reeve](https://github.com/jjriv)

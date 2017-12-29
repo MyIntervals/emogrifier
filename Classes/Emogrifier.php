@@ -11,9 +11,10 @@ namespace Pelago;
  *
  * @author Cameron Brooks
  * @author Jaime Prado
- * @author Oliver Klee <typo3-coding@oliverklee.de>
+ * @author Oliver Klee <github@oliverklee.de>
  * @author Roman Ožana <ozana@omdesign.cz>
  * @author Sander Kruger <s.kruger@invessel.com>
+ * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
 class Emogrifier
 {

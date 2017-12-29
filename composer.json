@@ -21,11 +21,15 @@
         },
         {
             "name": "Oliver Klee",
-            "email": "typo3-coding@oliverklee.de"
+            "email": "github@oliverklee.de"
         },
         {
             "name": "Roman Ožana",
             "email": "ozana@omdesign.cz"
+        },
+        {
+            "name": "Zoli Szabó",
+            "email": "zoli.szabo+github@gmail.com"
         }
     ],
     "require": {

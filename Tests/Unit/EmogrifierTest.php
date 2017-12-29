@@ -7,7 +7,8 @@ use Pelago\Emogrifier;
 /**
  * Test case.
  *
- * @author Oliver Klee <typo3-coding@oliverklee.de>
+ * @author Oliver Klee <github@oliverklee.de>
+ * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
 class EmogrifierTest extends \PHPUnit_Framework_TestCase
 {
