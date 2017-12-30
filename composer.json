@@ -32,6 +32,10 @@
             "email": "zoli.szabo+github@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/MyIntervals/emogrifier/issues",
+        "source": "https://github.com/MyIntervals/emogrifier"
+    },
     "require": {
         "php": "^5.5.0 || ~7.0.0 || ~7.1.0 || ~7.2.0"
     },
@@ -44,9 +48,14 @@
             "Pelago\\": "Classes/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Pelago\\Tests\\": "Tests/"
+        }
+    },
     "extra": {
         "branch-alias": {
-            "dev-master": "1.3.x-dev"
+            "dev-master": "2.0.x-dev"
         }
     }
 }
