@@ -362,10 +362,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'ID => with ID' => ['#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
             'type & ID => type with ID' => ['p#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
             'universal => HTML' => ['* { %1$s }', '<html style="%1$s">'],
-            'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
-            'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
-            'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],
-            'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'attribute presence => with attribute' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
             'attribute exact value, double quotes => with exact attribute match' => [
                 '[title="bonjour"] { %1$s }',
@@ -546,8 +542,23 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 'span[title*=": subtitle; author"] { %1$s }',
                 '<span title="title: subtitle; author" style="%1$s">',
             ],
+            'adjacent => 2nd of many' => ['p + p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-6" style="%1$s">'],
+            'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
+            'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
+            'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],
+            'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
             'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
+            // broken: first-child => 1st of many
+            'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
+            // broken: last-child => last of many
+            'type & :last-child => last of many' => ['p:last-child { %1$s }', '<p class="p-6" style="%1$s">'],
+            // broken: :not with type => other type
+            // broken: :not with class => no class
+            // broken: :not with class => other class
+            'type & :not with class => without class' => ['span:not(.foo) { %1$s }', '<span style="%1$s">'],
+            'type & :not with class => with other class' => ['p:not(.foo) { %1$s }', '<p class="p-1" style="%1$s">'],
         ];
     }
 
@@ -638,10 +649,16 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 'span[title*="hi"] { %1$s }',
                 '<span title="bonjour">',
             ],
+            'adjacent => not 1st of many' => ['p + p { %1$s }', '<p class="p-1">'],
             'child => not grandchild' => ['html > span { %1$s }', '<span>'],
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
+            'type & :first-child => not 2nd of many' => ['p:first-child { %1$s }', '<p class="p-2">'],
+            'type & :first-child => not last of many' => ['p:first-child { %1$s }', '<p class="p-6">'],
+            'type & :last-child => not 1st of many' => ['p:last-child { %1$s }', '<p class="p-1">'],
+            'type & :last-child => not 2nd of many' => ['p:last-child { %1$s }', '<p class="p-2">'],
+            'type & :not with class => not with class' => ['p:not(.p-1) { %1$s }', '<p class="p-1">'],
         ];
     }
 
@@ -673,72 +690,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
-    }
-
-    /**
-     * Data provider for selectors.
-     *
-     * @return string[][]
-     */
-    public function selectorDataProvider()
-    {
-        $styleRule = 'color: red;';
-        $styleAttribute = 'style="' . $styleRule . '"';
-
-        return [
-            'adjacent selector P + P does not match first P' => ['p + p {' . $styleRule . '} ', '#<p class="p-1">#'],
-            'adjacent selector P + P matches second P'
-            => ['p + p {' . $styleRule . '} ', '#<p class="p-2" style="' . $styleRule . '">#'],
-            'adjacent selector P + P matches third P'
-            => ['p + p {' . $styleRule . '} ', '#<p class="p-3" style="' . $styleRule . '">#'],
-            'P:first-child matches first child with matching tag'
-            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-1" style="' . $styleRule . '">#'],
-            'DIV:first-child does not match first child with mismatching tag'
-            => ['div:first-child {' . $styleRule . '} ', '#<p class="p-1">#'],
-            'P:first-child does not match middle child'
-            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-2">#'],
-            'P:first-child does not match last child'
-            => ['p:first-child {' . $styleRule . '} ', '#<p class="p-6">#'],
-            'P:last-child does not match first child' => ['p:last-child {' . $styleRule . '} ', '#<p class="p-1">#'],
-            'P:last-child does not match middle child'
-            => ['p:last-child {' . $styleRule . '} ', '#<p class="p-3">#'],
-            'P:last-child matches last child'
-            => ['p:last-child {' . $styleRule . '} ', '#<p class="p-6" style="' . $styleRule . '">#'],
-            'DIV:last-child does not match last child with mismatching tag'
-            => ['div:last-child {' . $styleRule . '} ', '#<p class="p-6">#'],
-            'P:not(.p-6) matches all but P.p-6'
-            => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-6">#'],
-            'P:not(.p-6) matches all but P.p-6 check if other paragraphs got style applied'
-            => ['p:not(.p-6) {' . $styleRule . '}', '#<p class="p-5" ' . $styleAttribute . '>#'],
-        ];
-    }
-
-    /**
-     * @test
-     *
-     * @param string $css the complete CSS
-     * @param string $htmlRegularExpression regular expression for the the HTML that needs to be contained in the HTML
-     *
-     * @dataProvider selectorDataProvider
-     */
-    public function emogrifierMatchesSelectors($css, $htmlRegularExpression)
-    {
-        $html = '<html id="html">' .
-            '  <body>' .
-            '    <p class="p-1"><span>some text</span></p>' .
-            '    <p class="p-2"><span title="bonjour">some</span> text</p>' .
-            '    <p class="p-3"><span title="buenas dias">some</span> more text</p>' .
-            '    <p class="p-4"><span title="avez-vous">some</span> more text</p>' .
-            '    <p class="p-5"><span title="buenas dias bom dia">some</span> more text</p>' .
-            '    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>' .
-            '  </body>' .
-            '</html>';
-        $this->subject->setHtml($html);
-        $this->subject->setCss($css);
-
-        $result = $this->subject->emogrify();
-
-        self::assertRegExp($htmlRegularExpression, $result);
     }
 
     /**
