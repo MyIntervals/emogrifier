@@ -174,11 +174,11 @@ Emogrifier currently supports the following
  * [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
     * presence
     * exact value match
-    * value with `~`
-    * value with `|`
-    * value with `^`
-    * value with `$`
-    * value with `*`
+    * value with `~` (one word within a whitespace-separated list of words)
+    * value with `|` (either exact value match or prefix followed by a hyphen)
+    * value with `^` (prefix match)
+    * value with `$` (suffix match)
+    * value with `*` (substring match)
  * [adjacent](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors)
  * [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
  * [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
