@@ -1287,7 +1287,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function emogrifyWithInValidMediaQueryNotContainsInlineCss($css)
+    public function emogrifyWithInvalidMediaQueryNotContainsInlineCss($css)
     {
         $this->subject->setHtml('<html><h1></h1></html>');
         $this->subject->setCss($css);
@@ -1304,7 +1304,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function emogrifyFromHtmlWithInValidMediaQueryNotContainsInnerCss($css)
+    public function emogrifyFromHtmlWithInvalidMediaQueryNotContainsInnerCss($css)
     {
         $this->subject->setHtml('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
@@ -1320,7 +1320,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function emogrifyFromHtmlWithInValidMediaQueryNotContainsInlineCss($css)
+    public function emogrifyFromHtmlWithInvalidMediaQueryNotContainsInlineCss($css)
     {
         $this->subject->setHtml('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
