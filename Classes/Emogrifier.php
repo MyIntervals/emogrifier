@@ -160,35 +160,36 @@ class Emogrifier
      * @var string[]
      */
     private $xPathRules = [
-        // child
-        '/\\s*>\\s*/' => '/',
-        // adjacent sibling
-        '/\\s+\\+\\s+/' => '/following-sibling::*[1]/self::',
-        // descendant
-        '/\\s+(?=.*[^\\]]{1}$)/' => '//',
-        // :first-child
-        '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
-        // :last-child
-        '/([^\\/]+):last-child/i' => '*[last()]/self::\\1',
-        // attribute only
+        // attribute presence
         '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/' => '*[@\\1]',
-        // attribute
-        '/(\\w)\\[(\\w+)\\]/' => '\\1[@\\2]',
-        // exact attribute
+        // type and attribute exact value
         '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
-        // element attribute~=
+        // type and attribute value with ~ (one word within a whitespace-separated list of words)
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/'
         => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
-        // element attribute^=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
-        // element attribute*=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
-        // element attribute$=
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
-        => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
-        // element attribute|=
+        // type and attribute value with | (either exact value match or prefix followed by a hyphen)
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
         => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
+        // type and attribute value with ^ (prefix match)
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
+        // type and attribute value with * (substring match)
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
+        // adjacent sibling
+        '/\\s+\\+\\s+/' => '/following-sibling::*[1]/self::',
+        // child
+        '/\\s*>\\s*/' => '/',
+        // descendant
+        '/\\s+(?=.*[^\\]]{1}$)/' => '//',
+        // type and :first-child
+        '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
+        // type and :last-child
+        '/([^\\/]+):last-child/i' => '*[last()]/self::\\1',
+
+        // The following matcher will break things if it is placed before the adjacent matcher.
+        // So one of the matchers matches either too much or not enough.
+        // type and attribute value with $ (suffix match)
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
+        => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
     ];
 
     /**
