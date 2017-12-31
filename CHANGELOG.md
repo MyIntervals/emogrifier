@@ -20,6 +20,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Use the Symfony CSS selector component
+  ([#540](https://github.com/jjriv/emogrifier/pull/540))
 
 ### Deprecated
 - Support for PHP 5.5 will be removed in Emogrifier 3.0.
