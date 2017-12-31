@@ -2400,7 +2400,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidExcludedSelector()
+    public function emogrifyInDebugModeForInvalidExcludedSelectorThrowsException()
     {
         $this->subject->setDebug(true);
 
@@ -2893,7 +2893,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \InvalidArgumentException
      */
-    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidSelectorsInMediaQueryBlocks()
+    public function emogrifyInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
         $this->subject->setDebug(true);
 

@@ -855,37 +855,13 @@ class Emogrifier
      */
     private function clearAllCaches()
     {
-        $this->clearCache(static::CACHE_KEY_CSS);
-        $this->clearCache(static::CACHE_KEY_SELECTOR);
-        $this->clearCache(static::CACHE_KEY_XPATH);
-        $this->clearCache(static::CACHE_KEY_CSS_DECLARATIONS_BLOCK);
-        $this->clearCache(static::CACHE_KEY_COMBINED_STYLES);
-    }
-
-    /**
-     * Clears a single cache by key.
-     *
-     * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH
-     *                 or CACHE_KEY_CSS_DECLARATION_BLOCK
-     *
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function clearCache($key)
-    {
-        $allowedCacheKeys = [
-            static::CACHE_KEY_CSS,
-            static::CACHE_KEY_SELECTOR,
-            static::CACHE_KEY_XPATH,
-            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK,
-            static::CACHE_KEY_COMBINED_STYLES,
+        $this->caches = [
+            static::CACHE_KEY_CSS => [],
+            static::CACHE_KEY_SELECTOR => [],
+            static::CACHE_KEY_XPATH => [],
+            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
+            static::CACHE_KEY_COMBINED_STYLES => [],
         ];
-        if (!in_array($key, $allowedCacheKeys, true)) {
-            throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
-        }
-
-        $this->caches[$key] = [];
     }
 
     /**
@@ -1894,7 +1870,7 @@ class Emogrifier
 
     /**
      * Handles invalid xPath expression warnings, generated during the process() method,
-     * during querying \DOMDocument and trigger \InvalidArgumentException with invalid selector
+     * during querying \DOMDocument and trigger an \InvalidArgumentException with an invalid selector
      * or \RuntimeException, depending on the source of the warning.
      *
      * @param int $type

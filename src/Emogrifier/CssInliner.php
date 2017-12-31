@@ -2,6 +2,9 @@
 
 namespace Pelago\Emogrifier;
 
+use Symfony\Component\CssSelector\CssSelectorConverter;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
+
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
  *
@@ -33,41 +36,12 @@ class CssInliner
     /**
      * @var int
      */
-    const CACHE_KEY_XPATH = 2;
+    const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 2;
 
     /**
      * @var int
      */
-    const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 3;
-
-    /**
-     * @var int
-     */
-    const CACHE_KEY_COMBINED_STYLES = 4;
-
-    /**
-     * for calculating nth-of-type and nth-child selectors
-     *
-     * @var int
-     */
-    const INDEX = 0;
-
-    /**
-     * for calculating nth-of-type and nth-child selectors
-     *
-     * @var int
-     */
-    const MULTIPLIER = 1;
-
-    /**
-     * @var string
-     */
-    const ID_ATTRIBUTE_MATCHER = '/(\\w+)?\\#([\\w\\-]+)/';
-
-    /**
-     * @var string
-     */
-    const CLASS_ATTRIBUTE_MATCHER = '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/';
+    const CACHE_KEY_COMBINED_STYLES = 3;
 
     /**
      * @var string
@@ -110,10 +84,14 @@ class CssInliner
     private $caches = [
         self::CACHE_KEY_CSS => [],
         self::CACHE_KEY_SELECTOR => [],
-        self::CACHE_KEY_XPATH => [],
         self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
         self::CACHE_KEY_COMBINED_STYLES => [],
     ];
+
+    /**
+     * @var CssSelectorConverter
+     */
+    private $cssSelectorConverter = null;
 
     /**
      * the visited nodes with the XPath paths as array keys
@@ -175,42 +153,6 @@ class CssInliner
     ];
 
     /**
-     * @var string[]
-     */
-    private $xPathRules = [
-        // attribute presence
-        '/^\\[(\\w+|\\w+\\=[\'"]?\\w+[\'"]?)\\]/' => '*[@\\1]',
-        // type and attribute exact value
-        '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
-        // type and attribute value with ~ (one word within a whitespace-separated list of words)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/'
-        => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
-        // type and attribute value with | (either exact value match or prefix followed by a hyphen)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
-        => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
-        // type and attribute value with ^ (prefix match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
-        // type and attribute value with * (substring match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
-        // adjacent sibling
-        '/\\s*\\+\\s*/' => '/following-sibling::*[1]/self::',
-        // child
-        '/\\s*>\\s*/' => '/',
-        // descendant (don't match spaces within already translated XPath predicates)
-        '/\\s+(?![^\\[\\]]*+\\])/' => '//',
-        // type and :first-child
-        '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
-        // type and :last-child
-        '/([^\\/]+):last-child/i' => '*[last()]/self::\\1',
-
-        // The following matcher will break things if it is placed before the adjacent matcher.
-        // So one of the matchers matches either too much or not enough.
-        // type and attribute value with $ (suffix match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
-        => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
-    ];
-
-    /**
      * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
      *
      * @var bool
@@ -224,6 +166,8 @@ class CssInliner
      */
     public function __construct($html = '')
     {
+        $this->cssSelectorConverter = new CssSelectorConverter();
+
         $this->setHtml($html);
     }
 
@@ -268,6 +212,7 @@ class CssInliner
      * @return string
      *
      * @throws \BadMethodCallException
+     * @throws SyntaxErrorException
      */
     public function emogrify()
     {
@@ -283,6 +228,7 @@ class CssInliner
      * @return string
      *
      * @throws \BadMethodCallException
+     * @throws SyntaxErrorException
      */
     public function emogrifyBodyContent()
     {
@@ -321,7 +267,7 @@ class CssInliner
      *
      * @return void
      *
-     * @throws \InvalidArgumentException
+     * @throws SyntaxErrorException
      */
     protected function process(\DOMDocument $xmlDocument)
     {
@@ -347,9 +293,9 @@ class CssInliner
             // executions, which can still flood logs/output unnecessarily. Instead, Emogrifier's error handler should
             // always throw an exception and it must be caught here and only rethrown if in debug mode.
             try {
-                // \DOMXPath::query will always return a DOMNodeList or throw an exception when errors are caught.
-                $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
-            } catch (\InvalidArgumentException $e) {
+                // \DOMXPath::query will always return a DOMNodeList or an exception when errors are caught.
+                $nodesMatchingCssSelectors = $xPath->query($this->cssSelectorConverter->toXPath($cssRule['selector']));
+            } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
@@ -579,37 +525,12 @@ class CssInliner
      */
     private function clearAllCaches()
     {
-        $this->clearCache(static::CACHE_KEY_CSS);
-        $this->clearCache(static::CACHE_KEY_SELECTOR);
-        $this->clearCache(static::CACHE_KEY_XPATH);
-        $this->clearCache(static::CACHE_KEY_CSS_DECLARATIONS_BLOCK);
-        $this->clearCache(static::CACHE_KEY_COMBINED_STYLES);
-    }
-
-    /**
-     * Clears a single cache by key.
-     *
-     * @param int $key the cache key, must be CACHE_KEY_CSS, CACHE_KEY_SELECTOR, CACHE_KEY_XPATH
-     *                 or CACHE_KEY_CSS_DECLARATION_BLOCK
-     *
-     * @return void
-     *
-     * @throws \InvalidArgumentException
-     */
-    private function clearCache($key)
-    {
-        $allowedCacheKeys = [
-            static::CACHE_KEY_CSS,
-            static::CACHE_KEY_SELECTOR,
-            static::CACHE_KEY_XPATH,
-            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK,
-            static::CACHE_KEY_COMBINED_STYLES,
+        $this->caches = [
+            static::CACHE_KEY_CSS => [],
+            static::CACHE_KEY_SELECTOR => [],
+            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
+            static::CACHE_KEY_COMBINED_STYLES => [],
         ];
-        if (!in_array($key, $allowedCacheKeys, true)) {
-            throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
-        }
-
-        $this->caches[$key] = [];
     }
 
     /**
@@ -950,13 +871,13 @@ class CssInliner
      *
      * @return bool
      *
-     * @throws \InvalidArgumentException
+     * @throws SyntaxErrorException
      */
     private function existsMatchForCssSelector(\DOMXPath $xPath, $cssSelector)
     {
         try {
-            $nodesMatchingSelector = $xPath->query($this->translateCssToXpath($cssSelector));
-        } catch (\InvalidArgumentException $e) {
+            $nodesMatchingSelector = $xPath->query($this->cssSelectorConverter->toXPath($cssSelector));
+        } catch (SyntaxErrorException $e) {
             if ($this->debug) {
                 throw $e;
             }
@@ -1284,262 +1205,6 @@ class CssInliner
     }
 
     /**
-     * Maps a CSS selector to an XPath query string.
-     *
-     * @see http://plasmasturm.org/log/444/
-     *
-     * @param string $cssSelector a CSS selector
-     *
-     * @return string the corresponding XPath selector
-     */
-    private function translateCssToXpath($cssSelector)
-    {
-        $paddedSelector = ' ' . $cssSelector . ' ';
-        $lowercasePaddedSelector = preg_replace_callback(
-            '/\\s+\\w+\\s+/',
-            function (array $matches) {
-                return strtolower($matches[0]);
-            },
-            $paddedSelector
-        );
-        $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
-        $xPathKey = md5($trimmedLowercaseSelector);
-        if (isset($this->caches[static::CACHE_KEY_XPATH][$xPathKey])) {
-            return $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey];
-        }
-
-        $hasNotSelector = (bool)preg_match(
-            '/^([^:]+):not\\(\\s*([[:ascii:]]+)\\s*\\)$/',
-            $trimmedLowercaseSelector,
-            $matches
-        );
-        if (!$hasNotSelector) {
-            $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
-        } else {
-            /** @var string[] $matches */
-            list(, $partBeforeNot, $notContents) = $matches;
-            $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
-                '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
-        }
-        $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey] = $xPath;
-
-        return $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey];
-    }
-
-    /**
-     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector.
-     *
-     * @param string $trimmedLowercaseSelector
-     *
-     * @return string
-     */
-    private function translateCssToXpathPass($trimmedLowercaseSelector)
-    {
-        return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
-            $trimmedLowercaseSelector,
-            [$this, 'matchClassAttributes']
-        );
-    }
-
-    /**
-     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector for inline usage.
-     *
-     * @param string $trimmedLowercaseSelector
-     *
-     * @return string
-     */
-    private function translateCssToXpathPassInline($trimmedLowercaseSelector)
-    {
-        return $this->translateCssToXpathPassWithMatchClassAttributesCallback(
-            $trimmedLowercaseSelector,
-            [$this, 'matchClassAttributesInline']
-        );
-    }
-
-    /**
-     * Flexibly translates the CSS selector $trimmedLowercaseSelector to an xPath selector while using
-     * $matchClassAttributesCallback as to match the class attributes.
-     *
-     * @param string $trimmedLowercaseSelector
-     * @param callable $matchClassAttributesCallback
-     *
-     * @return string
-     */
-    private function translateCssToXpathPassWithMatchClassAttributesCallback(
-        $trimmedLowercaseSelector,
-        callable $matchClassAttributesCallback
-    ) {
-        $roughXpath = preg_replace(array_keys($this->xPathRules), $this->xPathRules, $trimmedLowercaseSelector);
-        $xPathWithIdAttributeMatchers = preg_replace_callback(
-            static::ID_ATTRIBUTE_MATCHER,
-            [$this, 'matchIdAttributes'],
-            $roughXpath
-        );
-        $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
-            static::CLASS_ATTRIBUTE_MATCHER,
-            $matchClassAttributesCallback,
-            $xPathWithIdAttributeMatchers
-        );
-
-        // Advanced selectors are going to require a bit more advanced emogrification.
-        $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
-            '/([^\\/]+):nth-child\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
-            [$this, 'translateNthChild'],
-            $xPathWithIdAttributeAndClassMatchers
-        );
-        $finalXpath = preg_replace_callback(
-            '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
-            [$this, 'translateNthOfType'],
-            $xPathWithIdAttributeAndClassMatchers
-        );
-
-        return $finalXpath;
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return string
-     */
-    private function matchIdAttributes(array $match)
-    {
-        return ($match[1] !== '' ? $match[1] : '*') . '[@id="' . $match[2] . '"]';
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return string xPath class attribute query wrapped in element selector
-     */
-    private function matchClassAttributes(array $match)
-    {
-        return ($match[1] !== '' ? $match[1] : '*') . '[' . $this->matchClassAttributesInline($match) . ']';
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return string xPath class attribute query
-     */
-    private function matchClassAttributesInline(array $match)
-    {
-        return 'contains(concat(" ",@class," "),concat(" ","' .
-            implode(
-                '"," "))][contains(concat(" ",@class," "),concat(" ","',
-                explode('.', substr($match[2], 1))
-            ) . '"," "))';
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return string
-     */
-    private function translateNthChild(array $match)
-    {
-        $parseResult = $this->parseNth($match);
-
-        if (isset($parseResult[static::MULTIPLIER])) {
-            if ($parseResult[static::MULTIPLIER] < 0) {
-                $parseResult[static::MULTIPLIER] = abs($parseResult[static::MULTIPLIER]);
-                $xPathExpression = sprintf(
-                    '*[(last() - position()) mod %1%u = %2$u]/static::%3$s',
-                    $parseResult[static::MULTIPLIER],
-                    $parseResult[static::INDEX],
-                    $match[1]
-                );
-            } else {
-                $xPathExpression = sprintf(
-                    '*[position() mod %1$u = %2$u]/static::%3$s',
-                    $parseResult[static::MULTIPLIER],
-                    $parseResult[static::INDEX],
-                    $match[1]
-                );
-            }
-        } else {
-            $xPathExpression = sprintf('*[%1$u]/static::%2$s', $parseResult[static::INDEX], $match[1]);
-        }
-
-        return $xPathExpression;
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return string
-     */
-    private function translateNthOfType(array $match)
-    {
-        $parseResult = $this->parseNth($match);
-
-        if (isset($parseResult[static::MULTIPLIER])) {
-            if ($parseResult[static::MULTIPLIER] < 0) {
-                $parseResult[static::MULTIPLIER] = abs($parseResult[static::MULTIPLIER]);
-                $xPathExpression = sprintf(
-                    '%1$s[(last() - position()) mod %2$u = %3$u]',
-                    $match[1],
-                    $parseResult[static::MULTIPLIER],
-                    $parseResult[static::INDEX]
-                );
-            } else {
-                $xPathExpression = sprintf(
-                    '%1$s[position() mod %2$u = %3$u]',
-                    $match[1],
-                    $parseResult[static::MULTIPLIER],
-                    $parseResult[static::INDEX]
-                );
-            }
-        } else {
-            $xPathExpression = sprintf('%1$s[%2$u]', $match[1], $parseResult[static::INDEX]);
-        }
-
-        return $xPathExpression;
-    }
-
-    /**
-     * @param string[] $match
-     *
-     * @return int[]
-     */
-    private function parseNth(array $match)
-    {
-        if (in_array(strtolower($match[2]), ['even', 'odd'], true)) {
-            // we have "even" or "odd"
-            $index = strtolower($match[2]) === 'even' ? 0 : 1;
-            return [static::MULTIPLIER => 2, static::INDEX => $index];
-        }
-        if (stripos($match[2], 'n') === false) {
-            // if there is a multiplier
-            $index = (int)str_replace(' ', '', $match[2]);
-            return [static::INDEX => $index];
-        }
-
-        if (isset($match[3])) {
-            $multipleTerm = str_replace($match[3], '', $match[2]);
-            $index = (int)str_replace(' ', '', $match[3]);
-        } else {
-            $multipleTerm = $match[2];
-            $index = 0;
-        }
-
-        $multiplier = str_ireplace('n', '', $multipleTerm);
-
-        if ($multiplier === '') {
-            $multiplier = 1;
-        } elseif ($multiplier === '0') {
-            return [static::INDEX => $index];
-        } else {
-            $multiplier = (int)$multiplier;
-        }
-
-        while ($index < 0) {
-            $index += abs($multiplier);
-        }
-
-        return [static::MULTIPLIER => $multiplier, static::INDEX => $index];
-    }
-
-    /**
      * Parses a CSS declaration block into property name/value pairs.
      *
      * Example:
@@ -1589,15 +1254,15 @@ class CssInliner
      *
      * @return \DOMElement[]
      *
-     * @throws \InvalidArgumentException
+     * @throws SyntaxErrorException
      */
     private function getNodesToExclude(\DOMXPath $xPath)
     {
         $excludedNodes = [];
         foreach (array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
-                $matchingNodes = $xPath->query($this->translateCssToXpath($selectorToExclude));
-            } catch (\InvalidArgumentException $e) {
+                $matchingNodes = $xPath->query($this->cssSelectorConverter->toXPath($selectorToExclude));
+            } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
@@ -1613,7 +1278,7 @@ class CssInliner
 
     /**
      * Handles invalid xPath expression warnings, generated during the process() method,
-     * during querying \DOMDocument and trigger \InvalidArgumentException with invalid selector
+     * during querying \DOMDocument and trigger a SyntaxErrorException with an invalid selector
      * or \RuntimeException, depending on the source of the warning.
      *
      * @param int $type
@@ -1624,7 +1289,7 @@ class CssInliner
      *
      * @return bool always false
      *
-     * @throws \InvalidArgumentException
+     * @throws SyntaxErrorException
      * @throws \RuntimeException
      */
     public function handleXpathQueryWarnings( // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
@@ -1647,7 +1312,7 @@ class CssInliner
         }
 
         if ($selector !== '') {
-            throw new \InvalidArgumentException(
+            throw new SyntaxErrorException(
                 sprintf('%1$s in selector >> %2$s << in %3$s on line %4$u', $message, $selector, $file, $line),
                 1509279985
             );

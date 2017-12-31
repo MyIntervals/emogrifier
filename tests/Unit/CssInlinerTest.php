@@ -1180,7 +1180,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
     public function emogrifyInDebugModeForInvalidCssSelectorThrowsException()
     {
@@ -2399,9 +2399,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
-    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidExcludedSelector()
+    public function emogrifyInDebugModeForInvalidExcludedSelectorThrowsException()
     {
         $this->subject->setDebug(true);
 
@@ -2683,9 +2683,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @expectedException \InvalidArgumentException
+     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
-    public function emogrifyInDebugModeThrowsInvalidArgumentExceptionForInvalidSelectorsInMediaQueryBlocks()
+    public function emogrifyInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
         $this->subject->setDebug(true);
 
