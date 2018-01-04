@@ -141,13 +141,13 @@ curl -s https://getcomposer.org/installer | php
 Run the following command for a local installation:
 
 ```bash
-php composer.phar require pelago/emogrifier:@dev
+php composer.phar require pelago/emogrifier:^2.0.0
 ```
 
 Or for a global installation, run the following command:
 
 ```bash
-composer require pelago/emogrifier:^1.2.0
+composer require pelago/emogrifier:^2.0.0
 ```
 
 You can also add follow lines to your `composer.json` and run the
@@ -155,7 +155,7 @@ You can also add follow lines to your `composer.json` and run the
 
 ```json
 "require": {
-  "pelago/emogrifier": "^1.2.0"
+  "pelago/emogrifier": "^2.0.0"
 }
 ```
 
@@ -230,6 +230,24 @@ The following selectors are not implemented yet:
   (but not all of them). It does not support pseudo selectors. (Emogrifier
   works by converting CSS selectors to XPath selectors, and pseudo selectors
   cannot be converted accurately).
+
+
+## Steps to release a new version
+
+1. Create a pull request "Prepare release of version x.y.z" with the following
+   changes.
+2. Set the new version number in the `@version` annotation in the class PHPDoc
+   of [Emogrifier.php](Classes/Emogrifier.php).
+3. In the [composer.json](composer.json), update the `branch-alias` entry to
+   point to the release _after_ the upcoming release.
+4. In the [README.md](README.md), update the version numbers in the section
+   [Installing with Composer](#installing-with-composer).
+5. In the [CHANGELOG.md](CHANGELOG.md), set the version number and remove any
+   empty sections.
+6. Have the pull request reviewed and merged.
+7. In the [Releases tab](https://github.com/MyIntervals/emogrifier/releases),
+   create a new release and copy the change log entries to the new release.
+8. Post about the new release on social media.
 
 
 ## Maintainers
