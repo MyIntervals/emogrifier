@@ -2,21 +2,34 @@ sudo: false
 
 language: php
 
+php:
+- 5.5
+- 5.6
+- 7.0
+- 7.1
+- 7.2
+
 cache:
   directories:
   - vendor
   - $HOME/.composer/cache
 
-matrix:
-  include:
-  - php: 5.5
-  - php: 5.6
-  - php: 7.0
-  - php: 7.1
-  - php: 7.2
+env:
+  matrix:
+  - DEPENDENCIES=latest
+  - DEPENDENCIES=oldest
 
 install:
-  - composer install
+- >
+  echo;
+  if [ "$DEPENDENCIES" = "latest" ]; then
+    echo "Installing the latest dependencies";
+    composer update --with-dependencies --prefer-stable --prefer-dist
+  else
+    echo "Installing the lowest dependencies";
+    composer update --with-dependencies --prefer-stable --prefer-dist --prefer-lowest
+  fi;
+  composer show;
 
 before_script:
   - |

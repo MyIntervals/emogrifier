@@ -21,6 +21,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 
 ### Changed
+- Test with latest and oldest dependencies on Travis
+  ([#463](https://github.com/MyIntervals/emogrifier/pull/463))
 - Always enable the debug mode in the tests
   ([#448](https://github.com/MyIntervals/emogrifier/pull/448))
 - Optimize the string operations
