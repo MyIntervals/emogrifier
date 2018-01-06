@@ -9,7 +9,7 @@ When you contribute, please take the following things into account:
 ## Contributor Code of Conduct
 
 Please note that this project is released with a
-[Contributor Code of Conduct](CODE_OF_CONDUCT.md). By participating in this
+[Contributor Code of Conduct](../CODE_OF_CONDUCT.md). By participating in this
 project, you agree to abide by its terms.
 
 
@@ -61,7 +61,9 @@ first before investing a lot of time in writing code.
 To install the development dependencies (PHPUnit and PHP_CodeSniffer), please
 run the following command:
 
-    composer install
+```shell
+composer install
+```
 
 
 ## Unit-test your changes
@@ -72,7 +74,9 @@ code coverage of the fixed bugs and the new features.
 
 To run the existing PHPUnit tests, run this command:
 
-    vendor/bin/phpunit Tests/
+```shell
+vendor/bin/phpunit Tests/
+```
 
 
 ## Coding Style
@@ -84,7 +88,9 @@ We will only merge pull requests that follow the project's coding style.
 
 Please check your code with the provided PHP_CodeSniffer standard:
 
-    vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/
+```shell
+vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/
+```
 
 Please make your code clean, well-readable and easy to understand.
 
