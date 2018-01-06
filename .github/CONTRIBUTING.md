@@ -86,10 +86,10 @@ is four spaces.
 
 We will only merge pull requests that follow the project's coding style.
 
-Please check your code with the provided PHP_CodeSniffer standard:
+Please check your code with the provided static code analysis tools:
 
 ```shell
-composer ci:php:sniff
+composer ci:static
 ```
 
 Please make your code clean, well-readable and easy to understand.

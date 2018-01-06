@@ -52,5 +52,10 @@ script:
 
 - >
   echo;
+  echo "Running PHPMD";
+  composer ci:php:md;
+
+- >
+  echo;
   echo "Running PHP_CodeSniffer";
   composer ci:php:sniff;
