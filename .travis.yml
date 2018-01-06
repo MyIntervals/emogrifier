@@ -41,9 +41,17 @@ before_script:
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 script:
-  # Run PHP lint on all PHP files.
-  - find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
-  # Check the coding style.
-  - vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/
-  # Run the unit tests.
-  - vendor/bin/phpunit Tests/
+- >
+  echo;
+  echo "Linting all PHP files";
+  find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+
+- >
+  echo;
+  echo "Running the unit tests";
+  vendor/bin/phpunit Tests/;
+
+- >
+  echo;
+  echo "Running PHP_CodeSniffer";
+  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/;
