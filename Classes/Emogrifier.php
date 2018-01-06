@@ -1762,7 +1762,7 @@ class Emogrifier
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function handleXpathQueryWarnings( // @codingStandardsIgnoreLine
+    public function handleXpathQueryWarnings( // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
         $type,
         $message,
         $file,
