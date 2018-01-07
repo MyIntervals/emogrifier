@@ -154,7 +154,7 @@ class Emogrifier
      *
      * @var bool
      */
-    private $shouldKeepInvisibleNodes = true;
+    private $shouldRemoveInvisibleNodes = true;
 
     /**
      * @var string[]
@@ -405,7 +405,7 @@ class Emogrifier
             $this->mapAllInlineStylesToHtmlAttributes($xPath);
         }
 
-        if ($this->shouldKeepInvisibleNodes) {
+        if ($this->shouldRemoveInvisibleNodes) {
             $this->removeInvisibleNodes($xPath);
         }
 
@@ -722,7 +722,7 @@ class Emogrifier
      */
     public function disableInvisibleNodeRemoval()
     {
-        $this->shouldKeepInvisibleNodes = false;
+        $this->shouldRemoveInvisibleNodes = false;
     }
 
     /**
