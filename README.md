@@ -127,6 +127,7 @@ calling the `emogrify` method:
   well, even if inline and prefer HTML attributes. This function allows you to
   put properties such as height, width, background color and font color in your
   CSS while the transformed content will have all the available HTML tags set.
+  This option will be removed in Emogrifier 3.0.
 
 
 ## Installing with Composer

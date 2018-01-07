@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Deprecated
 - Support for PHP 5.5 will be removed in Emogrifier 3.0.
 - Support for PHP 5.6 will be removed in Emogrifier 4.0.
+- Converting CSS styles to (non-CSS) HTML attributes will be removed
+  in Emogrifier 3.0. ([#474](https://github.com/jjriv/emogrifier/pull/474))
 
 ### Removed
 
