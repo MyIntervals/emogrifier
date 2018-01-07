@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ruleset name="Emogrifier Coding Standard">
-    <description>This is the coding standard used for the Emogrifier code.
-        This standard has been tested with to work with PHP_CodeSniffer >= 2.3.0.
+    <description>
+        This is the coding standard used for the Emogrifier code.
+        This standard requires PHP_CodeSniffer >= 3.2.0.
     </description>
 
     <!--The complete PSR-2 ruleset-->
