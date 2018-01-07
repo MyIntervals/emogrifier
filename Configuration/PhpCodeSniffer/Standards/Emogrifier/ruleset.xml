@@ -8,7 +8,6 @@
     <rule ref="PSR2"/>
 
     <!-- Arrays -->
-    <rule ref="Generic.Arrays.ArrayIndent"/>
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
 
