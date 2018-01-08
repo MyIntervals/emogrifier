@@ -10,6 +10,14 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Oliver Klee",
+            "email": "github@oliverklee.de"
+        },
+        {
+            "name": "Zoli Szabó",
+            "email": "zoli.szabo+github@gmail.com"
+        },
+        {
             "name": "John Reeve",
             "email": "jreeve@pelagodesign.com"
         },
@@ -18,18 +26,6 @@
         },
         {
             "name": "Jaime Prado"
-        },
-        {
-            "name": "Oliver Klee",
-            "email": "github@oliverklee.de"
-        },
-        {
-            "name": "Roman Ožana",
-            "email": "ozana@omdesign.cz"
-        },
-        {
-            "name": "Zoli Szabó",
-            "email": "zoli.szabo+github@gmail.com"
         }
     ],
     "support": {
