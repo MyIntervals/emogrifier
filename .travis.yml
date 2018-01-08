@@ -19,6 +19,9 @@ env:
   - DEPENDENCIES=latest
   - DEPENDENCIES=oldest
 
+before_install:
+- phpenv config-rm xdebug.ini
+
 install:
 - >
   echo;
@@ -30,15 +33,6 @@ install:
     composer update --with-dependencies --prefer-stable --prefer-dist --prefer-lowest
   fi;
   composer show;
-
-before_script:
-  - |
-    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
-      phpenv config-rm xdebug.ini
-    else
-      echo "xdebug.ini does not exist"
-    fi
-  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
 
 script:
 - >
