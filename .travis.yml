@@ -37,6 +37,11 @@ install:
 script:
 - >
   echo;
+  echo "Validating the composer.json";
+  composer validate --no-check-all --no-check-lock --strict;
+
+- >
+  echo;
   echo "Linting all PHP files";
   find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
 

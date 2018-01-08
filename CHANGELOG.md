@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Validate the composer.json on Travis
+  ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
 
