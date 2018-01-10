@@ -17,6 +17,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support for PHP 5.6 will be removed in Emogrifier 4.0.
 - The removal of invisible nodes will be removed in Emogrifier 3.0.
   ([#473](https://github.com/jjriv/emogrifier/pull/473))
+- Converting CSS styles to (non-CSS) HTML attributes will be removed
+  in Emogrifier 3.0. ([#474](https://github.com/jjriv/emogrifier/pull/474))
 
 ### Removed
 
