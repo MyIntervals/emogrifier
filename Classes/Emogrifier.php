@@ -718,6 +718,8 @@ class Emogrifier
     /**
      * Disables the removal of elements with `display: none` properties.
      *
+     * @deprecated will be removed in Emogrifier 3.0
+     *
      * @return void
      */
     public function disableInvisibleNodeRemoval()

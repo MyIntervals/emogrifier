@@ -19,6 +19,9 @@ env:
   - DEPENDENCIES=latest
   - DEPENDENCIES=oldest
 
+before_install:
+- phpenv config-rm xdebug.ini
+
 install:
 - >
   echo;
@@ -31,16 +34,12 @@ install:
   fi;
   composer show;
 
-before_script:
-  - |
-    if [ -f ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/xdebug.ini ]; then
-      phpenv config-rm xdebug.ini
-    else
-      echo "xdebug.ini does not exist"
-    fi
-  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
-
 script:
+- >
+  echo;
+  echo "Validating the composer.json";
+  composer validate --no-check-all --no-check-lock --strict;
+
 - >
   echo;
   echo "Linting all PHP files";
