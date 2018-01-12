@@ -1179,6 +1179,8 @@ class Emogrifier
      * Checks that $document has a BODY element and adds it if it is missing.
      *
      * @param \DOMDocument $document
+     *
+     * @return void
      */
     private function ensureExistenceOfBodyElement(\DOMDocument $document)
     {
