@@ -227,7 +227,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function addMissingHtml5DocumentType()
+    public function addsMissingHtml5DocumentType()
     {
         $subject = new TestingHtmlProcessor('<html></html>');
 
