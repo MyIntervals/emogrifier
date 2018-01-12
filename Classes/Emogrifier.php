@@ -651,7 +651,7 @@ class Emogrifier
     private function parseCssRules($css)
     {
         $cssKey = md5($css);
-        if (!isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
+        if (!isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
             // process the CSS file for selectors and definitions
             preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $css, $matches, PREG_SET_ORDER);
 
@@ -689,10 +689,10 @@ class Emogrifier
 
             usort($cssRules, [$this, 'sortBySelectorPrecedence']);
 
-            $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
+            $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
         }
 
-        return $this->caches[self::CACHE_KEY_CSS][$cssKey];
+        return $this->caches[static::CACHE_KEY_CSS][$cssKey];
     }
 
     /**
@@ -747,11 +747,11 @@ class Emogrifier
      */
     private function clearAllCaches()
     {
-        $this->clearCache(self::CACHE_KEY_CSS);
-        $this->clearCache(self::CACHE_KEY_SELECTOR);
-        $this->clearCache(self::CACHE_KEY_XPATH);
-        $this->clearCache(self::CACHE_KEY_CSS_DECLARATIONS_BLOCK);
-        $this->clearCache(self::CACHE_KEY_COMBINED_STYLES);
+        $this->clearCache(static::CACHE_KEY_CSS);
+        $this->clearCache(static::CACHE_KEY_SELECTOR);
+        $this->clearCache(static::CACHE_KEY_XPATH);
+        $this->clearCache(static::CACHE_KEY_CSS_DECLARATIONS_BLOCK);
+        $this->clearCache(static::CACHE_KEY_COMBINED_STYLES);
     }
 
     /**
@@ -767,11 +767,11 @@ class Emogrifier
     private function clearCache($key)
     {
         $allowedCacheKeys = [
-            self::CACHE_KEY_CSS,
-            self::CACHE_KEY_SELECTOR,
-            self::CACHE_KEY_XPATH,
-            self::CACHE_KEY_CSS_DECLARATIONS_BLOCK,
-            self::CACHE_KEY_COMBINED_STYLES,
+            static::CACHE_KEY_CSS,
+            static::CACHE_KEY_SELECTOR,
+            static::CACHE_KEY_XPATH,
+            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK,
+            static::CACHE_KEY_COMBINED_STYLES,
         ];
         if (!in_array($key, $allowedCacheKeys, true)) {
             throw new \InvalidArgumentException('Invalid cache key: ' . $key, 1391822035);
@@ -995,8 +995,8 @@ class Emogrifier
     {
         $combinedStyles = array_merge($oldStyles, $newStyles);
         $cacheKey = serialize($combinedStyles);
-        if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
-            return $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey];
+        if (isset($this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
+            return $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey];
         }
 
         foreach ($oldStyles as $attributeName => $attributeValue) {
@@ -1018,7 +1018,7 @@ class Emogrifier
         }
         $trimmedStyle = rtrim($style);
 
-        $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
+        $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
 
         return $trimmedStyle;
     }
@@ -1339,7 +1339,7 @@ class Emogrifier
             return $html;
         }
 
-        return self::DEFAULT_DOCUMENT_TYPE . $html;
+        return static::DEFAULT_DOCUMENT_TYPE . $html;
     }
 
     /**
@@ -1362,15 +1362,15 @@ class Emogrifier
         $hasHtmlTag = stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = preg_replace('/<head(.*?)>/i', '<head$1>' . self::CONTENT_TYPE_META_TAG, $html);
+            $reworkedHtml = preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
         } elseif ($hasHtmlTag) {
             $reworkedHtml = preg_replace(
                 '/<html(.*?)>/i',
-                '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
+                '<html$1><head>' . static::CONTENT_TYPE_META_TAG . '</head>',
                 $html
             );
         } else {
-            $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
+            $reworkedHtml = static::CONTENT_TYPE_META_TAG . $html;
         }
 
         return $reworkedHtml;
@@ -1402,7 +1402,7 @@ class Emogrifier
     private function getCssSelectorPrecedence($selector)
     {
         $selectorKey = md5($selector);
-        if (!isset($this->caches[self::CACHE_KEY_SELECTOR][$selectorKey])) {
+        if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
             $value = 100;
             // ids: worth 100, classes: worth 10, elements: worth 1
@@ -1417,10 +1417,10 @@ class Emogrifier
                 $precedence += ($value * $number);
                 $value /= 10;
             }
-            $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
+            $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
         }
 
-        return $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey];
+        return $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey];
     }
 
     /**
@@ -1444,8 +1444,8 @@ class Emogrifier
         );
         $trimmedLowercaseSelector = trim($lowercasePaddedSelector);
         $xPathKey = md5($trimmedLowercaseSelector);
-        if (isset($this->caches[self::CACHE_KEY_XPATH][$xPathKey])) {
-            return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+        if (isset($this->caches[static::CACHE_KEY_XPATH][$xPathKey])) {
+            return $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey];
         }
 
         $hasNotSelector = (bool)preg_match(
@@ -1462,9 +1462,9 @@ class Emogrifier
             $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
                 '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
         }
-        $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $xPath;
+        $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey] = $xPath;
 
-        return $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey];
+        return $this->caches[static::CACHE_KEY_SELECTOR][$xPathKey];
     }
 
     /**
@@ -1512,12 +1512,12 @@ class Emogrifier
     ) {
         $roughXpath = preg_replace(array_keys($this->xPathRules), $this->xPathRules, $trimmedLowercaseSelector);
         $xPathWithIdAttributeMatchers = preg_replace_callback(
-            self::ID_ATTRIBUTE_MATCHER,
+            static::ID_ATTRIBUTE_MATCHER,
             [$this, 'matchIdAttributes'],
             $roughXpath
         );
         $xPathWithIdAttributeAndClassMatchers = preg_replace_callback(
-            self::CLASS_ATTRIBUTE_MATCHER,
+            static::CLASS_ATTRIBUTE_MATCHER,
             $matchClassAttributesCallback,
             $xPathWithIdAttributeMatchers
         );
@@ -1580,25 +1580,25 @@ class Emogrifier
     {
         $parseResult = $this->parseNth($match);
 
-        if (isset($parseResult[self::MULTIPLIER])) {
-            if ($parseResult[self::MULTIPLIER] < 0) {
-                $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
+        if (isset($parseResult[static::MULTIPLIER])) {
+            if ($parseResult[static::MULTIPLIER] < 0) {
+                $parseResult[static::MULTIPLIER] = abs($parseResult[static::MULTIPLIER]);
                 $xPathExpression = sprintf(
-                    '*[(last() - position()) mod %1%u = %2$u]/self::%3$s',
-                    $parseResult[self::MULTIPLIER],
-                    $parseResult[self::INDEX],
+                    '*[(last() - position()) mod %1%u = %2$u]/static::%3$s',
+                    $parseResult[static::MULTIPLIER],
+                    $parseResult[static::INDEX],
                     $match[1]
                 );
             } else {
                 $xPathExpression = sprintf(
-                    '*[position() mod %1$u = %2$u]/self::%3$s',
-                    $parseResult[self::MULTIPLIER],
-                    $parseResult[self::INDEX],
+                    '*[position() mod %1$u = %2$u]/static::%3$s',
+                    $parseResult[static::MULTIPLIER],
+                    $parseResult[static::INDEX],
                     $match[1]
                 );
             }
         } else {
-            $xPathExpression = sprintf('*[%1$u]/self::%2$s', $parseResult[self::INDEX], $match[1]);
+            $xPathExpression = sprintf('*[%1$u]/static::%2$s', $parseResult[static::INDEX], $match[1]);
         }
 
         return $xPathExpression;
@@ -1613,25 +1613,25 @@ class Emogrifier
     {
         $parseResult = $this->parseNth($match);
 
-        if (isset($parseResult[self::MULTIPLIER])) {
-            if ($parseResult[self::MULTIPLIER] < 0) {
-                $parseResult[self::MULTIPLIER] = abs($parseResult[self::MULTIPLIER]);
+        if (isset($parseResult[static::MULTIPLIER])) {
+            if ($parseResult[static::MULTIPLIER] < 0) {
+                $parseResult[static::MULTIPLIER] = abs($parseResult[static::MULTIPLIER]);
                 $xPathExpression = sprintf(
                     '%1$s[(last() - position()) mod %2$u = %3$u]',
                     $match[1],
-                    $parseResult[self::MULTIPLIER],
-                    $parseResult[self::INDEX]
+                    $parseResult[static::MULTIPLIER],
+                    $parseResult[static::INDEX]
                 );
             } else {
                 $xPathExpression = sprintf(
                     '%1$s[position() mod %2$u = %3$u]',
                     $match[1],
-                    $parseResult[self::MULTIPLIER],
-                    $parseResult[self::INDEX]
+                    $parseResult[static::MULTIPLIER],
+                    $parseResult[static::INDEX]
                 );
             }
         } else {
-            $xPathExpression = sprintf('%1$s[%2$u]', $match[1], $parseResult[self::INDEX]);
+            $xPathExpression = sprintf('%1$s[%2$u]', $match[1], $parseResult[static::INDEX]);
         }
 
         return $xPathExpression;
@@ -1647,12 +1647,12 @@ class Emogrifier
         if (in_array(strtolower($match[2]), ['even', 'odd'], true)) {
             // we have "even" or "odd"
             $index = strtolower($match[2]) === 'even' ? 0 : 1;
-            return [self::MULTIPLIER => 2, self::INDEX => $index];
+            return [static::MULTIPLIER => 2, static::INDEX => $index];
         }
         if (stripos($match[2], 'n') === false) {
             // if there is a multiplier
             $index = (int)str_replace(' ', '', $match[2]);
-            return [self::INDEX => $index];
+            return [static::INDEX => $index];
         }
 
         if (isset($match[3])) {
@@ -1668,7 +1668,7 @@ class Emogrifier
         if ($multiplier === '') {
             $multiplier = 1;
         } elseif ($multiplier === '0') {
-            return [self::INDEX => $index];
+            return [static::INDEX => $index];
         } else {
             $multiplier = (int)$multiplier;
         }
@@ -1677,7 +1677,7 @@ class Emogrifier
             $index += abs($multiplier);
         }
 
-        return [self::MULTIPLIER => $multiplier, self::INDEX => $index];
+        return [static::MULTIPLIER => $multiplier, static::INDEX => $index];
     }
 
     /**
@@ -1701,8 +1701,8 @@ class Emogrifier
      */
     private function parseCssDeclarationsBlock($cssDeclarationsBlock)
     {
-        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
-            return $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
+        if (isset($this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
+            return $this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
         }
 
         $properties = [];
@@ -1718,7 +1718,7 @@ class Emogrifier
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
-        $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
+        $this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
 
         return $properties;
     }
