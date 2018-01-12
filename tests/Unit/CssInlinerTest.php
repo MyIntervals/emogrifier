@@ -280,6 +280,18 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function addsMissingHtml5DocumentType()
+    {
+        $subject = $this->buildDebugSubject('<html><h1>foo</h1></html>');
+
+        $result = $subject->emogrify();
+
+        static::assertContains('<!DOCTYPE html>', $result);
+    }
+
+    /**
+     * @test
      *
      * @param string $codeNotToBeChanged
      *

@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Add a test that a missing document type gets added
+  ([#641](https://github.com/MyIntervals/emogrifier/pull/641))
 
 ### Deprecated
 
