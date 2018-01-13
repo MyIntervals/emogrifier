@@ -27,10 +27,10 @@ install:
   echo;
   if [ "$DEPENDENCIES" = "latest" ]; then
     echo "Installing the latest dependencies";
-    composer update --with-dependencies --prefer-stable --prefer-dist
+    composer update --with-dependencies --prefer-stable --prefer-dist;
   else
     echo "Installing the lowest dependencies";
-    composer update --with-dependencies --prefer-stable --prefer-dist --prefer-lowest
+    composer update --with-dependencies --prefer-stable --prefer-dist --prefer-lowest;
   fi;
   composer show;
 
@@ -43,7 +43,7 @@ script:
 - >
   echo;
   echo "Linting all PHP files";
-  find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+  find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
 
 - >
   echo;
