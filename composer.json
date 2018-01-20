@@ -41,7 +41,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Pelago\\": "Classes/"
+            "Pelago\\": "src/"
         }
     },
     "autoload-dev": {

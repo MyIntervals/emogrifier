@@ -43,7 +43,7 @@ script:
 - >
   echo;
   echo "Linting all PHP files";
-  find Classes/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
+  find src/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
 
 - >
   echo;
@@ -53,4 +53,4 @@ script:
 - >
   echo;
   echo "Running PHP_CodeSniffer";
-  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/;
+  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ Tests/;

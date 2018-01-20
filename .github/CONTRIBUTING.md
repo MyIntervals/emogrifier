@@ -89,7 +89,7 @@ We will only merge pull requests that follow the project's coding style.
 Please check your code with the provided PHP_CodeSniffer standard:
 
 ```shell
-vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ Classes/ Tests/
+vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ Tests/
 ```
 
 Please make your code clean, well-readable and easy to understand.
