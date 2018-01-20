@@ -32,10 +32,10 @@ abstract class AbstractHtmlProcessor
     public function __construct($unprocessedHtml)
     {
         if (!is_string($unprocessedHtml)) {
-            throw new \InvalidArgumentException('The provided HTML must be a string.', 1515459744321);
+            throw new \InvalidArgumentException('The provided HTML must be a string.', 1515459744);
         }
         if ($unprocessedHtml === '') {
-            throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647038);
+            throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
         $this->xmlDocument = $this->createXmlDocument($unprocessedHtml);
