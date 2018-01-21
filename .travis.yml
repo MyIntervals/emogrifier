@@ -53,4 +53,4 @@ script:
 - >
   echo;
   echo "Running PHP_CodeSniffer";
-  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ tests/;
+  vendor/bin/phpcs --standard=config/PhpCodeSniffer.xml src/ tests/;
