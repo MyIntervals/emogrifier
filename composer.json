@@ -50,7 +50,8 @@
         }
     },
     "scripts": {
-        "test": "phpunit tests/"
+        "test": "phpunit tests/",
+        "phpcs": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/"
     },
     "extra": {
         "branch-alias": {
