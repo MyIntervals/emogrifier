@@ -69,7 +69,7 @@ composer install
 ## Unit-test your changes
 
 Please cover all changes with unit tests and make sure that your code does not
-break any existing tests. We will only merge pull request that include full
+break any existing tests. We will only merge pull requests that include full
 code coverage of the fixed bugs and the new features.
 
 To run the existing PHPUnit tests, run this command:
