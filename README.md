@@ -240,7 +240,7 @@ The following selectors are not implemented yet:
 1. Create a pull request "Prepare release of version x.y.z" with the following
    changes.
 2. Set the new version number in the `@version` annotation in the class PHPDoc
-   of [Emogrifier.php](Classes/Emogrifier.php).
+   of [Emogrifier.php](src/Emogrifier.php).
 3. In the [composer.json](composer.json), update the `branch-alias` entry to
    point to the release _after_ the upcoming release.
 4. In the [README.md](README.md), update the version numbers in the section
