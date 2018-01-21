@@ -75,7 +75,7 @@ code coverage of the fixed bugs and the new features.
 To run the existing PHPUnit tests, run this command:
 
 ```shell
-vendor/bin/phpunit Tests/
+vendor/bin/phpunit tests/
 ```
 
 
@@ -89,7 +89,7 @@ We will only merge pull requests that follow the project's coding style.
 Please check your code with the provided PHP_CodeSniffer standard:
 
 ```shell
-vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ Tests/
+vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ tests/
 ```
 
 Please make your code clean, well-readable and easy to understand.

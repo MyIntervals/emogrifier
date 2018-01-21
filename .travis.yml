@@ -43,14 +43,14 @@ script:
 - >
   echo;
   echo "Linting all PHP files";
-  find src/ Tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
+  find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
 
 - >
   echo;
   echo "Running the unit tests";
-  vendor/bin/phpunit Tests/;
+  vendor/bin/phpunit tests/;
 
 - >
   echo;
   echo "Running PHP_CodeSniffer";
-  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ Tests/;
+  vendor/bin/phpcs --standard=Configuration/PhpCodeSniffer/Standards/Emogrifier/ src/ tests/;
