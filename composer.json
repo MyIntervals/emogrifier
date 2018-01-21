@@ -49,6 +49,9 @@
             "Pelago\\Tests\\": "tests/"
         }
     },
+    "scripts": {
+        "test": "phpunit tests/"
+    },
     "extra": {
         "branch-alias": {
             "dev-master": "2.1.x-dev"

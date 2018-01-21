@@ -75,7 +75,7 @@ code coverage of the fixed bugs and the new features.
 To run the existing PHPUnit tests, run this command:
 
 ```shell
-vendor/bin/phpunit tests/
+composer test
 ```
 
 
