@@ -1210,7 +1210,7 @@ class Emogrifier
         if ($bodyElement === null) {
             throw new \BadMethodCallException(
                 'getBodyElement method may only be called after ensureExistenceOfBodyElement has been called.',
-                1508173775427
+                1508173775
             );
         }
 
