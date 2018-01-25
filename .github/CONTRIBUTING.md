@@ -75,7 +75,7 @@ code coverage of the fixed bugs and the new features.
 To run the existing PHPUnit tests, run this command:
 
 ```shell
-composer test
+composer ci:tests
 ```
 
 
@@ -89,7 +89,7 @@ We will only merge pull requests that follow the project's coding style.
 Please check your code with the provided PHP_CodeSniffer standard:
 
 ```shell
-composer phpcs
+composer ci:sniff
 ```
 
 Please make your code clean, well-readable and easy to understand.

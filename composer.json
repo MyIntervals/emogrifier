@@ -50,9 +50,20 @@
         }
     },
     "scripts": {
-        "php-lint": "find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
-        "test": "phpunit tests/",
-        "phpcs": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/"
+        "ci:lint": "find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
+        "ci:sniff": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/",
+        "ci:tests": "phpunit tests/",
+        "ci:static": [
+            "@ci:lint",
+            "@ci:sniff"
+        ],
+        "ci:dynamic": [
+            "@ci:tests"
+        ],
+        "ci": [
+            "@ci:static",
+            "@ci:dynamic"
+        ]
     },
     "extra": {
         "branch-alias": {
