@@ -43,7 +43,7 @@ script:
 - >
   echo;
   echo "Linting all PHP files";
-  find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l;
+  composer php-lint;
 
 - >
   echo;
