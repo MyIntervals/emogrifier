@@ -50,15 +50,18 @@
         }
     },
     "scripts": {
-        "ci:lint": "find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
-        "ci:sniff": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/",
-        "ci:tests": "phpunit tests/",
-        "ci:static": [
-            "@ci:lint",
-            "@ci:sniff"
+        "ci:php:lint": "find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
+        "ci:php:sniff": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/",
+        "ci:tests:unit": "phpunit tests/",
+        "ci:tests": [
+            "@ci:tests:unit"
         ],
         "ci:dynamic": [
             "@ci:tests"
+        ],
+        "ci:static": [
+            "@ci:php:lint",
+            "@ci:php:sniff"
         ],
         "ci": [
             "@ci:static",

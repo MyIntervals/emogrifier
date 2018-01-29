@@ -43,14 +43,14 @@ script:
 - >
   echo;
   echo "Linting all PHP files";
-  composer ci:lint;
+  composer ci:php:lint;
 
 - >
   echo;
   echo "Running the unit tests";
-  composer ci:tests;
+  composer ci:tests:unit;
 
 - >
   echo;
   echo "Running PHP_CodeSniffer";
-  composer ci:sniff;
+  composer ci:php:sniff;
