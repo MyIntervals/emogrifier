@@ -1404,18 +1404,24 @@ class Emogrifier
         $selectorKey = md5($selector);
         if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
-            $value = 100;
-            // ids: worth 100, classes: worth 10, elements: worth 1
-            $search = ['\\#', '\\.', ''];
+            $value = 10000;
+            $search = [
+                // ids: worth 10000
+                '\\#',
+                // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
+                '(?:\\.|\\[|(?<!:):(?!not\\())',
+                // elements (not attribute values or `:not`), pseudo-elements: worth 1
+                '(?:(?<![="\':\\w-])|::)'
+            ];
 
             foreach ($search as $s) {
                 if (trim($selector) === '') {
                     break;
                 }
                 $number = 0;
-                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $number);
+                $selector = preg_replace('/' . $s . '[\\w-]++/', '', $selector, -1, $number);
                 $precedence += ($value * $number);
-                $value /= 10;
+                $value /= 100;
             }
             $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
         }

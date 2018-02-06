@@ -18,6 +18,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     const LF = "\n";
 
     /**
+     * @var string Common HTML markup with a variety of elements and attributes for testing with
+     */
+    const COMMON_TEST_HTML = '
+        <html>
+            <body>
+                <p class="p-1"><span>some text</span></p>
+                <p class="p-2"><span title="bonjour">some</span> text</p>
+                <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
+                <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+            </body>
+        </html>
+    ';
+
+    /**
      * @var string
      */
     private $html5DocumentType = '<!DOCTYPE html>';
@@ -572,19 +588,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $html = '
-            <html>
-                <body>
-                    <p class="p-1"><span>some text</span></p>
-                    <p class="p-2"><span title="bonjour">some</span> text</p>
-                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
-                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                </body>
-            </html>
-            ';
-        $this->subject->setHtml($html);
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
@@ -672,19 +676,93 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $html = '
-            <html>
-                <body>
-                    <p class="p-1"><span>some text</span></p>
-                    <p class="p-2"><span title="bonjour">some</span> text</p>
-                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
-                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                </body>
-            </html>
-            ';
-        $this->subject->setHtml($html);
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+    }
+
+    /**
+     * Data provider for {@see EmogrifierTest::emogrifyAppliesMostSpecificSelectorCssToMatchingElements}
+     *
+     * @return string[][]
+     */
+    public function selectorSpecificityCssDataProvider()
+    {
+        /**
+         * @var string[][] $selectorData Data for constructing the parameter sets, whose keys are a test description,
+         *      and values are an array with the following keys:
+         *      0 - first selector expression
+         *      1 - second selector expression
+         *      2 - operator, '<', '==' or '>', defining whether the first selector should respectively have lower,
+         *          equal or higher specificity than the second
+         *      3 - tag (in {@see EmogrifierTest::COMMON_TEST_HTML}) expected to be matched by both selectors, without
+         *          the closing '>', e.g. '<p class="p=1"'
+         */
+        $selectorData = [
+            'class more specific than types' => ['.p-1', 'html body p', '>', '<p class="p-1"'],
+            'id more specific than class and types' => ['#p4', 'html body .p-4', '>', '<p class="p-4" id="p4"'],
+            'id more specific than 20 classes and types'
+                => ['#p4', 'html body ' . str_repeat('.p-4', 20), '>', '<p class="p-4" id="p4"'],
+            'psuedo-class as specific as class' => ['.p-1', '*:first-child', '==', '<p class="p-1"'],
+            'attribute as specific as class' => ['span[title="bonjour"]', '.p-2 span', '==', '<span title="bonjour"'],
+            ':not alone does not increase specificity' => ['p:not(* + *)', 'p', '==', '<p class="p-1"'],
+            ':not with type more specific than nothing' => ['.p-1:not(h1)', '.p-1', '>', '<p class="p-1"'],
+            ':not with type as specific as type' => ['*:not(h1)', 'p', '==', '<p class="p-1"'],
+            ':not with several types more specific than single type'
+                => ['*:not(html body h1)', 'p', '>', '<p class="p-1"'],
+            ':not with class more specific than types'
+                => ['*:not(.p-2)', 'html body p', '>', '<p class="p-1"'],
+            ':not with class more specific than :not with types'
+                => ['*:not(.p-2)', '*:not(html body h1)', '>', '<p class="p-1"'],
+            'class more specific than :not with types' => ['.p-1', '*:not(html body h1)', '>', '<p class="p-1"'],
+        ];
+
+        /**
+         * @var string[][] $parameterSets Sets of parameters returned by this data provider for
+         *      {@see EmogrifierTest::emogrifyAppliesMostSpecificSelectorCssToMatchingElements}.
+         *      The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+         *      like 'color: red;' or 'color: blue;'.
+         */
+        $parameterSets = [];
+        foreach ($selectorData as $name => $data) {
+            $firstRuleBlock = $data[0] . ' { %1$s }';
+            $secondRuleBlock = $data[1] . ' { %2$s }';
+            $firstRuleBlockWasApplied = $data[3] . ' style="%1$s">';
+            $secondRuleBlockWasApplied = $data[3] . ' style="%2$s">';
+
+            // Check selectors actually match on their own (i.e. test is valid)
+            $parameterSets[$name . ' (1st selector valid for test)'] = [$firstRuleBlock, $firstRuleBlockWasApplied];
+            $parameterSets[$name . ' (2nd selector valid for test)'] = [$secondRuleBlock, $secondRuleBlockWasApplied];
+
+            // Check first selector matches when its rule is last unless the second has higher specificity
+            $parameterSets[$name . ' (1st selector in last rule)'] = [
+                $secondRuleBlock . ' ' . $firstRuleBlock,
+                $data[2] === '<' ? $secondRuleBlockWasApplied : $firstRuleBlockWasApplied
+            ];
+
+            // Check second selector matches when its rule is last unless the first has higher specificity
+            $parameterSets[$name . ' (2nd selector in last rule)'] = [
+                $firstRuleBlock . ' ' . $secondRuleBlock,
+                $data[2] === '>' ? $firstRuleBlockWasApplied : $secondRuleBlockWasApplied
+            ];
+        }
+        return $parameterSets;
+    }
+
+    /**
+     * @test
+     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @dataProvider selectorSpecificityCssDataProvider
+     */
+    public function emogrifyAppliesMostSpecificSelectorCssToMatchingElements($css, $expectedHtml)
+    {
+        $cssDeclaration1 = 'color: red;';
+        $cssDeclaration2 = 'color: blue;';
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();

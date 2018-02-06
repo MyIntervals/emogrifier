@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Calculation of selector precedence for selectors involving pseudo-classes
+  and/or attributes.
 
 
 ## 2.0.0
