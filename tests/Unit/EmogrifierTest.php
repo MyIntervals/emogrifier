@@ -560,6 +560,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             ],
             'adjacent => 2nd of many' => ['p + p { %1$s }', '<p class="p-2" style="%1$s">'],
             'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-6" style="%1$s">'],
+            'adjacent (without space after +) => last of many' => ['p +p { %1$s }', '<p class="p-6" style="%1$s">'],
+            'adjacent (without space before +) => last of many' => ['p+ p { %1$s }', '<p class="p-6" style="%1$s">'],
+            'adjacent (without space before or after +) => last of many' => [
+                'p+p { %1$s }',
+                '<p class="p-6" style="%1$s">'
+            ],
             'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
             'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
             'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],

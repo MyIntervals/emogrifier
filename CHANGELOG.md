@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow adjacent sibling CSS selector combinator in minified CSS
 
 
 ## 2.0.0
