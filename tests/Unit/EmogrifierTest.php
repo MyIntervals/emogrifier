@@ -706,7 +706,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'id more specific than class and types' => ['#p4', 'html body .p-4', '>', '<p class="p-4" id="p4"'],
             'id more specific than 20 classes and types'
                 => ['#p4', 'html body ' . str_repeat('.p-4', 20), '>', '<p class="p-4" id="p4"'],
-            'psuedo-class as specific as class' => ['.p-1', '*:first-child', '==', '<p class="p-1"'],
+            'pseudo-class as specific as class' => ['.p-1', '*:first-child', '==', '<p class="p-1"'],
             'attribute as specific as class' => ['span[title="bonjour"]', '.p-2 span', '==', '<span title="bonjour"'],
             ':not alone does not increase specificity' => ['p:not(* + *)', 'p', '==', '<p class="p-1"'],
             ':not with type more specific than nothing' => ['.p-1:not(h1)', '.p-1', '>', '<p class="p-1"'],
