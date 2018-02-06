@@ -18,6 +18,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     const LF = "\n";
 
     /**
+     * @var string Common HTML markup with a variety of elements and attributes for testing with
+     */
+    const COMMON_TEST_HTML = '
+        <html>
+            <body>
+                <p class="p-1"><span>some text</span></p>
+                <p class="p-2"><span title="bonjour">some</span> text</p>
+                <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
+                <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+            </body>
+        </html>
+    ';
+
+    /**
      * @var string
      */
     private $html5DocumentType = '<!DOCTYPE html>';
@@ -572,19 +588,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $html = '
-            <html>
-                <body>
-                    <p class="p-1"><span>some text</span></p>
-                    <p class="p-2"><span title="bonjour">some</span> text</p>
-                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
-                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                </body>
-            </html>
-            ';
-        $this->subject->setHtml($html);
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
@@ -672,19 +676,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $html = '
-            <html>
-                <body>
-                    <p class="p-1"><span>some text</span></p>
-                    <p class="p-2"><span title="bonjour">some</span> text</p>
-                    <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                    <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
-                    <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
-                    <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                </body>
-            </html>
-            ';
-        $this->subject->setHtml($html);
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
