@@ -24,7 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
-- CSS rules with property values containing newlines are dropped.
+- Allow CSS property values containing newlines
+  ([#504](https://github.com/MyIntervals/emogrifier/pull/504))
 
 
 ## 2.0.0
