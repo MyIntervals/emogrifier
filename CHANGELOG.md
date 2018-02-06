@@ -24,6 +24,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- CSS rules with property values containing newlines are dropped.
 
 
 ## 2.0.0

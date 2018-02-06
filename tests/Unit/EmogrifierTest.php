@@ -758,6 +758,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 '-webkit-text-size-adjust:none;',
                 '-webkit-text-size-adjust: none;'
             ],
+            'one declaration with linefeed in property value' => [
+                'text-shadow:' . static::LF .
+                    '1px 1px 3px #000,' . static::LF .
+                    '1px 1px 1px #000;',
+                'text-shadow: 1px 1px 3px #000,' . static::LF .
+                    '1px 1px 1px #000;',
+            ],
+            'one declaration with Windows line ending in property value' => [
+                'text-shadow:' . "\r\n" .
+                    '1px 1px 3px #000,' . "\r\n" .
+                    '1px 1px 1px #000;',
+                'text-shadow: 1px 1px 3px #000,' . "\r\n" .
+                    '1px 1px 1px #000;',
+            ],
         ];
     }
 
