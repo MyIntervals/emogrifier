@@ -175,7 +175,7 @@ class Emogrifier
         // type and attribute value with * (substring match)
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
         // adjacent sibling
-        '/\\s+\\+\\s+/' => '/following-sibling::*[1]/self::',
+        '/\\s*\\+\\s*/' => '/following-sibling::*[1]/self::',
         // child
         '/\\s*>\\s*/' => '/',
         // descendant

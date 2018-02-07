@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow adjacent sibling CSS selector combinator in minified CSS
+  ([#505](https://github.com/MyIntervals/emogrifier/pull/505))
 - Allow CSS property values containing newlines
   ([#504](https://github.com/MyIntervals/emogrifier/pull/504))
 
