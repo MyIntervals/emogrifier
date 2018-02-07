@@ -1404,24 +1404,26 @@ class Emogrifier
         $selectorKey = md5($selector);
         if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
-            $value = 10000;
+            /**
+             * @var int[] $search Keys are a regular expression part to match before a CSS name,
+             *                    values are a multiplier factor per match to weight specificity
+             */
             $search = [
                 // ids: worth 10000
-                '\\#',
+                '\\#' => 10000,
                 // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
-                '(?:\\.|\\[|(?<!:):(?!not\\())',
+                '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
                 // elements (not attribute values or `:not`), pseudo-elements: worth 1
-                '(?:(?<![="\':\\w-])|::)'
+                '(?:(?<![="\':\\w-])|::)' => 1
             ];
 
-            foreach ($search as $s) {
+            foreach ($search as $s => $value) {
                 if (trim($selector) === '') {
                     break;
                 }
                 $number = 0;
-                $selector = preg_replace('/' . $s . '[\\w-]++/', '', $selector, -1, $number);
+                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $number);
                 $precedence += ($value * $number);
-                $value /= 100;
             }
             $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
         }

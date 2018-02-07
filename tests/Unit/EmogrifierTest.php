@@ -685,71 +685,122 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data provider for {@see EmogrifierTest::emogrifyAppliesMostSpecificSelectorCssToMatchingElements}
+     * @param string $selector A selector expression
+     * @param string $matchedTagPart Tag (in {@see EmogrifierTest::COMMON_TEST_HTML}) expected to be matched by the
+     *                               selector, without the closing '>', e.g. '<p class="p-1"'
      *
+     * @return string[]
+     */
+    private function getMatchedCssDataSet($selector, $matchedTagPart)
+    {
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'color: blue;'.
+        return [$selector . ' { %1$s }', $matchedTagPart . ' style="%1$s">'];
+    }
+
+    /**
+     * @param string $firstSelector A selector expression to be used in an earlier CSS declaration
+     * @param string $secondSelector Some other selector expression to be used in a later CSS declaration
+     * @param bool $firstSelectorIsMoreSpecific Whether the first selector's rules are expected to prevail
+     * @param string $matchedTagPart Tag (in {@see EmogrifierTest::COMMON_TEST_HTML}) expected to be matched by both
+     *                               selectors, without the closing '>', e.g. '<p class="p-1"'
+     *
+     * @return string[][]
+     */
+    private function getSelectorSpecificityCssDataSet(
+        $firstSelector,
+        $secondSelector,
+        $firstSelectorIsMoreSpecific,
+        $matchedTagPart
+    ) {
+        // The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
+        // like 'color: red;' or 'color: blue;'.
+        return [
+            $firstSelector . ' { %1$s } ' . $secondSelector . ' { %2$s }',
+            $matchedTagPart . ($firstSelectorIsMoreSpecific ? ' style="%1$s">' : ' style="%2$s">')
+        ];
+    }
+
+    /**
+     * @param string $name Base name for identifying datasets in test results
+     * @param string $firstSelector A selector expression
+     * @param string $secondSelector Some other selector expression
+     * @param string $operator '<', '==' or '>', defining whether the first selector is expected to have, respectively,
+     *                         lower, equal or higher specificity than the second
+     * @param string $matchedTagPart Tag (in {@see EmogrifierTest::COMMON_TEST_HTML}) expected to be matched by both
+     *                               selectors, without the closing '>', e.g. '<p class="p-1"'
+     *
+     * @return string[][]
+     */
+    private function getSelectorSpecificityCssDataSets(
+        $name,
+        $firstSelector,
+        $secondSelector,
+        $operator,
+        $matchedTagPart
+    ) {
+        return [
+            $name . ' (1st selector valid for test)' => $this->getMatchedCssDataSet($firstSelector, $matchedTagPart),
+            $name . ' (2nd selector valid for test)' => $this->getMatchedCssDataSet($secondSelector, $matchedTagPart),
+            // Check first selector matches when its rule is last unless the second has higher specificity
+            $name . ' (1st selector in last rule)' => $this->getSelectorSpecificityCssDataSet(
+                $secondSelector,
+                $firstSelector,
+                $operator === '<',
+                $matchedTagPart
+            ),
+            $name . ' (2nd selector in last rule)' => $this->getSelectorSpecificityCssDataSet(
+                $firstSelector,
+                $secondSelector,
+                $operator === '>',
+                $matchedTagPart
+            )
+        ];
+    }
+
+    /**
      * @return string[][]
      */
     public function selectorSpecificityCssDataProvider()
     {
-        /**
-         * @var string[][] $selectorData Data for constructing the parameter sets, whose keys are a test description,
-         *      and values are an array with the following keys:
-         *      0 - first selector expression
-         *      1 - second selector expression
-         *      2 - operator, '<', '==' or '>', defining whether the first selector should respectively have lower,
-         *          equal or higher specificity than the second
-         *      3 - tag (in {@see EmogrifierTest::COMMON_TEST_HTML}) expected to be matched by both selectors, without
-         *          the closing '>', e.g. '<p class="p=1"'
-         */
         $selectorData = [
-            'class more specific than types' => ['.p-1', 'html body p', '>', '<p class="p-1"'],
-            'id more specific than class and types' => ['#p4', 'html body .p-4', '>', '<p class="p-4" id="p4"'],
-            'id more specific than 20 classes and types'
-                => ['#p4', 'html body ' . str_repeat('.p-4', 20), '>', '<p class="p-4" id="p4"'],
-            'pseudo-class as specific as class' => ['.p-1', '*:first-child', '==', '<p class="p-1"'],
-            'attribute as specific as class' => ['span[title="bonjour"]', '.p-2 span', '==', '<span title="bonjour"'],
-            ':not alone does not increase specificity' => ['p:not(* + *)', 'p', '==', '<p class="p-1"'],
-            ':not with type more specific than nothing' => ['.p-1:not(h1)', '.p-1', '>', '<p class="p-1"'],
-            ':not with type as specific as type' => ['*:not(h1)', 'p', '==', '<p class="p-1"'],
-            ':not with several types more specific than single type'
-                => ['*:not(html body h1)', 'p', '>', '<p class="p-1"'],
-            ':not with class more specific than types'
-                => ['*:not(.p-2)', 'html body p', '>', '<p class="p-1"'],
-            ':not with class more specific than :not with types'
-                => ['*:not(.p-2)', '*:not(html body h1)', '>', '<p class="p-1"'],
-            'class more specific than :not with types' => ['.p-1', '*:not(html body h1)', '>', '<p class="p-1"'],
+            ['class more specific than types', '.p-1', 'html body p', '>', '<p class="p-1"'],
+            ['id more specific than class and types', '#p4', 'html body .p-4', '>', '<p class="p-4" id="p4"'],
+            [
+                'id more specific than 20 classes and types',
+                '#p4',
+                'html body ' . str_repeat('.p-4', 20),
+                '>',
+                '<p class="p-4" id="p4"'
+            ],
+            ['pseudo-class as specific as class', '.p-1', '*:first-child', '==', '<p class="p-1"'],
+            ['attribute as specific as class', 'span[title="bonjour"]', '.p-2 span', '==', '<span title="bonjour"'],
+            [':not alone does not increase specificity', 'p:not(* + *)', 'p', '==', '<p class="p-1"'],
+            [':not with type more specific than nothing', '.p-1:not(h1)', '.p-1', '>', '<p class="p-1"'],
+            [':not with type as specific as type', '*:not(h1)', 'p', '==', '<p class="p-1"'],
+            [
+                ':not with several types more specific than single type',
+                '*:not(html body h1)',
+                'p',
+                '>',
+                '<p class="p-1"'
+            ],
+            [':not with class more specific than types', '*:not(.p-2)', 'html body p', '>', '<p class="p-1"'],
+            [
+                ':not with class more specific than :not with types',
+                '*:not(.p-2)',
+                '*:not(html body h1)',
+                '>',
+                '<p class="p-1"'
+            ],
+            ['class more specific than :not with types', '.p-1', '*:not(html body h1)', '>', '<p class="p-1"'],
         ];
 
-        /**
-         * @var string[][] $parameterSets Sets of parameters returned by this data provider for
-         *      {@see EmogrifierTest::emogrifyAppliesMostSpecificSelectorCssToMatchingElements}.
-         *      The sprintf placeholders %1$s and %2$s will automatically be replaced with CSS declarations
-         *      like 'color: red;' or 'color: blue;'.
-         */
-        $parameterSets = [];
-        foreach ($selectorData as $name => $data) {
-            $firstRuleBlock = $data[0] . ' { %1$s }';
-            $secondRuleBlock = $data[1] . ' { %2$s }';
-            $firstRuleBlockWasApplied = $data[3] . ' style="%1$s">';
-            $secondRuleBlockWasApplied = $data[3] . ' style="%2$s">';
-
-            // Check selectors actually match on their own (i.e. test is valid)
-            $parameterSets[$name . ' (1st selector valid for test)'] = [$firstRuleBlock, $firstRuleBlockWasApplied];
-            $parameterSets[$name . ' (2nd selector valid for test)'] = [$secondRuleBlock, $secondRuleBlockWasApplied];
-
-            // Check first selector matches when its rule is last unless the second has higher specificity
-            $parameterSets[$name . ' (1st selector in last rule)'] = [
-                $secondRuleBlock . ' ' . $firstRuleBlock,
-                $data[2] === '<' ? $secondRuleBlockWasApplied : $firstRuleBlockWasApplied
-            ];
-
-            // Check second selector matches when its rule is last unless the first has higher specificity
-            $parameterSets[$name . ' (2nd selector in last rule)'] = [
-                $firstRuleBlock . ' ' . $secondRuleBlock,
-                $data[2] === '>' ? $firstRuleBlockWasApplied : $secondRuleBlockWasApplied
-            ];
+        $datasets = [];
+        foreach ($selectorData as $data) {
+            $datasets += call_user_func_array([$this, 'getSelectorSpecificityCssDataSets'], $data);
         }
-        return $parameterSets;
+        return $datasets;
     }
 
     /**

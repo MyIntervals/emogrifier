@@ -25,7 +25,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Calculation of selector precedence for selectors involving pseudo-classes
-  and/or attributes.
+  and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 
 
 ## 2.0.0
