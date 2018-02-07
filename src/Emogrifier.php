@@ -1409,7 +1409,7 @@ class Emogrifier
              *                    values are a multiplier factor per match to weight specificity
              */
             $search = [
-                // ids: worth 10000
+                // IDs: worth 10000
                 '\\#' => 10000,
                 // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
                 '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
