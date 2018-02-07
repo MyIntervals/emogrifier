@@ -24,12 +24,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Calculation of selector precedence for selectors involving pseudo-classes
+  and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 - Allow adjacent sibling CSS selector combinator in minified CSS
   ([#505](https://github.com/MyIntervals/emogrifier/pull/505))
 - Allow CSS property values containing newlines
   ([#504](https://github.com/MyIntervals/emogrifier/pull/504))
-- Calculation of selector precedence for selectors involving pseudo-classes
-  and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 
 
 ## 2.0.0
