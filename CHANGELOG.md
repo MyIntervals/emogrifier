@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow CSS property values containing newlines
+  ([#504](https://github.com/MyIntervals/emogrifier/pull/504))
 - Calculation of selector precedence for selectors involving pseudo-classes
   and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 

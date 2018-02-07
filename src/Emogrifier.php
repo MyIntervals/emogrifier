@@ -1718,7 +1718,7 @@ class Emogrifier
 
         foreach ($declarations as $declaration) {
             $matches = [];
-            if (!preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/', trim($declaration), $matches)) {
+            if (!preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', trim($declaration), $matches)) {
                 continue;
             }
 
