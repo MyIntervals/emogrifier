@@ -1258,7 +1258,7 @@ class Emogrifier
 
         // filter the CSS
         $search = [
-            'import directives' => '/^\\s*@import\\s[^;]+;/misU',
+            'import/charset directives' => '/^\\s*@(?:import|charset)\\s[^;]+;/misU',
             'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         ];
 
