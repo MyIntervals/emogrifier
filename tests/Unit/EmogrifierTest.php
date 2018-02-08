@@ -1091,7 +1091,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider unneededCssThingsDataProvider
      */
-    public function emogrifyUnaffectedByUnneededCssThings($css)
+    public function emogrifyMatchesRuleAfterUnneededCssThing($css)
     {
         $this->subject->setHtml('<html><body></body></html>');
         $this->subject->setCss($css . ' body { color: green; }');
