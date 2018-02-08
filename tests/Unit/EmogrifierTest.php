@@ -696,44 +696,46 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function differentCssSelectorSpecificityDataProvider()
     {
         return [
-            'class more specific than types' => ['html body p', '.p-1', '<p class="p-1"'],
-            'ID more specific than class and types' => ['html body .p-4', '#p4', '<p class="p-4" id="p4"'],
-            'ID more specific than 20 classes and types' => [
-                'html body ' . str_repeat('.p-4', 20),
+            'class more specific than types' => ['<p class="p-1"', 'html body p', '.p-1'],
+            'ID more specific than class and types' => ['<p class="p-4" id="p4"', 'html body .p-4', '#p4'],
+            // Up to 99 selectors of each type specificity are supported (without making the comparator more complex)
+            'ID more specific than 99 classes and some types' => [
+                '<p class="p-4" id="p4"',
+                'html body ' . str_repeat('.p-4', 99),
                 '#p4',
-                '<p class="p-4" id="p4"'
             ],
-            ':not with type more specific than nothing' => ['.p-1', '.p-1:not(h1)', '<p class="p-1"'],
-            ':not with several types more specific than single type' => ['p', '*:not(html body h1)', '<p class="p-1"'],
-            ':not with class more specific than types' => ['html body p', '*:not(.p-2)', '<p class="p-1"'],
+            // broken: class more specific than 99 types (requires chaining `:not(h1):not(h1):not(h1)...` support)
+            ':not with type more specific than nothing' => ['<p class="p-1"', '.p-1', '.p-1:not(h1)'],
+            ':not with several types more specific than single type' => ['<p class="p-1"', 'p', '*:not(html body h1)'],
+            ':not with class more specific than types' => ['<p class="p-1"', 'html body p', '*:not(.p-2)'],
             ':not with class more specific than :not with types' => [
+                '<p class="p-1"',
                 '*:not(html body h1)',
                 '*:not(.p-2)',
-                '<p class="p-1"'
             ],
-            'class more specific than :not with types' => ['*:not(html body h1)', '.p-1', '<p class="p-1"'],
+            'class more specific than :not with types' => ['<p class="p-1"', '*:not(html body h1)', '.p-1'],
         ];
     }
 
     /**
      * @test
-     * @param string $lessSpecificSelector A selector expression
-     * @param string $moreSpecificSelector Some other, more specific selector expression
      * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
      *                               e.g. '<p class="p-1"'
+     * @param string $lessSpecificSelector A selector expression
+     * @param string $moreSpecificSelector Some other, more specific selector expression
      * @dataProvider differentCssSelectorSpecificityDataProvider
      */
     public function emogrifyAppliesMoreSpecificCssSelectorToMatchingElements(
+        $matchedTagPart,
         $lessSpecificSelector,
-        $moreSpecificSelector,
-        $matchedTagPart
+        $moreSpecificSelector
     ) {
         $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(
-            $lessSpecificSelector . ' { color: red } ' .
-            $moreSpecificSelector . ' { color: green } ' .
-            $moreSpecificSelector . ' { background-color: green } ' .
-            $lessSpecificSelector . ' { background-color: red }'
+            $lessSpecificSelector . ' { color: red; } ' .
+            $moreSpecificSelector . ' { color: green; } ' .
+            $moreSpecificSelector . ' { background-color: green; } ' .
+            $lessSpecificSelector . ' { background-color: red; }'
         );
 
         $result = $this->subject->emogrify();
@@ -743,20 +745,17 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test Confirms the dataset is valid for the test, and the less specific selector does in fact match
-     * @param string $lessSpecificSelector A selector expression
-     * @param string $moreSpecificSelector Unused parameter from dataset
      * @param string $matchedTagPart Tag expected to be matched by selector, without the closing '>',
      *                               e.g. '<p class="p-1"'
+     * @param string $lessSpecificSelector A selector expression
      * @dataProvider differentCssSelectorSpecificityDataProvider
      */
-    public function emogrifyWouldApplyLessSpecificCssSelectorToMatchingElements( // phpcs:ignore
-        $lessSpecificSelector,
-        // PHP_CodeSniffer warning ignored: The method parameter $moreSpecificSelector is never used
-        $moreSpecificSelector,
-        $matchedTagPart
+    public function emogrifyWouldApplyLessSpecificCssSelectorToMatchingElements(
+        $matchedTagPart,
+        $lessSpecificSelector
     ) {
         $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss($lessSpecificSelector . ' { color: green }');
+        $this->subject->setCss($lessSpecificSelector . ' { color: green; }');
 
         $result = $this->subject->emogrify();
 
@@ -769,32 +768,32 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function equalCssSelectorSpecificityDataProvider()
     {
         return [
-            'pseudo-class as specific as class' => ['.p-1', '*:first-child', '<p class="p-1"'],
-            'attribute as specific as class' => ['span[title="bonjour"]', '.p-2 span', '<span title="bonjour"'],
-            ':not alone does not increase specificity' => ['p:not(* + *)', 'p', '<p class="p-1"'],
-            ':not with type as specific as type' => ['*:not(h1)', 'p', '<p class="p-1"'],
+            'pseudo-class as specific as class' => ['<p class="p-1"', '.p-1', '*:first-child'],
+            'attribute as specific as class' => ['<span title="bonjour"', 'span[title="bonjour"]', '.p-2 span'],
+            ':not alone does not increase specificity' => ['<p class="p-1"', 'p:not(* + *)', 'p'],
+            ':not with type as specific as type' => ['<p class="p-1"', '*:not(h1)', 'p'],
         ];
     }
 
     /**
      * @test
-     * @param string $selector1 A selector expression
-     * @param string $selector2 Some other, equally specific selector expression
      * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
      *                               e.g. '<p class="p-1"'
+     * @param string $selector1 A selector expression
+     * @param string $selector2 Some other, equally specific selector expression
      * @dataProvider equalCssSelectorSpecificityDataProvider
      */
     public function emogrifyAppliesLaterEquallySpecificCssSelectorToMatchingElements(
+        $matchedTagPart,
         $selector1,
-        $selector2,
-        $matchedTagPart
+        $selector2
     ) {
         $this->subject->setHtml(static::COMMON_TEST_HTML);
         $this->subject->setCss(
-            $selector1 . ' { color: red } ' .
-            $selector2 . ' { color: green } ' .
-            $selector2 . ' { background-color: red } ' .
-            $selector1 . ' { background-color: green }'
+            $selector1 . ' { color: red; } ' .
+            $selector2 . ' { color: green; } ' .
+            $selector2 . ' { background-color: red; } ' .
+            $selector1 . ' { background-color: green; }'
         );
 
         $result = $this->subject->emogrify();

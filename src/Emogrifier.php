@@ -1420,12 +1420,12 @@ class Emogrifier
         $selectorKey = md5($selector);
         if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
-            foreach ($this->selectorPrecedenceMatchers as $s => $value) {
+            foreach ($this->selectorPrecedenceMatchers as $matcher => $value) {
                 if (trim($selector) === '') {
                     break;
                 }
                 $number = 0;
-                $selector = preg_replace('/' . $s . '\\w+/', '', $selector, -1, $number);
+                $selector = preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
                 $precedence += ($value * $number);
             }
             $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
