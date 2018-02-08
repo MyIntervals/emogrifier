@@ -68,6 +68,22 @@ class Emogrifier
     const CLASS_ATTRIBUTE_MATCHER = '/(\\w+|[\\*\\]])?((\\.[\\w\\-]+)+)/';
 
     /**
+     * For calculating selector precedence order.
+     * Keys are a regular expression part to match before a CSS name.
+     * Values are a multiplier factor per match to weight specificity.
+     *
+     * @var int[]
+     */
+    const SELECTOR_PRECEDENCE_MATCHERS = [
+        // IDs: worth 10000
+        '\\#' => 10000,
+        // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
+        '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
+        // elements (not attribute values or `:not`), pseudo-elements: worth 1
+        '(?:(?<![="\':\\w-])|::)' => 1
+    ];
+
+    /**
      * @var string
      */
     const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
@@ -1404,20 +1420,7 @@ class Emogrifier
         $selectorKey = md5($selector);
         if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
-            /**
-             * @var int[] $search Keys are a regular expression part to match before a CSS name,
-             *                    values are a multiplier factor per match to weight specificity
-             */
-            $search = [
-                // IDs: worth 10000
-                '\\#' => 10000,
-                // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
-                '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
-                // elements (not attribute values or `:not`), pseudo-elements: worth 1
-                '(?:(?<![="\':\\w-])|::)' => 1
-            ];
-
-            foreach ($search as $s => $value) {
+            foreach (static::SELECTOR_PRECEDENCE_MATCHERS as $s => $value) {
                 if (trim($selector) === '') {
                     break;
                 }
