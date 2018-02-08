@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow `@charset` in the CSS without error (note: its value is currently
+  ignored, [#507](https://github.com/MyIntervals/emogrifier/pull/507))
 - Allow attribute selectors in descendants
   ([#506](https://github.com/MyIntervals/emogrifier/pull/506),
   [#381](https://github.com/MyIntervals/emogrifier/issues/381))

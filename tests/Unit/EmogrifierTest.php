@@ -1054,6 +1054,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
             '@import directive' => ['@import "foo.css";', '@import'],
+            '@charset directive' => ['@charset "UTF-8";', '@charset'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
             'style in "embossed" media type rule' => ['@media embossed {p {color: #000;}}', '#000'],
@@ -1081,6 +1082,23 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         static::assertNotContains($markerNotExpectedInHtml, $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider unneededCssThingsDataProvider
+     */
+    public function emogrifyMatchesRuleAfterUnneededCssThing($css)
+    {
+        $this->subject->setHtml('<html><body></body></html>');
+        $this->subject->setCss($css . ' body { color: green; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<body style="color: green;">', $result);
     }
 
     /**
