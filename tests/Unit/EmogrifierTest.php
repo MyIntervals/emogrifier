@@ -405,6 +405,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             // broken: attribute value with *, double quotes => with exact match
             // broken: attribute value with *, single quotes => with exact match
             // broken: attribute value with *, no quotes => with exact match
+            // broken: type & attribute presence => with type & attribute
             'type & attribute exact value, double quotes => with type & exact attribute value match' => [
                 'span[title="bonjour"] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -572,6 +573,52 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
             'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
+            // broken: descendent attribute presence => with attribute
+            // broken: descendent attribute exact value => with exact attribute match
+            // broken: descendent type & attribute presence => with type & attribute
+            'descendent type & attribute exact value => with type & exact attribute match' => [
+                'body span[title="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendent type & attribute exact two-word value => with type & exact attribute match' => [
+                'body span[title="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'descendent type & attribute value with ~ => with type & exact attribute match' => [
+                'body span[title~="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendent type & attribute value with ~ => with type & word as 1st of 2 in attribute' => [
+                'body span[title~="buenas"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
+            'descendant of type & class: type & attribute exact value, no quotes => with type & exact match (#381)' => [
+                'p.p-2 span[title=bonjour] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendant of attribute presence => parent with attribute' => [
+                '[class] span { %1$s }',
+                '<p class="p-1"><span style="%1$s">',
+            ],
+            'descendant of attribute exact value => parent with type & exact attribute match' => [
+                '[id="p4"] span { %1$s }',
+                '<p class="p-4" id="p4"><span title="avez-vous" style="%1$s">',
+            ],
+            // broken: descendant of type & attribute presence => parent with type & attribute
+            'descendant of type & attribute exact value => parent with type & exact attribute match' => [
+                'p[id="p4"] span { %1$s }',
+                '<p class="p-4" id="p4"><span title="avez-vous" style="%1$s">',
+            ],
+            // broken: descendant of type & attribute exact two-word value => parent with type & exact attribute match
+            //         (exact match doesn't currently match hyphens, which would be needed to match the class attribute)
+            'descendant of type & attribute value with ~ => parent with type & exact attribute match' => [
+                'p[class~="p-1"] span { %1$s }',
+                '<p class="p-1"><span style="%1$s">',
+            ],
+            'descendant of type & attribute value with ~ => parent with type & word as 1st of 2 in attribute' => [
+                'p[class~="p-5"] span { %1$s }',
+                '<p class="p-5 additional-class"><span title="buenas dias bom dia" style="%1$s">',
+            ],
             // broken: first-child => 1st of many
             'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
             // broken: last-child => last of many

@@ -194,8 +194,8 @@ class Emogrifier
         '/\\s*\\+\\s*/' => '/following-sibling::*[1]/self::',
         // child
         '/\\s*>\\s*/' => '/',
-        // descendant
-        '/\\s+(?=.*[^\\]]{1}$)/' => '//',
+        // descendant (don't match spaces within already translated XPath predicates)
+        '/\\s+(?![^\\[\\]]*+\\])/' => '//',
         // type and :first-child
         '/([^\\/]+):first-child/i' => '*[1]/self::\\1',
         // type and :last-child
