@@ -755,92 +755,54 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         // broken: testing selectors with 99 types or 99 IDs requires support for chaining `:not(h1):not(h1)...` or
         // `#p4#p4...`, so currently 2 types and/or 2 IDs are tested as 'many' instead of 99 of each.
-        $classP1Repeated = str_repeat('.p-1', 99);
         $classP4Repeated = str_repeat('.p-4', 99);
-        return [
-            'type more specific than universal' => ['<body', '*', 'body'],
-            '2 types more specific than type' => ['<body', 'body', 'html body'],
-            'class more specific than 2 types' => ['<p class="p-1"', 'body p', '.p-1'],
-            'class & type more specific than class' => ['<p class="p-1"', '.p-1', 'p.p-1'],
-            'class & 2 types more specific than class & type' => ['<p class="p-1"', 'p.p-1', 'body p.p-1'],
-            '99 classes more specific than class & 2 types' => ['<p class="p-1"', 'body p.p-1', $classP1Repeated],
-            '99 classes & type more specific than 99 classes' => [
-                '<p class="p-1"',
-                $classP1Repeated,
-                'p' . $classP1Repeated
-            ],
-            '99 classes & 2 types more specific than 99 classes & type' => [
-                '<p class="p-1"',
-                'p' . $classP1Repeated,
-                'body p' . $classP1Repeated
-            ],
-            'ID more specific than 99 classes & 2 types' => [
-                '<p class="p-4" id="p4"',
-                'body p' . $classP4Repeated,
-                '#p4'
-            ],
-            'ID & type more specific than ID' => ['<p class="p-4" id="p4"', '#p4', 'p#p4'],
-            'ID & 2 types more specific than ID & type' => ['<p class="p-4" id="p4"', 'p#p4', 'body p#p4'],
-            'ID & class more specific than ID & 2 types' => ['<p class="p-4" id="p4"', 'body p#p4', '.p-4#p4'],
-            'ID & class & type more specific than ID & class' => ['<p class="p-4" id="p4"', '.p-4#p4', 'p.p-4#p4'],
-            'ID & class & 2 types more specific than ID & class & type' => [
-                '<p class="p-4" id="p4"',
-                'p.p-4#p4',
-                'body p.p-4#p4'
-            ],
-            'ID & 99 classes more specific than ID & class & 2 types' => [
-                '<p class="p-4" id="p4"',
-                'body p.p-4#p4',
-                $classP4Repeated . '#p4'
-            ],
-            'ID & 99 classes & type more specific than ID & 99 classes' => [
-                '<p class="p-4" id="p4"',
-                $classP4Repeated . '#p4',
-                'p' . $classP4Repeated . '#p4'
-            ],
-            'ID & 99 classes & 2 types more specific than ID & 99 classes & type' => [
-                '<p class="p-4" id="p4"',
-                'p' . $classP4Repeated . '#p4',
-                'body p' . $classP4Repeated . '#p4'
-            ],
-            '2 IDs more specific than ID & 99 classes & 2 types' => [
-                '<span id="text"',
-                'p' . $classP4Repeated . ' span#text',
-                '#p4 #text'
-            ],
-            '2 IDs & type more specific than 2 IDs' => ['<span id="text"', '#p4 #text', 'p#p4 #text'],
-            '2 IDs & 2 types more specific than 2 IDs & type' => ['<span id="text"', 'p#p4 #text', 'p#p4 span#text'],
-            '2 IDs & class more specific than 2 IDs & 2 types' => [
-                '<span id="text"',
-                'p#p4 span#text',
-                '.p-4#p4 #text'
-            ],
-            '2 IDs & class & type more specific than 2 IDs & class' => [
-                '<span id="text"',
-                '.p-4#p4 #text',
-                'p.p-4#p4 #text'
-            ],
-            '2 IDs & class & 2 types more specific than 2 IDs & class & type' => [
-                '<span id="text"',
-                'p.p-4#p4 #text',
-                'p.p-4#p4 span#text'
-            ],
-            '2 IDs & 99 classes more specific than 2 IDs & class & 2 types' => [
-                '<span id="text"',
-                'p.p-4#p4 span#text',
-                $classP4Repeated . '#p4 #text'
-            ],
-            '2 IDs & 99 classes & type more specific than 2 IDs & 99 classes' => [
-                '<span id="text"',
-                $classP4Repeated . '#p4 #text',
-                'p' . $classP4Repeated . '#p4 #text'
-            ],
-            '2 IDs & 99 classes & 2 types more specific than 2 IDs & 99 classes & type' => [
-                '<span id="text"',
-                'p' . $classP4Repeated . '#p4 #text',
-                'p' . $classP4Repeated . '#p4 span#text'
-            ],
+        /**
+         * @var string[] Selectors targeting `<span id="text">` with increasing specificity
+         */
+        $selectors = [
+            'universal' => '*',
+            'type' => 'span',
+            '2 types' => 'p span',
+            'class' => '.p-4 *',
+            'class & type' => '.p-4 span',
+            'class & 2 types' => 'p.p-4 span',
+            '99 classes' => $classP4Repeated . ' *',
+            '99 classes & type' => $classP4Repeated . ' span',
+            '99 classes & 2 types' => 'p' . $classP4Repeated . ' span',
+            'ID' => '#text',
+            'ID & type' => 'span#text',
+            'ID & 2 types' => 'p span#text',
+            'ID & class' => '.p-4 #text',
+            'ID & class & type' => '.p-4 span#text',
+            'ID & class & 2 types' => 'p.p-4 span#text',
+            'ID & 99 classes' => $classP4Repeated . ' #text',
+            'ID & 99 classes & type' => $classP4Repeated . ' span#text',
+            'ID & 99 classes & 2 types' => 'p' . $classP4Repeated . ' span#text',
+            '2 IDs' => '#p4 #text',
+            '2 IDs & type' => '#p4 span#text',
+            '2 IDs & 2 types' => 'p#p4 span#text',
+            '2 IDs & class' => '.p-4#p4 #text',
+            '2 IDs & class & type' => '.p-4#p4 span#text',
+            '2 IDs & class & 2 types' => 'p.p-4#p4 span#text',
+            '2 IDs & 99 classes' => $classP4Repeated . '#p4 #text',
+            '2 IDs & 99 classes & type' => $classP4Repeated . '#p4 span#text',
+            '2 IDs & 99 classes & 2 types' => 'p' . $classP4Repeated . '#p4 span#text',
         ];
+
+        $datasets = [];
+        $prevSelector = null;
+        foreach ($selectors as $description => $selector) {
+            if ($prevSelector) {
+                $datasets[$description . ' more specific than ' . $prevDescription] = [
+                    '<span id="text"',
+                    $prevSelector,
+                    $selector
+                ];
+            }
+            $prevSelector = $selector;
+            $prevDescription = $description;
+        }
+        return $datasets;
     }
 
     /**
