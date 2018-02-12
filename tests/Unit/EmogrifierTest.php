@@ -26,7 +26,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 <p class="p-1"><span>some text</span></p>
                 <p class="p-2"><span title="bonjour">some</span> text</p>
                 <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                <p class="p-4" id="p4"><span title="avez-vous">some</span> more <span id="text">text</span></p>
                 <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                 <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
             </body>
@@ -738,29 +738,108 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Provides data to test the following selector specificity ordering:
+     *     * < t < 99t < . < .+t < .+99t < 99. < 99.+t < 99.+99t
+     *     < # < #+t < #+99t < #+. < #+.+t < #+.+99t < #+99. < #+99.+t < #+99.+99t
+     *     < 99# < 99#+t < 99#+99t < 99#+. < 99#+.+t < 99#+.+99t < 99#+99. < 99#+99.+t < 99#+99.+99t
+     * where '*' is the universal selector, 't' is a type selector, '.' is a class selector, and '#' is an ID selector.
+     *
+     * Up to 99 selectors of each type specificity are supported (without making the comparator more complex).
+     *
+     * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
+     * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
+     *
      * @return string[][]
      */
     public function differentCssSelectorSpecificityDataProvider()
     {
+        // broken: testing selectors with 99 types or 99 IDs requires support for chaining `:not(h1):not(h1)...` or
+        // `#p4#p4...`, so currently 2 types and/or 2 IDs are tested as 'many' instead of 99 of each.
+        $classP1Repeated = str_repeat('.p-1', 99);
+        $classP4Repeated = str_repeat('.p-4', 99);
         return [
-            'class more specific than types' => ['<p class="p-1"', 'html body p', '.p-1'],
-            'ID more specific than class and types' => ['<p class="p-4" id="p4"', 'html body .p-4', '#p4'],
-            // Up to 99 selectors of each type specificity are supported (without making the comparator more complex)
-            'ID more specific than 99 classes and some types' => [
-                '<p class="p-4" id="p4"',
-                'html body ' . str_repeat('.p-4', 99),
-                '#p4',
-            ],
-            // broken: class more specific than 99 types (requires chaining `:not(h1):not(h1):not(h1)...` support)
-            ':not with type more specific than nothing' => ['<p class="p-1"', '.p-1', '.p-1:not(h1)'],
-            ':not with several types more specific than single type' => ['<p class="p-1"', 'p', '*:not(html body h1)'],
-            ':not with class more specific than types' => ['<p class="p-1"', 'html body p', '*:not(.p-2)'],
-            ':not with class more specific than :not with types' => [
+            'type more specific than universal' => ['<body', '*', 'body'],
+            '2 types more specific than type' => ['<body', 'body', 'html body'],
+            'class more specific than 2 types' => ['<p class="p-1"', 'body p', '.p-1'],
+            'class & type more specific than class' => ['<p class="p-1"', '.p-1', 'p.p-1'],
+            'class & 2 types more specific than class & type' => ['<p class="p-1"', 'p.p-1', 'body p.p-1'],
+            '99 classes more specific than class & 2 types' => ['<p class="p-1"', 'body p.p-1', $classP1Repeated],
+            '99 classes & type more specific than 99 classes' => [
                 '<p class="p-1"',
-                '*:not(html body h1)',
-                '*:not(.p-2)',
+                $classP1Repeated,
+                'p' . $classP1Repeated
             ],
-            'class more specific than :not with types' => ['<p class="p-1"', '*:not(html body h1)', '.p-1'],
+            '99 classes & 2 types more specific than 99 classes & type' => [
+                '<p class="p-1"',
+                'p' . $classP1Repeated,
+                'body p' . $classP1Repeated
+            ],
+            'ID more specific than 99 classes & 2 types' => [
+                '<p class="p-4" id="p4"',
+                'body p' . $classP4Repeated,
+                '#p4'
+            ],
+            'ID & type more specific than ID' => ['<p class="p-4" id="p4"', '#p4', 'p#p4'],
+            'ID & 2 types more specific than ID & type' => ['<p class="p-4" id="p4"', 'p#p4', 'body p#p4'],
+            'ID & class more specific than ID & 2 types' => ['<p class="p-4" id="p4"', 'body p#p4', '.p-4#p4'],
+            'ID & class & type more specific than ID & class' => ['<p class="p-4" id="p4"', '.p-4#p4', 'p.p-4#p4'],
+            'ID & class & 2 types more specific than ID & class & type' => [
+                '<p class="p-4" id="p4"',
+                'p.p-4#p4',
+                'body p.p-4#p4'
+            ],
+            'ID & 99 classes more specific than ID & class & 2 types' => [
+                '<p class="p-4" id="p4"',
+                'body p.p-4#p4',
+                $classP4Repeated . '#p4'
+            ],
+            'ID & 99 classes & type more specific than ID & 99 classes' => [
+                '<p class="p-4" id="p4"',
+                $classP4Repeated . '#p4',
+                'p' . $classP4Repeated . '#p4'
+            ],
+            'ID & 99 classes & 2 types more specific than ID & 99 classes & type' => [
+                '<p class="p-4" id="p4"',
+                'p' . $classP4Repeated . '#p4',
+                'body p' . $classP4Repeated . '#p4'
+            ],
+            '2 IDs more specific than ID & 99 classes & 2 types' => [
+                '<span id="text"',
+                'p' . $classP4Repeated . ' span#text',
+                '#p4 #text'
+            ],
+            '2 IDs & type more specific than 2 IDs' => ['<span id="text"', '#p4 #text', 'p#p4 #text'],
+            '2 IDs & 2 types more specific than 2 IDs & type' => ['<span id="text"', 'p#p4 #text', 'p#p4 span#text'],
+            '2 IDs & class more specific than 2 IDs & 2 types' => [
+                '<span id="text"',
+                'p#p4 span#text',
+                '.p-4#p4 #text'
+            ],
+            '2 IDs & class & type more specific than 2 IDs & class' => [
+                '<span id="text"',
+                '.p-4#p4 #text',
+                'p.p-4#p4 #text'
+            ],
+            '2 IDs & class & 2 types more specific than 2 IDs & class & type' => [
+                '<span id="text"',
+                'p.p-4#p4 #text',
+                'p.p-4#p4 span#text'
+            ],
+            '2 IDs & 99 classes more specific than 2 IDs & class & 2 types' => [
+                '<span id="text"',
+                'p.p-4#p4 span#text',
+                $classP4Repeated . '#p4 #text'
+            ],
+            '2 IDs & 99 classes & type more specific than 2 IDs & 99 classes' => [
+                '<span id="text"',
+                $classP4Repeated . '#p4 #text',
+                'p' . $classP4Repeated . '#p4 #text'
+            ],
+            '2 IDs & 99 classes & 2 types more specific than 2 IDs & 99 classes & type' => [
+                '<span id="text"',
+                'p' . $classP4Repeated . '#p4 #text',
+                'p' . $classP4Repeated . '#p4 span#text'
+            ],
         ];
     }
 
@@ -815,10 +894,50 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function equalCssSelectorSpecificityDataProvider()
     {
         return [
-            'pseudo-class as specific as class' => ['<p class="p-1"', '.p-1', '*:first-child'],
-            'attribute as specific as class' => ['<span title="bonjour"', 'span[title="bonjour"]', '.p-2 span'],
-            ':not alone does not increase specificity' => ['<p class="p-1"', 'p:not(* + *)', 'p'],
+            // pseudo-class
+            'pseudo-class as specific as class' => ['<p class="p-1"', '*:first-child', '.p-1'],
+            'type & pseudo-class as specific as type & class' => ['<p class="p-1"', 'p:first-child', 'p.p-1'],
+            'class & pseudo-class as specific as two classes' => ['<p class="p-1"', '.p-1:first-child', '.p-1.p-1'],
+            'ID & pseudo-class as specific as ID & class' => [
+                '<span title="avez-vous"',
+                '#p4 *:first-child',
+                '#p4.p-4 *'
+            ],
+            '2 types & 2 classes & 2 IDs & pseudo-class as specific as 2 types & 3 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4 span#text:last-child',
+                'p.p-4.p-4.p-4#p4 span#text'
+            ],
+            // attribute
+            'attribute as specific as class' => ['<span title="bonjour"', '[title="bonjour"]', '.p-2 *'],
+            'type & attribute as specific as type & class' => [
+                '<span title="bonjour"',
+                'span[title="bonjour"]',
+                '.p-2 span'
+            ],
+            'class & attribute as specific as two classes' => ['<p class="p-4" id="p4"', '.p-4[id="p4"]', '.p-4.p-4'],
+            'ID & attribute as specific as ID & class' => ['<p class="p-4" id="p4"', '#p4[id="p4"]', '#p4.p-4'],
+            '2 types & 2 classes & 2 IDs & attribute as specific as 2 types & 3 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4[id="p4"] span#text',
+                'p.p-4.p-4.p-4#p4 span#text'
+            ],
+            // :not
+            ':not alone as specific as universal' => ['<p class="p-1"', '*:not(* + *)', '*'],
+            'type & :not alone as specific as type' => ['<p class="p-1"', 'p:not(* + *)', 'p'],
+            'class & :not alone as specific as class' => ['<p class="p-1"', '.p-1:not(* + *)', '.p-1'],
+            'ID & :not alone as specific as ID' => ['<p class="p-4" id="p4"', '#p4:not(* + * + * + * + *)', '#p4'],
+            '2 types & 2 classes & 2 IDs & :not alone as specific as 2 types & 2 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4 span#text:not(* + *)',
+                'p.p-4.p-4#p4 span#text'
+            ],
+            // argument of :not
             ':not with type as specific as type' => ['<p class="p-1"', '*:not(h1)', 'p'],
+            ':not with class as specific as class' => ['<p class="p-1"', '*:not(.p-2)', '.p-1'],
+            ':not with ID as specific as ID' => ['<p class="p-4" id="p4"', '*:not(#p1)', '#p4'],
+            // broken: :not with 2 types & 2 classes & 2 IDs as specific as 2 types & 2 classes & 2 IDs
+            //         (`*:not(.p-1 #p1)`, i.e. with both class and ID, causes "Invalid type in selector")
         ];
     }
 
