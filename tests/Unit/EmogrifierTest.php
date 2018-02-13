@@ -739,12 +739,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Provides data to test the following selector specificity ordering:
-     *     * < t < 99t < . < .+t < .+99t < 99. < 99.+t < 99.+99t
-     *     < # < #+t < #+99t < #+. < #+.+t < #+.+99t < #+99. < #+99.+t < #+99.+99t
-     *     < 99# < 99#+t < 99#+99t < 99#+. < 99#+.+t < 99#+.+99t < 99#+99. < 99#+99.+t < 99#+99.+99t
+     *     * < t < 2t < . < .+t < .+2t < 2. < 2.+t < 2.+2t
+     *     < # < #+t < #+2t < #+. < #+.+t < #+.+2t < #+2. < #+2.+t < #+2.+2t
+     *     < 2# < 2#+t < 2#+2t < 2#+. < 2#+.+t < 2#+.+2t < 2#+2. < 2#+2.+t < 2#+2.+2t
      * where '*' is the universal selector, 't' is a type selector, '.' is a class selector, and '#' is an ID selector.
      *
-     * Up to 99 selectors of each type specificity are supported (without making the comparator more complex).
+     * Also confirm up to 99 class selectors are supported (much beyond this would require a more complex comparator).
      *
      * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
      * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
@@ -753,9 +753,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function differentCssSelectorSpecificityDataProvider()
     {
-        // broken: testing selectors with 99 types or 99 IDs requires support for chaining `:not(h1):not(h1)...` or
-        // `#p4#p4...`, so currently 2 types and/or 2 IDs are tested as 'many' instead of 99 of each.
-        $classP4Repeated = str_repeat('.p-4', 99);
         /**
          * @var string[] Selectors targeting `<span id="text">` with increasing specificity
          */
@@ -766,27 +763,27 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'class' => '.p-4 *',
             'class & type' => '.p-4 span',
             'class & 2 types' => 'p.p-4 span',
-            '99 classes' => $classP4Repeated . ' *',
-            '99 classes & type' => $classP4Repeated . ' span',
-            '99 classes & 2 types' => 'p' . $classP4Repeated . ' span',
+            '2 classes' => '.p-4.p-4 *',
+            '2 classes & type' => '.p-4.p-4 span',
+            '2 classes & 2 types' => 'p.p-4.p-4 span',
             'ID' => '#text',
             'ID & type' => 'span#text',
             'ID & 2 types' => 'p span#text',
             'ID & class' => '.p-4 #text',
             'ID & class & type' => '.p-4 span#text',
             'ID & class & 2 types' => 'p.p-4 span#text',
-            'ID & 99 classes' => $classP4Repeated . ' #text',
-            'ID & 99 classes & type' => $classP4Repeated . ' span#text',
-            'ID & 99 classes & 2 types' => 'p' . $classP4Repeated . ' span#text',
+            'ID & 2 classes' => '.p-4.p-4 #text',
+            'ID & 2 classes & type' => '.p-4.p-4 span#text',
+            'ID & 2 classes & 2 types' => 'p.p-4.p-4 span#text',
             '2 IDs' => '#p4 #text',
             '2 IDs & type' => '#p4 span#text',
             '2 IDs & 2 types' => 'p#p4 span#text',
             '2 IDs & class' => '.p-4#p4 #text',
             '2 IDs & class & type' => '.p-4#p4 span#text',
             '2 IDs & class & 2 types' => 'p.p-4#p4 span#text',
-            '2 IDs & 99 classes' => $classP4Repeated . '#p4 #text',
-            '2 IDs & 99 classes & type' => $classP4Repeated . '#p4 span#text',
-            '2 IDs & 99 classes & 2 types' => 'p' . $classP4Repeated . '#p4 span#text',
+            '2 IDs & 2 classes' => '.p-4.p-4#p4 #text',
+            '2 IDs & 2 classes & type' => '.p-4.p-4#p4 span#text',
+            '2 IDs & 2 classes & 2 types' => 'p.p-4.p-4#p4 span#text',
         ];
 
         $datasets = [];
@@ -802,6 +799,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             $prevSelector = $selector;
             $prevDescription = $description;
         }
+
+        // broken: class more specific than 99 types (requires support for chaining `:not(h1):not(h1)...`)
+        $datasets['ID more specific than 99 classes'] = [
+            '<p class="p-4" id="p4"',
+            str_repeat('.p-4', 99),
+            '#p4'
+        ];
+
         return $datasets;
     }
 
