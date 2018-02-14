@@ -2018,6 +2018,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function emogrifyAppliesLaterShorthandStyleAfterIndividualStyle()
+    {
+        $this->setSubjectBoilerplateHtml();
+        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains(
+            '<p style="margin-top: 1px; margin: 2px;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
     public function emogrifyAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle()
     {
         $this->setSubjectBoilerplateHtml();
