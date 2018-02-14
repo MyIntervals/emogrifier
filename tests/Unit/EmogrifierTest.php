@@ -1739,12 +1739,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        // Property order in style attribute now follows precedence order, though used to follow application order
-        // Either is valid in this case
-        static::assertThat($result, static::logicalOr(
-            static::stringContains('<p style="margin: 0; padding-top: 1px; padding-bottom: 3px; text-align: center;">'),
-            static::stringContains('<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">')
-        ));
+        static::assertContains(
+            '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
+            $result
+        );
     }
 
     /**
