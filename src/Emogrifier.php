@@ -1009,12 +1009,12 @@ class Emogrifier
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
-        $combinedStyles = array_merge($oldStyles, $newStyles);
-        $cacheKey = serialize($combinedStyles);
+        $cacheKey = serialize([$oldStyles, $newStyles]);
         if (isset($this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
             return $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey];
         }
 
+        // Unset the overridden styles to preserve order, important if shorthand and individual properties are mixed
         foreach ($oldStyles as $attributeName => $attributeValue) {
             if (!isset($newStyles[$attributeName])) {
                 continue;
@@ -1024,9 +1024,13 @@ class Emogrifier
             if ($this->attributeValueIsImportant($attributeValue)
                 && !$this->attributeValueIsImportant($newAttributeValue)
             ) {
-                $combinedStyles[$attributeName] = $attributeValue;
+                unset($newStyles[$attributeName]);
+            } else {
+                unset($oldStyles[$attributeName]);
             }
         }
+
+        $combinedStyles = array_merge($oldStyles, $newStyles);
 
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
