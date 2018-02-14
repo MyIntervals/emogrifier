@@ -838,25 +838,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test Confirms the dataset is valid for the test, and the less specific selector does in fact match
-     * @param string $matchedTagPart Tag expected to be matched by selector, without the closing '>',
-     *                               e.g. '<p class="p-1"'
-     * @param string $lessSpecificSelector A selector expression
-     * @dataProvider differentCssSelectorSpecificityDataProvider
-     */
-    public function emogrifyWouldApplyLessSpecificCssSelectorToMatchingElements(
-        $matchedTagPart,
-        $lessSpecificSelector
-    ) {
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss($lessSpecificSelector . ' { color: green; }');
-
-        $result = $this->subject->emogrify();
-
-        static::assertContains($matchedTagPart . ' style="color: green;"', $result);
-    }
-
-    /**
      * @return string[][]
      */
     public function equalCssSelectorSpecificityDataProvider()
