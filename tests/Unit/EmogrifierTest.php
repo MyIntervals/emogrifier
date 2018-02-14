@@ -1914,11 +1914,26 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Sets HTML of subject to boilerplate HTML with a single `<p>` in `<body>` and empty `<head>`
+     *
+     * @param string $style Optional value for the style attribute of the `<p>` element
+     */
+    private function setSubjectBoilerplateHtml($style = '')
+    {
+        $html = '<html><head></head><body><p';
+        if ($style !== '') {
+            $html .= ' style="' . $style . '"';
+        }
+        $html .= '>some content</p></body></html>';
+        $this->subject->setHtml($html);
+    }
+
+    /**
      * @test
      */
     public function importantInExternalCssOverwritesInlineCss()
     {
-        $this->subject->setHtml('<html><head</head><body><p style="margin: 2px;">some content</p></body></html>');
+        $this->setSubjectBoilerplateHtml('margin: 2px;');
         $this->subject->setCss('p { margin: 1px !important; }');
 
         $result = $this->subject->emogrify();
@@ -1931,9 +1946,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function importantInExternalCssKeepsInlineCssForOtherAttributes()
     {
-        $this->subject->setHtml(
-            '<html><head</head><body><p style="margin: 2px; text-align: center;">some content</p></body></html>'
-        );
+        $this->setSubjectBoilerplateHtml('margin: 2px; text-align: center;');
         $this->subject->setCss('p { margin: 1px !important; }');
 
         $result = $this->subject->emogrify();
@@ -1946,7 +1959,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyHandlesImportantStyleTagCaseInsensitive()
     {
-        $this->subject->setHtml('<html><head</head><body><p style="margin: 2px;">some content</p></body></html>');
+        $this->setSubjectBoilerplateHtml('margin: 2px;');
         $this->subject->setCss('p { margin: 1px !ImPorTant; }');
 
         $result = $this->subject->emogrify();
@@ -1959,7 +1972,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function secondImportantStyleOverwritesFirstOne()
     {
-        $this->subject->setHtml('<html><head</head><body><p>some content</p></body></html>');
+        $this->setSubjectBoilerplateHtml();
         $this->subject->setCss('p { margin: 1px !important; } p { margin: 2px !important; }');
 
         $result = $this->subject->emogrify();
@@ -1975,7 +1988,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function secondNonImportantStyleOverwritesFirstOne()
     {
-        $this->subject->setHtml('<html><head</head><body><p>some content</p></body></html>');
+        $this->setSubjectBoilerplateHtml();
         $this->subject->setCss('p { margin: 1px; } p { margin: 2px; }');
 
         $result = $this->subject->emogrify();
@@ -1991,7 +2004,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function secondNonImportantStyleNotOverwritesFirstImportantOne()
     {
-        $this->subject->setHtml('<html><head</head><body><p>some content</p></body></html>');
+        $this->setSubjectBoilerplateHtml();
         $this->subject->setCss('p { margin: 1px !important; } p { margin: 2px; }');
 
         $result = $this->subject->emogrify();
@@ -2035,11 +2048,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss()
     {
-        $this->subject->setHtml(
-            '<html><head</head><body>' .
-            '<p style="margin: 2px !important; text-align: center;">some content</p>' .
-            '</body></html>'
-        );
+        $this->setSubjectBoilerplateHtml('margin: 2px !important; text-align: center;');
         $this->subject->setCss('p { margin: 1px !important; padding: 1px;}');
 
         $result = $this->subject->emogrify();
