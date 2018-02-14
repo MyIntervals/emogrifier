@@ -1725,7 +1725,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Passed in CSS sets the order, but style block CSS overrides values.
+     * Style block CSS overrides values.
      *
      * @test
      */
@@ -1739,10 +1739,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<p style="margin: 0; padding-top: 1px; padding-bottom: 3px; text-align: center;">',
-            $result
-        );
+        // Property order in style attribute now follows precedence order, though used to follow application order
+        // Either is valid in this case
+        static::assertThat($result, static::logicalOr(
+            static::stringContains('<p style="margin: 0; padding-top: 1px; padding-bottom: 3px; text-align: center;">'),
+            static::stringContains('<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">')
+        ));
     }
 
     /**
@@ -2011,6 +2013,54 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         static::assertContains(
             '<p style="margin: 1px;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle()
+    {
+        $this->setSubjectBoilerplateHtml();
+        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; } p { margin-top: 3px; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains(
+            '<p style="margin: 2px; margin-top: 3px;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesInlineOverridingStyleAfterCssStyleAfterOverriddenCssStyle()
+    {
+        $this->setSubjectBoilerplateHtml('margin-top: 3px;');
+        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains(
+            '<p style="margin: 2px; margin-top: 3px;">',
+            $result
+        );
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesLaterInlineOverridingStyleAfterEarlierInlineStyle()
+    {
+        $this->setSubjectBoilerplateHtml('margin: 2px; margin-top: 3px;');
+        $this->subject->setCss('p { margin-top: 1px; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains(
+            '<p style="margin: 2px; margin-top: 3px;">',
             $result
         );
     }

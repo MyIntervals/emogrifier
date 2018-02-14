@@ -24,6 +24,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Style property ordering when multiple mixed individual and shorthand
+  properties apply ([#511](https://github.com/MyIntervals/emogrifier/pull/511),
+  [#508](https://github.com/MyIntervals/emogrifier/issues/508))
 - Calculation of selector precedence for selectors involving pseudo-classes
   and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 - Allow `@charset` in the CSS without error (note: its value is currently
