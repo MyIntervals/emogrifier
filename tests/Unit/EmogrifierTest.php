@@ -26,7 +26,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 <p class="p-1"><span>some text</span></p>
                 <p class="p-2"><span title="bonjour">some</span> text</p>
                 <p class="p-3"><span title="buenas dias">some</span> more text</p>
-                <p class="p-4" id="p4"><span title="avez-vous">some</span> more text</p>
+                <p class="p-4" id="p4"><span title="avez-vous">some</span> more <span id="text">text</span></p>
                 <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                 <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
             </body>
@@ -735,6 +735,185 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         static::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+    }
+
+    /**
+     * Provides data to test the following selector specificity ordering:
+     *     * < t < 2t < . < .+t < .+2t < 2. < 2.+t < 2.+2t
+     *     < # < #+t < #+2t < #+. < #+.+t < #+.+2t < #+2. < #+2.+t < #+2.+2t
+     *     < 2# < 2#+t < 2#+2t < 2#+. < 2#+.+t < 2#+.+2t < 2#+2. < 2#+2.+t < 2#+2.+2t
+     * where '*' is the universal selector, 't' is a type selector, '.' is a class selector, and '#' is an ID selector.
+     *
+     * Also confirm up to 99 class selectors are supported (much beyond this would require a more complex comparator).
+     *
+     * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
+     * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
+     *
+     * @return string[][]
+     */
+    public function differentCssSelectorSpecificityDataProvider()
+    {
+        /**
+         * @var string[] Selectors targeting `<span id="text">` with increasing specificity
+         */
+        $selectors = [
+            'universal' => '*',
+            'type' => 'span',
+            '2 types' => 'p span',
+            'class' => '.p-4 *',
+            'class & type' => '.p-4 span',
+            'class & 2 types' => 'p.p-4 span',
+            '2 classes' => '.p-4.p-4 *',
+            '2 classes & type' => '.p-4.p-4 span',
+            '2 classes & 2 types' => 'p.p-4.p-4 span',
+            'ID' => '#text',
+            'ID & type' => 'span#text',
+            'ID & 2 types' => 'p span#text',
+            'ID & class' => '.p-4 #text',
+            'ID & class & type' => '.p-4 span#text',
+            'ID & class & 2 types' => 'p.p-4 span#text',
+            'ID & 2 classes' => '.p-4.p-4 #text',
+            'ID & 2 classes & type' => '.p-4.p-4 span#text',
+            'ID & 2 classes & 2 types' => 'p.p-4.p-4 span#text',
+            '2 IDs' => '#p4 #text',
+            '2 IDs & type' => '#p4 span#text',
+            '2 IDs & 2 types' => 'p#p4 span#text',
+            '2 IDs & class' => '.p-4#p4 #text',
+            '2 IDs & class & type' => '.p-4#p4 span#text',
+            '2 IDs & class & 2 types' => 'p.p-4#p4 span#text',
+            '2 IDs & 2 classes' => '.p-4.p-4#p4 #text',
+            '2 IDs & 2 classes & type' => '.p-4.p-4#p4 span#text',
+            '2 IDs & 2 classes & 2 types' => 'p.p-4.p-4#p4 span#text',
+        ];
+
+        $datasets = [];
+        $previousSelector = '';
+        $previousDescription = '';
+        foreach ($selectors as $description => $selector) {
+            if ($previousSelector !== '') {
+                $datasets[$description . ' more specific than ' . $previousDescription] = [
+                    '<span id="text"',
+                    $previousSelector,
+                    $selector
+                ];
+            }
+            $previousSelector = $selector;
+            $previousDescription = $description;
+        }
+
+        // broken: class more specific than 99 types (requires support for chaining `:not(h1):not(h1)...`)
+        $datasets['ID more specific than 99 classes'] = [
+            '<p class="p-4" id="p4"',
+            str_repeat('.p-4', 99),
+            '#p4'
+        ];
+
+        return $datasets;
+    }
+
+    /**
+     * @test
+     * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
+     *                               e.g. '<p class="p-1"'
+     * @param string $lessSpecificSelector A selector expression
+     * @param string $moreSpecificSelector Some other, more specific selector expression
+     * @dataProvider differentCssSelectorSpecificityDataProvider
+     */
+    public function emogrifyAppliesMoreSpecificCssSelectorToMatchingElements(
+        $matchedTagPart,
+        $lessSpecificSelector,
+        $moreSpecificSelector
+    ) {
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setCss(
+            $lessSpecificSelector . ' { color: red; } ' .
+            $moreSpecificSelector . ' { color: green; } ' .
+            $moreSpecificSelector . ' { background-color: green; } ' .
+            $lessSpecificSelector . ' { background-color: red; }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function equalCssSelectorSpecificityDataProvider()
+    {
+        return [
+            // pseudo-class
+            'pseudo-class as specific as class' => ['<p class="p-1"', '*:first-child', '.p-1'],
+            'type & pseudo-class as specific as type & class' => ['<p class="p-1"', 'p:first-child', 'p.p-1'],
+            'class & pseudo-class as specific as two classes' => ['<p class="p-1"', '.p-1:first-child', '.p-1.p-1'],
+            'ID & pseudo-class as specific as ID & class' => [
+                '<span title="avez-vous"',
+                '#p4 *:first-child',
+                '#p4.p-4 *'
+            ],
+            '2 types & 2 classes & 2 IDs & pseudo-class as specific as 2 types & 3 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4 span#text:last-child',
+                'p.p-4.p-4.p-4#p4 span#text'
+            ],
+            // attribute
+            'attribute as specific as class' => ['<span title="bonjour"', '[title="bonjour"]', '.p-2 *'],
+            'type & attribute as specific as type & class' => [
+                '<span title="bonjour"',
+                'span[title="bonjour"]',
+                '.p-2 span'
+            ],
+            'class & attribute as specific as two classes' => ['<p class="p-4" id="p4"', '.p-4[id="p4"]', '.p-4.p-4'],
+            'ID & attribute as specific as ID & class' => ['<p class="p-4" id="p4"', '#p4[id="p4"]', '#p4.p-4'],
+            '2 types & 2 classes & 2 IDs & attribute as specific as 2 types & 3 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4[id="p4"] span#text',
+                'p.p-4.p-4.p-4#p4 span#text'
+            ],
+            // :not
+            ':not alone as specific as universal' => ['<p class="p-1"', '*:not(* + *)', '*'],
+            'type & :not alone as specific as type' => ['<p class="p-1"', 'p:not(* + *)', 'p'],
+            'class & :not alone as specific as class' => ['<p class="p-1"', '.p-1:not(* + *)', '.p-1'],
+            'ID & :not alone as specific as ID' => ['<p class="p-4" id="p4"', '#p4:not(* + * + * + * + *)', '#p4'],
+            '2 types & 2 classes & 2 IDs & :not alone as specific as 2 types & 2 classes & 2 IDs' => [
+                '<span id="text"',
+                'p.p-4.p-4#p4 span#text:not(* + *)',
+                'p.p-4.p-4#p4 span#text'
+            ],
+            // argument of :not
+            ':not with type as specific as type' => ['<p class="p-1"', '*:not(h1)', 'p'],
+            ':not with class as specific as class' => ['<p class="p-1"', '*:not(.p-2)', '.p-1'],
+            ':not with ID as specific as ID' => ['<p class="p-4" id="p4"', '*:not(#p1)', '#p4'],
+            // broken: :not with 2 types & 2 classes & 2 IDs as specific as 2 types & 2 classes & 2 IDs
+            //         (`*:not(.p-1 #p1)`, i.e. with both class and ID, causes "Invalid type in selector")
+        ];
+    }
+
+    /**
+     * @test
+     * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
+     *                               e.g. '<p class="p-1"'
+     * @param string $selector1 A selector expression
+     * @param string $selector2 Some other, equally specific selector expression
+     * @dataProvider equalCssSelectorSpecificityDataProvider
+     */
+    public function emogrifyAppliesLaterEquallySpecificCssSelectorToMatchingElements(
+        $matchedTagPart,
+        $selector1,
+        $selector2
+    ) {
+        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setCss(
+            $selector1 . ' { color: red; } ' .
+            $selector2 . ' { color: green; } ' .
+            $selector2 . ' { background-color: red; } ' .
+            $selector1 . ' { background-color: green; }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
     }
 
     /**

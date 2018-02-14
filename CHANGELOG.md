@@ -24,6 +24,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Calculation of selector precedence for selectors involving pseudo-classes
+  and/or attributes ([#502](https://github.com/MyIntervals/emogrifier/pull/502))
 - Allow `@charset` in the CSS without error (note: its value is currently
   ignored, [#507](https://github.com/MyIntervals/emogrifier/pull/507))
 - Allow attribute selectors in descendants
