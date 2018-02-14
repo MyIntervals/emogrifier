@@ -787,17 +787,18 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         ];
 
         $datasets = [];
-        $prevSelector = null;
+        $previousSelector = '';
+        $previousDescription = '';
         foreach ($selectors as $description => $selector) {
-            if ($prevSelector) {
-                $datasets[$description . ' more specific than ' . $prevDescription] = [
+            if ($previousSelector !== '') {
+                $datasets[$description . ' more specific than ' . $previousDescription] = [
                     '<span id="text"',
-                    $prevSelector,
+                    $previousSelector,
                     $selector
                 ];
             }
-            $prevSelector = $selector;
-            $prevDescription = $description;
+            $previousSelector = $selector;
+            $previousDescription = $description;
         }
 
         // broken: class more specific than 99 types (requires support for chaining `:not(h1):not(h1)...`)
