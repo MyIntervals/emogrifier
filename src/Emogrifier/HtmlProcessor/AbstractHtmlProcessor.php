@@ -5,6 +5,8 @@ namespace Pelago\Emogrifier\HtmlProcessor;
 /**
  * Base class for HTML processor that e.g., can remove, add or modify nodes or attributes.
  *
+ * The "vanilla" subclass is the HtmlNormalizer.
+ *
  * @author Oliver Klee <github@oliverklee.de>
  */
 abstract class AbstractHtmlProcessor

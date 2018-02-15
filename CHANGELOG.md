@@ -7,7 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Add a CssInliner class (#514)
+- Add an HtmlNormalizer class
+  ([#513](https://github.com/jjriv/emogrifier/pull/513))
+- Add a CssInliner class
+  ([#514](https://github.com/jjriv/emogrifier/pull/514))
 - Composer scripts for the various CI build steps
 - Validate the composer.json on Travis
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
