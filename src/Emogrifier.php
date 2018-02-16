@@ -375,7 +375,27 @@ class Emogrifier
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
 
-        $cssParts = $this->splitCssAndMediaQuery($allCss);
+        $splitCss = $this->splitCssAndMediaQuery($allCss);
+        // this is temporary pending refactoring `parseCssRules` and `copyCssWithMediaToStyleNode`
+        $cssParts = [
+            'css' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] === '') {
+                        return $splitCssPart['css'];
+                    }
+                },
+                $splitCss
+            )),
+            'media' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] !== '') {
+                        return $splitCssPart['media'] . '{' . $splitCssPart['css'] . '}';
+                    }
+                },
+                $splitCss
+            )),
+        ];
+
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
@@ -1238,10 +1258,12 @@ class Emogrifier
     }
 
     /**
-     * Splits input CSS code to an array where:
+     * Splits input CSS code into an array of parts for different media querues, in order.
+     * Each part is an array where:
      *
-     * - key "css" will be contains clean CSS code
-     * - key "media" will be contains all valuable media queries
+     * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
+     * - key "media" will contain "@media " followed by the media query list, for all valuable media queries,
+     *   or an empty string for CSS not within a media query
      *
      * Example:
      *
@@ -1251,12 +1273,22 @@ class Emogrifier
      *
      * will be parsed into the following array:
      *
-     *   "css" => "h1 { color:red; }"
-     *   "media" => "@media { h1 {}}"
+     *   0 => [
+     *     "css" => " h1 { color:red; } ",
+     *     "media" => ""
+     *   ],
+     *   1 => [
+     *     "css" => " h1 {}",
+     *     "media" => "@media "
+     *   ],
+     *   2 => [
+     *     "css" => " "
+     *     "media" => ""
+     *   ]
      *
      * @param string $css
      *
-     * @return string[]
+     * @return string[][]
      */
     private function splitCssAndMediaQuery($css)
     {
@@ -1267,24 +1299,41 @@ class Emogrifier
             $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
         }
 
-        $media = '';
-        $cssForAllowedMediaTypes = preg_replace_callback(
-            '#@media\\s+(?:only\\s)?(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*#misU',
-            function ($matches) use (&$media) {
-                $media .= $matches[0];
-            },
-            $cssWithoutComments
+        $cssSplitForAllowedMediaTypes = preg_split(
+            '#(@media\\s+(?:only\\s)?(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*)#misU',
+            $cssWithoutComments,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE
         );
 
-        // filter the CSS
-        $search = [
+        // filter the CSS outside/between allowed @media rules
+        $cssCleaningMatchers = [
             'import/charset directives' => '/^\\s*@(?:import|charset)\\s[^;]+;/misU',
             'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         ];
 
-        $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
+        $splitCss = [];
+        foreach ($cssSplitForAllowedMediaTypes as $i => $cssPart) {
+            if ($i & 1) {
+                // @media rule
+                $ruleBodyStartPosition = strpos($cssPart, '{');
+                $media = substr($cssPart, 0, $ruleBodyStartPosition);
 
-        return ['css' => $cleanedCss, 'media' => $media];
+                // advance past "{"
+                ++$ruleBodyStartPosition;
+                $css = substr(
+                    $cssPart,
+                    $ruleBodyStartPosition,
+                    strrpos($cssPart, '}') - $ruleBodyStartPosition
+                );
+            } else {
+                // CSS outside/between allowed @media rules
+                $media = '';
+                $css = preg_replace($cssCleaningMatchers, '', $cssPart);
+            }
+            $splitCss[] = compact('css', 'media');
+        }
+        return $splitCss;
     }
 
     /**
