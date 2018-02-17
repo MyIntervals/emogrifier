@@ -1315,6 +1315,73 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function surroundingCssForOrderedMediaRulesDataProvider()
+    {
+        $possibleSurroundingCss = [
+            'nothing' => '',
+            'space' => ' ',
+            'linefeed' => "\n",
+            'Windows line ending' => "\r\n",
+            'comment' => '/* hello */',
+            'other non-matching CSS' => 'h6 { color: #f00; }',
+            'other matching CSS' => 'p { color: #f00; }',
+            'disallowed media rule' => '@media tv { p { color: #f00; } }',
+            'allowed but non-matching media rule' => '@media screen { h6 { color: #f00; } }',
+        ];
+        $possibleCssBefore = $possibleSurroundingCss + [
+            '@import' => '@import "foo.css";',
+            '@charset' => '@charset "UTF-8";',
+        ];
+
+        $datasets = [];
+        foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
+            foreach ($possibleSurroundingCss as $descriptionBetween => $cssBetween) {
+                foreach ($possibleSurroundingCss as $descriptionAfter => $cssAfter) {
+                    // every combination would be a ridiculous c.1000 datasets - choose a select few
+                    // test all possible CSS before once
+                    if ($cssBetween === '' && $cssAfter === ''
+                        // test all possible CSS between once
+                        || $cssBefore === '' && $cssAfter === ''
+                        // test all possible CSS after once
+                        || $cssBefore === '' && $cssBetween === ''
+                        // test with each possible CSS in all three positions
+                        || $cssBefore === $cssBetween && $cssBetween === $cssAfter
+                    ) {
+                        $description = $descriptionBefore . ' before, '
+                            . $descriptionBetween . ' between, '
+                            . $descriptionAfter . ' after';
+                        $datasets[$description] = [$cssBefore, $cssBetween, $cssAfter];
+                    }
+                }
+            }
+        }
+        return $datasets;
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssBefore CSS to insert before the first @media rule
+     * @param string $cssBetween CSS to insert between the @media rules
+     * @param string $cssAfter CSS to insert after the second @media rules
+     *
+     * @dataProvider surroundingCssForOrderedMediaRulesDataProvider
+     */
+    public function emogrifyKeepsMediaRulesInSpecifiedOrder($cssBefore, $cssBetween, $cssAfter)
+    {
+        $this->subject->setHtml('<html><p>foo</p></html>');
+        $mediaRule1 = '@media all {p {color: #333;}}';
+        $mediaRule2 = '@media print {p {color: #000;}}';
+        $this->subject->setCss($cssBefore . $mediaRule1 . $cssBetween . $mediaRule2 . $cssAfter);
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains($mediaRule1 . $mediaRule2, $result);
+    }
+
+    /**
      * @test
      */
     public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()

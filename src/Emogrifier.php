@@ -377,24 +377,7 @@ class Emogrifier
 
         $splitCss = $this->splitCssAndMediaQuery($allCss);
         // this is temporary pending refactoring `parseCssRules` and `copyCssWithMediaToStyleNode`
-        $cssParts = [
-            'css' => implode('', array_map(
-                function ($splitCssPart) {
-                    if ($splitCssPart['media'] === '') {
-                        return $splitCssPart['css'];
-                    }
-                },
-                $splitCss
-            )),
-            'media' => implode('', array_map(
-                function ($splitCssPart) {
-                    if ($splitCssPart['media'] !== '') {
-                        return $splitCssPart['media'] . '{' . $splitCssPart['css'] . '}';
-                    }
-                },
-                $splitCss
-            )),
-        ];
+        $cssParts = $this->combineSplitCssAndMediaQueryParts($splitCss);
 
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
@@ -1313,19 +1296,12 @@ class Emogrifier
         ];
 
         $splitCss = [];
-        foreach ($cssSplitForAllowedMediaTypes as $i => $cssPart) {
-            if ($i & 1) {
+        foreach ($cssSplitForAllowedMediaTypes as $splitPartIndexWhereOddIsMediaRule => $cssPart) {
+            if ($splitPartIndexWhereOddIsMediaRule % 2 !== 0) {
                 // @media rule
-                $ruleBodyStartPosition = strpos($cssPart, '{');
-                $media = substr($cssPart, 0, $ruleBodyStartPosition);
-
-                // advance past "{"
-                ++$ruleBodyStartPosition;
-                $css = substr(
-                    $cssPart,
-                    $ruleBodyStartPosition,
-                    strrpos($cssPart, '}') - $ruleBodyStartPosition
-                );
+                preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
+                $media = $matches[1];
+                $css = $matches[2];
             } else {
                 // CSS outside/between allowed @media rules
                 $media = '';
@@ -1334,6 +1310,42 @@ class Emogrifier
             $splitCss[] = compact('css', 'media');
         }
         return $splitCss;
+    }
+
+    /**
+     * Temporary method pending refactoring of `parseCssRules` and `copyCssWithMediaToStyleNode`.
+     * Combines the parts returned by `splitCssAndMediaQuery` into just two strings.
+     *
+     * @param string[][] As returned by `splitCssAndMediaQuery`
+     *
+     * @return string[] Array with the following keys:
+     *                  "css" => the cleaned CSS without any @media rules
+     *                  "media" => the valuable @media rules from the original CSS
+     */
+    private function combineSplitCssAndMediaQueryParts($splitCss)
+    {
+        return [
+            'css' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] === '') {
+                        return $splitCssPart['css'];
+                    } else {
+                        return '';
+                    }
+                },
+                $splitCss
+            )),
+            'media' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] !== '') {
+                        return $splitCssPart['media'] . '{' . $splitCssPart['css'] . '}';
+                    } else {
+                        return '';
+                    }
+                },
+                $splitCss
+            )),
+        ];
     }
 
     /**

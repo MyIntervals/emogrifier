@@ -341,7 +341,10 @@ class CssInliner
             $allCss .= $this->getCssFromAllStyleNodes($xPath);
         }
 
-        $cssParts = $this->splitCssAndMediaQuery($allCss);
+        $splitCss = $this->splitCssAndMediaQuery($allCss);
+        // this is temporary pending refactoring `parseCssRules` and `copyCssWithMediaToStyleNode`
+        $cssParts = $this->combineSplitCssAndMediaQueryParts($splitCss);
+
         $excludedNodes = $this->getNodesToExclude($xPath);
         $cssRules = $this->parseCssRules($cssParts['css']);
         foreach ($cssRules as $cssRule) {
@@ -1027,10 +1030,12 @@ class CssInliner
     }
 
     /**
-     * Splits input CSS code to an array where:
+     * Splits input CSS code into an array of parts for different media querues, in order.
+     * Each part is an array where:
      *
-     * - key "css" will be contains clean CSS code
-     * - key "media" will be contains all valuable media queries
+     * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
+     * - key "media" will contain "@media " followed by the media query list, for all valuable media queries,
+     *   or an empty string for CSS not within a media query
      *
      * Example:
      *
@@ -1040,12 +1045,22 @@ class CssInliner
      *
      * will be parsed into the following array:
      *
-     *   "css" => "h1 { color:red; }"
-     *   "media" => "@media { h1 {}}"
+     *   0 => [
+     *     "css" => " h1 { color:red; } ",
+     *     "media" => ""
+     *   ],
+     *   1 => [
+     *     "css" => " h1 {}",
+     *     "media" => "@media "
+     *   ],
+     *   2 => [
+     *     "css" => " "
+     *     "media" => ""
+     *   ]
      *
      * @param string $css
      *
-     * @return string[]
+     * @return string[][]
      */
     private function splitCssAndMediaQuery($css)
     {
@@ -1056,24 +1071,70 @@ class CssInliner
             $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
         }
 
-        $media = '';
-        $cssForAllowedMediaTypes = preg_replace_callback(
-            '#@media\\s+(?:only\\s)?(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*#misU',
-            function ($matches) use (&$media) {
-                $media .= $matches[0];
-            },
-            $cssWithoutComments
+        $cssSplitForAllowedMediaTypes = preg_split(
+            '#(@media\\s+(?:only\\s)?(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*)#misU',
+            $cssWithoutComments,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE
         );
 
-        // filter the CSS
-        $search = [
+        // filter the CSS outside/between allowed @media rules
+        $cssCleaningMatchers = [
             'import/charset directives' => '/^\\s*@(?:import|charset)\\s[^;]+;/misU',
             'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
         ];
 
-        $cleanedCss = preg_replace($search, '', $cssForAllowedMediaTypes);
+        $splitCss = [];
+        foreach ($cssSplitForAllowedMediaTypes as $splitPartIndexWhereOddIsMediaRule => $cssPart) {
+            if ($splitPartIndexWhereOddIsMediaRule % 2 !== 0) {
+                // @media rule
+                preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
+                $media = $matches[1];
+                $css = $matches[2];
+            } else {
+                // CSS outside/between allowed @media rules
+                $media = '';
+                $css = preg_replace($cssCleaningMatchers, '', $cssPart);
+            }
+            $splitCss[] = compact('css', 'media');
+        }
+        return $splitCss;
+    }
 
-        return ['css' => $cleanedCss, 'media' => $media];
+    /**
+     * Temporary method pending refactoring of `parseCssRules` and `copyCssWithMediaToStyleNode`.
+     * Combines the parts returned by `splitCssAndMediaQuery` into just two strings.
+     *
+     * @param string[][] As returned by `splitCssAndMediaQuery`
+     *
+     * @return string[] Array with the following keys:
+     *                  "css" => the cleaned CSS without any @media rules
+     *                  "media" => the valuable @media rules from the original CSS
+     */
+    private function combineSplitCssAndMediaQueryParts($splitCss)
+    {
+        return [
+            'css' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] === '') {
+                        return $splitCssPart['css'];
+                    } else {
+                        return '';
+                    }
+                },
+                $splitCss
+            )),
+            'media' => implode('', array_map(
+                function ($splitCssPart) {
+                    if ($splitCssPart['media'] !== '') {
+                        return $splitCssPart['media'] . '{' . $splitCssPart['css'] . '}';
+                    } else {
+                        return '';
+                    }
+                },
+                $splitCss
+            )),
+        ];
     }
 
     /**
