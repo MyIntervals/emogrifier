@@ -1327,7 +1327,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<style', $result);
+        static::assertNotContains('@media', $result);
     }
 
     /**
