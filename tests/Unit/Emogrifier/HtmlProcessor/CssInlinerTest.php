@@ -1320,7 +1320,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()
     {
-        $css = '@media screen { html {} }';
+        $css = '@media screen { html { some-property: value; } }';
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss($css);
         $this->subject->removeAllowedMediaType('screen');
@@ -1351,7 +1351,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAddsMissingHeadElement()
     {
         $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
@@ -1364,7 +1364,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepExistingHeadElementContent()
     {
         $this->subject->setHtml('<html><head><!-- original content --></head></html>');
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
@@ -1378,7 +1378,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
         $this->subject->setHtml($html);
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
