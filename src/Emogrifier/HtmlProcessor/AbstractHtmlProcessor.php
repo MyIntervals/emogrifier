@@ -44,6 +44,16 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Provides access to the internal DOMDocument representation of the HTML in its current state.
+     *
+     * @return \DOMDocument
+     */
+    public function getDomDocument()
+    {
+        return $this->xmlDocument;
+    }
+
+    /**
      * Renders the normalized and processed HTML.
      *
      * @return string
