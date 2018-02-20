@@ -1289,16 +1289,16 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
      * readable and can use inputs containing extra whitespace.
      *
-     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`
+     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`.
      *
-     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead
+     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
      */
-    private static function getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle)
+    private static function getCssNeedleRegExp($needle)
     {
         $needleMatcher = preg_replace_callback(
             '/\\s*+([{}])\\s*+|(?:(?!\\s*+[{}]).)++/',
-            function ($matches) {
-                if (!empty($matches[1])) {
+            function (array $matches) {
+                if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
                     return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
                 } else {
@@ -1312,30 +1312,31 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS
+     * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS.
      *
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($needle, $haystack)
+    private static function assertContainsCss($needle, $haystack)
     {
         static::assertRegExp(
-            static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle),
+            static::getCssNeedleRegExp($needle),
             $haystack,
             'Plain text needle: "' . $needle . '"'
         );
     }
 
     /**
-     * Like `assertNotContains` and also enforces the assertion with removal of some unnecessary whitespace from the CSS
+     * Like `assertNotContains` and also enforces the assertion with removal of some unnecessary whitespace from the
+     * CSS.
      *
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($needle, $haystack)
+    private static function assertNotContainsCss($needle, $haystack)
     {
         static::assertNotRegExp(
-            static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle),
+            static::getCssNeedleRegExp($needle),
             $haystack,
             'Plain text needle: "' . $needle . '"'
         );
@@ -1343,20 +1344,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Asserts that a string of CSS occurs exactly a certain number of times in the result, allowing for removal of some
-     * unnecessary whitespace
+     * unnecessary whitespace.
      *
-     * @param string $needle
      * @param int $expectedCount
+     * @param string $needle
      * @param string $haystack
      */
-    private static function assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace(
-        $needle,
+    private static function assertContainsCssCount(
         $expectedCount,
+        $needle,
         $haystack
     ) {
         static::assertSame(
             $expectedCount,
-            preg_match_all(static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle), $haystack),
+            preg_match_all(static::getCssNeedleRegExp($needle), $haystack),
             'Plain text needle: "' . $needle . "\"\nHaystack: \"" . $haystack . '"'
         );
     }
@@ -1392,7 +1393,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
+        static::assertContainsCss($css, $result);
     }
 
     /**
@@ -1459,7 +1460,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($mediaRule1 . $mediaRule2, $result);
+        static::assertContainsCss($mediaRule1 . $mediaRule2, $result);
     }
 
     /**
@@ -1489,7 +1490,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
+        static::assertContainsCss($css, $result);
     }
 
     /**
@@ -1585,7 +1586,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
+        static::assertContainsCss(
             '<style type="text/css">' . $css . '</style>',
             $result
         );
@@ -1626,7 +1627,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
+        static::assertContainsCss(
             '<style type="text/css">' . $css . '</style>',
             $result
         );
@@ -1681,7 +1682,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
+        static::assertNotContainsCss($css, $result);
     }
 
     /**
@@ -1714,7 +1715,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
+        static::assertNotContainsCss($css, $result);
     }
 
     /**
@@ -2255,7 +2256,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($usefulQuery, $result);
+        static::assertContainsCss($usefulQuery, $result);
     }
 
     /**
@@ -2412,7 +2413,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
+        static::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2434,7 +2435,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
+        static::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2460,7 +2461,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
+        static::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2703,7 +2704,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
+        static::assertContainsCss(
             '<body>' . $style . '</body>',
             $result
         );
@@ -2850,6 +2851,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $this->assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
+        $this->assertContainsCss($css, $result);
     }
 }
