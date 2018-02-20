@@ -1086,14 +1086,14 @@ class CssInliner
                 preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
                 $splitCss[] = [
                     'css' => $matches[2],
-                    'media' => $matches[1]
+                    'media' => $matches[1],
                 ];
             } else {
                 $cleanedCss = trim(preg_replace($cssCleaningMatchers, '', $cssPart));
                 if ($cleanedCss !== '') {
                     $splitCss[] = [
                         'css' => $cleanedCss,
-                        'media' => ''
+                        'media' => '',
                     ];
                 }
             }
