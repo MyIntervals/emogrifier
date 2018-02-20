@@ -1387,14 +1387,14 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()
     {
-        $css = '@media screen { html {} }';
+        $css = '@media screen { html { some-property: value; } }';
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss($css);
         $this->subject->removeAllowedMediaType('screen');
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($css, $result);
+        static::assertNotContains('@media', $result);
     }
 
     /**
@@ -1418,7 +1418,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAddsMissingHeadElement()
     {
         $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
@@ -1431,7 +1431,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepExistingHeadElementContent()
     {
         $this->subject->setHtml('<html><head><!-- original content --></head></html>');
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
@@ -1445,7 +1445,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
         $this->subject->setHtml($html);
-        $this->subject->setCss('@media all { html {} }');
+        $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
@@ -1560,7 +1560,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style="color:red"', $result);
+        static::assertNotContains('style=', $result);
     }
 
     /**
@@ -1612,7 +1612,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style="color: red"', $result);
+        static::assertNotContains('style=', $result);
     }
 
     /**
@@ -1644,7 +1644,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style="color: red"', $result);
+        static::assertNotContains('style=', $result);
     }
 
     /**
@@ -1657,7 +1657,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style="color: red"', $result);
+        static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
     }
 
@@ -1671,7 +1671,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style="color: red"', $result);
+        static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
     }
 
@@ -1702,10 +1702,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains(
-            '<html style="' . $styleAttributeValue . '">',
-            $result
-        );
+        static::assertNotContains('style=', $result);
     }
 
     /**
@@ -2158,7 +2155,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($uselessQuery, $result);
+        static::assertNotContains('@media', $result);
     }
 
     /**
@@ -2307,7 +2304,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($emptyQuery, $result);
+        static::assertNotContains('@media', $result);
     }
 
     /**

@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Expose the DOMDocument in AbstractHtmlProcessor
+  ([#520](https://github.com/jjriv/emogrifier/pull/520))
 - Add an HtmlNormalizer class
   ([#513](https://github.com/jjriv/emogrifier/pull/513),
   [#516](https://github.com/jjriv/emogrifier/pull/516))
