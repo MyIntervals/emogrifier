@@ -1114,13 +1114,13 @@ class CssInliner
     {
         return [
             'css' => implode('', array_map(
-                function ($splitCssPart) {
+                function (array $splitCssPart) {
                     return $splitCssPart['media'] === '' ? $splitCssPart['css'] : '';
                 },
                 $splitCss
             )),
             'media' => implode('', array_map(
-                function ($splitCssPart) {
+                function (array $splitCssPart) {
                     extract($splitCssPart);
                     return $media !== '' ? $media . '{' . $css . '}' : '';
                 },
