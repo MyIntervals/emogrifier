@@ -1324,19 +1324,25 @@ class Emogrifier
     private function combineSplitCssAndMediaQueryParts(array $splitCss)
     {
         return [
-            'css' => implode('', array_map(
-                function (array $splitCssPart) {
-                    return $splitCssPart['media'] === '' ? $splitCssPart['css'] : '';
-                },
-                $splitCss
-            )),
-            'media' => implode('', array_map(
-                function (array $splitCssPart) {
-                    extract($splitCssPart);
-                    return $media !== '' ? $media . '{' . $css . '}' : '';
-                },
-                $splitCss
-            )),
+            'css' => implode(
+                '',
+                array_map(
+                    function (array $splitCssPart) {
+                        return $splitCssPart['media'] === '' ? $splitCssPart['css'] : '';
+                    },
+                    $splitCss
+                )
+            ),
+            'media' => implode(
+                '',
+                array_map(
+                    function (array $splitCssPart) {
+                        extract($splitCssPart);
+                        return $media !== '' ? $media . '{' . $css . '}' : '';
+                    },
+                    $splitCss
+                )
+            ),
         ];
     }
 

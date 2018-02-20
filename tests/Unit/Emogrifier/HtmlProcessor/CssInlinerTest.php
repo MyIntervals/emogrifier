@@ -1414,9 +1414,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'allowed but non-matching media rule' => '@media screen { h6 { color: #f00; } }',
         ];
         $possibleCssBefore = $possibleSurroundingCss + [
-            '@import' => '@import "foo.css";',
-            '@charset' => '@charset "UTF-8";',
-        ];
+                '@import' => '@import "foo.css";',
+                '@charset' => '@charset "UTF-8";',
+            ];
 
         $datasets = [];
         foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
