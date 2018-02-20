@@ -1104,7 +1104,7 @@ class CssInliner
     /**
      * Combines the parts returned by `splitCssAndMediaQuery` into just two strings.
      *
-     * @param string[][] As returned by `splitCssAndMediaQuery`
+     * @param string[][] $splitCss as returned by `splitCssAndMediaQuery`
      *
      * @return string[] Array with the following keys:
      *                  "css" => the cleaned CSS without any @media rules
