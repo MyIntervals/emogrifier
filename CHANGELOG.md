@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#513](https://github.com/jjriv/emogrifier/pull/513),
   [#516](https://github.com/jjriv/emogrifier/pull/516))
 - Add a CssInliner class
-  ([#514](https://github.com/jjriv/emogrifier/pull/514))
+  ([#514](https://github.com/jjriv/emogrifier/pull/514),
+  [#522](https://github.com/jjriv/emogrifier/pull/522))
 - Composer scripts for the various CI build steps
 - Validate the composer.json on Travis
   ([#476](https://github.com/jjriv/emogrifier/pull/476))

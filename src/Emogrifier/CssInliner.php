@@ -220,13 +220,11 @@ class CssInliner
     /**
      * The constructor.
      *
-     * @param string $html the HTML to emogrify, must be UTF-8-encoded
-     * @param string $css the CSS to merge, must be UTF-8-encoded
+     * @param string $html the HTML to inline, must be UTF-8-encoded
      */
-    public function __construct($html = '', $css = '')
+    public function __construct($html = '')
     {
         $this->setHtml($html);
-        $this->setCss($css);
     }
 
     /**
