@@ -1282,6 +1282,87 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
+     * element added to the docuemnt, due to the way that certain parts are `trim`med.  Notably, whitespace either side
+     * of "{" and "}" may be removed.
+     *
+     * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
+     * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
+     * readable and can use inputs containing extra whitespace.
+     *
+     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`
+     *
+     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead
+     */
+    private static function getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle)
+    {
+        $needleMatcher = preg_replace_callback(
+            '/\\s*+([{}])\\s*+|(?:(?!\\s*+[{}]).)++/',
+            function ($matches) {
+                if (!empty($matches[1])) {
+                    // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
+                    return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
+                } else {
+                    // matched any other sequence which could not overlap with the above
+                    return preg_quote($matches[0], '/');
+                }
+            },
+            $needle
+        );
+        return '/' . $needleMatcher . '/';
+    }
+
+    /**
+     * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS
+     *
+     * @param string $needle
+     * @param string $haystack
+     */
+    private static function assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($needle, $haystack)
+    {
+        static::assertRegExp(
+            static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle),
+            $haystack,
+            'Plain text needle: "' . $needle . '"'
+        );
+    }
+
+    /**
+     * Like `assertNotContains` and also enforces the assertion with removal of some unnecessary whitespace from the CSS
+     *
+     * @param string $needle
+     * @param string $haystack
+     */
+    private static function assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($needle, $haystack)
+    {
+        static::assertNotRegExp(
+            static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle),
+            $haystack,
+            'Plain text needle: "' . $needle . '"'
+        );
+    }
+
+    /**
+     * Asserts that a string of CSS occurs exactly a certain number of times in the result, allowing for removal of some
+     * unnecessary whitespace
+     *
+     * @param string $needle
+     * @param int $expectedCount
+     * @param string $haystack
+     */
+    private static function assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace(
+        $needle,
+        $expectedCount,
+        $haystack
+    ) {
+        static::assertSame(
+            $expectedCount,
+            preg_match_all(static::getNeedleRegExpAllowingRemovalOfUnnecessaryCssWhitespace($needle), $haystack),
+            'Plain text needle: "' . $needle . "\"\nHaystack: \"" . $haystack . '"'
+        );
+    }
+
+    /**
      * Data provider for media rules.
      *
      * @return string[][]
@@ -1312,7 +1393,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($css, $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
     }
 
     /**
@@ -1379,7 +1460,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($mediaRule1 . $mediaRule2, $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($mediaRule1 . $mediaRule2, $result);
     }
 
     /**
@@ -1409,7 +1490,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($css, $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
     }
 
     /**
@@ -1505,7 +1586,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<style type="text/css">' . $css . '</style>', $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
+            '<style type="text/css">' . $css . '</style>',
+            $result
+        );
     }
 
     /**
@@ -1543,7 +1627,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<style type="text/css">' . $css . '</style>', $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
+            '<style type="text/css">' . $css . '</style>',
+            $result
+        );
     }
 
     /**
@@ -1595,7 +1682,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($css, $result);
+        static::assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
     }
 
     /**
@@ -1628,7 +1715,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($css, $result);
+        static::assertNotContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
     }
 
     /**
@@ -2169,7 +2256,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($usefulQuery, $result);
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($usefulQuery, $result);
     }
 
     /**
@@ -2326,10 +2413,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertSame(
-            1,
-            substr_count($result, '<style type="text/css">' . $css . '</style>')
-        );
+        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
     }
 
     /**
@@ -2351,10 +2435,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertSame(
-            1,
-            substr_count($result, '<style type="text/css">' . $css . '</style>')
-        );
+        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
     }
 
     /**
@@ -2380,10 +2461,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertSame(
-            1,
-            substr_count($result, '<style type="text/css">' . $css . '</style>')
-        );
+        static::assertContainsCountAllowingRemovalOfUnnecessaryCssWhitespace($css, 1, $result);
     }
 
     /**
@@ -2462,7 +2540,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
+        static::assertContainsAllowingRemovalOfUnnecessaryCssWhitespace(
             '<body>' . $style . '</body>',
             $result
         );
@@ -2578,6 +2656,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $this->assertContains($css, $result);
+        $this->assertContainsAllowingRemovalOfUnnecessaryCssWhitespace($css, $result);
     }
 }
