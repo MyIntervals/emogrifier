@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add a CssToAttributeConverter
+  ([#546](https://github.com/jjriv/emogrifier/pull/546))
 - Expose the DOMDocument in AbstractHtmlProcessor
   ([#520](https://github.com/jjriv/emogrifier/pull/520))
 - Add an HtmlNormalizer class
@@ -29,7 +31,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - The removal of invisible nodes will be removed in Emogrifier 3.0.
   ([#473](https://github.com/jjriv/emogrifier/pull/473))
 - Converting CSS styles to (non-CSS) HTML attributes will be removed
-  in Emogrifier 3.0. ([#474](https://github.com/jjriv/emogrifier/pull/474))
+  in Emogrifier 3.0. Please use the new CssToAttributeConverter instead.
+  ([#474](https://github.com/jjriv/emogrifier/pull/474))
 - Emogrifier 3.x.y will be the last release that supports usage without
   Composer (i.e., you can still require the class file).
   Starting with version 4.0, Emogrifier will only work with Composer.

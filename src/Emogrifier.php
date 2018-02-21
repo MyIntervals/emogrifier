@@ -839,7 +839,7 @@ class Emogrifier
      * Enables the attachment/override of HTML attributes for which a
      * corresponding CSS property has been set.
      *
-     * @deprecated will be removed in Emogrifier 3.0
+     * @deprecated will be removed in Emogrifier 3.0, use the CssToAttributeConverter instead
      *
      * @return void
      */
