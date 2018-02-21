@@ -1229,7 +1229,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      * @return string[][] Datasets with spaces in the first array entry of each replaced with various alternative
      *                    whitespace.  Keys will have " with ..." appended to provide an appropriate description.
      */
-    private function getDatasetsWithVaryingWhitespace($datasetsWithSpaces)
+    private function getDatasetsWithVaryingWhitespace(array $datasetsWithSpaces)
     {
         $spaceReplacements = [
             'extra spaces' => '  ',
