@@ -1223,6 +1223,30 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param string[][] $datasetsWithSpaces
+     *
+     * @return string[][] Datasets with spaces in the first array entry of each replaced with various alternative
+     *                    whitespace.  Keys will have " with ..." appended to provide an appropriate description.
+     */
+    private function getDatasetsWithVaryingWhitespace($datasetsWithSpaces)
+    {
+        $spaceReplacements = [
+            'extra spaces' => '  ',
+            'linefeeds' => "\n",
+            'Windows line endings' => "\r\n",
+        ];
+        $datasets = [];
+        foreach ($datasetsWithSpaces as $description => $dataset) {
+            foreach ($spaceReplacements as $spaceReplacementDescription => $spaceReplacement) {
+                $datasets[$description . ' with ' . $spaceReplacementDescription] = [
+                    0 => str_replace(' ', $spaceReplacement, $dataset[0]),
+                ] + $dataset;
+            }
+        }
+        return $datasets;
+    }
+
+    /**
      * Data provider for things that should be left out when applying the CSS.
      *
      * @return string[][]
@@ -1233,6 +1257,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
             '@import directive' => ['@import "foo.css";', '@import'],
+            'two @import directives, minified' => ['@import "foo.css";@import "bar.css";', '@import'],
             '@charset directive' => ['@charset "UTF-8";', '@charset'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
@@ -1242,7 +1267,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "speech" media type rule' => ['@media speech {p {color: #000;}}', '#000'],
             'style in "tty" media type rule' => ['@media tty {p {color: #000;}}', '#000'],
             'style in "tv" media type rule' => ['@media tv {p {color: #000;}}', '#000'],
-        ];
+            'style in "only tv" media type rule' => ['@media only tv {p {color: #000;}}', '#000'],
+        ] + $this->getDatasetsWithVaryingWhitespace([
+            'style in "tv" media type rule' => [' @media tv { p { color : #000 ; } } ', '#000'],
+            'style in "only tv" media type rule' => [' @media only tv { p { color : #000 ; } } ', '#000'],
+        ]);
     }
 
     /**
@@ -1283,7 +1312,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
      * element added to the docuemnt, due to the way that certain parts are `trim`med.  Notably, whitespace either side
-     * of "{" and "}" may be removed.
+     * of "{" and "}" or at the beginning of the CSS may be removed.
      *
      * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
      * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
@@ -1296,11 +1325,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     private static function getCssNeedleRegExp($needle)
     {
         $needleMatcher = preg_replace_callback(
-            '/\\s*+([{}])\\s*+|(?:(?!\\s*+[{}]).)++/',
+            '/\\s*+([{}])\\s*+|(?<=^|>)(\\s++)|(?:(?!\\s*+[{}]|(?<=^|>)\\s).)++/',
             function (array $matches) {
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
                     return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
+                } elseif (isset($matches[2]) && $matches[2] !== '') {
+                    // matched optional whitespace at the start of the CSS
+                    return '\\s*+';
                 } else {
                     // matched any other sequence which could not overlap with the above
                     return preg_quote($matches[0], '/');
@@ -1376,7 +1408,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "screen" media type rule' => ['@media screen {p {color: #000;}}'],
             'style in "print" media type rule' => ['@media print {p {color: #000;}}'],
             'style in "all" media type rule' => ['@media all {p {color: #000;}}'],
-        ];
+        ] + $this->getDatasetsWithVaryingWhitespace([
+            'style in media type rule' => [' @media { p { color : #000; } } '],
+            'style in "screen" media type rule' => [' @media screen { p { color : #000; } } '],
+            'style in "only screen" media type rule' => [' @media only screen { p { color : #000; } } '],
+        ]);
     }
 
     /**
@@ -1760,6 +1796,32 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsMediaRuleAfterEmptyMediaQuery()
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media screen {} @media all { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContainsCss('@media all { h1 { color: red; } }', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyNotKeepsUnneededMediaRuleAfterEmptyMediaQuery()
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media screen {} @media tv { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertNotContains('@media', $result);
     }
 
     /**
