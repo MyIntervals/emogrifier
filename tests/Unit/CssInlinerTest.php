@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelago\Tests\Unit;
+namespace Pelago\Emogrifer\Tests\Unit;
 
 use Pelago\Emogrifier;
 use Pelago\Emogrifier\CssInliner;
@@ -1303,10 +1303,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
                     return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
-                } else {
-                    // matched any other sequence which could not overlap with the above
-                    return preg_quote($matches[0], '/');
                 }
+                // matched any other sequence which could not overlap with the above
+                return preg_quote($matches[0], '/');
             },
             $needle
         );
@@ -1425,13 +1424,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
                 foreach ($possibleSurroundingCss as $descriptionAfter => $cssAfter) {
                     // every combination would be a ridiculous c.1000 datasets - choose a select few
                     // test all possible CSS before once
-                    if ($cssBetween === '' && $cssAfter === ''
+                    if (($cssBetween === '' && $cssAfter === '')
                         // test all possible CSS between once
-                        || $cssBefore === '' && $cssAfter === ''
+                        || ($cssBefore === '' && $cssAfter === '')
                         // test all possible CSS after once
-                        || $cssBefore === '' && $cssBetween === ''
+                        || ($cssBefore === '' && $cssBetween === '')
                         // test with each possible CSS in all three positions
-                        || $cssBefore === $cssBetween && $cssBetween === $cssAfter
+                        || ($cssBefore === $cssBetween && $cssBetween === $cssAfter)
                     ) {
                         $description = $descriptionBefore . ' before, '
                             . $descriptionBetween . ' between, '
@@ -2549,20 +2548,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Asserts that $html contains a $tagName tag with the $attribute attribute.
-     *
-     * @param string $html the HTML string we are searching in
-     * @param string $tagName the HTML tag we are looking for
-     * @param string $attribute the attribute we are looking for (with or even without a value)
-     */
-    private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
-    {
-        static::assertTrue(
-            preg_match('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attribute, '/') . '/', $html) > 0
-        );
-    }
-
-    /**
      * @return string[][]
      */
     public function cssForImportantRuleRemovalDataProvider()
@@ -2658,6 +2643,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $this->assertContainsCss($css, $result);
+        static::assertContainsCss($css, $result);
     }
 }
