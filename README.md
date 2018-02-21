@@ -129,8 +129,9 @@ calling the `emogrify` method:
 * `$emogrifier->enableCssToHtmlMapping()` - Some email clients don't support CSS
   well, even if inline and prefer HTML attributes. This function allows you to
   put properties such as height, width, background color and font color in your
-  CSS while the transformed content will have all the available HTML tags set.
-  This option will be removed in Emogrifier 3.0.
+  CSS while the transformed content will have all the available HTML
+  attributes set. This option will be removed in Emogrifier 3.0. Please use the
+  `CssToAttributeConverter` class instead.
 
 
 ## Installing with Composer
@@ -255,6 +256,20 @@ The class can be used like this:
 ```php
 $normalizer = new \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer($rawHtml);
 $cleanHtml = $normalizer->render();
+```
+
+### Converting CSS styles to visual HTML attributes
+
+The `CssToAttributeConverter` converts a few style attributes values to visual
+HTML attributes. This allows to get at least a bit of visual styling for email
+clients that do not support CSS well. For example, `style="width: 100px"`
+will be converted to `width="100"`.
+
+The class can be used like this:
+
+```php
+$converter = new \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter($rawHtml);
+$visualHtml = $converter->convertCssToVisualAttributes()->render();
 ```
 
 
