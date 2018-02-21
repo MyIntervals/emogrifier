@@ -32,6 +32,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow multiple minified `@import` rules in the CSS without error (note:
+  `@import`s are currently ignored,
+  [#524](https://github.com/MyIntervals/emogrifier/pull/524))
+- Allow additional whitespace in media-query-list of disallowed `@media` rules
+  ([#524](https://github.com/MyIntervals/emogrifier/pull/524))
+- Allow disallowed `@media` rule after empty `@media` rule
+  ([#524](https://github.com/MyIntervals/emogrifier/pull/524))
 - Style property ordering when multiple mixed individual and shorthand
   properties apply ([#511](https://github.com/MyIntervals/emogrifier/pull/511),
   [#508](https://github.com/MyIntervals/emogrifier/issues/508))
