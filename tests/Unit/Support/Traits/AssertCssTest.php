@@ -6,6 +6,8 @@ use Pelago\Tests\Unit\Support\Traits\Fixtures\TestingAssertCss;
 
 /**
  * Test case.
+ *
+ * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class AssertCssTest extends \PHPUnit_Framework_TestCase
 {

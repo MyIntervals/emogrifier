@@ -6,6 +6,8 @@ use Pelago\Tests\Support\Traits\AssertCss;
 
 /**
  * Mock test case for testing `AssertCss`.
+ *
+ * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class TestingAssertCss extends \PHPUnit_Framework_TestCase
 {
