@@ -28,10 +28,9 @@ trait AssertCss
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
                     return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
-                } else {
-                    // matched any other sequence which could not overlap with the above
-                    return preg_quote($matches[0], '/');
                 }
+                // matched any other sequence which could not overlap with the above
+                return preg_quote($matches[0], '/');
             },
             $needle
         );
