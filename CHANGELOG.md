@@ -32,6 +32,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow multiple minified `@import` rules in the CSS without error (note:
+  `@import`s are currently ignored,
+  [#527](https://github.com/MyIntervals/emogrifier/pull/527))
 - Style property ordering when multiple mixed individual and shorthand
   properties apply ([#511](https://github.com/MyIntervals/emogrifier/pull/511),
   [#508](https://github.com/MyIntervals/emogrifier/issues/508))

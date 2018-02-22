@@ -1234,6 +1234,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
             '@import directive' => ['@import "foo.css";', '@import'],
+            'two @import directives, minified' => ['@import "foo.css";@import "bar.css";', '@import'],
             '@charset directive' => ['@charset "UTF-8";', '@charset'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],

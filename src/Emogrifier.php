@@ -1286,8 +1286,8 @@ class Emogrifier
 
         // filter the CSS outside/between allowed @media rules
         $cssCleaningMatchers = [
-            'import/charset directives' => '/^\\s*@(?:import|charset)\\s[^;]+;/misU',
-            'remaining media enclosures' => '/^\\s*@media\\s[^{]+{(.*)}\\s*}\\s/misU',
+            'import/charset directives' => '/\\s*+@(?:import|charset)\\s[^;]++;/i',
+            'remaining media enclosures' => '/\\s*+@media\\s[^{]+{(.*)}\\s*}\\s/isU',
         ];
 
         $splitCss = [];
