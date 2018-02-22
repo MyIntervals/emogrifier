@@ -622,10 +622,8 @@ class Emogrifier
                 }
                 break;
             case 'border':
-                if ($isTableOrImage) {
-                    if ($value === 'none' || $value === '0') {
-                        $node->setAttribute('border', '0');
-                    }
+                if ($isTableOrImage && ($value === 'none' || $value === '0')) {
+                    $node->setAttribute('border', '0');
                 }
                 break;
             default:
@@ -1327,8 +1325,8 @@ class Emogrifier
             'css' => implode(
                 '',
                 array_map(
-                    function (array $splitCssPart) {
-                        return $splitCssPart['media'] === '' ? $splitCssPart['css'] : '';
+                    function (array $cssParts) {
+                        return $cssParts['media'] === '' ? $cssParts['css'] : '';
                     },
                     $splitCss
                 )
@@ -1336,9 +1334,8 @@ class Emogrifier
             'media' => implode(
                 '',
                 array_map(
-                    function (array $splitCssPart) {
-                        extract($splitCssPart);
-                        return $media !== '' ? $media . '{' . $css . '}' : '';
+                    function (array $cssParts) {
+                        return $cssParts['media'] !== '' ? $cssParts['media'] . '{' . $cssParts['css'] . '}' : '';
                     },
                     $splitCss
                 )
@@ -1531,8 +1528,7 @@ class Emogrifier
             $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
         } else {
             /** @var string[] $matches */
-            $partBeforeNot = $matches[1];
-            $notContents = $matches[2];
+            list(, $partBeforeNot, $notContents) = $matches;
             $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
                 '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
         }

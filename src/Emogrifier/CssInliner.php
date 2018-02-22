@@ -1114,8 +1114,8 @@ class CssInliner
             'css' => implode(
                 '',
                 array_map(
-                    function (array $splitCssPart) {
-                        return $splitCssPart['media'] === '' ? $splitCssPart['css'] : '';
+                    function (array $cssParts) {
+                        return $cssParts['media'] === '' ? $cssParts['css'] : '';
                     },
                     $splitCss
                 )
@@ -1123,9 +1123,8 @@ class CssInliner
             'media' => implode(
                 '',
                 array_map(
-                    function (array $splitCssPart) {
-                        extract($splitCssPart);
-                        return $media !== '' ? $media . '{' . $css . '}' : '';
+                    function (array $cssParts) {
+                        return $cssParts['media'] !== '' ? $cssParts['media'] . '{' . $cssParts['css'] . '}' : '';
                     },
                     $splitCss
                 )
@@ -1318,8 +1317,7 @@ class CssInliner
             $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
         } else {
             /** @var string[] $matches */
-            $partBeforeNot = $matches[1];
-            $notContents = $matches[2];
+            list(, $partBeforeNot, $notContents) = $matches;
             $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
                 '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
         }
