@@ -4,7 +4,7 @@ namespace Pelago\Tests\Unit;
 
 use Pelago\Emogrifier;
 use Pelago\Emogrifier\CssInliner;
-use Pelago\Tests\Unit\Emogrifier\Support\AssertCss;
+use Pelago\Tests\Support\Traits\AssertCss;
 
 /**
  * Test case.

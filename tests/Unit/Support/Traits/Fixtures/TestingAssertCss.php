@@ -1,8 +1,8 @@
 <?php
 
-namespace Pelago\Tests\Unit\Emogrifier\Support\Tests\Fixtures;
+namespace Pelago\Tests\Unit\Support\Traits\Fixtures;
 
-use Pelago\Tests\Unit\Emogrifier\Support\AssertCss;
+use Pelago\Tests\Support\Traits\AssertCss;
 
 /**
  * Mock test case for testing `AssertCss`.

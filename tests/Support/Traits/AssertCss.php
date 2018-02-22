@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelago\Tests\Unit\Emogrifier\Support;
+namespace Pelago\Tests\Support\Traits;
 
 /**
  * Provides assertion methods for use with CSS content where whitespace may vary.
