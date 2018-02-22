@@ -2,7 +2,7 @@
 
 namespace Pelago\Tests\Unit\Support\Traits;
 
-use Pelago\Tests\Unit\Support\Traits\Fixtures\TestingAssertCss;
+use Pelago\Tests\Support\Traits\AssertCss;
 
 /**
  * Test case.
@@ -11,6 +11,8 @@ use Pelago\Tests\Unit\Support\Traits\Fixtures\TestingAssertCss;
  */
 class AssertCssTest extends \PHPUnit_Framework_TestCase
 {
+    use AssertCss;
+
     /**
      * @test
      */
@@ -18,11 +20,13 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     {
         $needle = '.\\+*?[^]$(){}=!<>|:-/';
 
-        $result = TestingAssertCss::getCssNeedleRegExp($needle);
+        $result = static::getCssNeedleRegExp($needle);
+
+        $resultWithWhitespaceMatchersRemoved = str_replace('\\s*+', '', $result);
 
         static::assertSame(
             '/' . preg_quote($needle, '/') . '/',
-            str_replace('\\s*+', '', $result)
+            $resultWithWhitespaceMatchersRemoved
         );
     }
 
@@ -31,17 +35,16 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function getCssNeedleRegExpNotEscapesNonSpecialCharacters()
     {
-        $needle
-            = implode('', range('a', 'z'))
-            . implode('', range('A', 'Z'))
-            . implode('', range('0 ', '9 '))
+        $needle = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0 ', '9 ')))
             . "\r\n\t `¬\"£%&_;'@#~,";
 
-        $result = TestingAssertCss::getCssNeedleRegExp($needle);
+        $result = static::getCssNeedleRegExp($needle);
+
+        $resultWithWhitespaceMatchersRemoved = str_replace('\\s*+', '', $result);
 
         static::assertSame(
             '/' . $needle . '/',
-            str_replace('\\s*+', '', $result)
+            $resultWithWhitespaceMatchersRemoved
         );
     }
 
@@ -71,17 +74,13 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function getCssNeedleRegExpInsertsOptionalWhitespace($contentToInsertAround, $otherContent)
     {
-        $result = TestingAssertCss::getCssNeedleRegExp(
-            $otherContent . $contentToInsertAround . $otherContent
-        );
+        $result = static::getCssNeedleRegExp($otherContent . $contentToInsertAround . $otherContent);
 
         $quotedOtherContent = preg_quote($otherContent, '/');
+        $expectedResult = '/' . $quotedOtherContent . '\\s*+' . preg_quote($contentToInsertAround, '/') . '\\s*+'
+            . $quotedOtherContent . '/';
 
-        static::assertSame(
-            '/' . $quotedOtherContent . '\\s*+' . preg_quote($contentToInsertAround, '/') . '\\s*+'
-                . $quotedOtherContent . '/',
-            $result
-        );
+        static::assertSame($expectedResult, $result);
     }
 
     /**
@@ -127,7 +126,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function assertContainsCssPassesTestIfNeedleFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCss($needle, $haystack);
+        static::assertContainsCss($needle, $haystack);
     }
 
     /**
@@ -138,11 +137,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssFailsTestIfNeedleNotFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCss($needle, $haystack);
+        static::assertContainsCss($needle, $haystack);
     }
 
     /**
@@ -155,7 +154,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function assertNotContainsCssPassesTestIfNeedleNotFound($needle, $haystack)
     {
-        TestingAssertCss::assertNotContainsCss($needle, $haystack);
+        static::assertNotContainsCss($needle, $haystack);
     }
 
     /**
@@ -166,11 +165,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertNotContainsCssFailsTestIfNeedleFound($needle, $haystack)
     {
-        TestingAssertCss::assertNotContainsCss($needle, $haystack);
+        static::assertNotContainsCss($needle, $haystack);
     }
 
     /**
@@ -183,7 +182,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(0, $needle, $haystack);
+        static::assertContainsCssCount(0, $needle, $haystack);
     }
 
     /**
@@ -194,11 +193,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(0, $needle, $haystack);
+        static::assertContainsCssCount(0, $needle, $haystack);
     }
 
     /**
@@ -211,7 +210,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(1, $needle, $haystack);
+        static::assertContainsCssCount(1, $needle, $haystack);
     }
 
     /**
@@ -222,11 +221,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(1, $needle, $haystack);
+        static::assertContainsCssCount(1, $needle, $haystack);
     }
 
     /**
@@ -237,11 +236,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(1, $needle, $haystack . $haystack);
+        static::assertContainsCssCount(1, $needle, $haystack . $haystack);
     }
 
     /**
@@ -254,7 +253,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(2, $needle, $haystack . $haystack);
+        static::assertContainsCssCount(2, $needle, $haystack . $haystack);
     }
 
     /**
@@ -265,11 +264,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(2, $needle, $haystack);
+        static::assertContainsCssCount(2, $needle, $haystack);
     }
 
     /**
@@ -280,10 +279,10 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider needleFoundDataProvider
      *
-     * @expectedException PHPUnit_Framework_ExpectationFailedException
+     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce($needle, $haystack)
     {
-        TestingAssertCss::assertContainsCssCount(2, $needle, $haystack);
+        static::assertContainsCssCount(2, $needle, $haystack);
     }
 }
