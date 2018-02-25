@@ -84,6 +84,42 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function getCssNeedleRegExpReplacesWhitespaceAtStartWithOptionalWhitespace()
+    {
+        $result = static::getCssNeedleRegExp(' a');
+
+        static::assertSame('/\\s*+a/', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function styleTagDataProvider()
+    {
+        return [
+            'without space after' => ['<style>a'],
+            'one space after' => ['<style> a'],
+            'two spaces after' => ['<style>  a'],
+            'linefeed after' => ["<style>\na"],
+            'Windows line ending after' => ["<style>\r\na"],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider styleTagDataProvider
+     */
+    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag($needle)
+    {
+        $result = static::getCssNeedleRegExp($needle);
+
+        static::assertSame('/\\<style\\>\\s*+a/', $result);
+    }
+
+    /**
      * @return string[][]
      */
     public function needleFoundDataProvider()
@@ -91,15 +127,20 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
         $cssStrings = [
             'unminified CSS' => 'body { color: green; }',
             'minified CSS' => 'body{color: green;}',
-            'CSS with extra spaces' => 'body  {  color: green;  }',
-            'CSS with linefeeds' => "body\n{\ncolor: green;\n}",
-            'CSS with Windows line endings' => "body\r\n{\r\ncolor: green;\r\n}",
+            'CSS with extra spaces' => '  body  {  color: green;  }',
+            'CSS with linefeeds' => "\nbody\n{\ncolor: green;\n}",
+            'CSS with Windows line endings' => "\r\nbody\r\n{\r\ncolor: green;\r\n}",
         ];
 
         $datasets = [];
         foreach ($cssStrings as $needleDescription => $needle) {
             foreach ($cssStrings as $haystackDescription => $haystack) {
-                $datasets[$needleDescription . ' in ' . $haystackDescription] = [$needle, $haystack];
+                $description = $needleDescription . ' in ' . $haystackDescription;
+                $datasets[$description] = [$needle, $haystack];
+                $datasets[$description . ' in <style> tag'] = [
+                    '<style>' . $needle . '</style>',
+                    '<style>' . $haystack . '</style>',
+                ];
             }
         }
         return $datasets;
