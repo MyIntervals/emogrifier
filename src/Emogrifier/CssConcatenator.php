@@ -6,6 +6,33 @@ namespace Pelago\Emogrifier;
  * Facilitates building a CSS string by appending rule blocks one at a time, checking whether the media query,
  * selectors, or declarations block are the same as those from the preceding block and combining blocks in such cases.
  *
+ * Example:
+ *  $concatenator = new CssConcatenator();
+ *  $concatenator->append(['body'], 'color: blue;');
+ *  $concatenator->append(['body'], 'font-size: 16px;');
+ *  $concatenator->append(['p'], 'margin: 1em 0;');
+ *  $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
+ *  $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
+ *  $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
+ *  $css = $concatenator->closeBlocksAndGetCss();
+ *
+ * `$css` (if unminified) would contain the following CSS:
+ * ` body {
+ * `   color: blue;
+ * `   font-size: 16px;
+ * ` }
+ * ` p, ul, ol {
+ * `   margin: 1em 0;
+ * ` }
+ * ` @media screen and (max-width: 400px) {
+ * `   body {
+ * `     font-size: 14px;
+ * `   }
+ * `   ul, ol {
+ * `     margin: 0.75em 0;
+ * `   }
+ * ` }
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class CssConcatenator
@@ -42,24 +69,16 @@ class CssConcatenator
     private $currentDeclarationsBlock = '';
 
     /**
-     * Allow extending classes to call `parent::__construct()`.
-     */
-    public function __construct()
-    {
-    }
-
-    /**
-     * Append a declaration block to the CSS.
+     * Appends a declaration block to the CSS.
      *
-     * @param string[]|string $selectors Array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"],
-     *                                   or a single selector, e.g. "ul".
+     * @param string[] $selectors Array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"].
      * @param string $declarationsBlock The property declarations, e.g. "margin-top: 0.5em; padding: 0".
      * @param string $media The media query for the rule, e.g. "@media screen and (max-width:639px)",
      *                      or an empty string if none.
      */
-    public function append($selectors, $declarationsBlock, $media = '')
+    public function append(array $selectors, $declarationsBlock, $media = '')
     {
-        $selectorsAsKeys = array_flip((array)$selectors);
+        $selectorsAsKeys = array_flip($selectors);
 
         if ($media !== $this->currentMedia) {
             $this->closeBlocks();
@@ -82,18 +101,18 @@ class CssConcatenator
     }
 
     /**
-     * Close any open rule or media blocks and return the CSS.
+     * Closes any open rule or media blocks and returns the CSS.
      *
      * @return string
      */
-    public function getCss()
+    public function closeBlocksAndGetCss()
     {
         $this->closeBlocks();
         return $this->css;
     }
 
     /**
-     * Close any open rule or media blocks.
+     * Closes any open rule or media blocks.
      *
      * @return void
      */
@@ -107,7 +126,7 @@ class CssConcatenator
     }
 
     /**
-     * Close any rule block under construction, appending its contents to the CSS.
+     * Closes any rule block under construction, appending its contents to the CSS.
      *
      * @return void
      */
@@ -122,7 +141,7 @@ class CssConcatenator
     }
 
     /**
-     * Test if a set of selectors is equivalent to that for the rule block currently under construction
+     * Tests if a set of selectors is equivalent to that for the rule block currently under construction
      * (i.e. the same selectors, possibly in a different order).
      *
      * @param int[] $selectorsAsKeys Array in which the selectors are the keys, and the values are of no significance
