@@ -59,7 +59,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return mixed[][]
+     * @return string[][]
      */
     public function equivalentSelectorsDataProvider()
     {
@@ -110,7 +110,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @return mixed[][]
+     * @return string[][]
      */
     public function differentSelectorsDataProvider()
     {
@@ -243,7 +243,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     public function appendCombinesSameRulesWithDifferentSelectorsWithinMediaRule(
         array $selectors1,
         array $selectors2,
-        $combinedSelectors
+        array $combinedSelectors
     ) {
         $this->subject->append($selectors1, 'color: green;', '@media screen');
         $this->subject->append($selectors2, 'color: green;', '@media screen');
