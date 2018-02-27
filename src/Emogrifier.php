@@ -1276,7 +1276,7 @@ class Emogrifier
         }
 
         $cssSplitForAllowedMediaTypes = preg_split(
-            '#(@media\\s+(?:only\\s)?(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*)#misU',
+            '#(@media\\s++(?:only\\s++)?+(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*)#misU',
             $cssWithoutComments,
             -1,
             PREG_SPLIT_DELIM_CAPTURE
