@@ -1275,8 +1275,11 @@ class Emogrifier
             $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
         }
 
+        $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
+
         $cssSplitForAllowedMediaTypes = preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:[\\s{\\(]\\s*' . $mediaTypesExpression . ')\\s*[^{]*+{.*}\\s*}\\s*)#misU',
+            '#(@media\\s++(?:only\\s++)?+(?:(?=[{\\(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
+                . ')#misU',
             $cssWithoutComments,
             -1,
             PREG_SPLIT_DELIM_CAPTURE
@@ -1285,7 +1288,7 @@ class Emogrifier
         // filter the CSS outside/between allowed @media rules
         $cssCleaningMatchers = [
             'import/charset directives' => '/\\s*+@(?:import|charset)\\s[^;]++;/i',
-            'remaining media enclosures' => '/\\s*+@media\\s[^{]+{(.*)}\\s*}\\s/isU',
+            'remaining media enclosures' => '/\\s*+@media\\s' . $mediaRuleBodyMatcher . '/isU',
         ];
 
         $splitCss = [];
