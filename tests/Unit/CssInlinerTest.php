@@ -1727,6 +1727,106 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function mediaTypeDataProvider()
+    {
+        return [
+            'disallowed type' => ['tv'],
+            'allowed type' => ['screen'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     *
+     * @dataProvider mediaTypeDataProvider
+     */
+    public function emogrifyKeepsMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media all { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContainsCss('@media all { h1 { color: red; } }', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     *
+     * @dataProvider mediaTypeDataProvider
+     */
+    public function emogrifyNotKeepsUnneededMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media speech { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertNotContains('@media', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function mediaTypesDataProvider()
+    {
+        return [
+            'disallowed type after disallowed type' => ['tv', 'speech'],
+            'allowed type after disallowed type' => ['tv', 'all'],
+            'disallowed type after allowed type' => ['screen', 'tv'],
+            'allowed type after allowed type' => ['screen', 'all'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     * @param string $mediaType
+     *
+     * @dataProvider mediaTypesDataProvider
+     */
+    public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRule($emptyRuleMediaType, $mediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss(
+            '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
+                . ' { h1 { color: red; } }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<h1 style="color: green;">', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     * @param string $mediaType
+     *
+     * @dataProvider mediaTypesDataProvider
+     */
+    public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRuleWithCssAfter($emptyRuleMediaType, $mediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss(
+            '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
+                . ' { h1 { color: red; } } h1 { font-size: 24px; }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<h1 style="color: green; font-size: 24px;">', $result);
+    }
+
+    /**
      * @test
      */
     public function emogrifyAppliesCssFromStyleNodes()
