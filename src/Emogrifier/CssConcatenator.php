@@ -14,7 +14,7 @@ namespace Pelago\Emogrifier;
  *  $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
  *  $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
  *  $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
- *  $css = $concatenator->closeBlocksAndGetCss();
+ *  $css = $concatenator->getCss();
  *
  * `$css` (if unminified) would contain the following CSS:
  * ` body {
@@ -38,35 +38,17 @@ namespace Pelago\Emogrifier;
 class CssConcatenator
 {
     /**
-     * CSS under construction.
+     * Array of media rules in order.  Each element is an object with the following properties:
+     * - string `media` - The media query string, e.g. "@media screen and (max-width:639px)", or an empty string for
+     *   rules not within a media query block;
+     * - stdClass[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
+     *   properties:
+     *   - int[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no significance);
+     *   - string `declarationsBlock` - The property declarations, e.g. "margin-top: 0.5em; padding: 0".
      *
-     * @var string
+     * @var stdClass[]
      */
-    private $css = '';
-
-    /**
-     * Current media query string, e.g. "@media screen and (max-width:639px)" in the currently open media query block,
-     * or an empty string if not currently within a media query block.
-     *
-     * @var string
-     */
-    private $currentMedia = '';
-
-    /**
-     * Array whose keys are selectors for the rule block currently under construction (values are of no significance),
-     * or an empty array if no rule block under construction.
-     *
-     * @var int[]
-     */
-    private $currentSelectorsAsKeys = [];
-
-    /**
-     * Declarations for the rule block currently under construction,
-     * or an empty string if no rule block under construction.
-     *
-     * @var string
-     */
-    private $currentDeclarationsBlock = '';
+    private $mediaRules = [];
 
     /**
      * Appends a declaration block to the CSS.
@@ -78,79 +60,63 @@ class CssConcatenator
      */
     public function append(array $selectors, $declarationsBlock, $media = '')
     {
-        $selectorsAsKeys = array_flip($selectors);
-
-        if ($media !== $this->currentMedia) {
-            $this->closeBlocks();
-            if ($media !== '') {
-                $this->css .= $media . '{';
-                $this->currentMedia = $media;
-            }
+        $lastMediaRule = end($this->mediaRules);
+        if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
+            $mediaRule = $lastMediaRule;
+        } else {
+            $mediaRule = (object)[
+                'media' => $media,
+                'ruleBlocks' => [],
+            ];
+            $this->mediaRules[] = $mediaRule;
         }
 
-        if ($declarationsBlock === $this->currentDeclarationsBlock) {
-            $this->currentSelectorsAsKeys += $selectorsAsKeys;
-        } elseif ($this->hasEquivalentCurrentSelectors($selectorsAsKeys)) {
-            $this->currentDeclarationsBlock
-                = rtrim(rtrim($this->currentDeclarationsBlock), ';') . ';' . $declarationsBlock;
+        $lastRuleBlock = end($mediaRule->ruleBlocks);
+        $selectorsAsKeys = array_flip($selectors);
+        if ($lastRuleBlock !== false && $declarationsBlock === $lastRuleBlock->declarationsBlock) {
+            $lastRuleBlock->selectorsAsKeys += $selectorsAsKeys;
+        } elseif ($lastRuleBlock !== false
+            && $this->hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys)
+        ) {
+            $lastRuleBlock->declarationsBlock
+                = rtrim(rtrim($lastRuleBlock->declarationsBlock), ';') . ';' . $declarationsBlock;
         } else {
-            $this->closeRuleBlock();
-            $this->currentSelectorsAsKeys = $selectorsAsKeys;
-            $this->currentDeclarationsBlock = $declarationsBlock;
+            $mediaRule->ruleBlocks[] = (object)compact('selectorsAsKeys', 'declarationsBlock');
         }
     }
 
     /**
-     * Closes any open rule or media blocks and returns the CSS.
-     *
      * @return string
      */
-    public function closeBlocksAndGetCss()
+    public function getCss()
     {
-        $this->closeBlocks();
-        return $this->css;
-    }
-
-    /**
-     * Closes any open rule or media blocks.
-     *
-     * @return void
-     */
-    private function closeBlocks()
-    {
-        $this->closeRuleBlock();
-        if ($this->currentMedia !== '') {
-            $this->css .= '}';
-            $this->currentMedia = '';
+        $css = '';
+        foreach ($this->mediaRules as $mediaRule) {
+            if ($mediaRule->media !== '') {
+                $css .= $mediaRule->media . '{';
+            }
+            foreach ($mediaRule->ruleBlocks as $ruleBlock) {
+                $css .= implode(',', array_keys($ruleBlock->selectorsAsKeys))
+                    . '{' . $ruleBlock->declarationsBlock . '}';
+            }
+            if ($mediaRule->media !== '') {
+                $css .= '}';
+            }
         }
+        return $css;
     }
 
     /**
-     * Closes any rule block under construction, appending its contents to the CSS.
+     * Tests if two sets of selectors are equivalent (i.e. the same selectors, possibly in a different order).
      *
-     * @return void
-     */
-    private function closeRuleBlock()
-    {
-        if ($this->currentSelectorsAsKeys !== [] && $this->currentDeclarationsBlock !== '') {
-            $this->css .= implode(',', array_keys($this->currentSelectorsAsKeys))
-                . '{' . $this->currentDeclarationsBlock . '}';
-        }
-        $this->currentSelectorsAsKeys = [];
-        $this->currentDeclarationsBlock = '';
-    }
-
-    /**
-     * Tests if a set of selectors is equivalent to that for the rule block currently under construction
-     * (i.e. the same selectors, possibly in a different order).
-     *
-     * @param int[] $selectorsAsKeys Array in which the selectors are the keys, and the values are of no significance
+     * @param int[] $selectorsAsKeys1 Array in which the selectors are the keys, and the values are of no significance.
+     * @param int[] $selectorsAsKeys2 Another such array.
      *
      * @return bool
      */
-    private function hasEquivalentCurrentSelectors(array $selectorsAsKeys)
+    private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2)
     {
-        return count($selectorsAsKeys) === count($this->currentSelectorsAsKeys)
-            && count($selectorsAsKeys) === count($this->currentSelectorsAsKeys + $selectorsAsKeys);
+        return count($selectorsAsKeys1) === count($selectorsAsKeys2)
+            && count($selectorsAsKeys1) === count($selectorsAsKeys1 + $selectorsAsKeys2);
     }
 }

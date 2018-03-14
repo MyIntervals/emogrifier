@@ -27,9 +27,9 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function closeBlocksAndGetCssInitiallyReturnsEmptyString()
+    public function getCssInitiallyReturnsEmptyString()
     {
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('', $result);
     }
@@ -41,7 +41,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->append(['p'], 'color: green;');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('p{color: green;}', $result);
     }
@@ -53,7 +53,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     {
         $this->subject->append(['p'], 'color: green;', '@media screen');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('@media screen{p{color: green;}}', $result);
     }
@@ -89,7 +89,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'font-size: 16px;');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         $expectedResult = implode(',', $selectors1) . '{color: green;font-size: 16px;}';
 
@@ -104,7 +104,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append(['p'], 'color: green');
         $this->subject->append(['p'], 'font-size: 16px');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('p{color: green;font-size: 16px}', $result);
     }
@@ -170,7 +170,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'color: green;');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         $expectedResult = implode(',', $combinedSelectors) . '{color: green;}';
 
@@ -190,7 +190,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'font-size: 16px;');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         $expectedResult = implode(',', $selectors1) . '{color: green;}'
             . implode(',', $selectors2) . '{font-size: 16px;}';
@@ -206,7 +206,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append(['p'], 'color: green;', '@media screen');
         $this->subject->append(['ul'], 'font-size: 16px;', '@media screen');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('@media screen{p{color: green;}ul{font-size: 16px;}}', $result);
     }
@@ -224,7 +224,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append($selectors1, 'color: green;', '@media screen');
         $this->subject->append($selectors2, 'font-size: 16px;', '@media screen');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         $expectedResult = '@media screen{' . implode(',', $selectors1) . '{color: green;font-size: 16px;}}';
 
@@ -248,7 +248,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append($selectors1, 'color: green;', '@media screen');
         $this->subject->append($selectors2, 'color: green;', '@media screen');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         $expectedResult = '@media screen{' . implode(',', $combinedSelectors) . '{color: green;}}';
 
@@ -263,7 +263,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $this->subject->append(['p'], 'color: green;', '@media screen');
         $this->subject->append(['p'], 'color: green;', '@media print');
 
-        $result = $this->subject->closeBlocksAndGetCss();
+        $result = $this->subject->getCss();
 
         static::assertSame('@media screen{p{color: green;}}@media print{p{color: green;}}', $result);
     }
