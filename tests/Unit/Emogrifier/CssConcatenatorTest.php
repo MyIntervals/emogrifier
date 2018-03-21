@@ -267,4 +267,51 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         static::assertSame('@media screen{p{color: green;}}@media print{p{color: green;}}', $result);
     }
+
+    /**
+     * @return mixed[][]
+     */
+    public function combinableRulesDataProvider()
+    {
+        return [
+            'same selectors' => [['p'], 'color: green;', ['p'], 'font-size: 16px;', ''],
+            'same declarations block' => [['p'], 'color: green;', ['ul'], 'color: green;', ''],
+            'same media query' => [['p'], 'color: green;', ['ul'], 'font-size: 16px;', '@media screen'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param array $rule1Selectors,
+     * @param string $rule1DeclarationsBlock,
+     * @param array $rule2Selectors,
+     * @param string $rule2DeclarationsBlock,
+     * @param string $media
+     *
+     * @dataProvider combinableRulesDataProvider
+     */
+    public function appendNotCombinesNonadjacentRules(
+        array $rule1Selectors,
+        $rule1DeclarationsBlock,
+        array $rule2Selectors,
+        $rule2DeclarationsBlock,
+        $media
+    ) {
+        $this->subject->append($rule1Selectors, $rule1DeclarationsBlock, $media);
+        $this->subject->append(['.intervening'], '-intervening-property: 0;');
+        $this->subject->append($rule2Selectors, $rule2DeclarationsBlock, $media);
+
+        $result = $this->subject->getCss();
+
+        $expectedRule1Css = implode(',', $rule1Selectors) . '{' . $rule1DeclarationsBlock . '}';
+        $expectedRule2Css = implode(',', $rule2Selectors) . '{' . $rule2DeclarationsBlock . '}';
+        if ($media !== '') {
+            $expectedRule1Css = $media . '{' . $expectedRule1Css . '}';
+            $expectedRule2Css = $media . '{' . $expectedRule2Css . '}';
+        }
+        $expectedResult = $expectedRule1Css . '.intervening{-intervening-property: 0;}' . $expectedRule2Css;
+
+        static::assertSame($expectedResult, $result);
+    }
 }
