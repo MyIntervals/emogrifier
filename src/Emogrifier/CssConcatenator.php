@@ -43,7 +43,8 @@ class CssConcatenator
      *   rules not within a media query block;
      * - stdClass[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
      *   properties:
-     *   - int[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no significance);
+     *   - mixed[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
+     *     significance);
      *   - string `declarationsBlock` - The property declarations, e.g. "margin-top: 0.5em; padding: 0".
      *
      * @var stdClass[]
@@ -60,28 +61,24 @@ class CssConcatenator
      */
     public function append(array $selectors, $declarationsBlock, $media = '')
     {
-        $lastMediaRule = end($this->mediaRules);
-        if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
-            $mediaRule = $lastMediaRule;
-        } else {
-            $mediaRule = (object)[
-                'media' => $media,
-                'ruleBlocks' => [],
-            ];
-            $this->mediaRules[] = $mediaRule;
-        }
-
-        $lastRuleBlock = end($mediaRule->ruleBlocks);
         $selectorsAsKeys = array_flip($selectors);
-        if ($lastRuleBlock !== false && $declarationsBlock === $lastRuleBlock->declarationsBlock) {
+
+        $mediaRule = $this->getOrCreateMediaRuleToAppendTo($media);
+        $lastRuleBlock = end($mediaRule->ruleBlocks);
+
+        $hasSameDeclarationsAsLastRule = $lastRuleBlock !== false
+            && $declarationsBlock === $lastRuleBlock->declarationsBlock;
+        if ($hasSameDeclarationsAsLastRule) {
             $lastRuleBlock->selectorsAsKeys += $selectorsAsKeys;
-        } elseif ($lastRuleBlock !== false
-            && $this->hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys)
-        ) {
-            $lastRuleBlock->declarationsBlock
-                = rtrim(rtrim($lastRuleBlock->declarationsBlock), ';') . ';' . $declarationsBlock;
         } else {
-            $mediaRule->ruleBlocks[] = (object)compact('selectorsAsKeys', 'declarationsBlock');
+            $hasSameSelectorsAsLastRule = $lastRuleBlock !== false
+                && $this->hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys);
+            if ($hasSameSelectorsAsLastRule) {
+                $lastDeclarationsBlockWithoutSemicolon = rtrim(rtrim($lastRuleBlock->declarationsBlock), ';');
+                $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
+            } else {
+                $mediaRule->ruleBlocks[] = (object)compact('selectorsAsKeys', 'declarationsBlock');
+            }
         }
     }
 
@@ -90,27 +87,36 @@ class CssConcatenator
      */
     public function getCss()
     {
-        $css = '';
-        foreach ($this->mediaRules as $mediaRule) {
-            if ($mediaRule->media !== '') {
-                $css .= $mediaRule->media . '{';
-            }
-            foreach ($mediaRule->ruleBlocks as $ruleBlock) {
-                $css .= implode(',', array_keys($ruleBlock->selectorsAsKeys))
-                    . '{' . $ruleBlock->declarationsBlock . '}';
-            }
-            if ($mediaRule->media !== '') {
-                $css .= '}';
-            }
+        return implode('', array_map([$this, 'getMediaRuleCss'], $this->mediaRules));
+    }
+
+    /**
+     * @param string $media The media query for rules to be appended, e.g. "@media screen and (max-width:639px)",
+     *                      or an empty string if none.
+     *
+     * @return stdClass Object with properties as described for elements of `$mediaRules`.
+     */
+    private function getOrCreateMediaRuleToAppendTo($media)
+    {
+        $lastMediaRule = end($this->mediaRules);
+        if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
+            return $lastMediaRule;
         }
-        return $css;
+
+        $newMediaRule = (object)[
+            'media' => $media,
+            'ruleBlocks' => [],
+        ];
+        $this->mediaRules[] = $newMediaRule;
+        return $newMediaRule;
     }
 
     /**
      * Tests if two sets of selectors are equivalent (i.e. the same selectors, possibly in a different order).
      *
-     * @param int[] $selectorsAsKeys1 Array in which the selectors are the keys, and the values are of no significance.
-     * @param int[] $selectorsAsKeys2 Another such array.
+     * @param mixed[] $selectorsAsKeys1 Array in which the selectors are the keys, and the values are of no
+     *                                  significance.
+     * @param mixed[] $selectorsAsKeys2 Another such array.
      *
      * @return bool
      */
@@ -118,5 +124,31 @@ class CssConcatenator
     {
         return count($selectorsAsKeys1) === count($selectorsAsKeys2)
             && count($selectorsAsKeys1) === count($selectorsAsKeys1 + $selectorsAsKeys2);
+    }
+
+    /**
+     * @param stdClass $mediaRule Object with properties as described for elements of `$mediaRules`.
+     *
+     * @return string CSS for the media rule.
+     */
+    private static function getMediaRuleCss($mediaRule)
+    {
+        $css = implode('', array_map([static::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
+        if ($mediaRule->media !== '') {
+            $css = $mediaRule->media . '{' . $css . '}';
+        }
+        return $css;
+    }
+
+    /**
+     * @param stdClass $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
+     *                            elements of `$mediaRules`.
+     *
+     * @return string CSS for the rule block.
+     */
+    private static function getRuleBlockCss($ruleBlock)
+    {
+        $selectors = array_keys($ruleBlock->selectorsAsKeys);
+        return implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';
     }
 }
