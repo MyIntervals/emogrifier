@@ -673,56 +673,46 @@ class Emogrifier
     {
         $cssKey = md5($css);
         if (!isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
-            $splitCss = $this->splitCssAndMediaQuery($css);
+            $matches = $this->getCssRuleMatches($css);
 
             $cssRules = [
                 'inlineable' => [],
-                'uninlineable' => []
+                'uninlineable' => [],
             ];
-            // keep track of where each rule appears in the file, since order is important
-            $key = 0;
-            foreach ($splitCss as $cssPart) {
-                // process each part for selectors and definitions
-                preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
+            /** @var string[][] $matches */
+            /** @var string[] $cssRule */
+            foreach ($matches as $key => $cssRule) {
+                $cssDeclaration = trim($cssRule['declarations']);
+                if ($cssDeclaration === '') {
+                    continue;
+                }
 
-                /** @var string[][] $matches */
-                /** @var string[] $cssRule */
-                foreach ($matches as $cssRule) {
-                    $cssDeclaration = trim($cssRule[2]);
-                    if ($cssDeclaration === '') {
+                $selectors = explode(',', $cssRule['selectors']);
+                foreach ($selectors as $selector) {
+                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
+                    // only allow structural pseudo-classes
+                    $hasPseudoElement = strpos($selector, '::') !== false;
+                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
+                    $hasSupportedPseudoClass = (bool)preg_match(
+                        '/:(\\S+\\-(child|type\\()|not\\([[:ascii:]]*\\))/i',
+                        $selector
+                    );
+                    if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
                         continue;
                     }
 
-                    $selectors = explode(',', $cssRule[1]);
-                    foreach ($selectors as $selector) {
-                        // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
-                        // only allow structural pseudo-classes
-                        $hasPseudoElement = strpos($selector, '::') !== false;
-                        $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
-                        $hasSupportedPseudoClass = (bool)preg_match(
-                            '/:(\\S+\\-(child|type\\()|not\\([[:ascii:]]*\\))/i',
-                            $selector
-                        );
-                        if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
-                            continue;
-                        }
-
-                        $parsedCssRule = [
-                            'media' => $cssPart['media'],
-                            'selector' => trim($selector),
-                            'declarationsBlock' => $cssDeclaration,
-                            // keep track of where it appears in the file, since order is important
-                            'line' => $key,
-                        ];
-                        if ($cssPart['media'] === '') {
-                            $cssRules['inlineable'][] = $parsedCssRule;
-                        } else {
-                            $cssRules['uninlineable'][] = $parsedCssRule;
-                        }
+                    $parsedCssRule = [
+                        'media' => $cssRule['media'],
+                        'selector' => trim($selector),
+                        'declarationsBlock' => $cssDeclaration,
+                        // keep track of where it appears in the file, since order is important
+                        'line' => $key,
+                    ];
+                    if ($cssRule['media'] === '') {
+                        $cssRules['inlineable'][] = $parsedCssRule;
+                    } else {
+                        $cssRules['uninlineable'][] = $parsedCssRule;
                     }
-
-                    // update position in file
-                    ++$key;
                 }
             }
 
@@ -732,6 +722,39 @@ class Emogrifier
         }
 
         return $this->caches[static::CACHE_KEY_CSS][$cssKey];
+    }
+
+    /**
+     * Parse a string of CSS into the media query, selectors and declarations for each ruleset in order
+     *
+     * @param string $css
+     *
+     * @return string[][] Array of string sub-arrays with the keys
+     *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
+     *         or an empty string if not from an `@media` rule),
+     *         "selectors" (the CSS selector(s), e.g., "*" or "h1, h2"),
+     *         "declarations" (the semicolon-separated CSS declarations for that/those selector(s),
+     *         e.g., "color: red; height: 4px;"),
+     */
+    private function getCssRuleMatches($css)
+    {
+        $ruleMatches = [];
+
+        $splitCss = $this->splitCssAndMediaQuery($css);
+        foreach ($splitCss as $cssPart) {
+            // process each part for selectors and definitions
+            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
+
+            foreach ($matches as $cssRule) {
+                $ruleMatches[] = [
+                    'media' => $cssPart['media'],
+                    'selectors' => $cssRule[1],
+                    'declarations' => $cssRule[2],
+                ];
+            }
+        }
+
+        return $ruleMatches;
     }
 
     /**
@@ -1108,58 +1131,21 @@ class Emogrifier
             }
         );
 
-        // recombine the selectors from the same original rule (the rules to combine will have the same "line")
-        $cssMediaRulesWithSelectorsCombined = [];
+        if ($cssMediaRules === []) {
+            // avoid including class dependency if it's not actually needed
+            return '';
+        }
+
+        // support use without autoload
+        if (!class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
+            require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
+        }
+
+        $cssConcatenator = new Emogrifier\CssConcatenator();
         foreach ($cssMediaRules as $cssRule) {
-            $line = $cssRule['line'];
-            if (isset($cssMediaRulesWithSelectorsCombined[$line])) {
-                $cssMediaRulesWithSelectorsCombined[$line]['selector'] .= ',' . $cssRule['selector'];
-            } else {
-                $cssMediaRulesWithSelectorsCombined[$line] = $cssRule;
-            }
+            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
-
-        // split into separate arrays of rules for the same media query
-        $atMediaRules = [];
-
-        $currentMedia = '';
-        $currentRules = [];
-        foreach ($cssMediaRulesWithSelectorsCombined as $cssRule) {
-            $media = $cssRule['media'];
-
-            if ($media !== $currentMedia) {
-                if ($currentRules !== []) {
-                    // a completed @media rule
-                    $atMediaRules[] = [
-                        'media' => $currentMedia,
-                        'rules' => $currentRules,
-                    ];
-                    $currentRules = [];
-                }
-                $currentMedia = $media;
-            }
-
-            $currentRules[] = $cssRule;
-        }
-
-        // complete the last @media rule
-        if ($currentRules !== []) {
-            $atMediaRules[] = [
-                'media' => $currentMedia,
-                'rules' => $currentRules,
-            ];
-        }
-
-        // contruct the CSS string from the rules
-        $css = '';
-        foreach ($atMediaRules as $atMediaRule) {
-            $css .= $atMediaRule['media'] . '{';
-            foreach ($atMediaRule['rules'] as $cssRule) {
-                $css .= $cssRule['selector'] . '{' . $cssRule['declarationsBlock'] . '}';
-            }
-            $css .= '}';
-        }
-        return $css;
+        return $cssConcatenator->getCss();
     }
 
     /**
