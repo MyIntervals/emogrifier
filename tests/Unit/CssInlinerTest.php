@@ -1,9 +1,10 @@
 <?php
 
-namespace Pelago\Tests\Unit;
+namespace Pelago\Emogrifer\Tests\Unit;
 
 use Pelago\Emogrifier;
 use Pelago\Emogrifier\CssInliner;
+use Pelago\Tests\Support\Traits\AssertCss;
 
 /**
  * Test case.
@@ -13,6 +14,8 @@ use Pelago\Emogrifier\CssInliner;
  */
 class CssInlinerTest extends \PHPUnit_Framework_TestCase
 {
+    use AssertCss;
+
     /**
      * @var string
      */
@@ -1244,6 +1247,31 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'style in "speech" media type rule' => ['@media speech {p {color: #000;}}', '#000'],
             'style in "tty" media type rule' => ['@media tty {p {color: #000;}}', '#000'],
             'style in "tv" media type rule' => ['@media tv {p {color: #000;}}', '#000'],
+            'style in "tv" media type rule with extra spaces' => [
+                '  @media  tv  {  p  {  color  :  #000  ;  }  }  ',
+                '#000'
+            ],
+            'style in "tv" media type rule with linefeeds' => [
+                "\n@media\ntv\n{\np\n{\ncolor\n:\n#000\n;\n}\n}\n",
+                '#000'
+            ],
+            'style in "tv" media type rule with Windows line endings' => [
+                "\r\n@media\r\ntv\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000\r\n;\r\n}\r\n}\r\n",
+                '#000'
+            ],
+            'style in "only tv" media type rule' => ['@media only tv {p {color: #000;}}', '#000'],
+            'style in "only tv" media type rule with extra spaces' => [
+                '  @media  only  tv  {  p  {  color  :  #000  ;  }  }  ',
+                '#000'
+            ],
+            'style in "only tv" media type rule with linefeeds' => [
+                "\n@media\nonly\ntv\n{\np\n{\ncolor\n:\n#000\n;\n}\n}\n",
+                '#000'
+            ],
+            'style in "only tv" media type rule with Windows line endings' => [
+                "\r\n@media\r\nonly\r\ntv\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000\r\n;\r\n}\r\n}\r\n",
+                '#000'
+            ],
         ];
     }
 
@@ -1283,88 +1311,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
-     * element added to the docuemnt, due to the way that certain parts are `trim`med.  Notably, whitespace either side
-     * of "{" and "}" may be removed.
-     *
-     * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
-     * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
-     * readable and can use inputs containing extra whitespace.
-     *
-     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`.
-     *
-     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
-     */
-    private static function getCssNeedleRegExp($needle)
-    {
-        $needleMatcher = preg_replace_callback(
-            '/\\s*+([{}])\\s*+|(?:(?!\\s*+[{}]).)++/',
-            function (array $matches) {
-                if (isset($matches[1]) && $matches[1] !== '') {
-                    // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
-                    return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
-                } else {
-                    // matched any other sequence which could not overlap with the above
-                    return preg_quote($matches[0], '/');
-                }
-            },
-            $needle
-        );
-        return '/' . $needleMatcher . '/';
-    }
-
-    /**
-     * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS.
-     *
-     * @param string $needle
-     * @param string $haystack
-     */
-    private static function assertContainsCss($needle, $haystack)
-    {
-        static::assertRegExp(
-            static::getCssNeedleRegExp($needle),
-            $haystack,
-            'Plain text needle: "' . $needle . '"'
-        );
-    }
-
-    /**
-     * Like `assertNotContains` and also enforces the assertion with removal of some unnecessary whitespace from the
-     * CSS.
-     *
-     * @param string $needle
-     * @param string $haystack
-     */
-    private static function assertNotContainsCss($needle, $haystack)
-    {
-        static::assertNotRegExp(
-            static::getCssNeedleRegExp($needle),
-            $haystack,
-            'Plain text needle: "' . $needle . '"'
-        );
-    }
-
-    /**
-     * Asserts that a string of CSS occurs exactly a certain number of times in the result, allowing for removal of some
-     * unnecessary whitespace.
-     *
-     * @param int $expectedCount
-     * @param string $needle
-     * @param string $haystack
-     */
-    private static function assertContainsCssCount(
-        $expectedCount,
-        $needle,
-        $haystack
-    ) {
-        static::assertSame(
-            $expectedCount,
-            preg_match_all(static::getCssNeedleRegExp($needle), $haystack),
-            'Plain text needle: "' . $needle . "\"\nHaystack: \"" . $haystack . '"'
-        );
-    }
-
-    /**
      * Data provider for media rules.
      *
      * @return string[][]
@@ -1374,8 +1320,24 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         return [
             'style in "only all" media type rule' => ['@media only all {p {color: #000;}}'],
             'style in "only screen" media type rule' => ['@media only screen {p {color: #000;}}'],
+            'style in "only screen" media type rule with extra spaces'
+                => ['  @media  only  screen  {  p  {  color  :  #000;  }  }  '],
+            'style in "only screen" media type rule with linefeeds'
+                => ["\n@media\nonly\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
+            'style in "only screen" media type rule with Windows line endings'
+                => ["\r\n@media\r\nonly\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in media type rule' => ['@media {p {color: #000;}}'],
+            'style in media type rule with extra spaces' => ['  @media  {  p  {  color  :  #000;  }  }  '],
+            'style in media type rule with linefeeds' => ["\n@media\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
+            'style in media type rule with Windows line endings'
+                => ["\r\n@media\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in "screen" media type rule' => ['@media screen {p {color: #000;}}'],
+            'style in "screen" media type rule with extra spaces'
+                => ['  @media  screen  {  p  {  color  :  #000;  }  }  '],
+            'style in "screen" media type rule with linefeeds'
+                => ["\n@media\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
+            'style in "screen" media type rule with Windows line endings'
+                => ["\r\n@media\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in "print" media type rule' => ['@media print {p {color: #000;}}'],
             'style in "all" media type rule' => ['@media all {p {color: #000;}}'],
         ];
@@ -1425,13 +1387,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
                 foreach ($possibleSurroundingCss as $descriptionAfter => $cssAfter) {
                     // every combination would be a ridiculous c.1000 datasets - choose a select few
                     // test all possible CSS before once
-                    if ($cssBetween === '' && $cssAfter === ''
+                    if (($cssBetween === '' && $cssAfter === '')
                         // test all possible CSS between once
-                        || $cssBefore === '' && $cssAfter === ''
+                        || ($cssBefore === '' && $cssAfter === '')
                         // test all possible CSS after once
-                        || $cssBefore === '' && $cssBetween === ''
+                        || ($cssBefore === '' && $cssBetween === '')
                         // test with each possible CSS in all three positions
-                        || $cssBefore === $cssBetween && $cssBetween === $cssAfter
+                        || ($cssBefore === $cssBetween && $cssBetween === $cssAfter)
                     ) {
                         $description = $descriptionBefore . ' before, '
                             . $descriptionBetween . ' between, '
@@ -1762,6 +1724,106 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function mediaTypeDataProvider()
+    {
+        return [
+            'disallowed type' => ['tv'],
+            'allowed type' => ['screen'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     *
+     * @dataProvider mediaTypeDataProvider
+     */
+    public function emogrifyKeepsMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media all { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContainsCss('@media all { h1 { color: red; } }', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     *
+     * @dataProvider mediaTypeDataProvider
+     */
+    public function emogrifyNotKeepsUnneededMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media speech { h1 { color: red; } }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertNotContains('@media', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function mediaTypesDataProvider()
+    {
+        return [
+            'disallowed type after disallowed type' => ['tv', 'speech'],
+            'allowed type after disallowed type' => ['tv', 'all'],
+            'disallowed type after allowed type' => ['screen', 'tv'],
+            'allowed type after allowed type' => ['screen', 'all'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     * @param string $mediaType
+     *
+     * @dataProvider mediaTypesDataProvider
+     */
+    public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRule($emptyRuleMediaType, $mediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss(
+            '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
+                . ' { h1 { color: red; } }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<h1 style="color: green;">', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $emptyRuleMediaType
+     * @param string $mediaType
+     *
+     * @dataProvider mediaTypesDataProvider
+     */
+    public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRuleWithCssAfter($emptyRuleMediaType, $mediaType)
+    {
+        $this->subject->setHtml('<html><h1></h1></html>');
+        $this->subject->setCss(
+            '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
+                . ' { h1 { color: red; } } h1 { font-size: 24px; }'
+        );
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<h1 style="color: green; font-size: 24px;">', $result);
     }
 
     /**
@@ -2549,20 +2611,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Asserts that $html contains a $tagName tag with the $attribute attribute.
-     *
-     * @param string $html the HTML string we are searching in
-     * @param string $tagName the HTML tag we are looking for
-     * @param string $attribute the attribute we are looking for (with or even without a value)
-     */
-    private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
-    {
-        static::assertTrue(
-            preg_match('/<' . preg_quote($tagName, '/') . '[^>]+' . preg_quote($attribute, '/') . '/', $html) > 0
-        );
-    }
-
-    /**
      * @return string[][]
      */
     public function cssForImportantRuleRemovalDataProvider()
@@ -2658,6 +2706,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $this->assertContainsCss($css, $result);
+        static::assertContainsCss($css, $result);
     }
 }
