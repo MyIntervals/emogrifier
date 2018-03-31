@@ -708,11 +708,8 @@ class Emogrifier
                         // keep track of where it appears in the file, since order is important
                         'line' => $key,
                     ];
-                    if ($cssRule['media'] === '') {
-                        $cssRules['inlineable'][] = $parsedCssRule;
-                    } else {
-                        $cssRules['uninlineable'][] = $parsedCssRule;
-                    }
+                    $ruleType = ($cssRule['media'] === '') ? 'inlineable' : 'uninlineable';
+                    $cssRules[$ruleType][] = $parsedCssRule;
                 }
             }
 
@@ -725,7 +722,7 @@ class Emogrifier
     }
 
     /**
-     * Parse a string of CSS into the media query, selectors and declarations for each ruleset in order
+     * Parses a string of CSS into the media query, selectors and declarations for each ruleset in order.
      *
      * @param string $css
      *
