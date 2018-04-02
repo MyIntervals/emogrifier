@@ -876,14 +876,16 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
                 'p.p-4.p-4.p-4#p4 span#text'
             ],
             // :not
-            ':not alone as specific as universal' => ['<p class="p-1"', '*:not(* + *)', '*'],
-            'type & :not alone as specific as type' => ['<p class="p-1"', 'p:not(* + *)', 'p'],
-            'class & :not alone as specific as class' => ['<p class="p-1"', '.p-1:not(* + *)', '.p-1'],
-            'ID & :not alone as specific as ID' => ['<p class="p-4" id="p4"', '#p4:not(* + * + * + * + *)', '#p4'],
-            '2 types & 2 classes & 2 IDs & :not alone as specific as 2 types & 2 classes & 2 IDs' => [
+            // ideally these tests would be more minimal with just combinators and universal selectors in the :not
+            // argument, however Symfony CssSelector only supports simple (single-element) selectors here
+            ':not with type as specific as type and universal' => ['<p class="p-1"', '*:not(html)', 'html *'],
+            'type & :not with type as specific as 2 types' => ['<p class="p-1"', 'p:not(html)', 'html p'],
+            'class & :not with type as specific as type & class' => ['<p class="p-1"', '.p-1:not(html)', 'html .p-1'],
+            'ID & :not with type as specific as type & ID' => ['<p class="p-4" id="p4"', '#p4:not(html)', 'html #p4'],
+            '2 types & 2 classes & 2 IDs & :not with type as specific as 3 types & 2 classes & 2 IDs' => [
                 '<span id="text"',
-                'p.p-4.p-4#p4 span#text:not(* + *)',
-                'p.p-4.p-4#p4 span#text'
+                'p.p-4.p-4#p4 span#text:not(html)',
+                'html p.p-4.p-4#p4 span#text'
             ],
             // argument of :not
             ':not with type as specific as type' => ['<p class="p-1"', '*:not(h1)', 'p'],
