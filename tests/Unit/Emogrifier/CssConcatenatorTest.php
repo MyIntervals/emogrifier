@@ -283,10 +283,10 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @param array $rule1Selectors,
-     * @param string $rule1DeclarationsBlock,
-     * @param array $rule2Selectors,
-     * @param string $rule2DeclarationsBlock,
+     * @param array $rule1Selectors
+     * @param string $rule1DeclarationsBlock
+     * @param array $rule2Selectors
+     * @param string $rule2DeclarationsBlock
      * @param string $media
      *
      * @dataProvider combinableRulesDataProvider
