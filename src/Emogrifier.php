@@ -383,7 +383,7 @@ class Emogrifier
             // executions, which can still flood logs/output unnecessarily. Instead, Emogrifier's error handler should
             // always throw an exception and it must be caught here and only rethrown if in debug mode.
             try {
-                // \DOMXPath::query will always return a DOMNodeList or an exception when errors are caught.
+                // \DOMXPath::query will always return a DOMNodeList or throw an exception when errors are caught.
                 $nodesMatchingCssSelectors = $xPath->query($this->translateCssToXpath($cssRule['selector']));
             } catch (\InvalidArgumentException $e) {
                 if ($this->debug) {
@@ -397,29 +397,16 @@ class Emogrifier
                 if (in_array($node, $excludedNodes, true)) {
                     continue;
                 }
-                // if it has a style attribute, get it, process it, and append (overwrite) new stuff
-                if ($node->hasAttribute('style')) {
-                    // break it up into an associative array
-                    $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
-                } else {
-                    $oldStyleDeclarations = [];
-                }
-                $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
-                $node->setAttribute(
-                    'style',
-                    $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
-                );
+                $this->copyInlineableCssToStyleAttribute($node, $cssRule);
             }
         }
 
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
-
         if ($this->shouldMapCssToHtml) {
             $this->mapAllInlineStylesToHtmlAttributes($xPath);
         }
-
         if ($this->shouldRemoveInvisibleNodes) {
             $this->removeInvisibleNodes($xPath);
         }
@@ -1170,6 +1157,32 @@ class Emogrifier
     private function attributeValueIsImportant($attributeValue)
     {
         return strtolower(substr(trim($attributeValue), -10)) === '!important';
+    }
+
+    /**
+     * Copies $cssRule into the style attribute of $node.
+     *
+     * Note: This method does not check whether $cssRule matches $node.
+     *
+     * @param \DOMElement $node
+     * @param string[][] $cssRule
+     *
+     * @return void
+     */
+    private function copyInlineableCssToStyleAttribute(\DOMElement $node, array $cssRule)
+    {
+        // if it has a style attribute, get it, process it, and append (overwrite) new stuff
+        if ($node->hasAttribute('style')) {
+            // break it up into an associative array
+            $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+        } else {
+            $oldStyleDeclarations = [];
+        }
+        $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
+        $node->setAttribute(
+            'style',
+            $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
+        );
     }
 
     /**
