@@ -246,11 +246,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'HTML5' => ['<!DOCTYPE html>'],
             'XHTML 1 strict' => [
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
             ],
             'HTML 4 transitional' => [
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" ' .
-                '"http://www.w3.org/TR/REC-html40/loose.dtd">'
+                '"http://www.w3.org/TR/REC-html40/loose.dtd">',
             ],
         ];
     }
@@ -568,7 +568,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'adjacent (without space before +) => last of many' => ['p+ p { %1$s }', '<p class="p-6" style="%1$s">'],
             'adjacent (without space before or after +) => last of many' => [
                 'p+p { %1$s }',
-                '<p class="p-6" style="%1$s">'
+                '<p class="p-6" style="%1$s">',
             ],
             'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
             'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
@@ -853,26 +853,26 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'ID & pseudo-class as specific as ID & class' => [
                 '<span title="avez-vous"',
                 '#p4 *:first-child',
-                '#p4.p-4 *'
+                '#p4.p-4 *',
             ],
             '2 types & 2 classes & 2 IDs & pseudo-class as specific as 2 types & 3 classes & 2 IDs' => [
                 '<span id="text"',
                 'p.p-4.p-4#p4 span#text:last-child',
-                'p.p-4.p-4.p-4#p4 span#text'
+                'p.p-4.p-4.p-4#p4 span#text',
             ],
             // attribute
             'attribute as specific as class' => ['<span title="bonjour"', '[title="bonjour"]', '.p-2 *'],
             'type & attribute as specific as type & class' => [
                 '<span title="bonjour"',
                 'span[title="bonjour"]',
-                '.p-2 span'
+                '.p-2 span',
             ],
             'class & attribute as specific as two classes' => ['<p class="p-4" id="p4"', '.p-4[id="p4"]', '.p-4.p-4'],
             'ID & attribute as specific as ID & class' => ['<p class="p-4" id="p4"', '#p4[id="p4"]', '#p4.p-4'],
             '2 types & 2 classes & 2 IDs & attribute as specific as 2 types & 3 classes & 2 IDs' => [
                 '<span id="text"',
                 'p.p-4.p-4#p4[id="p4"] span#text',
-                'p.p-4.p-4.p-4#p4 span#text'
+                'p.p-4.p-4.p-4#p4 span#text',
             ],
             // :not
             // ideally these tests would be more minimal with just combinators and universal selectors in the :not
@@ -884,7 +884,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             '2 types & 2 classes & 2 IDs & :not with type as specific as 3 types & 2 classes & 2 IDs' => [
                 '<span id="text"',
                 'p.p-4.p-4#p4 span#text:not(html)',
-                'html p.p-4.p-4#p4 span#text'
+                'html p.p-4.p-4#p4 span#text',
             ],
             // argument of :not
             ':not with type as specific as type' => ['<p class="p-1"', '*:not(h1)', 'p'],
@@ -985,23 +985,23 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon & linefeed' => [
                 'color: #000;' . static::LF . 'width: 3px;',
-                'color: #000; width: 3px;'
+                'color: #000; width: 3px;',
             ],
             'two declarations separated by semicolon & Windows line ending' => [
                 "color: #000;\r\nwidth: 3px;",
-                'color: #000; width: 3px;'
+                'color: #000; width: 3px;',
             ],
             'one declaration with leading dash in property name' => [
                 '-webkit-text-size-adjust:none;',
-                '-webkit-text-size-adjust: none;'
+                '-webkit-text-size-adjust: none;',
             ],
             'one declaration with linefeed in property value' => [
                 "text-shadow:\n1px 1px 3px #000,\n1px 1px 1px #000;",
-                "text-shadow: 1px 1px 3px #000,\n1px 1px 1px #000;"
+                "text-shadow: 1px 1px 3px #000,\n1px 1px 1px #000;",
             ],
             'one declaration with Windows line ending in property value' => [
                 "text-shadow:\r\n1px 1px 3px #000,\r\n1px 1px 1px #000;",
-                "text-shadow: 1px 1px 3px #000,\r\n1px 1px 1px #000;"
+                "text-shadow: 1px 1px 3px #000,\r\n1px 1px 1px #000;",
             ],
         ];
     }
@@ -1250,28 +1250,28 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'style in "tv" media type rule' => ['@media tv {p {color: #000;}}', '#000'],
             'style in "tv" media type rule with extra spaces' => [
                 '  @media  tv  {  p  {  color  :  #000  ;  }  }  ',
-                '#000'
+                '#000',
             ],
             'style in "tv" media type rule with linefeeds' => [
                 "\n@media\ntv\n{\np\n{\ncolor\n:\n#000\n;\n}\n}\n",
-                '#000'
+                '#000',
             ],
             'style in "tv" media type rule with Windows line endings' => [
                 "\r\n@media\r\ntv\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000\r\n;\r\n}\r\n}\r\n",
-                '#000'
+                '#000',
             ],
             'style in "only tv" media type rule' => ['@media only tv {p {color: #000;}}', '#000'],
             'style in "only tv" media type rule with extra spaces' => [
                 '  @media  only  tv  {  p  {  color  :  #000  ;  }  }  ',
-                '#000'
+                '#000',
             ],
             'style in "only tv" media type rule with linefeeds' => [
                 "\n@media\nonly\ntv\n{\np\n{\ncolor\n:\n#000\n;\n}\n}\n",
-                '#000'
+                '#000',
             ],
             'style in "only tv" media type rule with Windows line endings' => [
                 "\r\n@media\r\nonly\r\ntv\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000\r\n;\r\n}\r\n}\r\n",
-                '#000'
+                '#000',
             ],
         ];
     }
@@ -1532,7 +1532,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 '@media only screen { h1 { color:red; } }' .
                 '@media only all { h1 { color:red; } }' .
                 '@media print { * { color:#000 !important; } }' .
-                '@media { h1 { color:red; } }'
+                '@media { h1 { color:red; } }',
             ],
         ];
     }
@@ -2828,43 +2828,43 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         return [
             'one !important rule only' => [
                 'width: 1px !important',
-                'width: 1px;'
+                'width: 1px;',
             ],
             'multiple !important rules only' => [
                 'width: 1px !important; height: 1px !important',
-                'width: 1px; height: 1px;'
+                'width: 1px; height: 1px;',
             ],
             'multiple declarations, one !important rule at the beginning' => [
                 'width: 1px !important; height: 1px; color: red',
-                'height: 1px; color: red; width: 1px;'
+                'height: 1px; color: red; width: 1px;',
             ],
             'multiple declarations, one !important rule somewhere in the middle' => [
                 'height: 1px; width: 1px !important; color: red',
-                'height: 1px; color: red; width: 1px;'
+                'height: 1px; color: red; width: 1px;',
             ],
             'multiple declarations, one !important rule at the end' => [
                 'height: 1px; color: red; width: 1px !important',
-                'height: 1px; color: red; width: 1px;'
+                'height: 1px; color: red; width: 1px;',
             ],
             'multiple declarations, multiple !important rules at the beginning' => [
                 'width: 1px !important; height: 1px !important; color: red; float: left',
-                'color: red; float: left; width: 1px; height: 1px;'
+                'color: red; float: left; width: 1px; height: 1px;',
             ],
             'multiple declarations, multiple consecutive !important rules somewhere in the middle (#1)' => [
                 'color: red; width: 1px !important; height: 1px !important; float: left',
-                'color: red; float: left; width: 1px; height: 1px;'
+                'color: red; float: left; width: 1px; height: 1px;',
             ],
             'multiple declarations, multiple consecutive !important rules somewhere in the middle (#2)' => [
                 'color: red; width: 1px !important; height: 1px !important; float: left; clear: both',
-                'color: red; float: left; clear: both; width: 1px; height: 1px;'
+                'color: red; float: left; clear: both; width: 1px; height: 1px;',
             ],
             'multiple declarations, multiple not consecutive !important rules somewhere in the middle' => [
                 'color: red; width: 1px !important; clear: both; height: 1px !important; float: left',
-                'color: red; clear: both; float: left; width: 1px; height: 1px;'
+                'color: red; clear: both; float: left; width: 1px; height: 1px;',
             ],
             'multiple declarations, multiple !important rules at the end' => [
                 'color: red; float: left; width: 1px !important; height: 1px !important',
-                'color: red; float: left; width: 1px; height: 1px;'
+                'color: red; float: left; width: 1px; height: 1px;',
             ],
         ];
     }

@@ -235,15 +235,15 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
             'HTML5' => ['<!DOCTYPE html>'],
             'XHTML 1.0 strict' => [
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" ' .
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">',
             ],
             'XHTML 1.0 transitional' => [
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" ' .
-                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">'
+                '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">',
             ],
             'HTML 4 transitional' => [
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" ' .
-                '"http://www.w3.org/TR/REC-html40/loose.dtd">'
+                '"http://www.w3.org/TR/REC-html40/loose.dtd">',
             ],
         ];
     }
