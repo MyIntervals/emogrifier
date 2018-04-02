@@ -28,6 +28,12 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#473](https://github.com/jjriv/emogrifier/pull/473))
 - Converting CSS styles to (non-CSS) HTML attributes will be removed
   in Emogrifier 3.0. ([#474](https://github.com/jjriv/emogrifier/pull/474))
+- Emogrifier 3.x.y will be the last release that supports usage without
+  Composer (i.e., you can still require the class file).
+  Starting with version 4.0, Emogrifier will only work with Composer.
+- The Emogrifier class will be superseded by CssInliner class in
+  Emogrifier 3.0. For this, the Emogrifier class will be deprecated for
+  version 3.0 and removed for version 4.0.
 
 ### Removed
 
