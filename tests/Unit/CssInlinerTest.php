@@ -1321,23 +1321,23 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'style in "only all" media type rule' => ['@media only all {p {color: #000;}}'],
             'style in "only screen" media type rule' => ['@media only screen {p {color: #000;}}'],
             'style in "only screen" media type rule with extra spaces'
-                => ['  @media  only  screen  {  p  {  color  :  #000;  }  }  '],
+            => ['  @media  only  screen  {  p  {  color  :  #000;  }  }  '],
             'style in "only screen" media type rule with linefeeds'
-                => ["\n@media\nonly\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
+            => ["\n@media\nonly\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
             'style in "only screen" media type rule with Windows line endings'
-                => ["\r\n@media\r\nonly\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
+            => ["\r\n@media\r\nonly\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in media type rule' => ['@media {p {color: #000;}}'],
             'style in media type rule with extra spaces' => ['  @media  {  p  {  color  :  #000;  }  }  '],
             'style in media type rule with linefeeds' => ["\n@media\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
             'style in media type rule with Windows line endings'
-                => ["\r\n@media\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
+            => ["\r\n@media\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in "screen" media type rule' => ['@media screen {p {color: #000;}}'],
             'style in "screen" media type rule with extra spaces'
-                => ['  @media  screen  {  p  {  color  :  #000;  }  }  '],
+            => ['  @media  screen  {  p  {  color  :  #000;  }  }  '],
             'style in "screen" media type rule with linefeeds'
-                => ["\n@media\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
+            => ["\n@media\nscreen\n{\np\n{\ncolor\n:\n#000;\n}\n}\n"],
             'style in "screen" media type rule with Windows line endings'
-                => ["\r\n@media\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
+            => ["\r\n@media\r\nscreen\r\n{\r\np\r\n{\r\ncolor\r\n:\r\n#000;\r\n}\r\n}\r\n"],
             'style in "print" media type rule' => ['@media print {p {color: #000;}}'],
             'style in "all" media type rule' => ['@media all {p {color: #000;}}'],
         ];
@@ -1797,7 +1797,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml('<html><h1></h1></html>');
         $this->subject->setCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
-                . ' { h1 { color: red; } }'
+            . ' { h1 { color: red; } }'
         );
 
         $result = $this->subject->emogrify();
@@ -1818,7 +1818,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $this->subject->setHtml('<html><h1></h1></html>');
         $this->subject->setCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
-                . ' { h1 { color: red; } } h1 { font-size: 24px; }'
+            . ' { h1 { color: red; } } h1 { font-size: 24px; }'
         );
 
         $result = $this->subject->emogrify();
