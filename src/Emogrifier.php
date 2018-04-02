@@ -554,7 +554,7 @@ class Emogrifier
      * @param string $value the value of the style rule to map
      * @param \DOMElement $node node to apply styles to
      *
-     * @return bool true if the property cab be mapped using the simple mapping table
+     * @return bool true if the property can be mapped using the simple mapping table
      */
     private function mapSimpleCssProperty($property, $value, \DOMElement $node)
     {
@@ -585,46 +585,112 @@ class Emogrifier
      */
     private function mapComplexCssProperty($property, $value, \DOMElement $node)
     {
-        $nodeName = $node->nodeName;
-        $isTable = $nodeName === 'table';
-        $isImage = $nodeName === 'img';
-        $isTableOrImage = $isTable || $isImage;
-
         switch ($property) {
             case 'background':
-                // Parse out the color, if any
-                $styles = explode(' ', $value);
-                $first = $styles[0];
-                if (!is_numeric($first[0]) && strpos($first, 'url') !== 0) {
-                    // This is not a position or image, assume it's a color
-                    $node->setAttribute('bgcolor', $first);
-                }
+                $this->mapBackgroundProperty($node, $value);
                 break;
             case 'width':
                 // intentional fall-through
             case 'height':
-                // Only parse values in px and %, but not values like "auto".
-                if (preg_match('/^\d+(px|%)$/', $value)) {
-                    // Remove 'px'. This regex only conserves numbers and %
-                    $number = preg_replace('/[^0-9.%]/', '', $value);
-                    $node->setAttribute($property, $number);
-                }
+                $this->mapWidthOrHeightProperty($node, $value, $property);
                 break;
             case 'margin':
-                if ($isTableOrImage) {
-                    $margins = $this->parseCssShorthandValue($value);
-                    if ($margins['left'] === 'auto' && $margins['right'] === 'auto') {
-                        $node->setAttribute('align', 'center');
-                    }
-                }
+                $this->mapMarginProperty($node, $value);
                 break;
             case 'border':
-                if ($isTableOrImage && ($value === 'none' || $value === '0')) {
-                    $node->setAttribute('border', '0');
-                }
+                $this->mapBorderProperty($node, $value);
                 break;
             default:
         }
+    }
+
+    /**
+     * Maps the "background" CSS property to visual HTML attributes.
+     *
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     *
+     * @return void
+     */
+    private function mapBackgroundProperty(\DOMElement $node, $value)
+    {
+        // parse out the color, if any
+        $styles = explode(' ', $value);
+        $first = $styles[0];
+        if (!is_numeric($first[0]) && strpos($first, 'url') !== 0) {
+            // as this is not a position or image, assume it's a color
+            $node->setAttribute('bgcolor', $first);
+        }
+    }
+
+    /**
+     * Maps the "width" or "height" CSS properties to visual HTML attributes.
+     *
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     * @param string $property the name of the CSS property to map
+     *
+     * @return void
+     */
+    private function mapWidthOrHeightProperty(\DOMElement $node, $value, $property)
+    {
+        // only parse values in px and %, but not values like "auto"
+        if (preg_match('/^\d+(px|%)$/', $value)) {
+            // Remove 'px'. This regex only conserves numbers and %.
+            $number = preg_replace('/[^0-9.%]/', '', $value);
+            $node->setAttribute($property, $number);
+        }
+    }
+
+    /**
+     * Maps the "margin" CSS property to visual HTML attributes.
+     *
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     *
+     * @return void
+     */
+    private function mapMarginProperty(\DOMElement $node, $value)
+    {
+        if (!$this->isTableOrImageNode($node)) {
+            return;
+        }
+
+        $margins = $this->parseCssShorthandValue($value);
+        if ($margins['left'] === 'auto' && $margins['right'] === 'auto') {
+            $node->setAttribute('align', 'center');
+        }
+    }
+
+    /**
+     * Maps the "border" CSS property to visual HTML attributes.
+     *
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     *
+     * @return void
+     */
+    private function mapBorderProperty(\DOMElement $node, $value)
+    {
+        if (!$this->isTableOrImageNode($node)) {
+            return;
+        }
+
+        if ($value === 'none' || $value === '0') {
+            $node->setAttribute('border', '0');
+        }
+    }
+
+    /**
+     * Checks whether $node is a table or img element.
+     *
+     * @param \DOMElement $node
+     *
+     * @return bool
+     */
+    private function isTableOrImageNode(\DOMElement $node)
+    {
+        return $node->nodeName === 'table' || $node->nodeName === 'img';
     }
 
     /**
