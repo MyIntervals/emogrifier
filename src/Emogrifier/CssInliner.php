@@ -386,11 +386,7 @@ class CssInliner
 
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
-        $this->copyCssWithMediaToStyleNode(
-            $xmlDocument,
-            $xPath,
-            $this->combineCssMediaRules($cssRules['uninlineable'])
-        );
+        $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
 
         restore_error_handler();
     }
@@ -900,88 +896,34 @@ class CssInliner
     }
 
     /**
-     * Reconstructs the CSS containing only allowed @media rules from the "uninlineable" CSS rules array returned by
-     * `parseCssRules`.
-     *
-     * @param string[][] $cssRules
-     *
-     * @return string
-     */
-    private function combineCssMediaRules(array $cssRules)
-    {
-        // filter out any rules with no media query (shouldn't be any at present)
-        $cssMediaRules = array_filter(
-            $cssRules,
-            function (array $cssRule) {
-                return $cssRule['media'] !== '';
-            }
-        );
-
-        if ($cssMediaRules === []) {
-            // avoid including class dependency if it's not actually needed
-            return '';
-        }
-
-        $cssConcatenator = new CssConcatenator();
-        foreach ($cssMediaRules as $cssRule) {
-            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
-        }
-        return $cssConcatenator->getCss();
-    }
-
-    /**
-     * Applies $css to $xmlDocument, limited to the media queries that actually apply to the document.
+     * Applies $cssRules to $xmlDocument, limited to the rules that actually apply to the document.
      *
      * @param \DOMDocument $xmlDocument the document to match against
      * @param \DOMXPath $xPath
-     * @param string $css a string of CSS
+     * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyCssWithMediaToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, $css)
+    private function copyUninlineableCssToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, array $cssRules)
     {
-        if ($css === '') {
+        $cssRulesRelevantForDocument = array_filter(
+            $cssRules,
+            function ($cssRule) use ($xPath) {
+                return $this->existsMatchForCssSelector($xPath, $cssRule['selector']);
+            }
+        );
+
+        if ($cssRulesRelevantForDocument === []) {
+            // avoid adding empty style element (or including unneeded class dependency)
             return;
         }
 
-        $mediaQueriesRelevantForDocument = [];
-
-        foreach ($this->extractMediaQueriesFromCss($css) as $mediaQuery) {
-            // as only the @media rule body is being parsed, the rules will be parsed as "inlineable"
-            foreach ($this->parseCssRules($mediaQuery['css'])['inlineable'] as $selector) {
-                if ($this->existsMatchForCssSelector($xPath, $selector['selector'])) {
-                    $mediaQueriesRelevantForDocument[] = $mediaQuery['query'];
-                    break;
-                }
-            }
+        $cssConcatenator = new CssConcatenator();
+        foreach ($cssRulesRelevantForDocument as $cssRule) {
+            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
-        $this->addStyleElementToDocument($xmlDocument, implode($mediaQueriesRelevantForDocument));
-    }
-
-    /**
-     * Extracts the media queries from $css while skipping empty media queries.
-     *
-     * @param string $css
-     *
-     * @return string[][] numeric array with string sub-arrays with the keys "css" and "query"
-     */
-    private function extractMediaQueriesFromCss($css)
-    {
-        preg_match_all('/@media\\b[^{]*({((?:[^{}]+|(?1))*)})/', $css, $rawMediaQueries, PREG_SET_ORDER);
-        $parsedQueries = [];
-
-        /** @var string[][] $rawMediaQueries */
-        foreach ($rawMediaQueries as $mediaQuery) {
-            if ($mediaQuery[2] !== '') {
-                $parsedQueries[] = [
-                    'css' => $mediaQuery[2],
-                    'query' => $mediaQuery[0],
-                ];
-            }
-        }
-
-        return $parsedQueries;
+        $this->addStyleElementToDocument($xmlDocument, $cssConcatenator->getCss());
     }
 
     /**
