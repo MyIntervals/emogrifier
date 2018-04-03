@@ -12,7 +12,7 @@ trait AssertCss
     /**
      * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
      * element added to the docuemnt, due to the way that certain parts are `trim`med.  Notably, whitespace either side
-     * of "{" and "}" or at the beginning of the CSS may be removed.
+     * of "{", "}" and "," or at the beginning of the CSS may be removed.
      *
      * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
      * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
@@ -25,10 +25,10 @@ trait AssertCss
     private static function getCssNeedleRegExp($needle)
     {
         $needleMatcher = preg_replace_callback(
-            '/\\s*+([{}])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{}]|^\\s)[^>])++/',
+            '/\\s*+([{},])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{},]|^\\s)[^>])++/',
             function (array $matches) {
                 if (isset($matches[1]) && $matches[1] !== '') {
-                    // matched possibly some whitespace, followed by "{" or "}", then possibly more whitespace
+                    // matched possibly some whitespace, followed by "{", "}" or ",", then possibly more whitespace
                     return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
                 }
                 if (isset($matches[2]) && $matches[2] !== '') {

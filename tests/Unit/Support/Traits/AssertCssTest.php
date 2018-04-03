@@ -56,6 +56,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
         return [
             '"{" alone' => ['{', ''],
             '"}" alone' => ['}', ''],
+            '"," alone' => [',', ''],
             '"{" with non-special character' => ['{', 'a'],
             '"{" with two non-special characters' => ['{', 'a0'],
             '"{" with special character' => ['{', '.'],
@@ -125,11 +126,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     public function needleFoundDataProvider()
     {
         $cssStrings = [
-            'unminified CSS' => 'body { color: green; }',
-            'minified CSS' => 'body{color: green;}',
-            'CSS with extra spaces' => '  body  {  color: green;  }',
-            'CSS with linefeeds' => "\nbody\n{\ncolor: green;\n}",
-            'CSS with Windows line endings' => "\r\nbody\r\n{\r\ncolor: green;\r\n}",
+            'unminified CSS' => 'html, body { color: green; }',
+            'minified CSS' => 'html,body{color: green;}',
+            'CSS with extra spaces' => '  html  ,  body  {  color: green;  }',
+            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor: green;\n}",
+            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor: green;\r\n}",
         ];
 
         $datasets = [];
@@ -154,6 +155,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
         return [
             'CSS part with "{" not in CSS' => ['p {', 'body { color: green; }'],
             'CSS part with "}" not in CSS' => ['color: red; }', 'body { color: green; }'],
+            'CSS part with "," not in CSS' => ['html, body', 'body { color: green; }'],
         ];
     }
 
