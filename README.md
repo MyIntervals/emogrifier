@@ -280,4 +280,5 @@ $cleanHtml = $normalizer->render();
 
 * [Oliver Klee](https://github.com/oliverklee)
 * [Zoli Szabó](https://github.com/zoliszabo)
+* [Jake Hotson](https://github.com/JakeQZ)
 * [John Reeve](https://github.com/jjriv)
