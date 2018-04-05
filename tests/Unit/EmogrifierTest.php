@@ -1785,7 +1785,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @return string[][]
      */
-    private function getCssRuleDatasetsWithSelectorPseudoComponents($precedingSelectorComponents)
+    private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents)
     {
         $rulesComponents = [
             'pseudo-element' => [
