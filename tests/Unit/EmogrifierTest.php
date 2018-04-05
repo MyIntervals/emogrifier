@@ -119,7 +119,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
+     *
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
     public function emogrifyAddsMissingHtmlTag($html)
@@ -145,7 +147,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
+     *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
     public function emogrifyAddsMissingHeadTag($html)
@@ -171,7 +175,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
+     *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
     public function emogrifyAddsMissingBodyTag($html)
@@ -209,7 +215,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $codeNotToBeChanged
+     *
      * @dataProvider specialCharactersDataProvider
      */
     public function emogrifyKeepsSpecialCharacters($codeNotToBeChanged)
@@ -224,7 +232,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $codeNotToBeChanged
+     *
      * @dataProvider specialCharactersDataProvider
      */
     public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
@@ -257,7 +267,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $documentType
+     *
      * @dataProvider documentTypeDataProvider
      */
     public function emogrifyForHtmlWithDocumentTypeKeepsDocumentType($documentType)
@@ -370,6 +382,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 '<p class="p-1" style="%1$s %2$s">',
             ],
             'type => one element' => ['html { %1$s }', '<html style="%1$s">'],
+            'type (case-insensitive) => one element' => ['HTML { %1$s }', '<html style="%1$s">'],
             'type => first matching element' => ['p { %1$s }', '<p class="p-1" style="%1$s">'],
             'type => second matching element' => ['p { %1$s }', '<p class="p-2" style="%1$s">'],
             'class => with class' => ['.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
@@ -636,8 +649,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
      * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     *
      * @dataProvider matchedCssDataProvider
      */
     public function emogrifyAppliesCssToMatchingElements($css, $expectedHtml)
@@ -724,8 +739,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
      * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     *
      * @dataProvider nonMatchedCssDataProvider
      */
     public function emogrifyNotAppliesCssToNonMatchingElements($css, $expectedHtml)
@@ -816,10 +833,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
      *                               e.g. '<p class="p-1"'
      * @param string $lessSpecificSelector A selector expression
      * @param string $moreSpecificSelector Some other, more specific selector expression
+     *
      * @dataProvider differentCssSelectorSpecificityDataProvider
      */
     public function emogrifyAppliesMoreSpecificCssSelectorToMatchingElements(
@@ -897,10 +916,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
      *                               e.g. '<p class="p-1"'
      * @param string $selector1 A selector expression
      * @param string $selector2 Some other, equally specific selector expression
+     *
      * @dataProvider equalCssSelectorSpecificityDataProvider
      */
     public function emogrifyAppliesLaterEquallySpecificCssSelectorToMatchingElements(
@@ -922,27 +943,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Data provider for emogrifyDropsWhitespaceFromCssDeclarations.
-     *
      * @return string[][]
      */
     public function cssDeclarationWhitespaceDroppingDataProvider()
     {
         return [
-            'no whitespace, trailing semicolon' => ['color:#000;', 'color: #000;'],
-            'no whitespace, no trailing semicolon' => ['color:#000', 'color: #000;'],
-            'space after colon, no trailing semicolon' => ['color: #000', 'color: #000;'],
-            'space before colon, no trailing semicolon' => ['color :#000', 'color: #000;'],
-            'space before property name, no trailing semicolon' => [' color:#000', 'color: #000;'],
-            'space before trailing semicolon' => [' color:#000 ;', 'color: #000;'],
-            'space after trailing semicolon' => [' color:#000; ', 'color: #000;'],
-            'space after property value, no trailing semicolon' => [' color:#000 ', 'color: #000;'],
-            'space after property value, trailing semicolon' => [' color:#000; ', 'color: #000;'],
-            'newline before property name, trailing semicolon' => ["\ncolor:#222;", 'color: #222;'],
-            'newline after property semicolon' => ["color:#222;\n", 'color: #222;'],
-            'newline before colon, trailing semicolon' => ["color\n:#333;", 'color: #333;'],
-            'newline after colon, trailing semicolon' => ["color:\n#333;", 'color: #333;'],
-            'newline after semicolon' => ["color:#333\n;", 'color: #333;'],
+            'no whitespace, trailing semicolon' => ['color:#000;'],
+            'no whitespace, no trailing semicolon' => ['color:#000'],
+            'space after colon, no trailing semicolon' => ['color: #000'],
+            'space before colon, no trailing semicolon' => ['color :#000'],
+            'space before property name, no trailing semicolon' => [' color:#000'],
+            'space before trailing semicolon' => [' color:#000 ;'],
+            'space after trailing semicolon' => [' color:#000; '],
+            'space after property value, no trailing semicolon' => [' color:#000 '],
+            'space after property value, trailing semicolon' => [' color:#000; '],
+            'newline before property name, trailing semicolon' => ["\ncolor:#000;"],
+            'newline after property semicolon' => ["color:#000;\n"],
+            'newline before colon, trailing semicolon' => ["color\n:#000;"],
+            'newline after colon, trailing semicolon' => ["color:\n#000;"],
+            'newline after semicolon' => ["color:#000\n;"],
         ];
     }
 
@@ -950,28 +969,20 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $cssDeclaration the CSS declaration block (without the curly braces)
-     * @param string $expectedStyleAttributeContent the expected value of the style attribute
      *
      * @dataProvider cssDeclarationWhitespaceDroppingDataProvider
      */
-    public function emogrifyDropsLeadingAndTrailingWhitespaceFromCssDeclarations(
-        $cssDeclaration,
-        $expectedStyleAttributeContent
-    ) {
+    public function emogrifyTrimsWhitespaceFromCssDeclarations($cssDeclaration)
+    {
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss('html {' . $cssDeclaration . '}');
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            'html style="' . $expectedStyleAttributeContent . '">',
-            $result
-        );
+        static::assertContains('<html style="color: #000;">', $result);
     }
 
     /**
-     * Data provider for emogrifyFormatsCssDeclarations.
-     *
      * @return string[][]
      */
     public function formattedCssDeclarationDataProvider()
@@ -1021,15 +1032,10 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            'html style="' . $expectedStyleAttributeContent . '">',
-            $result
-        );
+        static::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $result);
     }
 
     /**
-     * Data provider for emogrifyInvalidDeclaration.
-     *
      * @return string[][]
      */
     public function invalidDeclarationDataProvider()
@@ -1049,7 +1055,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider invalidDeclarationDataProvider
      */
-    public function emogrifyDropsInvalidDeclaration($cssDeclarationBlock)
+    public function emogrifyDropsInvalidCssDeclaration($cssDeclarationBlock)
     {
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss('html {' . $cssDeclarationBlock . '}');
@@ -1075,7 +1081,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsCssBeforeExistingStyle()
+    public function emogrifyAddsNewCssBeforeExistingStyle()
     {
         $styleAttributeValue = 'color: #ccc;';
         $this->subject->setHtml('<html style="' . $styleAttributeValue . '"></html>');
@@ -1085,10 +1091,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            'style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"',
-            $result
-        );
+        static::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $result);
     }
 
     /**
@@ -1119,7 +1122,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyLowerCasesAttributeNames()
+    public function emogrifyLowercasesAttributeNamesFromPassedInCss()
     {
         $this->subject->setHtml('<html></html>');
         $this->subject->setCss('html {mArGiN:0 2pX;}');
@@ -1140,10 +1143,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<p style="' . $cssDeclaration . '">target</p>',
-            $result
-        );
+        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
 
     /**
@@ -1158,10 +1158,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<p style="' . $cssDeclaration . '">target</p>',
-            $result
-        );
+        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
 
     /**
@@ -1279,15 +1276,15 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param string $unneededCss
      * @param string $markerNotExpectedInHtml
      *
      * @dataProvider unneededCssThingsDataProvider
      */
-    public function emogrifyFiltersUnneededCssThings($css, $markerNotExpectedInHtml)
+    public function emogrifyFiltersUnneededCssThings($unneededCss, $markerNotExpectedInHtml)
     {
         $this->subject->setHtml('<html><p>foo</p></html>');
-        $this->subject->setCss($css);
+        $this->subject->setCss($unneededCss);
 
         $result = $this->subject->emogrify();
 
@@ -1297,14 +1294,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param string $unneededCss
      *
      * @dataProvider unneededCssThingsDataProvider
      */
-    public function emogrifyMatchesRuleAfterUnneededCssThing($css)
+    public function emogrifyMatchesRuleAfterUnneededCssThing($unneededCss)
     {
         $this->subject->setHtml('<html><body></body></html>');
-        $this->subject->setCss($css . ' body { color: green; }');
+        $this->subject->setCss($unneededCss . ' body { color: green; }');
 
         $result = $this->subject->emogrify();
 
@@ -1461,20 +1458,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsMissingHeadElement()
-    {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('@media all { html { some-property: value; } }');
-
-        $result = $this->subject->emogrify();
-
-        static::assertContains('<head>', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyKeepExistingHeadElementContent()
+    public function emogrifyKeepsExistingHeadElementContent()
     {
         $this->subject->setHtml('<html><head><!-- original content --></head></html>');
         $this->subject->setCss('@media all { html { some-property: value; } }');
@@ -1551,10 +1535,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss(
-            '<style type="text/css">' . $css . '</style>',
-            $result
-        );
+        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1592,10 +1573,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss(
-            '<style type="text/css">' . $css . '</style>',
-            $result
-        );
+        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1837,10 +1815,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<html style="' . $styleAttributeValue . '">',
-            $result
-        );
+        static::assertContains('<html style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
@@ -1871,10 +1846,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<p style="' . $styleAttributeValue . '">',
-            $result
-        );
+        static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
@@ -1904,28 +1876,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
-            '<p style="' . $styleAttributeValue . '">',
-            $result
-        );
+        static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
-     * @test
-     */
-    public function emogrifyAppliesCssWithUpperCaseSelector()
-    {
-        $this->subject->setHtml(
-            '<html><style type="text/css">P { color:#ccc; }</style><body><p>paragraph</p></body></html>'
-        );
-
-        $result = $this->subject->emogrify();
-
-        static::assertContains('<p style="color: #ccc;">', $result);
-    }
-
-    /**
-     * Emogrify was handling case differently for passed in CSS vs CSS parsed from style blocks.
+     * Emogrify was handling case differently for passed in CSS vs. CSS parsed from style blocks.
      *
      * @test
      */
@@ -2544,7 +2499,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $dataUriMediaType
+     *
      * @dataProvider dataUriMediaTypeDataProvider
      */
     public function dataUrisAreConserved($dataUriMediaType)
@@ -2638,6 +2595,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $body The HTML
      * @param string $css The complete CSS
      * @param string $tagName The name of the tag that should be modified
@@ -2695,6 +2653,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $body the HTML
      * @param string $css the complete CSS
      * @param string $attribute the attribute that must not be present on this element
