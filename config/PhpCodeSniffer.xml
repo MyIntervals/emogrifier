@@ -61,8 +61,7 @@
     <rule ref="Squiz.Functions.GlobalFunction"/>
 
     <!-- Metrics -->
-    <!-- Enable this rule when the cyclomatic complexity of all methods is sufficiently low. -->
-    <!--<rule ref="Generic.Metrics.CyclomaticComplexity"/>-->
+    <rule ref="Generic.Metrics.CyclomaticComplexity"/>
     <rule ref="Generic.Metrics.NestingLevel"/>
 
     <!-- Naming conventions -->

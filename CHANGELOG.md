@@ -22,6 +22,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Add the cyclomatic complexity to the checked code sniffs
+  ([#558](https://github.com/jjriv/emogrifier/pull/558))
 - Use the Symfony CSS selector component
   ([#540](https://github.com/jjriv/emogrifier/pull/540))
 
