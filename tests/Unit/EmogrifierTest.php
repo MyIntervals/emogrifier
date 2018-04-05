@@ -1361,7 +1361,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @return string[][]
      */
-    public function surroundingCssForOrderedMediaRulesDataProvider()
+    public function orderedRulesAndSurroundingCssDataProvider()
     {
         $possibleSurroundingCss = [
             'nothing' => '',
@@ -1373,13 +1373,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'other matching CSS' => 'p { color: #f00; }',
             'disallowed media rule' => '@media tv { p { color: #f00; } }',
             'allowed but non-matching media rule' => '@media screen { h6 { color: #f00; } }',
+            'non-matching CSS with pseudo-component' => 'h6:hover { color: #f00; }',
         ];
         $possibleCssBefore = $possibleSurroundingCss + [
                 '@import' => '@import "foo.css";',
                 '@charset' => '@charset "UTF-8";',
             ];
 
-        $datasets = [];
+        $datasetsSurroundingCss = [];
         foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
             foreach ($possibleSurroundingCss as $descriptionBetween => $cssBetween) {
                 foreach ($possibleSurroundingCss as $descriptionAfter => $cssAfter) {
@@ -1393,13 +1394,35 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                         // test with each possible CSS in all three positions
                         || ($cssBefore === $cssBetween && $cssBetween === $cssAfter)
                     ) {
-                        $description = $descriptionBefore . ' before, '
+                        $description = ' with ' . $descriptionBefore . ' before, '
                             . $descriptionBetween . ' between, '
                             . $descriptionAfter . ' after';
-                        $datasets[$description] = [$cssBefore, $cssBetween, $cssAfter];
+                        $datasetsSurroundingCss[$description] = [$cssBefore, $cssBetween, $cssAfter];
                     }
                 }
             }
+        }
+
+        $datasets = [];
+        foreach ($datasetsSurroundingCss as $description => $datasetSurroundingCss) {
+            $datasets += [
+                'two media rules' . $description => array_merge(
+                    ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
+                    $datasetSurroundingCss
+                ),
+                'two rules involving pseudo-components' . $description => array_merge(
+                    ['a:hover { color: blue; }', 'a:active { color: green; }'],
+                    $datasetSurroundingCss
+                ),
+                'media rule followed by rule involving pseudo-components' . $description => array_merge(
+                    ['@media screen { p { color: #000; } }', 'a:hover { color: green; }'],
+                    $datasetSurroundingCss
+                ),
+                'rule involving pseudo-components followed by media rule' . $description => array_merge(
+                    ['a:hover { color: green; }', '@media screen { p { color: #000; } }'],
+                    $datasetSurroundingCss
+                ),
+            ];
         }
         return $datasets;
     }
@@ -1407,22 +1430,27 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
-     * @param string $cssBefore CSS to insert before the first @media rule
-     * @param string $cssBetween CSS to insert between the @media rules
-     * @param string $cssAfter CSS to insert after the second @media rules
+     * @param string $rule1
+     * @param string $rule2
+     * @param string $cssBefore CSS to insert before the first rule
+     * @param string $cssBetween CSS to insert between the rules
+     * @param string $cssAfter CSS to insert after the second rule
      *
-     * @dataProvider surroundingCssForOrderedMediaRulesDataProvider
+     * @dataProvider orderedRulesAndSurroundingCssDataProvider
      */
-    public function emogrifyKeepsMediaRulesInSpecifiedOrder($cssBefore, $cssBetween, $cssAfter)
-    {
-        $this->subject->setHtml('<html><p>foo</p></html>');
-        $mediaRule1 = '@media all {p {color: #333;}}';
-        $mediaRule2 = '@media print {p {color: #000;}}';
-        $this->subject->setCss($cssBefore . $mediaRule1 . $cssBetween . $mediaRule2 . $cssAfter);
+    public function emogrifyKeepsRulesCopiedToStyleElementInSpecifiedOrder(
+        $rule1,
+        $rule2,
+        $cssBefore,
+        $cssBetween,
+        $cssAfter
+    ) {
+        $this->subject->setHtml('<html><p><a>foo</a></p></html>');
+        $this->subject->setCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($mediaRule1 . $mediaRule2, $result);
+        static::assertContainsCss($rule1 . $rule2, $result);
     }
 
     /**
@@ -1748,6 +1776,204 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         static::assertNotContains('@media', $result);
+    }
+
+    /**
+     * @param string[] $precedingSelectorComponents Array of selectors to which each type of pseudo-component is
+     *                                              appended to create a selector for a CSS rule.
+     *                                              Keys are human-readable descriptions.
+     *
+     * @return string[][]
+     */
+    private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents)
+    {
+        $rulesComponents = [
+            'pseudo-element' => [
+                'selectorPseudoComponent' => '::after',
+                'declarationsBlock' => 'content: "bar";',
+            ],
+            'CSS2 pseudo-element' => [
+                'selectorPseudoComponent' => ':after',
+                'declarationsBlock' => 'content: "bar";',
+            ],
+            'hyphenated pseudo-element' => [
+                'selectorPseudoComponent' => '::first-letter',
+                'declarationsBlock' => 'color: green;',
+            ],
+            'pseudo-class' => [
+                'selectorPseudoComponent' => ':hover',
+                'declarationsBlock' => 'color: green;',
+            ],
+            'hyphenated pseudo-class' => [
+                'selectorPseudoComponent' => ':read-only',
+                'declarationsBlock' => 'color: green;',
+            ],
+            'pseudo-class with parameter' => [
+                'selectorPseudoComponent' => ':lang(en)',
+                'declarationsBlock' => 'color: green;',
+            ],
+        ];
+
+        $datasets = [];
+        foreach ($precedingSelectorComponents as $precedingComponentDescription => $precedingSelectorComponent) {
+            foreach ($rulesComponents as $pseudoComponentDescription => $ruleComponents) {
+                $datasets[$precedingComponentDescription . ' ' . $pseudoComponentDescription] = [
+                    $precedingSelectorComponent . $ruleComponents['selectorPseudoComponent']
+                    . ' { ' . $ruleComponents['declarationsBlock'] . ' }'
+                ];
+            }
+        }
+        return $datasets;
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function matchingSelectorWithPseudoComponentCssRuleDataProvider()
+    {
+        return $this->getCssRuleDatasetsWithSelectorPseudoComponents(
+            [
+                'lone' => '',
+                'type &' => 'a',
+                'class &' => '.a',
+                'ID &' => '#a',
+                'attribute &' => 'a[href="a"]',
+                'static pseudo-class &' => 'a:first-child',
+                'ancestor &' => 'p ',
+                'ancestor & type &' => 'p a',
+            ]
+        ) + [
+            'pseudo-class & descendant' => ['p:hover a { color: green; }'],
+            'pseudo-class & pseudo-element' => ['a:hover::after { content: "bar"; }'],
+            'pseudo-element & pseudo-class' => ['a::after:hover { content: "bar"; }'],
+            'two pseudo-classes' => ['a:focus:hover { color: green; }'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider matchingSelectorWithPseudoComponentCssRuleDataProvider
+     */
+    public function emogrifyKeepsRuleWithPseudoComponentInMatchingSelector($css)
+    {
+        $this->subject->setHtml('<html><p><a id="a" class="a" href="a">foo</a></p></html>');
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContainsCss($css, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonMatchingSelectorWithPseudoComponentCssRuleDataProvider()
+    {
+        return $this->getCssRuleDatasetsWithSelectorPseudoComponents(
+            [
+                'type &' => 'b',
+                'class &' => '.b',
+                'ID &' => '#b',
+                'attribute &' => 'a[href="b"]',
+                'static pseudo-class &' => 'a:not(.a)',
+                'ancestor &' => 'ul ',
+                'ancestor & type &' => 'p b',
+            ]
+        ) + [
+            'pseudo-class & descendant' => ['ul:hover a { color: green; }'],
+            'pseudo-class & pseudo-element' => ['b:hover::after { content: "bar"; }'],
+            'pseudo-element & pseudo-class' => ['b::after:hover { content: "bar"; }'],
+            'two pseudo-classes' => ['input:focus:hover { color: green; }'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider nonMatchingSelectorWithPseudoComponentCssRuleDataProvider
+     */
+    public function emogrifyNotKeepsRuleWithPseudoComponentInNonMatchingSelector($css)
+    {
+        $this->subject->setHtml('<html><p><a id="a" class="a" href="#">foo</a></p></html>');
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContainsCss($css, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsRuleInMediaQueryWithPseudoComponentInMatchingSelector()
+    {
+        $this->subject->setHtml('<html><a>foo</a></html>');
+        $css = '@media screen { a:hover { color: green; } }';
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContainsCss($css, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyNotKeepsRuleInMediaQueryWithPseudoComponentInNonMatchingSelector()
+    {
+        $this->subject->setHtml('<html><a>foo</a></html>');
+        $css = '@media screen { b:hover { color: green; } }';
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContainsCss($css, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsRuleWithPseudoComponentInMulitipleMatchingSelectorsFromSingleRule()
+    {
+        $this->subject->setHtml('<html><p>foo</p><a>bar</a></html>');
+        $css = 'p:hover, a:hover { color: green; }';
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        static::assertContainsCss($css, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsOnlyMatchingSelectorsWithPseudoComponentFromSingleRule()
+    {
+        $this->subject->setHtml('<html><a>foo</a></html>');
+        $this->subject->setCss('p:hover, a:hover { color: green; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyAppliesCssToMatchingElementsAndKeepsRuleWithPseudoComponentFromSingleRule()
+    {
+        $this->subject->setHtml('<html><p>foo</p><a>bar</a></html>');
+        $this->subject->setCss('p, a:hover { color: green; }');
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains('<p style="color: green;">', $result);
+        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
     }
 
     /**
