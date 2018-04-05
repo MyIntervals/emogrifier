@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Copy matching rules with dynamic pseudo-classes or pseudo-elements in
+  selectors to the style element
+  ([#280](https://github.com/MyIntervals/emogrifier/issues/280),
+  [#562](https://github.com/MyIntervals/emogrifier/pull/562))
 - Add a CssToAttributeConverter
   ([#546](https://github.com/jjriv/emogrifier/pull/546))
 - Expose the DOMDocument in AbstractHtmlProcessor
