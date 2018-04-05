@@ -404,18 +404,30 @@ class Emogrifier
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
-        if ($this->shouldMapCssToHtml) {
-            $this->mapAllInlineStylesToHtmlAttributes($xPath);
-        }
-        if ($this->shouldRemoveInvisibleNodes) {
-            $this->removeInvisibleNodes($xPath);
-        }
+        $this->postProcess($xPath);
 
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
         $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
 
         restore_error_handler();
+    }
+
+    /**
+     * Applies some optional post-processing to the HTML in the XML document.
+     *
+     * @param \DOMXPath $xPath
+     *
+     * @return void
+     */
+    private function postProcess(\DOMXPath $xPath)
+    {
+        if ($this->shouldMapCssToHtml) {
+            $this->mapAllInlineStylesToHtmlAttributes($xPath);
+        }
+        if ($this->shouldRemoveInvisibleNodes) {
+            $this->removeInvisibleNodes($xPath);
+        }
     }
 
     /**
