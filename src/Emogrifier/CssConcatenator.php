@@ -127,11 +127,11 @@ class CssConcatenator
     }
 
     /**
-     * @param stdClass $mediaRule Object with properties as described for elements of `$mediaRules`.
+     * @param \stdClass $mediaRule Object with properties as described for elements of `$mediaRules`.
      *
      * @return string CSS for the media rule.
      */
-    private static function getMediaRuleCss($mediaRule)
+    private static function getMediaRuleCss(\stdClass $mediaRule)
     {
         $css = implode('', array_map([static::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
         if ($mediaRule->media !== '') {
@@ -141,12 +141,12 @@ class CssConcatenator
     }
 
     /**
-     * @param stdClass $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
+     * @param \stdClass $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
      *                            elements of `$mediaRules`.
      *
      * @return string CSS for the rule block.
      */
-    private static function getRuleBlockCss($ruleBlock)
+    private static function getRuleBlockCss(\stdClass $ruleBlock)
     {
         $selectors = array_keys($ruleBlock->selectorsAsKeys);
         return implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';
