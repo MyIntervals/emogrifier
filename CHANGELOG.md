@@ -26,6 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Add type hint checking to the code sniffs
+  ([#566](https://github.com/MyIntervals/emogrifier/pull/566))
 - Check the code with PHPMD
   ([#561](https://github.com/jjriv/emogrifier/pull/561))
 - Add the cyclomatic complexity to the checked code sniffs
