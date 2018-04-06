@@ -44,6 +44,16 @@ class CssInliner
     const CACHE_KEY_COMBINED_STYLES = 3;
 
     /**
+     * Regular expression component matching a static pseudo class in a selector, without the preceding ":",
+     * for which the applicable elements can be determined (by converting the selector to an XPath expression).
+     * (Contains alternation without a group and is intended to be placed within a capturing, non-capturing or lookahead
+     * group, as appropriate for the usage context.)
+     *
+     * @var string
+     */
+    const PSEUDO_CLASS_MATCHER = '\\S+\\-(?:child|type\\()|not\\([[:ascii:]]*\\)';
+
+    /**
      * @var string
      */
     const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
@@ -436,23 +446,21 @@ class CssInliner
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
                     $hasPseudoElement = strpos($selector, '::') !== false;
-                    $hasAnyPseudoClass = (bool)preg_match('/:[a-zA-Z]/', $selector);
-                    $hasSupportedPseudoClass = (bool)preg_match(
-                        '/:(\\S+\\-(child|type\\()|not\\([[:ascii:]]*\\))/i',
+                    $hasUnsupportedPseudoClass = (bool)preg_match(
+                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w-]/i',
                         $selector
                     );
-                    if ($hasPseudoElement || ($hasAnyPseudoClass && !$hasSupportedPseudoClass)) {
-                        continue;
-                    }
+                    $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
 
                     $parsedCssRule = [
                         'media' => $cssRule['media'],
                         'selector' => trim($selector),
+                        'hasUnmatchablePseudo' => $hasUnmatchablePseudo,
                         'declarationsBlock' => $cssDeclaration,
                         // keep track of where it appears in the file, since order is important
                         'line' => $key,
                     ];
-                    $ruleType = ($cssRule['media'] === '') ? 'inlineable' : 'uninlineable';
+                    $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlineable' : 'uninlineable';
                     $cssRules[$ruleType][] = $parsedCssRule;
                 }
             }
@@ -829,8 +837,12 @@ class CssInliner
     {
         $cssRulesRelevantForDocument = array_filter(
             $cssRules,
-            function ($cssRule) use ($xPath) {
-                return $this->existsMatchForCssSelector($xPath, $cssRule['selector']);
+            function (array $cssRule) use ($xPath) {
+                $selector = $cssRule['selector'];
+                if ($cssRule['hasUnmatchablePseudo']) {
+                    $selector = $this->removeUnmatchablePseudoComponents($selector);
+                }
+                return $this->existsMatchForCssSelector($xPath, $selector);
             }
         );
 
@@ -845,6 +857,24 @@ class CssInliner
         }
 
         $this->addStyleElementToDocument($xmlDocument, $cssConcatenator->getCss());
+    }
+
+    /**
+     * Removes pseudo-elements and dynamic pseudo-classes from a CSS selector, replacing them with "*" if necessary.
+     *
+     * @param string $selector
+     *
+     * @return string Selector which will match the relevant DOM elements if the pseudo-classes are assumed to apply,
+     *                or in the case of pseudo-elements will match their originating element.
+     */
+    private function removeUnmatchablePseudoComponents($selector)
+    {
+        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w-]++(?:\\([^\\)]*+\\))?+';
+        return preg_replace(
+            ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
+            ['$1*', ''],
+            $selector
+        );
     }
 
     /**
