@@ -60,6 +60,27 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     */
+    public function renderFormatsGivenHtml()
+    {
+        $rawHtml = '<!DOCTYPE HTML>' .
+            '<html>' .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
+            '<body></body>' .
+            '</html>';
+        $formattedHtml = '<!DOCTYPE HTML>' . "\n" .
+            '<html>' . "\n" .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
+            '<body></body>' . "\n" .
+            '</html>' . "\n";
+
+        $subject = new CssInliner($rawHtml);
+
+        static::assertSame($formattedHtml, $subject->render());
+    }
+
+    /**
+     * @test
      *
      * @expectedException \BadMethodCallException
      */

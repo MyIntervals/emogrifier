@@ -214,6 +214,16 @@ class CssInliner
     }
 
     /**
+     * Renders the normalized and processed HTML.
+     *
+     * @return string
+     */
+    public function render()
+    {
+        return $this->createXmlDocument()->saveHTML();
+    }
+
+    /**
      * Applies $this->css to $this->html and returns the HTML with the CSS
      * applied.
      *
@@ -226,7 +236,7 @@ class CssInliner
      */
     public function emogrify()
     {
-        return $this->createAndProcessXmlDocument()->saveHTML();
+        return $this->process($this->createXmlDocument())->saveHTML();
     }
 
     /**
@@ -242,20 +252,20 @@ class CssInliner
      */
     public function emogrifyBodyContent()
     {
-        $xmlDocument = $this->createAndProcessXmlDocument();
+        $xmlDocument = $this->process($this->createXmlDocument());
         $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
 
         return str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
-     * Creates an XML document from $this->html and emogrifies ist.
+     * Creates an XML document from $this->html.
      *
      * @return \DOMDocument
      *
      * @throws \BadMethodCallException
      */
-    private function createAndProcessXmlDocument()
+    private function createXmlDocument()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
@@ -263,7 +273,6 @@ class CssInliner
 
         $xmlDocument = $this->createRawXmlDocument();
         $this->ensureExistenceOfBodyElement($xmlDocument);
-        $this->process($xmlDocument);
 
         return $xmlDocument;
     }
@@ -275,7 +284,7 @@ class CssInliner
      *
      * @param \DOMDocument $xmlDocument
      *
-     * @return void
+     * @return \DOMDocument
      *
      * @throws SyntaxErrorException
      */
@@ -323,6 +332,8 @@ class CssInliner
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
         $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
+
+        return $xmlDocument;
     }
 
     /**
