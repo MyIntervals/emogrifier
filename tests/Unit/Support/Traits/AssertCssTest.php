@@ -111,6 +111,8 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
+     * @param string $needle
+     *
      * @dataProvider styleTagDataProvider
      */
     public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag($needle)
