@@ -47,7 +47,7 @@ class CssConcatenator
      *     significance);
      *   - string `declarationsBlock` - The property declarations, e.g. "margin-top: 0.5em; padding: 0".
      *
-     * @var stdClass[]
+     * @var \stdClass[]
      */
     private $mediaRules = [];
 
@@ -61,10 +61,10 @@ class CssConcatenator
      */
     public function append(array $selectors, $declarationsBlock, $media = '')
     {
-        $selectorsAsKeys = array_flip($selectors);
+        $selectorsAsKeys = \array_flip($selectors);
 
         $mediaRule = $this->getOrCreateMediaRuleToAppendTo($media);
-        $lastRuleBlock = end($mediaRule->ruleBlocks);
+        $lastRuleBlock = \end($mediaRule->ruleBlocks);
 
         $hasSameDeclarationsAsLastRule = $lastRuleBlock !== false
             && $declarationsBlock === $lastRuleBlock->declarationsBlock;
@@ -74,10 +74,10 @@ class CssConcatenator
             $hasSameSelectorsAsLastRule = $lastRuleBlock !== false
                 && $this->hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys);
             if ($hasSameSelectorsAsLastRule) {
-                $lastDeclarationsBlockWithoutSemicolon = rtrim(rtrim($lastRuleBlock->declarationsBlock), ';');
+                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->declarationsBlock), ';');
                 $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
             } else {
-                $mediaRule->ruleBlocks[] = (object)compact('selectorsAsKeys', 'declarationsBlock');
+                $mediaRule->ruleBlocks[] = (object)\compact('selectorsAsKeys', 'declarationsBlock');
             }
         }
     }
@@ -87,18 +87,18 @@ class CssConcatenator
      */
     public function getCss()
     {
-        return implode('', array_map([$this, 'getMediaRuleCss'], $this->mediaRules));
+        return \implode('', \array_map([$this, 'getMediaRuleCss'], $this->mediaRules));
     }
 
     /**
      * @param string $media The media query for rules to be appended, e.g. "@media screen and (max-width:639px)",
      *                      or an empty string if none.
      *
-     * @return stdClass Object with properties as described for elements of `$mediaRules`.
+     * @return \stdClass Object with properties as described for elements of `$mediaRules`.
      */
     private function getOrCreateMediaRuleToAppendTo($media)
     {
-        $lastMediaRule = end($this->mediaRules);
+        $lastMediaRule = \end($this->mediaRules);
         if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
             return $lastMediaRule;
         }
@@ -122,8 +122,8 @@ class CssConcatenator
      */
     private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2)
     {
-        return count($selectorsAsKeys1) === count($selectorsAsKeys2)
-            && count($selectorsAsKeys1) === count($selectorsAsKeys1 + $selectorsAsKeys2);
+        return \count($selectorsAsKeys1) === \count($selectorsAsKeys2)
+            && \count($selectorsAsKeys1) === \count($selectorsAsKeys1 + $selectorsAsKeys2);
     }
 
     /**
@@ -133,7 +133,7 @@ class CssConcatenator
      */
     private static function getMediaRuleCss(\stdClass $mediaRule)
     {
-        $css = implode('', array_map([static::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
+        $css = \implode('', \array_map([static::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
         if ($mediaRule->media !== '') {
             $css = $mediaRule->media . '{' . $css . '}';
         }
@@ -148,7 +148,7 @@ class CssConcatenator
      */
     private static function getRuleBlockCss(\stdClass $ruleBlock)
     {
-        $selectors = array_keys($ruleBlock->selectorsAsKeys);
-        return implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';
+        $selectors = \array_keys($ruleBlock->selectorsAsKeys);
+        return \implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';
     }
 }

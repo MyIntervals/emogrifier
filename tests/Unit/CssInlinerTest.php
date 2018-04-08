@@ -661,11 +661,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
         $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
+        $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
@@ -751,11 +751,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
         $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
+        $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
@@ -825,7 +825,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         // broken: class more specific than 99 types (requires support for chaining `:not(h1):not(h1)...`)
         $datasets['ID more specific than 99 classes'] = [
             '<p class="p-4" id="p4"',
-            str_repeat('.p-4', 99),
+            \str_repeat('.p-4', 99),
             '#p4'
         ];
 
@@ -1407,19 +1407,19 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $datasets = [];
         foreach ($datasetsSurroundingCss as $description => $datasetSurroundingCss) {
             $datasets += [
-                'two media rules' . $description => array_merge(
+                'two media rules' . $description => \array_merge(
                     ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
                     $datasetSurroundingCss
                 ),
-                'two rules involving pseudo-components' . $description => array_merge(
+                'two rules involving pseudo-components' . $description => \array_merge(
                     ['a:hover { color: blue; }', 'a:active { color: green; }'],
                     $datasetSurroundingCss
                 ),
-                'media rule followed by rule involving pseudo-components' . $description => array_merge(
+                'media rule followed by rule involving pseudo-components' . $description => \array_merge(
                     ['@media screen { p { color: #000; } }', 'a:hover { color: green; }'],
                     $datasetSurroundingCss
                 ),
-                'rule involving pseudo-components followed by media rule' . $description => array_merge(
+                'rule involving pseudo-components followed by media rule' . $description => \array_merge(
                     ['a:hover { color: green; }', '@media screen { p { color: #000; } }'],
                     $datasetSurroundingCss
                 ),
@@ -1577,9 +1577,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWithValidMinifiedMediaQueryContainsInnerCss($css)
     {
         // Minify CSS by removing unnecessary whitespace.
-        $css = preg_replace('/\\s*{\\s*/', '{', $css);
-        $css = preg_replace('/;?\\s*}\\s*/', '}', $css);
-        $css = preg_replace('/@media{/', '@media {', $css);
+        $css = \preg_replace('/\\s*{\\s*/', '{', $css);
+        $css = \preg_replace('/;?\\s*}\\s*/', '}', $css);
+        $css = \preg_replace('/@media{/', '@media {', $css);
 
         $this->subject->setHtml('<html><h1></h1><p></p></html>');
         $this->subject->setCss($css);

@@ -245,7 +245,7 @@ class CssInliner
         $xmlDocument = $this->createAndProcessXmlDocument();
         $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
 
-        return str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+        return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
@@ -284,7 +284,7 @@ class CssInliner
         $xPath = new \DOMXPath($xmlDocument);
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
-        set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
+        \set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
 
         $this->normalizeStyleAttributesOfAllNodes($xPath);
 
@@ -314,7 +314,7 @@ class CssInliner
 
             /** @var \DOMElement $node */
             foreach ($nodesMatchingCssSelectors as $node) {
-                if (in_array($node, $excludedNodes, true)) {
+                if (\in_array($node, $excludedNodes, true)) {
                     continue;
                 }
                 $this->copyInlineableCssToStyleAttribute($node, $cssRule);
@@ -330,7 +330,7 @@ class CssInliner
 
         $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
 
-        restore_error_handler();
+        \restore_error_handler();
     }
 
     /**
@@ -381,12 +381,12 @@ class CssInliner
         $importantStyleDeclarations = [];
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
-                $importantStyleDeclarations[$property] = trim(str_replace('!important', '', $value));
+                $importantStyleDeclarations[$property] = \trim(\str_replace('!important', '', $value));
             } else {
                 $regularStyleDeclarations[$property] = $value;
             }
         }
-        $inlineStyleDeclarationsInNewOrder = array_merge(
+        $inlineStyleDeclarationsInNewOrder = \array_merge(
             $regularStyleDeclarations,
             $importantStyleDeclarations
         );
@@ -425,7 +425,7 @@ class CssInliner
      */
     private function parseCssRules($css)
     {
-        $cssKey = md5($css);
+        $cssKey = \md5($css);
         if (!isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
             $matches = $this->getCssRuleMatches($css);
 
@@ -441,12 +441,12 @@ class CssInliner
                     continue;
                 }
 
-                $selectors = explode(',', $cssRule['selectors']);
+                $selectors = \explode(',', $cssRule['selectors']);
                 foreach ($selectors as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
-                    $hasPseudoElement = strpos($selector, '::') !== false;
-                    $hasUnsupportedPseudoClass = (bool)preg_match(
+                    $hasPseudoElement = \strpos($selector, '::') !== false;
+                    $hasUnsupportedPseudoClass = (bool)\preg_match(
                         '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w-]/i',
                         $selector
                     );
@@ -454,7 +454,7 @@ class CssInliner
 
                     $parsedCssRule = [
                         'media' => $cssRule['media'],
-                        'selector' => trim($selector),
+                        'selector' => \trim($selector),
                         'hasUnmatchablePseudo' => $hasUnmatchablePseudo,
                         'declarationsBlock' => $cssDeclaration,
                         // keep track of where it appears in the file, since order is important
@@ -465,7 +465,7 @@ class CssInliner
                 }
             }
 
-            usort($cssRules['inlineable'], [$this, 'sortBySelectorPrecedence']);
+            \usort($cssRules['inlineable'], [$this, 'sortBySelectorPrecedence']);
 
             $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
         }
@@ -492,7 +492,7 @@ class CssInliner
         $splitCss = $this->splitCssAndMediaQuery($css);
         foreach ($splitCss as $cssPart) {
             // process each part for selectors and definitions
-            preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
+            \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
 
             foreach ($matches as $cssRule) {
                 $ruleMatches[] = [
@@ -590,7 +590,7 @@ class CssInliner
      */
     public function removeUnprocessableHtmlTag($tagName)
     {
-        $key = array_search($tagName, $this->unprocessableHtmlTags, true);
+        $key = \array_search($tagName, $this->unprocessableHtmlTags, true);
         if ($key !== false) {
             unset($this->unprocessableHtmlTags[$key]);
         }
@@ -674,7 +674,7 @@ class CssInliner
         // we don't try to call removeChild on a nonexistent child node
         /** @var \DOMNode $node */
         foreach ($nodesWithStyleDisplayNone as $node) {
-            if ($node->parentNode && is_callable([$node->parentNode, 'removeChild'])) {
+            if ($node->parentNode && \is_callable([$node->parentNode, 'removeChild'])) {
                 $node->parentNode->removeChild($node);
             }
         }
@@ -714,10 +714,10 @@ class CssInliner
      */
     private function normalizeStyleAttributes(\DOMElement $node)
     {
-        $normalizedOriginalStyle = preg_replace_callback(
+        $normalizedOriginalStyle = \preg_replace_callback(
             '/[A-z\\-]+(?=\\:)/S',
             function (array $m) {
-                return strtolower($m[0]);
+                return \strtolower($m[0]);
             },
             $node->getAttribute('style')
         );
@@ -766,7 +766,7 @@ class CssInliner
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
-        $cacheKey = serialize([$oldStyles, $newStyles]);
+        $cacheKey = \serialize([$oldStyles, $newStyles]);
         if (isset($this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
             return $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey];
         }
@@ -787,13 +787,13 @@ class CssInliner
             }
         }
 
-        $combinedStyles = array_merge($oldStyles, $newStyles);
+        $combinedStyles = \array_merge($oldStyles, $newStyles);
 
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
-            $style .= strtolower(trim($attributeName)) . ': ' . trim($attributeValue) . '; ';
+            $style .= \strtolower(\trim($attributeName)) . ': ' . \trim($attributeValue) . '; ';
         }
-        $trimmedStyle = rtrim($style);
+        $trimmedStyle = \rtrim($style);
 
         $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
 
@@ -821,7 +821,7 @@ class CssInliner
      */
     private function attributeValueIsImportant($attributeValue)
     {
-        return strtolower(substr(trim($attributeValue), -10)) === '!important';
+        return \strtolower(\substr(\trim($attributeValue), -10)) === '!important';
     }
 
     /**
@@ -835,7 +835,7 @@ class CssInliner
      */
     private function copyUninlineableCssToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, array $cssRules)
     {
-        $cssRulesRelevantForDocument = array_filter(
+        $cssRulesRelevantForDocument = \array_filter(
             $cssRules,
             function (array $cssRule) use ($xPath) {
                 $selector = $cssRule['selector'];
@@ -870,7 +870,7 @@ class CssInliner
     private function removeUnmatchablePseudoComponents($selector)
     {
         $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w-]++(?:\\([^\\)]*+\\))?+';
-        return preg_replace(
+        return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],
             $selector
@@ -1050,16 +1050,16 @@ class CssInliner
      */
     private function splitCssAndMediaQuery($css)
     {
-        $cssWithoutComments = preg_replace('/\\/\\*.*\\*\\//sU', '', $css);
+        $cssWithoutComments = \preg_replace('/\\/\\*.*\\*\\//sU', '', $css);
 
         $mediaTypesExpression = '';
         if (!empty($this->allowedMediaTypes)) {
-            $mediaTypesExpression = '|' . implode('|', array_keys($this->allowedMediaTypes));
+            $mediaTypesExpression = '|' . \implode('|', \array_keys($this->allowedMediaTypes));
         }
 
         $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
 
-        $cssSplitForAllowedMediaTypes = preg_split(
+        $cssSplitForAllowedMediaTypes = \preg_split(
             '#(@media\\s++(?:only\\s++)?+(?:(?=[{\\(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
             . ')#misU',
             $cssWithoutComments,
@@ -1077,13 +1077,13 @@ class CssInliner
         foreach ($cssSplitForAllowedMediaTypes as $index => $cssPart) {
             $isMediaRule = $index % 2 !== 0;
             if ($isMediaRule) {
-                preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
+                \preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
                 $splitCss[] = [
                     'css' => $matches[2],
                     'media' => $matches[1],
                 ];
             } else {
-                $cleanedCss = trim(preg_replace($cssCleaningMatchers, '', $cssPart));
+                $cleanedCss = \trim(\preg_replace($cssCleaningMatchers, '', $cssPart));
                 if ($cleanedCss !== '') {
                     $splitCss[] = [
                         'css' => $cleanedCss,
@@ -1106,10 +1106,10 @@ class CssInliner
         $xmlDocument->encoding = 'UTF-8';
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
-        $libXmlState = libxml_use_internal_errors(true);
+        $libXmlState = \libxml_use_internal_errors(true);
         $xmlDocument->loadHTML($this->getUnifiedHtml());
-        libxml_clear_errors();
-        libxml_use_internal_errors($libXmlState);
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($libXmlState);
         $xmlDocument->normalizeDocument();
 
         return $xmlDocument;
@@ -1144,9 +1144,9 @@ class CssInliner
             return $html;
         }
 
-        $unprocessableHtmlTags = implode('|', $this->unprocessableHtmlTags);
+        $unprocessableHtmlTags = \implode('|', $this->unprocessableHtmlTags);
 
-        return preg_replace(
+        return \preg_replace(
             '/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i',
             '',
             $html
@@ -1162,7 +1162,7 @@ class CssInliner
      */
     private function ensureDocumentType($html)
     {
-        $hasDocumentType = stripos($html, '<!DOCTYPE') !== false;
+        $hasDocumentType = \stripos($html, '<!DOCTYPE') !== false;
         if ($hasDocumentType) {
             return $html;
         }
@@ -1179,20 +1179,20 @@ class CssInliner
      */
     private function addContentTypeMetaTag($html)
     {
-        $hasContentTypeMetaTag = stripos($html, 'Content-Type') !== false;
+        $hasContentTypeMetaTag = \stripos($html, 'Content-Type') !== false;
         if ($hasContentTypeMetaTag) {
             return $html;
         }
 
         // We are trying to insert the meta tag to the right spot in the DOM.
         // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
-        $hasHeadTag = stripos($html, '<head') !== false;
-        $hasHtmlTag = stripos($html, '<html') !== false;
+        $hasHeadTag = \stripos($html, '<head') !== false;
+        $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
+            $reworkedHtml = \preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
         } elseif ($hasHtmlTag) {
-            $reworkedHtml = preg_replace(
+            $reworkedHtml = \preg_replace(
                 '/<html(.*?)>/i',
                 '<html$1><head>' . static::CONTENT_TYPE_META_TAG . '</head>',
                 $html
@@ -1229,15 +1229,15 @@ class CssInliner
      */
     private function getCssSelectorPrecedence($selector)
     {
-        $selectorKey = md5($selector);
+        $selectorKey = \md5($selector);
         if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
             $precedence = 0;
             foreach ($this->selectorPrecedenceMatchers as $matcher => $value) {
-                if (trim($selector) === '') {
+                if (\trim($selector) === '') {
                     break;
                 }
                 $number = 0;
-                $selector = preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
+                $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
                 $precedence += ($value * $number);
             }
             $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
@@ -1272,15 +1272,15 @@ class CssInliner
         }
 
         $properties = [];
-        $declarations = preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
+        $declarations = \preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
 
         foreach ($declarations as $declaration) {
             $matches = [];
-            if (!preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', trim($declaration), $matches)) {
+            if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
             }
 
-            $propertyName = strtolower($matches[1]);
+            $propertyName = \strtolower($matches[1]);
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
@@ -1301,7 +1301,7 @@ class CssInliner
     private function getNodesToExclude(\DOMXPath $xPath)
     {
         $excludedNodes = [];
-        foreach (array_keys($this->excludedSelectors) as $selectorToExclude) {
+        foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
                 $matchingNodes = $xPath->query($this->cssSelectorConverter->toXPath($selectorToExclude));
             } catch (SyntaxErrorException $e) {
@@ -1355,7 +1355,7 @@ class CssInliner
 
         if ($selector !== '') {
             throw new SyntaxErrorException(
-                sprintf('%1$s in selector >> %2$s << in %3$s on line %4$u', $message, $selector, $file, $line),
+                \sprintf('%1$s in selector >> %2$s << in %3$s on line %4$u', $message, $selector, $file, $line),
                 1509279985
             );
         }
@@ -1363,7 +1363,7 @@ class CssInliner
         // Catches eventual warnings generated by method getAllNodesWithStyleAttribute()
         if (isset($context['xPath'])) {
             throw new \RuntimeException(
-                sprintf('%1$s in %2$s on line %3$u', $message, $file, $line),
+                \sprintf('%1$s in %2$s on line %3$u', $message, $file, $line),
                 1509280067
             );
         }
