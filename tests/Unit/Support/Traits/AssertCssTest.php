@@ -22,10 +22,10 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
 
         $result = static::getCssNeedleRegExp($needle);
 
-        $resultWithWhitespaceMatchersRemoved = str_replace('\\s*+', '', $result);
+        $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
 
         static::assertSame(
-            '/' . preg_quote($needle, '/') . '/',
+            '/' . \preg_quote($needle, '/') . '/',
             $resultWithWhitespaceMatchersRemoved
         );
     }
@@ -35,12 +35,12 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      */
     public function getCssNeedleRegExpNotEscapesNonSpecialCharacters()
     {
-        $needle = implode('', array_merge(range('a', 'z'), range('A', 'Z'), range('0 ', '9 ')))
+        $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
             . "\r\n\t `¬\"£%&_;'@#~,";
 
         $result = static::getCssNeedleRegExp($needle);
 
-        $resultWithWhitespaceMatchersRemoved = str_replace('\\s*+', '', $result);
+        $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
 
         static::assertSame(
             '/' . $needle . '/',
@@ -77,8 +77,8 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     {
         $result = static::getCssNeedleRegExp($otherContent . $contentToInsertAround . $otherContent);
 
-        $quotedOtherContent = preg_quote($otherContent, '/');
-        $expectedResult = '/' . $quotedOtherContent . '\\s*+' . preg_quote($contentToInsertAround, '/') . '\\s*+'
+        $quotedOtherContent = \preg_quote($otherContent, '/');
+        $expectedResult = '/' . $quotedOtherContent . '\\s*+' . \preg_quote($contentToInsertAround, '/') . '\\s*+'
             . $quotedOtherContent . '/';
 
         static::assertSame($expectedResult, $result);

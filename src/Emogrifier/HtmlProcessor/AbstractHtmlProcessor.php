@@ -33,7 +33,7 @@ abstract class AbstractHtmlProcessor
      */
     public function __construct($unprocessedHtml)
     {
-        if (!is_string($unprocessedHtml)) {
+        if (!\is_string($unprocessedHtml)) {
             throw new \InvalidArgumentException('The provided HTML must be a string.', 1515459744);
         }
         if ($unprocessedHtml === '') {
@@ -75,10 +75,10 @@ abstract class AbstractHtmlProcessor
         $xmlDocument = new \DOMDocument;
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
-        $libXmlState = libxml_use_internal_errors(true);
+        $libXmlState = \libxml_use_internal_errors(true);
         $xmlDocument->loadHTML($this->unifyHtml($html));
-        libxml_clear_errors();
-        libxml_use_internal_errors($libXmlState);
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($libXmlState);
 
         $this->ensureExistenceOfBodyElement($xmlDocument);
 
@@ -108,7 +108,7 @@ abstract class AbstractHtmlProcessor
      */
     private function ensureDocumentType($html)
     {
-        $hasDocumentType = stripos($html, '<!DOCTYPE') !== false;
+        $hasDocumentType = \stripos($html, '<!DOCTYPE') !== false;
         if ($hasDocumentType) {
             return $html;
         }
@@ -125,20 +125,20 @@ abstract class AbstractHtmlProcessor
      */
     private function addContentTypeMetaTag($html)
     {
-        $hasContentTypeMetaTag = stripos($html, 'Content-Type') !== false;
+        $hasContentTypeMetaTag = \stripos($html, 'Content-Type') !== false;
         if ($hasContentTypeMetaTag) {
             return $html;
         }
 
         // We are trying to insert the meta tag to the right spot in the DOM.
         // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
-        $hasHeadTag = stripos($html, '<head') !== false;
-        $hasHtmlTag = stripos($html, '<html') !== false;
+        $hasHeadTag = \stripos($html, '<head') !== false;
+        $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
+            $reworkedHtml = \preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
         } elseif ($hasHtmlTag) {
-            $reworkedHtml = preg_replace(
+            $reworkedHtml = \preg_replace(
                 '/<html(.*?)>/i',
                 '<html$1><head>' . static::CONTENT_TYPE_META_TAG . '</head>',
                 $html

@@ -24,12 +24,12 @@ trait AssertCss
      */
     private static function getCssNeedleRegExp($needle)
     {
-        $needleMatcher = preg_replace_callback(
+        $needleMatcher = \preg_replace_callback(
             '/\\s*+([{},])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{},]|^\\s)[^>])++/',
             function (array $matches) {
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{", "}" or ",", then possibly more whitespace
-                    return '\\s*+' . preg_quote($matches[1], '/') . '\\s*+';
+                    return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
                 }
                 if (isset($matches[2]) && $matches[2] !== '') {
                     // matched whitespace at start
@@ -37,10 +37,10 @@ trait AssertCss
                 }
                 if (isset($matches[3]) && $matches[3] !== '') {
                     // matched ">" (e.g. end of <style> tag) followed by possibly some whitespace
-                    return preg_quote($matches[3], '/') . '\\s*+';
+                    return \preg_quote($matches[3], '/') . '\\s*+';
                 }
                 // matched any other sequence which could not overlap with the above
-                return preg_quote($matches[0], '/');
+                return \preg_quote($matches[0], '/');
             },
             $needle
         );
@@ -93,7 +93,7 @@ trait AssertCss
     ) {
         static::assertSame(
             $expectedCount,
-            preg_match_all(static::getCssNeedleRegExp($needle), $haystack),
+            \preg_match_all(static::getCssNeedleRegExp($needle), $haystack),
             'Plain text needle: "' . $needle . "\"\nHaystack: \"" . $haystack . '"'
         );
     }

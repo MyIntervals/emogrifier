@@ -91,7 +91,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedResult = implode(',', $selectors1) . '{color: green;font-size: 16px;}';
+        $expectedResult = \implode(',', $selectors1) . '{color: green;font-size: 16px;}';
 
         static::assertSame($expectedResult, $result);
     }
@@ -172,7 +172,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedResult = implode(',', $combinedSelectors) . '{color: green;}';
+        $expectedResult = \implode(',', $combinedSelectors) . '{color: green;}';
 
         static::assertSame($expectedResult, $result);
     }
@@ -192,8 +192,8 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedResult = implode(',', $selectors1) . '{color: green;}'
-            . implode(',', $selectors2) . '{font-size: 16px;}';
+        $expectedResult = \implode(',', $selectors1) . '{color: green;}'
+            . \implode(',', $selectors2) . '{font-size: 16px;}';
 
         static::assertSame($expectedResult, $result);
     }
@@ -226,7 +226,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedResult = '@media screen{' . implode(',', $selectors1) . '{color: green;font-size: 16px;}}';
+        $expectedResult = '@media screen{' . \implode(',', $selectors1) . '{color: green;font-size: 16px;}}';
 
         static::assertSame($expectedResult, $result);
     }
@@ -250,7 +250,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedResult = '@media screen{' . implode(',', $combinedSelectors) . '{color: green;}}';
+        $expectedResult = '@media screen{' . \implode(',', $combinedSelectors) . '{color: green;}}';
 
         static::assertSame($expectedResult, $result);
     }
@@ -304,8 +304,8 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        $expectedRule1Css = implode(',', $rule1Selectors) . '{' . $rule1DeclarationsBlock . '}';
-        $expectedRule2Css = implode(',', $rule2Selectors) . '{' . $rule2DeclarationsBlock . '}';
+        $expectedRule1Css = \implode(',', $rule1Selectors) . '{' . $rule1DeclarationsBlock . '}';
+        $expectedRule2Css = \implode(',', $rule2Selectors) . '{' . $rule2DeclarationsBlock . '}';
         if ($media !== '') {
             $expectedRule1Css = $media . '{' . $expectedRule1Css . '}';
             $expectedRule2Css = $media . '{' . $expectedRule2Css . '}';
