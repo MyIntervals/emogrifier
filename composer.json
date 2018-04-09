@@ -69,7 +69,7 @@
         "ci:static": [
             "@ci:php:lint",
             "@ci:php:sniff",
-            "@ci:php:phpmd"
+            "@ci:php:md"
         ],
         "ci": [
             "@ci:static",

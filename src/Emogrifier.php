@@ -317,7 +317,7 @@ class Emogrifier
      */
     public function emogrify()
     {
-        return $this->createAndProcessXmlDocument()->saveHTML();
+        return $this->process($this->createXmlDocument())->saveHTML();
     }
 
     /**
@@ -332,20 +332,20 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $xmlDocument = $this->createAndProcessXmlDocument();
+        $xmlDocument = $this->process($this->createXmlDocument());
         $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
-     * Creates an XML document from $this->html and emogrifies ist.
+     * Creates an XML document from $this->html.
      *
      * @return \DOMDocument
      *
      * @throws \BadMethodCallException
      */
-    private function createAndProcessXmlDocument()
+    private function createXmlDocument()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
@@ -353,7 +353,6 @@ class Emogrifier
 
         $xmlDocument = $this->createRawXmlDocument();
         $this->ensureExistenceOfBodyElement($xmlDocument);
-        $this->process($xmlDocument);
 
         return $xmlDocument;
     }
@@ -365,7 +364,7 @@ class Emogrifier
      *
      * @param \DOMDocument $xmlDocument
      *
-     * @return void
+     * @return \DOMDocument
      *
      * @throws \InvalidArgumentException
      */
@@ -421,6 +420,8 @@ class Emogrifier
         $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
 
         \restore_error_handler();
+
+        return $xmlDocument;
     }
 
     /**
@@ -811,6 +812,7 @@ class Emogrifier
             // process each part for selectors and definitions
             \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
 
+            /** @var string[][] $matches */
             foreach ($matches as $cssRule) {
                 $ruleMatches[] = [
                     'media' => $cssPart['media'],

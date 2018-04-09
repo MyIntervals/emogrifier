@@ -41,7 +41,7 @@ class CssConcatenator
      * Array of media rules in order.  Each element is an object with the following properties:
      * - string `media` - The media query string, e.g. "@media screen and (max-width:639px)", or an empty string for
      *   rules not within a media query block;
-     * - stdClass[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
+     * - \stdClass[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
      *   properties:
      *   - mixed[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
      *     significance);
@@ -72,7 +72,7 @@ class CssConcatenator
             $lastRuleBlock->selectorsAsKeys += $selectorsAsKeys;
         } else {
             $hasSameSelectorsAsLastRule = $lastRuleBlock !== false
-                && $this->hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys);
+                && static::hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlock->selectorsAsKeys);
             if ($hasSameSelectorsAsLastRule) {
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->declarationsBlock), ';');
                 $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
