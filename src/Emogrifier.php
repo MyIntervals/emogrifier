@@ -736,8 +736,10 @@ class Emogrifier
      *         sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from a `@media` rule),
-     *         "selector" (the CSS selector(s), e.g., "*" or "h1"),
-     *         "declarationsBLock" (the semicolon-separated CSS declarations for that selector(s),
+     *         "selector" (the CSS selector, e.g., "*" or "header h1"),
+     *         "hasUnmatchablePseudo" (true if that selector contains psuedo-elements or dynamic pseudo-classes
+     *         such that the declarations cannot be applied inline),
+     *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
      *         e.g., "color: red; height: 4px;"),
      *         and "line" (the line number e.g. 42)
      */
