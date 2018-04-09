@@ -497,6 +497,7 @@ class CssInliner
             // process each part for selectors and definitions
             preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
 
+            /** @var string[][] $matches */
             foreach ($matches as $cssRule) {
                 $ruleMatches[] = [
                     'media' => $cssPart['media'],
