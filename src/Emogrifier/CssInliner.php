@@ -441,7 +441,7 @@ class CssInliner
             /** @var string[][] $matches */
             /** @var string[] $cssRule */
             foreach ($matches as $key => $cssRule) {
-                $cssDeclaration = trim($cssRule['declarations']);
+                $cssDeclaration = \trim($cssRule['declarations']);
                 if ($cssDeclaration === '') {
                     continue;
                 }

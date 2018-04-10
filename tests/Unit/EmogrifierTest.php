@@ -304,7 +304,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $numberOfContentTypeMetaTags = substr_count($result, 'Content-Type');
+        $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
         static::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
@@ -660,11 +660,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
         $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(sprintf($css, $cssDeclaration1, $cssDeclaration2));
+        $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**

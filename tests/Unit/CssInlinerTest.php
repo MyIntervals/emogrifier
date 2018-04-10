@@ -326,7 +326,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        $numberOfContentTypeMetaTags = substr_count($result, 'Content-Type');
+        $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
         static::assertSame(1, $numberOfContentTypeMetaTags);
     }
 

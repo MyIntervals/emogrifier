@@ -28,7 +28,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Improve performance by using explicit namespaces for PHP functions
-  ([#573](https://github.com/MyIntervals/emogrifier/pull/573))
+  ([#573](https://github.com/MyIntervals/emogrifier/pull/573),
+  [#576](https://github.com/MyIntervals/emogrifier/pull/576))
 - Add type hint checking to the code sniffs
   ([#566](https://github.com/MyIntervals/emogrifier/pull/566))
 - Check the code with PHPMD

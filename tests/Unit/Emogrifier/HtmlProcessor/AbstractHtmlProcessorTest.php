@@ -285,7 +285,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        $numberOfContentTypeMetaTags = substr_count($result, 'Content-Type');
+        $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
         static::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
