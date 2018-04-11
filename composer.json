@@ -42,6 +42,7 @@
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "^3.2.0",
+        "slevomat/coding-standard": "^4.0",
         "phpmd/phpmd": "^2.6.0",
         "phpunit/phpunit": "^4.8.0"
     },
@@ -56,6 +57,7 @@
         }
     },
     "scripts": {
+        "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "ci:php:lint": "find src/ tests/ -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
         "ci:php:sniff": "phpcs --standard=config/PhpCodeSniffer.xml src/ tests/",
         "ci:php:md": "phpmd src/ text config/phpmd.xml",

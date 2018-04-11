@@ -57,5 +57,10 @@ script:
 
 - >
   echo;
-  echo "Running PHP_CodeSniffer";
-  composer ci:php:sniff;
+  function version_gte() { test "$(printf '%s\n' "$@" | sort -n -t. -r | head -n 1)" = "$1"; };
+  if version_gte $(composer php:version) 7; then
+    echo "Running PHP_CodeSniffer";
+    composer ci:php:sniff;
+  else
+    echo "Skipped PHP_CodeSniffer due to insufficient PHP version: $(composer php:version)";
+  fi;
