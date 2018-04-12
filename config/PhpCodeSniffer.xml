@@ -48,12 +48,12 @@
         <!-- Allow "int" rather than "integer", etc., in PHPDoc. -->
         <exclude name="Squiz.Commenting.FunctionComment.IncorrectParamVarName"/>
         <exclude name="Squiz.Commenting.FunctionComment.InvalidReturn"/>
+        <!-- Allow "@return" to be omitted (for methods which do not return a value). -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingReturn"/>
         <!-- Allow parameter type, name and comment not all vertically aligned. -->
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName"/>
         <!-- Enable these rules after fixing the PHPDoc. -->
-        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
-        <exclude name="Squiz.Commenting.FunctionComment.MissingReturn"/>
         <exclude name="Squiz.Commenting.FunctionComment.ParamCommentNotCapital"/>
         <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
