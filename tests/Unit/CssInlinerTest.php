@@ -836,7 +836,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
                 $datasets[$description . ' more specific than ' . $previousDescription] = [
                     '<span id="text"',
                     $previousSelector,
-                    $selector
+                    $selector,
                 ];
             }
             $previousSelector = $selector;
@@ -847,7 +847,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $datasets['ID more specific than 99 classes'] = [
             '<p class="p-4" id="p4"',
             \str_repeat('.p-4', 99),
-            '#p4'
+            '#p4',
         ];
 
         return $datasets;

@@ -388,7 +388,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'class => with class' => ['.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
             'two classes s=> with both classes' => [
                 '.p-5.additional-class { %1$s }',
-                '<p class="p-5 additional-class" style="%1$s">'
+                '<p class="p-5 additional-class" style="%1$s">',
             ],
             'type & class => type with class' => ['p.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
             'ID => with ID' => ['#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
@@ -814,7 +814,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
                 $datasets[$description . ' more specific than ' . $previousDescription] = [
                     '<span id="text"',
                     $previousSelector,
-                    $selector
+                    $selector,
                 ];
             }
             $previousSelector = $selector;
@@ -825,7 +825,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $datasets['ID more specific than 99 classes'] = [
             '<p class="p-4" id="p4"',
             \str_repeat('.p-4', 99),
-            '#p4'
+            '#p4',
         ];
 
         return $datasets;

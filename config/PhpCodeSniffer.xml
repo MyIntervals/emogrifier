@@ -13,6 +13,7 @@
     <!-- Arrays -->
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
     <rule ref="Squiz.Arrays.ArrayBracketSpacing"/>
+    <rule ref="Squiz.Arrays.ArrayDeclaration.NoCommaAfterLast"/>
 
     <!-- Classes -->
     <rule ref="Generic.Classes.DuplicateClassName"/>
