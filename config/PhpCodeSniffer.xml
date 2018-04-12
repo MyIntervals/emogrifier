@@ -53,7 +53,7 @@
         <!-- Allow parameter type, name and comment not all vertically aligned. -->
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamType"/>
         <exclude name="Squiz.Commenting.FunctionComment.SpacingAfterParamName"/>
-        <!-- Enable these rules after fixing the PHPDoc. -->
+        <!-- Allow parameter and exception descriptions which are not full sentences. -->
         <exclude name="Squiz.Commenting.FunctionComment.ParamCommentNotCapital"/>
         <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
