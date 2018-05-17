@@ -22,6 +22,8 @@ matrix:
     env: CODE_SNIFFER=yes
   - php: 7.1
     env: CODE_SNIFFER=yes
+  - php: 7.2
+    env: CODE_SNIFFER=yes
   - php: hhvm
     env: CODE_SNIFFER=yes
 
