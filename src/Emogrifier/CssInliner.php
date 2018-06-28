@@ -159,7 +159,7 @@ class CssInliner
         // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
         '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
         // elements (not attribute values or `:not`), pseudo-elements: worth 1
-        '(?:(?<![="\':\\w-])|::)' => 1
+        '(?:(?<![="\':\\w\\-])|::)' => 1
     ];
 
     /**
@@ -452,7 +452,7 @@ class CssInliner
                     // only allow structural pseudo-classes
                     $hasPseudoElement = \strpos($selector, '::') !== false;
                     $hasUnsupportedPseudoClass = (bool)\preg_match(
-                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w-]/i',
+                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
                         $selector
                     );
                     $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
@@ -875,7 +875,7 @@ class CssInliner
      */
     private function removeUnmatchablePseudoComponents($selector)
     {
-        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w-]++(?:\\([^\\)]*+\\))?+';
+        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],

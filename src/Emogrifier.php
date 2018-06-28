@@ -179,7 +179,7 @@ class Emogrifier
         // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
         '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
         // elements (not attribute values or `:not`), pseudo-elements: worth 1
-        '(?:(?<![="\':\\w-])|::)' => 1
+        '(?:(?<![="\':\\w\\-])|::)' => 1
     ];
 
     /**
@@ -191,15 +191,15 @@ class Emogrifier
         // type and attribute exact value
         '/(\\w)\\[(\\w+)\\=[\'"]?([\\w\\s]+)[\'"]?\\]/' => '\\1[@\\2="\\3"]',
         // type and attribute value with ~ (one word within a whitespace-separated list of words)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/'
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\~\\=[\\s]*[\'"]?([\\w\\-_\\/]+)[\'"]?\\]/'
         => '\\1[contains(concat(" ", @\\2, " "), concat(" ", "\\3", " "))]',
         // type and attribute value with | (either exact value match or prefix followed by a hyphen)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\|\\=[\\s]*[\'"]?([\\w\\-_\\s\\/]+)[\'"]?\\]/'
         => '\\1[@\\2="\\3" or starts-with(@\\2, concat("\\3", "-"))]',
         // type and attribute value with ^ (prefix match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\^\\=[\\s]*[\'"]?([\\w\\-_\\/]+)[\'"]?\\]/' => '\\1[starts-with(@\\2, "\\3")]',
         // type and attribute value with * (substring match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\*\\=[\\s]*[\'"]?([\\w\\-_\\s\\/:;]+)[\'"]?\\]/' => '\\1[contains(@\\2, "\\3")]',
         // adjacent sibling
         '/\\s*\\+\\s*/' => '/following-sibling::*[1]/self::',
         // child
@@ -214,7 +214,7 @@ class Emogrifier
         // The following matcher will break things if it is placed before the adjacent matcher.
         // So one of the matchers matches either too much or not enough.
         // type and attribute value with $ (suffix match)
-        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w-_\\s\\/]+)[\'"]?\\]/'
+        '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w\\-_\\s\\/]+)[\'"]?\\]/'
         => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
     ];
 
@@ -767,7 +767,7 @@ class Emogrifier
                     // only allow structural pseudo-classes
                     $hasPseudoElement = \strpos($selector, '::') !== false;
                     $hasUnsupportedPseudoClass = (bool)\preg_match(
-                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w-]/i',
+                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
                         $selector
                     );
                     $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
@@ -1235,7 +1235,7 @@ class Emogrifier
      */
     private function removeUnmatchablePseudoComponents($selector)
     {
-        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w-]++(?:\\([^\\)]*+\\))?+';
+        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],

@@ -36,7 +36,7 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
     public function getCssNeedleRegExpNotEscapesNonSpecialCharacters()
     {
         $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
-            . "\r\n\t `¬\"£%&_;'@#~,";
+            . "\r\n\t `¬\"£%&_;'@~,";
 
         $result = static::getCssNeedleRegExp($needle);
 
