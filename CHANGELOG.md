@@ -57,6 +57,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Fix Travis for PHP 5.x
+  ([#589](https://github.com/MyIntervals/emogrifier/pull/589))
 - Allow CSS between empty `@media` rule and another `@media` rule
   ([#534](https://github.com/MyIntervals/emogrifier/pull/534))
 - Allow additional whitespace in media-query-list of disallowed `@media` rules

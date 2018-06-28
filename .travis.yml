@@ -59,6 +59,8 @@ script:
   echo;
   function version_gte() { test "$(printf '%s\n' "$@" | sort -n -t. -r | head -n 1)" = "$1"; };
   if version_gte $(composer php:version) 7; then
+    echo "Installing slevomat/coding-standard only for PHP 7.x";
+    composer require --dev slevomat/coding-standard ^4.0
     echo "Running PHP_CodeSniffer";
     composer ci:php:sniff;
   else
