@@ -16,8 +16,8 @@ cache:
 
 env:
   matrix:
-  - DEPENDENCIES=latest
-  - DEPENDENCIES=oldest
+  - DEPENDENCIES_PREFERENCE="--prefer-lowest"
+  - DEPENDENCIES_PREFERENCE=""
 
 before_install:
 - phpenv config-rm xdebug.ini
@@ -25,13 +25,8 @@ before_install:
 install:
 - >
   echo;
-  if [ "$DEPENDENCIES" = "latest" ]; then
-    echo "Installing the latest dependencies";
-    composer update --with-dependencies --prefer-stable --prefer-dist;
-  else
-    echo "Installing the lowest dependencies";
-    composer update --with-dependencies --prefer-stable --prefer-dist --prefer-lowest;
-  fi;
+  echo "Updating the dependencies";
+  composer update --with-dependencies --prefer-stable --prefer-dist $DEPENDENCIES_PREFERENCE;
   composer show;
 
 script:
