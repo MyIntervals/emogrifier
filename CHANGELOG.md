@@ -57,6 +57,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Add required DOM PHP extension to `composer.json`
+  ([#595](https://github.com/MyIntervals/emogrifier/pull/595))
 - Escape hyphens in regular expressions
   ([#588](https://github.com/MyIntervals/emogrifier/pull/588))
 - Fix Travis for PHP 5.x
