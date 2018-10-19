@@ -7,7 +7,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Allow PHP 7.3 in `composer.json`
+- PHP 7.3 support ([#587](https://github.com/MyIntervals/emogrifier/pull/600))
+  - Allow PHP 7.3 in `composer.json`
+  - Test in Travis for PHP 7.3
 - Copy matching rules with dynamic pseudo-classes or pseudo-elements in
   selectors to the style element
   ([#280](https://github.com/MyIntervals/emogrifier/issues/280),
