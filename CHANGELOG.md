@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- PHP 7.3 support ([#587](https://github.com/MyIntervals/emogrifier/pull/600))
+  - Allow PHP 7.3 in `composer.json`
+  - Test in Travis for PHP 7.3
 - Add a `renderBodyContent()` method
   ([#633](https://github.com/MyIntervals/emogrifier/pull/633))
 - Add a `getDomDocument()` method
