@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Escape hyphens in regular expressions
+  ([#599](https://github.com/MyIntervals/emogrifier/pull/599))
 
 ## 1.2.1
 
