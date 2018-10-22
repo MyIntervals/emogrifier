@@ -6,24 +6,32 @@
     "homepage": "http://www.pelagodesign.com/sidecar/emogrifier/",
     "authors": [
         {
+            "name": "Oliver Klee",
+            "email": "github@oliverklee.de"
+        },
+        {
+            "name": "Zoli Szabó",
+            "email": "zoli.szabo+github@gmail.com"
+        },
+        {
             "name": "John Reeve",
             "email": "jreeve@pelagodesign.com"
+        },
+        {
+            "name": "Jake Hotson",
+            "email": "jake@qzdesign.co.uk"
         },
         {
             "name": "Cameron Brooks"
         },
         {
             "name": "Jaime Prado"
-        },
-        {
-            "name": "Oliver Klee",
-            "email": "typo3-coding@oliverklee.de"
-        },
-        {
-            "name": "Roman Ožana",
-            "email": "ozana@omdesign.cz"
         }
     ],
+    "support": {
+        "issues": "https://github.com/MyIntervals/emogrifier/issues",
+        "source": "https://github.com/MyIntervals/emogrifier"
+    },
     "require": {
         "php": ">=5.4.0,<=7.2.99"
     },
