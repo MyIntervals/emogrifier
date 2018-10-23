@@ -57,6 +57,12 @@
             "Pelago\\Tests\\": "tests/"
         }
     },
+    "prefer-stable": true,
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        }
+    },
     "scripts": {
         "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "php:fix": "php-cs-fixer --config=config/php-cs-fixer.php fix config/ src/ tests/",
