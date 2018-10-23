@@ -26,7 +26,7 @@ install:
 - >
   echo;
   echo "Updating the dependencies";
-  composer update --with-dependencies --prefer-stable --prefer-dist $DEPENDENCIES_PREFERENCE;
+  composer update --with-dependencies $DEPENDENCIES_PREFERENCE;
   composer show;
 
 script:
@@ -55,7 +55,7 @@ script:
   function version_gte() { test "$(printf '%s\n' "$@" | sort -n -t. -r | head -n 1)" = "$1"; };
   if version_gte $(composer php:version) 7; then
     echo "Installing slevomat/coding-standard only for PHP 7.x";
-    composer require --dev slevomat/coding-standard:^4.0 --prefer-stable --prefer-dist $DEPENDENCIES_PREFERENCE;
+    composer require --dev slevomat/coding-standard:^4.0 $DEPENDENCIES_PREFERENCE;
     echo "Running PHP_CodeSniffer";
     composer ci:php:sniff;
   else
