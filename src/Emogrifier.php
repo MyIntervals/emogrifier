@@ -179,7 +179,7 @@ class Emogrifier
         // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
         '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
         // elements (not attribute values or `:not`), pseudo-elements: worth 1
-        '(?:(?<![="\':\\w\\-])|::)' => 1
+        '(?:(?<![="\':\\w\\-])|::)' => 1,
     ];
 
     /**
@@ -645,7 +645,7 @@ class Emogrifier
     private function mapWidthOrHeightProperty(\DOMElement $node, $value, $property)
     {
         // only parse values in px and %, but not values like "auto"
-        if (\preg_match('/^\d+(px|%)$/', $value)) {
+        if (\preg_match('/^\\d+(px|%)$/', $value)) {
             // Remove 'px'. This regex only conserves numbers and %.
             $number = \preg_replace('/[^0-9.%]/', '', $value);
             $node->setAttribute($property, $number);
@@ -1442,7 +1442,7 @@ class Emogrifier
      */
     private function createRawXmlDocument()
     {
-        $xmlDocument = new \DOMDocument;
+        $xmlDocument = new \DOMDocument();
         $xmlDocument->encoding = 'UTF-8';
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
@@ -1691,7 +1691,7 @@ class Emogrifier
             $xPathWithIdAttributeAndClassMatchers
         );
         $finalXpath = \preg_replace_callback(
-            '/([^\\/]+):nth-of-type\\(\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
+            '/([^\\/]+):nth-of-type\\(\\s*(odd|even|[+\\-]?\\d|[+\\-]?\\d?n(\\s*[+\\-]\\s*\\d)?)\\s*\\)/i',
             [$this, 'translateNthOfType'],
             $xPathWithIdAttributeAndClassMatchers
         );
@@ -1930,7 +1930,7 @@ class Emogrifier
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function handleXpathQueryWarnings( // phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
+    public function handleXpathQueryWarnings(// phpcs:ignore Generic.CodeAnalysis.UnusedFunctionParameter
         $type,
         $message,
         $file,

@@ -1819,7 +1819,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             foreach ($rulesComponents as $pseudoComponentDescription => $ruleComponents) {
                 $datasets[$precedingComponentDescription . ' ' . $pseudoComponentDescription] = [
                     $precedingSelectorComponent . $ruleComponents['selectorPseudoComponent']
-                    . ' { ' . $ruleComponents['declarationsBlock'] . ' }'
+                    . ' { ' . $ruleComponents['declarationsBlock'] . ' }',
                 ];
             }
         }
