@@ -98,6 +98,12 @@ If you add new methods or fields, please add proper PHPDoc for the new
 methods/fields. Please use grammatically correct, complete sentences in the
 code documentation.
 
+You can autoformat your code using the following command:
+
+```shell
+composer php:fix
+```
+
 
 ## Git commits
 

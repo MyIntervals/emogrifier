@@ -164,7 +164,7 @@ class CssInliner
         // classes, attributes, pseudo-classes (not pseudo-elements) except `:not`: worth 100
         '(?:\\.|\\[|(?<!:):(?!not\\())' => 100,
         // elements (not attribute values or `:not`), pseudo-elements: worth 1
-        '(?:(?<![="\':\\w\\-])|::)' => 1
+        '(?:(?<![="\':\\w\\-])|::)' => 1,
     ];
 
     /**
@@ -1117,7 +1117,7 @@ class CssInliner
      */
     private function createRawXmlDocument()
     {
-        $xmlDocument = new \DOMDocument;
+        $xmlDocument = new \DOMDocument();
         $xmlDocument->encoding = 'UTF-8';
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;

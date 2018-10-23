@@ -111,6 +111,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
@@ -137,6 +138,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
      * @dataProvider contentWithoutHeadTagDataProvider
      */
@@ -163,6 +165,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $html
      * @dataProvider contentWithoutBodyTagDataProvider
      */
@@ -201,6 +204,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $codeNotToBeChanged
      * @dataProvider specialCharactersDataProvider
      */
@@ -250,6 +254,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
      * @param string $documentType
      * @dataProvider documentTypeDataProvider
      */
