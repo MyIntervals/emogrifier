@@ -88,6 +88,11 @@ class Emogrifier
     const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
 
     /**
+     * @var \DOMDocument
+     */
+    protected $xmlDocument = null;
+
+    /**
      * @var string
      */
     private $html = '';
@@ -317,7 +322,9 @@ class Emogrifier
      */
     public function emogrify()
     {
-        return $this->process($this->createXmlDocument())->saveHTML();
+        $this->xmlDocument = $this->createXmlDocument();
+
+        return $this->process($this->xmlDocument)->saveHTML();
     }
 
     /**
@@ -332,8 +339,10 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $xmlDocument = $this->process($this->createXmlDocument());
-        $bodyNodeHtml = $xmlDocument->saveHTML($this->getBodyElement($xmlDocument));
+        $this->xmlDocument = $this->createXmlDocument();
+
+        $processedXmlDocument = $this->process($this->xmlDocument);
+        $bodyNodeHtml = $processedXmlDocument->saveHTML($this->getBodyElement($processedXmlDocument));
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
