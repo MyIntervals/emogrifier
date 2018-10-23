@@ -20,5 +20,6 @@
 .TemporaryItems
 .webprj
 nbproject
+/.php_cs.cache
 /vendor/
 composer.lock

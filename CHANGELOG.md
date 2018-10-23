@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add a Composer script for PHP CS Fixer 
+  ([#607](https://github.com/jjriv/emogrifier/pull/607))
 - PHP 7.3 support ([#587](https://github.com/MyIntervals/emogrifier/pull/600))
   - Allow PHP 7.3 in `composer.json`
   - Test in Travis for PHP 7.3

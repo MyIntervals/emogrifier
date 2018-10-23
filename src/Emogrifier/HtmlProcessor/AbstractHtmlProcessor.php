@@ -72,7 +72,7 @@ abstract class AbstractHtmlProcessor
      */
     private function createXmlDocument($html)
     {
-        $xmlDocument = new \DOMDocument;
+        $xmlDocument = new \DOMDocument();
         $xmlDocument->strictErrorChecking = false;
         $xmlDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
