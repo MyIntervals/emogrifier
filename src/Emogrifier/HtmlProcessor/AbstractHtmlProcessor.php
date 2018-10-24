@@ -27,7 +27,7 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @param string $unprocessedHtml raw HTML, will get heavily normalized
+     * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
@@ -64,7 +64,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Creates a DOM document from $html and stores it in $this->domDocument.
+     * Creates a DOM document from the given HTML and stores it in $this->domDocument.
      *
      * The DOM document will always have a BODY element and a document type.
      *
