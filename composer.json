@@ -39,6 +39,7 @@
     "require": {
         "php": "^5.5.0 || ~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0",
         "ext-dom": "*",
+        "ext-libxml": "*",
         "symfony/css-selector": "^3.4.0 || ^4.0.0"
     },
     "require-dev": {

@@ -62,6 +62,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Add required XML PHP extension to `composer.json`
+  ([#614](https://github.com/MyIntervals/emogrifier/pull/614))
 - Add required DOM PHP extension to `composer.json`
   ([#595](https://github.com/MyIntervals/emogrifier/pull/595))
 - Escape hyphens in regular expressions
