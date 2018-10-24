@@ -224,7 +224,7 @@ class CssInliner
      */
     public function render()
     {
-        $this->createUnifiedDomDocument();
+        $this->createUnifiedDomDocument($this->html);
 
         return $this->domDocument->saveHTML();
     }
@@ -242,7 +242,7 @@ class CssInliner
      */
     public function emogrify()
     {
-        $this->createUnifiedDomDocument();
+        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         return $this->domDocument->saveHTML();
@@ -261,7 +261,7 @@ class CssInliner
      */
     public function emogrifyBodyContent()
     {
-        $this->createUnifiedDomDocument();
+        $this->createUnifiedDomDocument($this->html);
 
         $this->process();
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
@@ -270,37 +270,35 @@ class CssInliner
     }
 
     /**
-     * Creates a DOM document from $this->html and stores it in $this->domDocument.
+     * Creates a DOM document from the given HTML and stores it in $this->domDocument.
      *
      * The DOM document will always have a BODY element and a document type.
      *
-     * @return void
+     * @param string $html
      *
-     * @throws \BadMethodCallException
+     * @return void
      */
-    private function createUnifiedDomDocument()
+    private function createUnifiedDomDocument($html)
     {
-        if ($this->html === '') {
-            throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
-        }
-
-        $this->createRawDomDocument();
+        $this->createRawDomDocument($html);
         $this->ensureExistenceOfBodyElement();
     }
 
     /**
-     * Creates a DOMDocument instance with the current HTML and stores it in $this->domDocument.
+     * Creates a DOMDocument instance from the given HTML and stores it in $this->domDocument.
+     *
+     * @param string $html
      *
      * @return void
      */
-    private function createRawDomDocument()
+    private function createRawDomDocument($html)
     {
         $domDocument = new \DOMDocument();
         $domDocument->encoding = 'UTF-8';
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->getUnifiedHtml());
+        $domDocument->loadHTML($this->unifyHtml($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
         $domDocument->normalizeDocument();
@@ -312,13 +310,13 @@ class CssInliner
      * Returns the HTML with the unprocessable HTML tags removed and
      * with added document type and Content-Type meta tag if needed.
      *
-     * @return string the unified HTML
+     * @param string $html
      *
-     * @throws \BadMethodCallException
+     * @return string the unified HTML
      */
-    private function getUnifiedHtml()
+    private function unifyHtml($html)
     {
-        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
+        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($html);
         $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
