@@ -1944,7 +1944,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyKeepsRuleWithPseudoComponentInMulitipleMatchingSelectorsFromSingleRule()
+    public function emogrifyKeepsRuleWithPseudoComponentInMultipleMatchingSelectorsFromSingleRule()
     {
         $this->subject->setHtml('<html><p>foo</p><a>bar</a></html>');
         $css = 'p:hover, a:hover { color: green; }';
@@ -2112,7 +2112,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Emogrify was handling case differently for passed in CSS vs. CSS parsed from style blocks.
+     * Emogrify was handling case differently for passed-in CSS vs. CSS parsed from style blocks.
      *
      * @test
      */
