@@ -24,7 +24,7 @@ abstract class AbstractHtmlProcessor
     /**
      * @var \DOMDocument
      */
-    protected $xmlDocument = null;
+    protected $domDocument = null;
 
     /**
      * @param string $unprocessedHtml raw HTML, will get heavily normalized
@@ -40,7 +40,7 @@ abstract class AbstractHtmlProcessor
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
-        $this->xmlDocument = $this->createXmlDocument($unprocessedHtml);
+        $this->domDocument = $this->createDomDocument($unprocessedHtml);
     }
 
     /**
@@ -50,7 +50,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument()
     {
-        return $this->xmlDocument;
+        return $this->domDocument;
     }
 
     /**
@@ -60,7 +60,7 @@ abstract class AbstractHtmlProcessor
      */
     public function render()
     {
-        return $this->xmlDocument->saveHTML();
+        return $this->domDocument->saveHTML();
     }
 
     /**
@@ -70,19 +70,19 @@ abstract class AbstractHtmlProcessor
      *
      * @return \DOMDocument
      */
-    private function createXmlDocument($html)
+    private function createDomDocument($html)
     {
-        $xmlDocument = new \DOMDocument();
-        $xmlDocument->strictErrorChecking = false;
-        $xmlDocument->formatOutput = true;
+        $domDocument = new \DOMDocument();
+        $domDocument->strictErrorChecking = false;
+        $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $xmlDocument->loadHTML($this->unifyHtml($html));
+        $domDocument->loadHTML($this->unifyHtml($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
 
-        $this->ensureExistenceOfBodyElement($xmlDocument);
+        $this->ensureExistenceOfBodyElement($domDocument);
 
-        return $xmlDocument;
+        return $domDocument;
     }
 
     /**
