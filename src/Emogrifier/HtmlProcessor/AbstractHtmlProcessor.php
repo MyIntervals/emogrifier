@@ -40,7 +40,7 @@ abstract class AbstractHtmlProcessor
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
-        $this->domDocument = $this->createDomDocument($unprocessedHtml);
+        $this->createDomDocument($unprocessedHtml);
     }
 
     /**
@@ -64,11 +64,11 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Creates a DOMDocument from $html.
+     * Creates a DOM document from $html and stores it in $this->domDocument.
      *
      * @param string $html
      *
-     * @return \DOMDocument
+     * @return void
      */
     private function createDomDocument($html)
     {
@@ -80,9 +80,9 @@ abstract class AbstractHtmlProcessor
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
 
-        $this->ensureExistenceOfBodyElement($domDocument);
+        $this->domDocument = $domDocument;
 
-        return $domDocument;
+        $this->ensureExistenceOfBodyElement();
     }
 
     /**
@@ -151,19 +151,17 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Checks that $document has a BODY element and adds it if it is missing.
-     *
-     * @param \DOMDocument $document
+     * Checks that $this->domDocument has a BODY element and adds it if it is missing.
      *
      * @return void
      */
-    private function ensureExistenceOfBodyElement(\DOMDocument $document)
+    private function ensureExistenceOfBodyElement()
     {
-        if ($document->getElementsByTagName('body')->item(0) !== null) {
+        if ($this->domDocument->getElementsByTagName('body')->item(0) !== null) {
             return;
         }
 
-        $htmlElement = $document->getElementsByTagName('html')->item(0);
-        $htmlElement->appendChild($document->createElement('body'));
+        $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
+        $htmlElement->appendChild($this->domDocument->createElement('body'));
     }
 }
