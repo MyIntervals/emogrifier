@@ -267,27 +267,36 @@ class Emogrifier
     private $debug = false;
 
     /**
-     * The constructor.
-     *
-     * @param string $html the HTML to emogrify, must be UTF-8-encoded
+     * @param string $unprocessedHtml the HTML to emogrify, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
-    public function __construct($html = '', $css = '')
+    public function __construct($unprocessedHtml = '', $css = '')
     {
-        $this->setHtml($html);
+        if ($unprocessedHtml !== '') {
+            $this->setHtml($unprocessedHtml);
+        }
         $this->setCss($css);
     }
 
     /**
      * Sets the HTML to emogrify.
      *
-     * @param string $html the HTML to emogrify, must be UTF-8-encoded
+     * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
      *
      * @return void
+     *
+     * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public function setHtml($html)
+    public function setHtml($unprocessedHtml)
     {
-        $this->html = $html;
+        if (!\is_string($unprocessedHtml)) {
+            throw new \InvalidArgumentException('The provided HTML must be a string.', 1540403913);
+        }
+        if ($unprocessedHtml === '') {
+            throw new \InvalidArgumentException('The provided HTML must not be empty.', 1540403910);
+        }
+
+        $this->html = $unprocessedHtml;
     }
 
     /**
