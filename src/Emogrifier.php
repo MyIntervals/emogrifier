@@ -323,7 +323,9 @@ class Emogrifier
      */
     public function emogrify()
     {
-        $this->createUnifiedDomDocument();
+        $this->assertExistenceOfHtml();
+
+        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         return $this->domDocument->saveHTML();
@@ -341,7 +343,9 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $this->createUnifiedDomDocument();
+        $this->assertExistenceOfHtml();
+
+        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
@@ -350,37 +354,47 @@ class Emogrifier
     }
 
     /**
-     * Creates a DOM document from $this->html and stores it in $this->domDocument.
-     *
-     * The DOM document will always have a BODY element.
-     *
-     * @return void
+     * Checks that some HTML has been set, and throws an exception otherwise.
      *
      * @throws \BadMethodCallException
      */
-    private function createUnifiedDomDocument()
+    private function assertExistenceOfHtml()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
+    }
 
-        $this->createRawDomDocument();
+    /**
+     * Creates a DOM document from the given HTML and stores it in $this->domDocument.
+     *
+     * The DOM document will always have a BODY element.
+     *
+     * @param string $html
+     *
+     * @return void
+     */
+    private function createUnifiedDomDocument($html)
+    {
+        $this->createRawDomDocument($html);
         $this->ensureExistenceOfBodyElement();
     }
 
     /**
-     * Creates a DOMDocument instance with the current HTML and stores it in $this->domDocument.
+     * Creates a DOMDocument instance from the given HTML and stores it in $this->domDocument.
+     *
+     * @param string $html
      *
      * @return void
      */
-    private function createRawDomDocument()
+    private function createRawDomDocument($html)
     {
         $domDocument = new \DOMDocument();
         $domDocument->encoding = 'UTF-8';
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->getUnifiedHtml());
+        $domDocument->loadHTML($this->unifyHtml($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
         $domDocument->normalizeDocument();
@@ -392,13 +406,13 @@ class Emogrifier
      * Returns the HTML with the unprocessable HTML tags removed and
      * with added document type and Content-Type meta tag if needed.
      *
-     * @return string the unified HTML
+     * @param string $html
      *
-     * @throws \BadMethodCallException
+     * @return string the unified HTML
      */
-    private function getUnifiedHtml()
+    private function unifyHtml($html)
     {
-        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
+        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($html);
         $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
@@ -417,6 +431,7 @@ class Emogrifier
     {
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
+
         $xPath = new \DOMXPath($this->domDocument);
         \set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
 
