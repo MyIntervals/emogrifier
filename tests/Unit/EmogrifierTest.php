@@ -63,16 +63,29 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     *
-     * @expectedException \BadMethodCallException
+     * @return array[]
      */
-    public function emogrifyForEmptyHtmlAndEmptyCssThrowsException()
+    public function nonHtmlDataProvider()
     {
-        $this->subject->setHtml('');
-        $this->subject->setCss('');
+        return [
+            'empty string' => [''],
+            'null' => [null],
+            'integer' => [2],
+            'float' => [3.14159],
+            'object' => [new \stdClass()],
+        ];
+    }
 
-        $this->subject->emogrify();
+    /**
+     * @test
+     * @expectedException \InvalidArgumentException
+     *
+     * @param mixed $html
+     * @dataProvider nonHtmlDataProvider
+     */
+    public function setHtmlNoHtmlDataThrowsException($html)
+    {
+        $this->subject->setHtml($html);
     }
 
     /**
@@ -82,19 +95,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyBodyContentForNoDataSetThrowsException()
     {
-        $this->subject->emogrifyBodyContent();
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \BadMethodCallException
-     */
-    public function emogrifyBodyContentForEmptyHtmlAndEmptyCssThrowsException()
-    {
-        $this->subject->setHtml('');
-        $this->subject->setCss('');
-
         $this->subject->emogrifyBodyContent();
     }
 

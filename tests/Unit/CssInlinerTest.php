@@ -73,53 +73,29 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     *
-     * @expectedException \BadMethodCallException
+     * @return array[]
      */
-    public function emogrifyForEmptyHtmlThrowsException()
+    public function nonHtmlDataProvider()
     {
-        $subject = $this->buildDebugSubject('');
-
-        $subject->emogrify();
+        return [
+            'empty string' => [''],
+            'null' => [null],
+            'integer' => [2],
+            'float' => [3.14159],
+            'object' => [new \stdClass()],
+        ];
     }
 
     /**
      * @test
+     * @expectedException \InvalidArgumentException
      *
-     * @expectedException \BadMethodCallException
+     * @param mixed $html
+     * @dataProvider nonHtmlDataProvider
      */
-    public function emogrifyForEmptyHtmlAndEmptyCssThrowsException()
+    public function constructorWithNoHtmlDataThrowsException($html)
     {
-        $subject = $this->buildDebugSubject('');
-        $subject->setCss('');
-
-        $subject->emogrify();
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \BadMethodCallException
-     */
-    public function emogrifyBodyContentForEmptyHtmlThrowsException()
-    {
-        $subject = $this->buildDebugSubject('');
-
-        $subject->emogrifyBodyContent();
-    }
-
-    /**
-     * @test
-     *
-     * @expectedException \BadMethodCallException
-     */
-    public function emogrifyBodyContentForEmptyHtmlAndEmptyCssThrowsException()
-    {
-        $subject = $this->buildDebugSubject('');
-        $subject->setCss('');
-
-        $subject->emogrifyBodyContent();
+        new CssInliner($html);
     }
 
     /**
