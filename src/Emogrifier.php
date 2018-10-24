@@ -90,7 +90,7 @@ class Emogrifier
     /**
      * @var \DOMDocument
      */
-    protected $xmlDocument = null;
+    protected $domDocument = null;
 
     /**
      * @var string
@@ -322,9 +322,9 @@ class Emogrifier
      */
     public function emogrify()
     {
-        $this->xmlDocument = $this->createXmlDocument();
+        $this->domDocument = $this->createDomDocument();
 
-        return $this->process($this->xmlDocument)->saveHTML();
+        return $this->process($this->domDocument)->saveHTML();
     }
 
     /**
@@ -339,47 +339,47 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $this->xmlDocument = $this->createXmlDocument();
+        $this->domDocument = $this->createDomDocument();
 
-        $processedXmlDocument = $this->process($this->xmlDocument);
-        $bodyNodeHtml = $processedXmlDocument->saveHTML($this->getBodyElement($processedXmlDocument));
+        $processedDomDocument = $this->process($this->domDocument);
+        $bodyNodeHtml = $processedDomDocument->saveHTML($this->getBodyElement($processedDomDocument));
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
-     * Creates an XML document from $this->html.
+     * Creates a DOM document from $this->html.
      *
      * @return \DOMDocument
      *
      * @throws \BadMethodCallException
      */
-    private function createXmlDocument()
+    private function createDomDocument()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
 
-        $xmlDocument = $this->createRawXmlDocument();
-        $this->ensureExistenceOfBodyElement($xmlDocument);
+        $domDocument = $this->createRawDomDocument();
+        $this->ensureExistenceOfBodyElement($domDocument);
 
-        return $xmlDocument;
+        return $domDocument;
     }
 
     /**
-     * Applies $this->css to $xmlDocument.
+     * Applies $this->css to $domDocument.
      *
      * This method places the CSS inline.
      *
-     * @param \DOMDocument $xmlDocument
+     * @param \DOMDocument $domDocument
      *
      * @return \DOMDocument
      *
      * @throws \InvalidArgumentException
      */
-    protected function process(\DOMDocument $xmlDocument)
+    protected function process(\DOMDocument $domDocument)
     {
-        $xPath = new \DOMXPath($xmlDocument);
+        $xPath = new \DOMXPath($domDocument);
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
         \set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
@@ -426,15 +426,15 @@ class Emogrifier
 
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
-        $this->copyUninlineableCssToStyleNode($xmlDocument, $xPath, $cssRules['uninlineable']);
+        $this->copyUninlineableCssToStyleNode($domDocument, $xPath, $cssRules['uninlineable']);
 
         \restore_error_handler();
 
-        return $xmlDocument;
+        return $domDocument;
     }
 
     /**
-     * Applies some optional post-processing to the HTML in the XML document.
+     * Applies some optional post-processing to the HTML in the DOM document.
      *
      * @param \DOMXPath $xPath
      *
@@ -1195,15 +1195,15 @@ class Emogrifier
     }
 
     /**
-     * Applies $cssRules to $xmlDocument, limited to the rules that actually apply to the document.
+     * Applies $cssRules to $domDocument, limited to the rules that actually apply to the document.
      *
-     * @param \DOMDocument $xmlDocument the document to match against
+     * @param \DOMDocument $domDocument the document to match against
      * @param \DOMXPath $xPath
      * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyUninlineableCssToStyleNode(\DOMDocument $xmlDocument, \DOMXPath $xPath, array $cssRules)
+    private function copyUninlineableCssToStyleNode(\DOMDocument $domDocument, \DOMXPath $xPath, array $cssRules)
     {
         $cssRulesRelevantForDocument = \array_filter(
             $cssRules,
@@ -1231,7 +1231,7 @@ class Emogrifier
             $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
-        $this->addStyleElementToDocument($xmlDocument, $cssConcatenator->getCss());
+        $this->addStyleElementToDocument($domDocument, $cssConcatenator->getCss());
     }
 
     /**
@@ -1449,19 +1449,19 @@ class Emogrifier
      *
      * @return \DOMDocument
      */
-    private function createRawXmlDocument()
+    private function createRawDomDocument()
     {
-        $xmlDocument = new \DOMDocument();
-        $xmlDocument->encoding = 'UTF-8';
-        $xmlDocument->strictErrorChecking = false;
-        $xmlDocument->formatOutput = true;
+        $domDocument = new \DOMDocument();
+        $domDocument->encoding = 'UTF-8';
+        $domDocument->strictErrorChecking = false;
+        $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $xmlDocument->loadHTML($this->getUnifiedHtml());
+        $domDocument->loadHTML($this->getUnifiedHtml());
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
-        $xmlDocument->normalizeDocument();
+        $domDocument->normalizeDocument();
 
-        return $xmlDocument;
+        return $domDocument;
     }
 
     /**
