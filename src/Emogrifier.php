@@ -279,14 +279,6 @@ class Emogrifier
     }
 
     /**
-     * The destructor.
-     */
-    public function __destruct()
-    {
-        $this->purgeVisitedNodes();
-    }
-
-    /**
      * Sets the HTML to emogrify.
      *
      * @param string $html the HTML to emogrify, must be UTF-8-encoded
