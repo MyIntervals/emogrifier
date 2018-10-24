@@ -201,7 +201,7 @@ class CssInliner
      *
      * @return void
      */
-    public function setHtml($html)
+    private function setHtml($html)
     {
         $this->html = $html;
     }

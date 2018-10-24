@@ -42,19 +42,18 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     private $html5DocumentType = '<!DOCTYPE html>';
 
     /**
-     * @var CssInliner
-     */
-    private $subject = null;
-
-    /**
-     * Sets up the test case.
+     * Builds a subject with the given HTML and debug mode enabled.
      *
-     * @return void
+     * @param string $html
+     *
+     * @return CssInliner
      */
-    protected function setUp()
+    private function buildDebugSubject($html)
     {
-        $this->subject = new CssInliner();
-        $this->subject->setDebug(true);
+        $subject = new CssInliner($html);
+        $subject->setDebug(true);
+
+        return $subject;
     }
 
     /**
@@ -73,7 +72,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             '<body></body>' . "\n" .
             '</html>' . "\n";
 
-        $subject = new CssInliner($rawHtml);
+        $subject = $this->buildDebugSubject($rawHtml);
 
         static::assertSame($formattedHtml, $subject->render());
     }
@@ -83,9 +82,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \BadMethodCallException
      */
-    public function emogrifyForNoDataSetThrowsException()
+    public function emogrifyForEmptyHtmlThrowsException()
     {
-        $this->subject->emogrify();
+        $subject = $this->buildDebugSubject('');
+
+        $subject->emogrify();
     }
 
     /**
@@ -95,10 +96,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForEmptyHtmlAndEmptyCssThrowsException()
     {
-        $this->subject->setHtml('');
-        $this->subject->setCss('');
+        $subject = $this->buildDebugSubject('');
+        $subject->setCss('');
 
-        $this->subject->emogrify();
+        $subject->emogrify();
     }
 
     /**
@@ -106,9 +107,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @expectedException \BadMethodCallException
      */
-    public function emogrifyBodyContentForNoDataSetThrowsException()
+    public function emogrifyBodyContentForEmptyHtmlThrowsException()
     {
-        $this->subject->emogrifyBodyContent();
+        $subject = $this->buildDebugSubject('');
+
+        $subject->emogrifyBodyContent();
     }
 
     /**
@@ -118,10 +121,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyBodyContentForEmptyHtmlAndEmptyCssThrowsException()
     {
-        $this->subject->setHtml('');
-        $this->subject->setCss('');
+        $subject = $this->buildDebugSubject('');
+        $subject->setCss('');
 
-        $this->subject->emogrifyBodyContent();
+        $subject->emogrifyBodyContent();
     }
 
     /**
@@ -147,9 +150,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAddsMissingHtmlTag($html)
     {
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html>', $result);
     }
@@ -175,9 +178,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAddsMissingHeadTag($html)
     {
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<head>', $result);
     }
@@ -203,9 +206,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAddsMissingBodyTag($html)
     {
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<body>', $result);
     }
@@ -215,9 +218,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyPutsMissingBodyElementAroundBodyContent()
     {
-        $this->subject->setHtml('<p>Hello</p>');
+        $subject = $this->buildDebugSubject('<p>Hello</p>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<body><p>Hello</p></body>', $result);
     }
@@ -244,9 +247,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepsSpecialCharacters($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains($codeNotToBeChanged, $result);
     }
@@ -261,9 +264,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrifyBodyContent();
+        $result = $subject->emogrifyBodyContent();
 
         static::assertContains($codeNotToBeChanged, $result);
     }
@@ -296,9 +299,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyForHtmlWithDocumentTypeKeepsDocumentType($documentType)
     {
         $html = $documentType . '<html></html>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains($documentType, $result);
     }
@@ -308,9 +311,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAddsMissingContentTypeMetaTag()
     {
-        $this->subject->setHtml('<p>Hello</p>');
+        $subject = $this->buildDebugSubject('<p>Hello</p>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
     }
@@ -321,9 +324,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyNotAddsSecondContentTypeMetaTag()
     {
         $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
         static::assertSame(1, $numberOfContentTypeMetaTags);
@@ -335,9 +338,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyByDefaultRemovesWbrTag()
     {
         $html = '<html>foo<wbr/>bar</html>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('<wbr', $result);
     }
@@ -347,10 +350,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagRemovesEmptyTag()
     {
-        $this->subject->setHtml('<html><p></p></html>');
+        $subject = $this->buildDebugSubject('<html><p></p></html>');
 
-        $this->subject->addUnprocessableHtmlTag('p');
-        $result = $this->subject->emogrify();
+        $subject->addUnprocessableHtmlTag('p');
+        $result = $subject->emogrify();
 
         static::assertNotContains('<p>', $result);
     }
@@ -360,10 +363,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagNotRemovesNonEmptyTag()
     {
-        $this->subject->setHtml('<html><p>foobar</p></html>');
+        $subject = $this->buildDebugSubject('<html><p>foobar</p></html>');
 
-        $this->subject->addUnprocessableHtmlTag('p');
-        $result = $this->subject->emogrify();
+        $subject->addUnprocessableHtmlTag('p');
+        $result = $subject->emogrify();
 
         static::assertContains('<p>', $result);
     }
@@ -373,11 +376,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
     {
-        $this->subject->setHtml('<html><p></p></html>');
+        $subject = $this->buildDebugSubject('<html><p></p></html>');
 
-        $this->subject->addUnprocessableHtmlTag('p');
-        $this->subject->removeUnprocessableHtmlTag('p');
-        $result = $this->subject->emogrify();
+        $subject->addUnprocessableHtmlTag('p');
+        $subject->removeUnprocessableHtmlTag('p');
+        $result = $subject->emogrify();
 
         static::assertContains('<p>', $result);
     }
@@ -680,10 +683,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
+        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
@@ -770,10 +773,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
+        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
@@ -867,15 +870,15 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $lessSpecificSelector,
         $moreSpecificSelector
     ) {
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(
+        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject->setCss(
             $lessSpecificSelector . ' { color: red; } ' .
             $moreSpecificSelector . ' { color: green; } ' .
             $moreSpecificSelector . ' { background-color: green; } ' .
             $lessSpecificSelector . ' { background-color: red; }'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
     }
@@ -950,15 +953,15 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $selector1,
         $selector2
     ) {
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
-        $this->subject->setCss(
+        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject->setCss(
             $selector1 . ' { color: red; } ' .
             $selector2 . ' { color: green; } ' .
             $selector2 . ' { background-color: red; } ' .
             $selector1 . ' { background-color: green; }'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
     }
@@ -995,10 +998,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyTrimsWhitespaceFromCssDeclarations($cssDeclaration)
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('html {' . $cssDeclaration . '}');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss('html {' . $cssDeclaration . '}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html style="color: #000;">', $result);
     }
@@ -1048,10 +1051,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyFormatsCssDeclarations($cssDeclarationBlock, $expectedStyleAttributeContent)
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('html {' . $cssDeclarationBlock . '}');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss('html {' . $cssDeclarationBlock . '}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $result);
     }
@@ -1078,10 +1081,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyDropsInvalidCssDeclaration($cssDeclarationBlock)
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('html {' . $cssDeclarationBlock . '}');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss('html {' . $cssDeclarationBlock . '}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html style="">', $result);
     }
@@ -1092,9 +1095,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyKeepsExistingStyleAttributes()
     {
         $styleAttribute = 'style="color: #ccc;"';
-        $this->subject->setHtml('<html ' . $styleAttribute . '></html>');
+        $subject = $this->buildDebugSubject('<html ' . $styleAttribute . '></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains($styleAttribute, $result);
     }
@@ -1105,12 +1108,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAddsNewCssBeforeExistingStyle()
     {
         $styleAttributeValue = 'color: #ccc;';
-        $this->subject->setHtml('<html style="' . $styleAttributeValue . '"></html>');
+        $subject = $this->buildDebugSubject('<html style="' . $styleAttributeValue . '"></html>');
         $cssDeclarations = 'margin: 0 2px;';
         $css = 'html {' . $cssDeclarations . '}';
-        $this->subject->setCss($css);
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $result);
     }
@@ -1120,10 +1123,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyCanMatchMinifiedCss()
     {
-        $this->subject->setHtml('<html><p></p></html>');
-        $this->subject->setCss('p{color:blue;}html{color:red;}');
+        $subject = $this->buildDebugSubject('<html><p></p></html>');
+        $subject->setCss('p{color:blue;}html{color:red;}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html style="color: red;">', $result);
     }
@@ -1133,9 +1136,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyLowercasesAttributeNamesFromStyleAttributes()
     {
-        $this->subject->setHtml('<html style="COLOR:#ccc;"></html>');
+        $subject = $this->buildDebugSubject('<html style="COLOR:#ccc;"></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('style="color: #ccc;"', $result);
     }
@@ -1145,10 +1148,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyLowercasesAttributeNamesFromPassedInCss()
     {
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('html {mArGiN:0 2pX;}');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss('html {mArGiN:0 2pX;}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('style="margin: 0 2pX;"', $result);
     }
@@ -1159,10 +1162,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyPreservesCaseForAttributeValuesFromPassedInCss()
     {
         $cssDeclaration = 'content: \'Hello World\';';
-        $this->subject->setHtml('<html><body><p>target</p></body></html>');
-        $this->subject->setCss('p {' . $cssDeclaration . '}');
+        $subject = $this->buildDebugSubject('<html><body><p>target</p></body></html>');
+        $subject->setCss('p {' . $cssDeclaration . '}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
@@ -1173,11 +1176,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyPreservesCaseForAttributeValuesFromParsedStyleBlock()
     {
         $cssDeclaration = 'content: \'Hello World\';';
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
@@ -1187,9 +1190,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyRemovesStyleNodes()
     {
-        $this->subject->setHtml('<html><style type="text/css"></style></html>');
+        $subject = $this->buildDebugSubject('<html><style type="text/css"></style></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('<style', $result);
     }
@@ -1201,13 +1204,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyInDebugModeForInvalidCssSelectorThrowsException()
     {
-        $this->subject->setDebug(true);
-
-        $this->subject->setHtml(
+        $subject = new CssInliner(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
+        $subject->setDebug(true);
 
-        $this->subject->emogrify();
+        $subject->emogrify();
     }
 
     /**
@@ -1215,14 +1217,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotInDebugModeIgnoresInvalidCssSelectors()
     {
-        $this->subject->setDebug(false);
-
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
             '<body><p></p></body></html>';
-        $this->subject->setHtml($html);
+        $subject = new CssInliner($html);
+        $subject->setDebug(false);
 
-        $html = $this->subject->emogrify();
+        $html = $subject->emogrify();
 
         static::assertContains('color: red', $html);
         static::assertContains('background-color: blue', $html);
@@ -1233,12 +1234,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyByDefaultIgnoresInvalidCssSelectors()
     {
-        $subject = new CssInliner();
-
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
             '<body><p></p></body></html>';
-        $subject->setHtml($html);
+        $subject = new CssInliner($html);
 
         $html = $subject->emogrify();
         static::assertContains('color: red', $html);
@@ -1304,10 +1303,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyFiltersUnneededCssThings($unneededCss, $markerNotExpectedInHtml)
     {
-        $this->subject->setHtml('<html><p>foo</p></html>');
-        $this->subject->setCss($unneededCss);
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+        $subject->setCss($unneededCss);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains($markerNotExpectedInHtml, $result);
     }
@@ -1321,10 +1320,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyMatchesRuleAfterUnneededCssThing($unneededCss)
     {
-        $this->subject->setHtml('<html><body></body></html>');
-        $this->subject->setCss($unneededCss . ' body { color: green; }');
+        $subject = $this->buildDebugSubject('<html><body></body></html>');
+        $subject->setCss($unneededCss . ' body { color: green; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<body style="color: green;">', $result);
     }
@@ -1371,10 +1370,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsMediaRules($css)
     {
-        $this->subject->setHtml('<html><p>foo</p></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($css, $result);
     }
@@ -1466,10 +1465,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $cssBetween,
         $cssAfter
     ) {
-        $this->subject->setHtml('<html><p><a>foo</a></p></html>');
-        $this->subject->setCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
+        $subject = $this->buildDebugSubject('<html><p><a>foo</a></p></html>');
+        $subject->setCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($rule1 . $rule2, $result);
     }
@@ -1480,11 +1479,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()
     {
         $css = '@media screen { html { some-property: value; } }';
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss($css);
-        $this->subject->removeAllowedMediaType('screen');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss($css);
+        $subject->removeAllowedMediaType('screen');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('@media', $result);
     }
@@ -1495,11 +1494,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function addAllowedMediaTypeKeepsStylesForTheGivenMediaType()
     {
         $css = '@media braille { html { some-property: value; } }';
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss($css);
-        $this->subject->addAllowedMediaType('braille');
+        $subject = $this->buildDebugSubject('<html></html>');
+        $subject->setCss($css);
+        $subject->addAllowedMediaType('braille');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($css, $result);
     }
@@ -1509,10 +1508,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsExistingHeadElementContent()
     {
-        $this->subject->setHtml('<html><head><!-- original content --></head></html>');
-        $this->subject->setCss('@media all { html { some-property: value; } }');
+        $subject = $this->buildDebugSubject('<html><head><!-- original content --></head></html>');
+        $subject->setCss('@media all { html { some-property: value; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<!-- original content -->', $result);
     }
@@ -1523,10 +1522,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAddsStyleElementToBody()
     {
         $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
-        $this->subject->setHtml($html);
-        $this->subject->setCss('@media all { html { some-property: value; } }');
+        $subject = $this->buildDebugSubject($html);
+        $subject->setCss('@media all { html { some-property: value; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<body><style type="text/css">', $result);
     }
@@ -1579,10 +1578,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWithValidMediaQueryContainsInnerCss($css)
     {
-        $this->subject->setHtml('<html><h1></h1><p></p></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><h1></h1><p></p></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
@@ -1601,10 +1600,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $css = \preg_replace('/;?\\s*}\\s*/', '}', $css);
         $css = \preg_replace('/@media{/', '@media {', $css);
 
-        $this->subject->setHtml('<html><h1></h1><p></p></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><h1></h1><p></p></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<style type="text/css">' . $css . '</style>', $result);
     }
@@ -1618,9 +1617,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyForHtmlWithValidMediaQueryContainsInnerCss($css)
     {
-        $this->subject->setHtml('<html><style type="text/css">' . $css . '</style><h1></h1><p></p></html>');
+        $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1><p></p></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
@@ -1634,10 +1633,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWithValidMediaQueryNotContainsInlineCss($css)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
     }
@@ -1669,10 +1668,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWithInvalidMediaQueryNotContainsInnerCss($css)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContainsCss($css, $result);
     }
@@ -1686,10 +1685,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWithInvalidMediaQueryNotContainsInlineCss($css)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
     }
@@ -1703,9 +1702,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyFromHtmlWithInvalidMediaQueryNotContainsInnerCss($css)
     {
-        $this->subject->setHtml('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
+        $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContainsCss($css, $result);
     }
@@ -1719,9 +1718,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyFromHtmlWithInvalidMediaQueryNotContainsInlineCss($css)
     {
-        $this->subject->setHtml('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
+        $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
     }
@@ -1731,10 +1730,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyIgnoresEmptyMediaQuery()
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss('@media screen {} @media tv { h1 { color: red; } }');
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss('@media screen {} @media tv { h1 { color: red; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
@@ -1745,10 +1744,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyIgnoresMediaQueryWithWhitespaceOnly()
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss('@media screen { } @media tv { h1 { color: red; } }');
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss('@media screen { } @media tv { h1 { color: red; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
         static::assertNotContains('@media screen', $result);
@@ -1774,10 +1773,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media all { h1 { color: red; } }');
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media all { h1 { color: red; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss('@media all { h1 { color: red; } }', $result);
     }
@@ -1791,10 +1790,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotKeepsUnneededMediaRuleAfterEmptyMediaRule($emptyRuleMediaType)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media speech { h1 { color: red; } }');
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss('@media ' . $emptyRuleMediaType . ' {} @media speech { h1 { color: red; } }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('@media', $result);
     }
@@ -1883,10 +1882,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsRuleWithPseudoComponentInMatchingSelector($css)
     {
-        $this->subject->setHtml('<html><p><a id="a" class="a" href="a">foo</a></p></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><p><a id="a" class="a" href="a">foo</a></p></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         self::assertContainsCss($css, $result);
     }
@@ -1926,10 +1925,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotKeepsRuleWithPseudoComponentInNonMatchingSelector($css)
     {
-        $this->subject->setHtml('<html><p><a id="a" class="a" href="#">foo</a></p></html>');
-        $this->subject->setCss($css);
+        $subject = $this->buildDebugSubject('<html><p><a id="a" class="a" href="#">foo</a></p></html>');
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         self::assertNotContainsCss($css, $result);
     }
@@ -1939,11 +1938,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsRuleInMediaQueryWithPseudoComponentInMatchingSelector()
     {
-        $this->subject->setHtml('<html><a>foo</a></html>');
+        $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
         $css = '@media screen { a:hover { color: green; } }';
-        $this->subject->setCss($css);
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         self::assertContainsCss($css, $result);
     }
@@ -1953,11 +1952,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotKeepsRuleInMediaQueryWithPseudoComponentInNonMatchingSelector()
     {
-        $this->subject->setHtml('<html><a>foo</a></html>');
+        $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
         $css = '@media screen { b:hover { color: green; } }';
-        $this->subject->setCss($css);
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         self::assertNotContainsCss($css, $result);
     }
@@ -1967,11 +1966,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsRuleWithPseudoComponentInMultipleMatchingSelectorsFromSingleRule()
     {
-        $this->subject->setHtml('<html><p>foo</p><a>bar</a></html>');
+        $subject = $this->buildDebugSubject('<html><p>foo</p><a>bar</a></html>');
         $css = 'p:hover, a:hover { color: green; }';
-        $this->subject->setCss($css);
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($css, $result);
     }
@@ -1981,10 +1980,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsOnlyMatchingSelectorsWithPseudoComponentFromSingleRule()
     {
-        $this->subject->setHtml('<html><a>foo</a></html>');
-        $this->subject->setCss('p:hover, a:hover { color: green; }');
+        $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
+        $subject->setCss('p:hover, a:hover { color: green; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
     }
@@ -1994,10 +1993,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesCssToMatchingElementsAndKeepsRuleWithPseudoComponentFromSingleRule()
     {
-        $this->subject->setHtml('<html><p>foo</p><a>bar</a></html>');
-        $this->subject->setCss('p, a:hover { color: green; }');
+        $subject = $this->buildDebugSubject('<html><p>foo</p><a>bar</a></html>');
+        $subject->setCss('p, a:hover { color: green; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="color: green;">', $result);
         static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
@@ -2026,13 +2025,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRule($emptyRuleMediaType, $mediaType)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss(
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
             . ' { h1 { color: red; } }'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<h1 style="color: green;">', $result);
     }
@@ -2047,13 +2046,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesCssBetweenEmptyMediaRuleAndMediaRuleWithCssAfter($emptyRuleMediaType, $mediaType)
     {
-        $this->subject->setHtml('<html><h1></h1></html>');
-        $this->subject->setCss(
+        $subject = $this->buildDebugSubject('<html><h1></h1></html>');
+        $subject->setCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
             . ' { h1 { color: red; } } h1 { font-size: 24px; }'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<h1 style="color: green; font-size: 24px;">', $result);
     }
@@ -2064,9 +2063,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyAppliesCssFromStyleNodes()
     {
         $styleAttributeValue = 'color: #ccc;';
-        $this->subject->setHtml('<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>');
+        $subject = $this->buildDebugSubject(
+            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>'
+        );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<html style="' . $styleAttributeValue . '">', $result);
     }
@@ -2077,10 +2078,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWhenDisabledNotAppliesCssFromStyleBlocks()
     {
         $styleAttributeValue = 'color: #ccc;';
-        $this->subject->setHtml('<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>');
-        $this->subject->disableStyleBlocksParsing();
+        $subject = $this->buildDebugSubject(
+            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>'
+        );
+        $subject->disableStyleBlocksParsing();
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('style=', $result);
     }
@@ -2091,13 +2094,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWhenStyleBlocksParsingDisabledKeepInlineStyles()
     {
         $styleAttributeValue = 'text-align: center;';
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style type="text/css">p { color: #ccc; }</style></head>' .
             '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>'
         );
-        $this->subject->disableStyleBlocksParsing();
+        $subject->disableStyleBlocksParsing();
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
@@ -2107,10 +2110,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyWhenDisabledNotAppliesCssFromInlineStyles()
     {
-        $this->subject->setHtml('<html style="color: #ccc;"></html>');
-        $this->subject->disableInlineStyleAttributesParsing();
+        $subject = $this->buildDebugSubject('<html style="color: #ccc;"></html>');
+        $subject->disableInlineStyleAttributesParsing();
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('<html style', $result);
     }
@@ -2121,13 +2124,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function emogrifyWhenInlineStyleAttributesParsingDisabledKeepStyleBlockStyles()
     {
         $styleAttributeValue = 'color: #ccc;';
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style type="text/css">p { ' . $styleAttributeValue . ' }</style></head>' .
             '<body><p style="text-align: center;">paragraph</p></body></html>'
         );
-        $this->subject->disableInlineStyleAttributesParsing();
+        $subject->disableInlineStyleAttributesParsing();
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
@@ -2139,12 +2142,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesCssWithMixedCaseAttributesInStyleBlock()
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>' .
             '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
     }
@@ -2156,13 +2159,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyMergesCssWithMixedCaseAttribute()
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>' .
             '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
         );
-        $this->subject->setCss('p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}');
+        $subject->setCss('p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains(
             '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
@@ -2175,13 +2178,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyMergesCssWithMixedUnits()
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head>' .
             '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
         );
-        $this->subject->setCss('p { margin: 1px; padding-bottom:0;}');
+        $subject->setCss('p { margin: 1px; padding-bottom:0;}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $result);
     }
@@ -2191,10 +2194,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyByDefaultRemovesElementsWithDisplayNoneFromExternalCss()
     {
-        $this->subject->setHtml('<html><body><div class="foo"></div></body></html>');
-        $this->subject->setCss('div.foo { display: none; }');
+        $subject = $this->buildDebugSubject('<html><body><div class="foo"></div></body></html>');
+        $subject->setCss('div.foo { display: none; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('<div class="foo"></div>', $result);
     }
@@ -2204,12 +2207,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyByDefaultRemovesElementsWithDisplayNoneInStyleAttribute()
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><body><div class="foobar" style="display: none;"></div>' .
             '</body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('<div', $result);
     }
@@ -2219,11 +2222,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAfterDisableInvisibleNodeRemovalPreservesInvisibleElements()
     {
-        $this->subject->setHtml('<html><body><div class="foo"></div></body></html>');
-        $this->subject->setCss('div.foo { display: none; }');
+        $subject = $this->buildDebugSubject('<html><body><div class="foo"></div></body></html>');
+        $subject->setCss('div.foo { display: none; }');
 
-        $this->subject->disableInvisibleNodeRemoval();
-        $result = $this->subject->emogrify();
+        $subject->disableInvisibleNodeRemoval();
+        $result = $subject->emogrify();
 
         static::assertContains('<div class="foo" style="display: none;">', $result);
     }
@@ -2233,12 +2236,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsCssMediaQueriesWithCssCommentAfterMediaQuery()
     {
-        $this->subject->setHtml('<html><body></body></html>');
-        $this->subject->setCss(
+        $subject = $this->buildDebugSubject('<html><body></body></html>');
+        $subject->setCss(
             '@media only screen and (max-width: 480px) { body { color: #ffffff } /* some comment */ }'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('@media only screen and (max-width: 480px)', $result);
     }
@@ -2252,11 +2255,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             $documentType . '<html><body><br/></body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<br>', $result);
     }
@@ -2266,9 +2269,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAutomaticallyClosesUnclosedTag()
     {
-        $this->subject->setHtml('<html><body><p></body></html>');
+        $subject = $this->buildDebugSubject('<html><body><p></body></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<body><p></p></body>', $result);
     }
@@ -2278,9 +2281,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyReturnsCompleteHtmlDocument()
     {
-        $this->subject->setHtml('<html><body><p></p></body></html>');
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertSame(
             $this->html5DocumentType . static::LF .
@@ -2297,9 +2300,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyBodyContentReturnsBodyContentFromHtml()
     {
-        $this->subject->setHtml('<html><body><p></p></body></html>');
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
 
-        $result = $this->subject->emogrifyBodyContent();
+        $result = $subject->emogrifyBodyContent();
 
         static::assertSame('<p></p>', $result);
     }
@@ -2309,9 +2312,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyBodyContentReturnsBodyContentFromPartialContent()
     {
-        $this->subject->setHtml('<p></p>');
+        $subject = $this->buildDebugSubject('<p></p>');
 
-        $result = $this->subject->emogrifyBodyContent();
+        $result = $subject->emogrifyBodyContent();
 
         static::assertSame('<p></p>', $result);
     }
@@ -2321,16 +2324,17 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $style Optional value for the style attribute of the `<p>` element
      *
-     * @return void
+     * @return CssInliner
      */
-    private function setSubjectBoilerplateHtml($style = '')
+    private function buildSubjectWithBoilerplateHtml($style = '')
     {
         $html = '<html><head></head><body><p';
         if ($style !== '') {
             $html .= ' style="' . $style . '"';
         }
         $html .= '>some content</p></body></html>';
-        $this->subject->setHtml($html);
+
+        return $this->buildDebugSubject($html);
     }
 
     /**
@@ -2338,10 +2342,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function importantInExternalCssOverwritesInlineCss()
     {
-        $this->setSubjectBoilerplateHtml('margin: 2px;');
-        $this->subject->setCss('p { margin: 1px !important; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
+        $subject->setCss('p { margin: 1px !important; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 1px;">', $result);
     }
@@ -2351,10 +2355,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function importantInExternalCssKeepsInlineCssForOtherAttributes()
     {
-        $this->setSubjectBoilerplateHtml('margin: 2px; text-align: center;');
-        $this->subject->setCss('p { margin: 1px !important; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; text-align: center;');
+        $subject->setCss('p { margin: 1px !important; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="text-align: center; margin: 1px;">', $result);
     }
@@ -2364,10 +2368,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function importantIsCaseInsensitive()
     {
-        $this->setSubjectBoilerplateHtml('margin: 2px;');
-        $this->subject->setCss('p { margin: 1px !ImPorTant; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
+        $subject->setCss('p { margin: 1px !ImPorTant; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 1px !ImPorTant;">', $result);
     }
@@ -2377,10 +2381,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function secondImportantStyleOverwritesFirstOne()
     {
-        $this->setSubjectBoilerplateHtml();
-        $this->subject->setCss('p { margin: 1px !important; } p { margin: 2px !important; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
+        $subject->setCss('p { margin: 1px !important; } p { margin: 2px !important; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 2px;">', $result);
     }
@@ -2390,10 +2394,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function secondNonImportantStyleOverwritesFirstOne()
     {
-        $this->setSubjectBoilerplateHtml();
-        $this->subject->setCss('p { margin: 1px; } p { margin: 2px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
+        $subject->setCss('p { margin: 1px; } p { margin: 2px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 2px;">', $result);
     }
@@ -2403,10 +2407,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function secondNonImportantStyleNotOverwritesFirstImportantOne()
     {
-        $this->setSubjectBoilerplateHtml();
-        $this->subject->setCss('p { margin: 1px !important; } p { margin: 2px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
+        $subject->setCss('p { margin: 1px !important; } p { margin: 2px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 1px;">', $result);
     }
@@ -2416,10 +2420,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesLaterShorthandStyleAfterIndividualStyle()
     {
-        $this->setSubjectBoilerplateHtml();
-        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
+        $subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin-top: 1px; margin: 2px;">', $result);
     }
@@ -2429,10 +2433,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle()
     {
-        $this->setSubjectBoilerplateHtml();
-        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; } p { margin-top: 3px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
+        $subject->setCss('p { margin-top: 1px; } p { margin: 2px; } p { margin-top: 3px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
@@ -2442,10 +2446,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesInlineOverridingStyleAfterCssStyleAfterOverriddenCssStyle()
     {
-        $this->setSubjectBoilerplateHtml('margin-top: 3px;');
-        $this->subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin-top: 3px;');
+        $subject->setCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
@@ -2455,10 +2459,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyAppliesLaterInlineOverridingStyleAfterEarlierInlineStyle()
     {
-        $this->setSubjectBoilerplateHtml('margin: 2px; margin-top: 3px;');
-        $this->subject->setCss('p { margin-top: 1px; }');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; margin-top: 3px;');
+        $subject->setCss('p { margin-top: 1px; }');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
@@ -2468,11 +2472,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function irrelevantMediaQueriesAreRemoved()
     {
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $uselessQuery = '@media all and (max-width: 500px) { em { color:red; } }';
-        $this->subject->setCss($uselessQuery);
-        $this->subject->setHtml('<html><body><p></p></body></html>');
+        $subject->setCss($uselessQuery);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('@media', $result);
     }
@@ -2482,11 +2486,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function relevantMediaQueriesAreRetained()
     {
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $usefulQuery = '@media all and (max-width: 500px) { p { color:red; } }';
-        $this->subject->setCss($usefulQuery);
-        $this->subject->setHtml('<html><body><p></p></body></html>');
+        $subject->setCss($usefulQuery);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($usefulQuery, $result);
     }
@@ -2496,10 +2500,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss()
     {
-        $this->setSubjectBoilerplateHtml('margin: 2px !important; text-align: center;');
-        $this->subject->setCss('p { margin: 1px !important; padding: 1px;}');
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px !important; text-align: center;');
+        $subject->setCss('p { margin: 1px !important; padding: 1px;}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
     }
@@ -2509,11 +2513,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addExcludedSelectorRemovesMatchingElementsFromEmogrification()
     {
-        $this->subject->setHtml('<html><body><p class="x"></p></body></html>');
-        $this->subject->setCss('p { margin: 0; }');
+        $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
+        $subject->setCss('p { margin: 0; }');
 
-        $this->subject->addExcludedSelector('p.x');
-        $result = $this->subject->emogrify();
+        $subject->addExcludedSelector('p.x');
+        $result = $subject->emogrify();
 
         static::assertContains('<p class="x"></p>', $result);
     }
@@ -2523,11 +2527,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addExcludedSelectorExcludesMatchingElementEventWithWhitespaceAroundSelector()
     {
-        $this->subject->setHtml('<html><body><p class="x"></p></body></html>');
-        $this->subject->setCss('p { margin: 0; }');
+        $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
+        $subject->setCss('p { margin: 0; }');
 
-        $this->subject->addExcludedSelector(' p.x ');
-        $result = $this->subject->emogrify();
+        $subject->addExcludedSelector(' p.x ');
+        $result = $subject->emogrify();
 
         static::assertContains('<p class="x"></p>', $result);
     }
@@ -2537,11 +2541,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addExcludedSelectorKeepsNonMatchingElementsInEmogrification()
     {
-        $this->subject->setHtml('<html><body><p></p></body></html>');
-        $this->subject->setCss('p { margin: 0; }');
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
+        $subject->setCss('p { margin: 0; }');
 
-        $this->subject->addExcludedSelector('p.x');
-        $result = $this->subject->emogrify();
+        $subject->addExcludedSelector('p.x');
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="margin: 0;"></p>', $result);
     }
@@ -2551,13 +2555,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function removeExcludedSelectorGetsMatchingElementsToBeEmogrifiedAgain()
     {
-        $this->subject->setHtml('<html><body><p class="x"></p></body></html>');
-        $this->subject->setCss('p { margin: 0; }');
+        $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
+        $subject->setCss('p { margin: 0; }');
 
-        $this->subject->addExcludedSelector('p.x');
-        $this->subject->removeExcludedSelector('p.x');
+        $subject->addExcludedSelector('p.x');
+        $subject->removeExcludedSelector('p.x');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p class="x" style="margin: 0;"></p>', $result);
     }
@@ -2569,12 +2573,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyInDebugModeForInvalidExcludedSelectorThrowsException()
     {
-        $this->subject->setDebug(true);
+        $subject = new CssInliner('<html></html>');
+        $subject->setDebug(true);
 
-        $this->subject->setHtml('<html></html>');
-        $this->subject->addExcludedSelector('..p');
-
-        $this->subject->emogrify();
+        $subject->addExcludedSelector('..p');
+        $subject->emogrify();
     }
 
     /**
@@ -2582,12 +2585,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotInDebugModeIgnoresInvalidExcludedSelector()
     {
-        $this->subject->setDebug(false);
+        $subject = new CssInliner('<html><p class="x"></p></html>');
+        $subject->setDebug(false);
 
-        $this->subject->setHtml('<html><p class="x"></p></html>');
-        $this->subject->addExcludedSelector('..p');
-
-        $result = $this->subject->emogrify();
+        $subject->addExcludedSelector('..p');
+        $result = $subject->emogrify();
 
         static::assertContains('<p class="x"></p>', $result);
     }
@@ -2597,15 +2599,15 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotInDebugModeIgnoresOnlyInvalidExcludedSelector()
     {
-        $this->subject->setDebug(false);
+        $subject = new CssInliner('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
+        $subject->setDebug(false);
 
-        $this->subject->setHtml('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
-        $this->subject->setCss('p { color: red };');
-        $this->subject->addExcludedSelector('p.x');
-        $this->subject->addExcludedSelector('..p');
-        $this->subject->addExcludedSelector('p.z');
+        $subject->setCss('p { color: red };');
+        $subject->addExcludedSelector('p.x');
+        $subject->addExcludedSelector('..p');
+        $subject->addExcludedSelector('p.z');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p class="x"></p>', $result);
         static::assertContains('<p class="y" style="color: red;"></p>', $result);
@@ -2617,11 +2619,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emptyMediaQueriesAreRemoved()
     {
+        $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $emptyQuery = '@media all and (max-width: 500px) { }';
-        $this->subject->setCss($emptyQuery);
-        $this->subject->setHtml('<html><body><p></p></body></html>');
+        $subject->setCss($emptyQuery);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertNotContains('@media', $result);
     }
@@ -2631,19 +2633,19 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce()
     {
-        $css = "@media all {\r\n" .
-            ".medium {font-size:18px;}\r\n" .
-            ".small {font-size:14px;}\r\n" .
-            '}';
-        $this->subject->setCss($css);
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><body>' .
             '<p class="medium">medium</p>' .
             '<p class="small">small</p>' .
             '</body></html>'
         );
+        $css = "@media all {\r\n" .
+            ".medium {font-size:18px;}\r\n" .
+            ".small {font-size:14px;}\r\n" .
+            '}';
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCssCount(1, $css, $result);
     }
@@ -2653,19 +2655,19 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce()
     {
-        $css = "@media all {\n" .
-            ".medium {font-size:18px;}\n" .
-            ".small {font-size:14px;}\n" .
-            '}';
-        $this->subject->setCss($css);
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><body>' .
             '<p class="medium">medium</p>' .
             '<p class="small">small</p>' .
             '</body></html>'
         );
+        $css = "@media all {\n" .
+            ".medium {font-size:18px;}\n" .
+            ".small {font-size:14px;}\n" .
+            '}';
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCssCount(1, $css, $result);
     }
@@ -2675,6 +2677,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function multipleMediaQueriesAreAppliedOnlyOnce()
     {
+        $subject = $this->buildDebugSubject(
+            '<html><body>' .
+            '<p class="medium">medium</p>' .
+            '<p class="small">small</p>' .
+            '</body></html>'
+        );
         $css = "@media all {\n" .
             ".medium {font-size:18px;}\n" .
             ".small {font-size:14px;}\n" .
@@ -2683,15 +2691,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             ".medium {font-size:24px;}\n" .
             ".small {font-size:18px;}\n" .
             '}';
-        $this->subject->setCss($css);
-        $this->subject->setHtml(
-            '<html><body>' .
-            '<p class="medium">medium</p>' .
-            '<p class="small">small</p>' .
-            '</body></html>'
-        );
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCssCount(1, $css, $result);
     }
@@ -2718,7 +2720,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function dataUrisAreConserved($dataUriMediaType)
     {
-        $this->subject->setHtml('<html></html>');
+        $subject = $this->buildDebugSubject('<html></html>');
         $styleRule = 'background-image: url(data:image/png' . $dataUriMediaType .
             ',iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk' .
             'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR' .
@@ -2726,9 +2728,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt' .
             'ut53nj8bip8m6345wLIQCgKIowDIuikAoz6Wm3233mjHPe6XRe5UROJqImIWPwh/pvZMbYM2GKorx5oUw6m+v1miTJ+XzO8/x+v7' .
             '+UtizrM8+GYahVVSFik9/jxy6rqlJN02SM1cmI+GbbQghd178AAO2FXws6LwMAAAAASUVORK5CYII=);';
-        $this->subject->setCss('html {' . $styleRule . '}');
+        $subject->setCss('html {' . $styleRule . '}');
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains(
             '<html style="' . $styleRule . '">',
@@ -2741,10 +2743,10 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifierIgnoresPseudoClassCombinedWithPseudoElement()
     {
-        $this->subject->setHtml('<html><body><div></div></body></html>');
-        $this->subject->setCss('div:last-child::after {float: right;}');
+        $subject = $this->buildDebugSubject('<html><body><div></div></body></html>');
+        $subject->setCss('div:last-child::after {float: right;}');
 
-        $html = $this->subject->emogrify();
+        $html = $subject->emogrify();
 
         static::assertContains('<div></div>', $html);
     }
@@ -2754,11 +2756,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyKeepsInlineStylePriorityVersusStyleBlockRules()
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><style>p {padding:10px};</style></head><body><p style="padding-left:20px;"></p></body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
     }
@@ -2770,9 +2772,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
         $html = '<html><head>' . $style . '</head></html>';
-        $this->subject->setHtml($html);
+        $subject = $this->buildDebugSubject($html);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss(
             '<body>' . $style . '</body>',
@@ -2839,11 +2841,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyRemovesImportantRule($originalStyleAttributeContent, $expectedStyleAttributeContent)
     {
-        $this->subject->setHtml(
+        $subject = $this->buildDebugSubject(
             '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
         );
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
     }
@@ -2855,12 +2857,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
-        $this->subject->setDebug(true);
+        $subject = new CssInliner('<html></html>');
+        $subject->setDebug(true);
 
-        $this->subject->setHtml('<html></html>');
-        $this->subject->setCss('@media screen {p^^ {color: red;}}');
+        $subject->setCss('@media screen {p^^ {color: red;}}');
 
-        $this->subject->emogrify();
+        $subject->emogrify();
     }
 
     /**
@@ -2868,13 +2870,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks()
     {
-        $this->subject->setDebug(false);
+        $subject = new CssInliner('<html></html>');
+        $subject->setDebug(false);
 
-        $this->subject->setHtml('<html></html>');
         $css = '@media screen {p^^ {color: red;}}';
-        $this->subject->setCss($css);
+        $subject->setCss($css);
 
-        $result = $this->subject->emogrify();
+        $result = $subject->emogrify();
 
         static::assertContainsCss($css, $result);
     }
