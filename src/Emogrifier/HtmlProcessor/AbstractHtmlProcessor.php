@@ -74,6 +74,19 @@ abstract class AbstractHtmlProcessor
      */
     private function createUnifiedDomDocument($html)
     {
+        $this->createRawDomDocument($html);
+        $this->ensureExistenceOfBodyElement();
+    }
+
+    /**
+     * Creates a DOMDocument instance from the given HTML and stores it in $this->domDocument.
+     *
+     * @param string $html
+     *
+     * @return void
+     */
+    private function createRawDomDocument($html)
+    {
         $domDocument = new \DOMDocument();
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
@@ -83,8 +96,6 @@ abstract class AbstractHtmlProcessor
         \libxml_use_internal_errors($libXmlState);
 
         $this->domDocument = $domDocument;
-
-        $this->ensureExistenceOfBodyElement();
     }
 
     /**
