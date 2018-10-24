@@ -369,6 +369,42 @@ class Emogrifier
     }
 
     /**
+     * Creates a DOMDocument instance with the current HTML and stores it in $this->domDocument.
+     *
+     * @return void
+     */
+    private function createRawDomDocument()
+    {
+        $domDocument = new \DOMDocument();
+        $domDocument->encoding = 'UTF-8';
+        $domDocument->strictErrorChecking = false;
+        $domDocument->formatOutput = true;
+        $libXmlState = \libxml_use_internal_errors(true);
+        $domDocument->loadHTML($this->getUnifiedHtml());
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($libXmlState);
+        $domDocument->normalizeDocument();
+
+        $this->domDocument = $domDocument;
+    }
+
+    /**
+     * Returns the HTML with the unprocessable HTML tags removed and
+     * with added document type and Content-Type meta tag if needed.
+     *
+     * @return string the unified HTML
+     *
+     * @throws \BadMethodCallException
+     */
+    private function getUnifiedHtml()
+    {
+        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
+        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
+
+        return $this->addContentTypeMetaTag($htmlWithDocumentType);
+    }
+
+    /**
      * Applies $this->css to $this->domDocument.
      *
      * This method places the CSS inline.
@@ -1433,42 +1469,6 @@ class Emogrifier
             }
         }
         return $splitCss;
-    }
-
-    /**
-     * Creates a DOMDocument instance with the current HTML and stores it in $this->domDocument.
-     *
-     * @return void
-     */
-    private function createRawDomDocument()
-    {
-        $domDocument = new \DOMDocument();
-        $domDocument->encoding = 'UTF-8';
-        $domDocument->strictErrorChecking = false;
-        $domDocument->formatOutput = true;
-        $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->getUnifiedHtml());
-        \libxml_clear_errors();
-        \libxml_use_internal_errors($libXmlState);
-        $domDocument->normalizeDocument();
-
-        $this->domDocument = $domDocument;
-    }
-
-    /**
-     * Returns the HTML with the unprocessable HTML tags removed and
-     * with added document type and Content-Type meta tag if needed.
-     *
-     * @return string the unified HTML
-     *
-     * @throws \BadMethodCallException
-     */
-    private function getUnifiedHtml()
-    {
-        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($this->html);
-        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
-
-        return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
 
     /**
