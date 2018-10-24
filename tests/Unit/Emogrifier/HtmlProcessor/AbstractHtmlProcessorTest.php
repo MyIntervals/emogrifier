@@ -30,11 +30,11 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
             '<body></body>' .
             '</html>';
-        $formattedHtml = '<!DOCTYPE HTML>' . "\n" .
-            '<html>' . "\n" .
+        $formattedHtml = "<!DOCTYPE HTML>\n" .
+            "<html>\n" .
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
-            '<body></body>' . "\n" .
-            '</html>' . "\n";
+            "<body></body>\n" .
+            "</html>\n";
 
         $subject = new TestingHtmlProcessor($rawHtml);
 
