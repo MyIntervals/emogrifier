@@ -73,6 +73,33 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @test
+     */
+    public function getDomDocumentReturnsDomDocument()
+    {
+        $subject = new CssInliner('<html></html>');
+
+        static::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
+    }
+
+    /**
+     * @test
+     */
+    public function getDomDocumentWithNormalizedHtmlRepresentsTheGivenHtml()
+    {
+        $html = "<!DOCTYPE html>\n<html>\n<head>" .
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' .
+            "</head>\n<body>\n<br>\n</body>\n</html>\n";
+        $subject = new CssInliner($html);
+
+        $domDocument = $subject->getDomDocument();
+
+        self::assertSame($html, $domDocument->saveHTML());
+    }
+
+    /**
+     * @test
+     *
      * @return array[]
      */
     public function nonHtmlDataProvider()
