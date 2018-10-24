@@ -40,7 +40,7 @@ abstract class AbstractHtmlProcessor
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
-        $this->createDomDocument($unprocessedHtml);
+        $this->createUnifiedDomDocument($unprocessedHtml);
     }
 
     /**
@@ -66,11 +66,13 @@ abstract class AbstractHtmlProcessor
     /**
      * Creates a DOM document from $html and stores it in $this->domDocument.
      *
+     * The DOM document will always have a BODY element and a document type.
+     *
      * @param string $html
      *
      * @return void
      */
-    private function createDomDocument($html)
+    private function createUnifiedDomDocument($html)
     {
         $domDocument = new \DOMDocument();
         $domDocument->strictErrorChecking = false;
