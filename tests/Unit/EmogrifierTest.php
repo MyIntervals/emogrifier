@@ -16,11 +16,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     use AssertCss;
 
     /**
-     * @var string
-     */
-    const LF = "\n";
-
-    /**
      * @var string Common HTML markup with a variety of elements and attributes for testing with
      */
     const COMMON_TEST_HTML = '
@@ -995,7 +990,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'two declarations separated by semicolon & space'
             => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon & linefeed' => [
-                'color: #000;' . static::LF . 'width: 3px;',
+                "color: #000;\nwidth: 3px;",
                 'color: #000; width: 3px;',
             ],
             'two declarations separated by semicolon & Windows line ending' => [
@@ -1137,7 +1132,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyPreservesCaseForAttributeValuesFromPassedInCss()
     {
-        $cssDeclaration = 'content: \'Hello World\';';
+        $cssDeclaration = "content: 'Hello World';";
         $this->subject->setHtml('<html><body><p>target</p></body></html>');
         $this->subject->setCss('p {' . $cssDeclaration . '}');
 
@@ -1151,7 +1146,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyPreservesCaseForAttributeValuesFromParsedStyleBlock()
     {
-        $cssDeclaration = 'content: \'Hello World\';';
+        $cssDeclaration = "content: 'Hello World';";
         $this->subject->setHtml(
             '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>'
         );
@@ -2262,11 +2257,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         static::assertSame(
-            $this->html5DocumentType . static::LF .
-            '<html>' . static::LF .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . static::LF .
-            '<body><p></p></body>' . static::LF .
-            '</html>' . static::LF,
+            $this->html5DocumentType . "\n" .
+            "<html>\n" .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
+            "<body><p></p></body>\n" .
+            "</html>\n",
             $result
         );
     }
