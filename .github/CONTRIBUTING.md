@@ -59,11 +59,17 @@ first before investing a lot of time in writing code.
 ## Install the development dependencies
 
 To install the development dependencies (PHPUnit and PHP_CodeSniffer), please
-run the following command:
+run the following commands:
 
 ```shell
 composer install
+composer require --dev slevomat/coding-standard:^4.0
 ```
+
+Note that the development dependencies (in particular, for PHP_CodeSniffer)
+require PHP 7.0 or later.  The second command installs the PHP_CodeSniffer
+dependencies and should be omitted if specifically testing against an earlier
+version of PHP, however you will not be able to run the static code analysis.
 
 
 ## Unit-test your changes
