@@ -116,11 +116,6 @@ composer php:fix
 Commit message should have a <= 50 character summary, optionally followed by a
 blank line and a more in depth description of 79 characters per line.
 
-[Please squash related commits together](http://gitready.com/advanced/2009/02/10/squashing-commits-with-rebase.html).
-
-If you already have a commit and work on it, you can also
-[amend the first commit](https://nathanhoad.net/git-amend-your-last-commit).
-
 Please use grammatically correct, complete sentences in the commit messages.
 
 Also, please prefix the subject line of the commit message with either
