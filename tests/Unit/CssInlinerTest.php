@@ -16,11 +16,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     use AssertCss;
 
     /**
-     * @var string
-     */
-    const LF = "\n";
-
-    /**
      * @var string Common HTML markup with a variety of elements and attributes for testing with
      */
     const COMMON_TEST_HTML = '
@@ -66,11 +61,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
             '<body></body>' .
             '</html>';
-        $formattedHtml = '<!DOCTYPE HTML>' . "\n" .
-            '<html>' . "\n" .
+        $formattedHtml = "<!DOCTYPE HTML>\n" .
+            "<html>\n" .
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
-            '<body></body>' . "\n" .
-            '</html>' . "\n";
+            "<body></body>\n" .
+            "</html>\n";
 
         $subject = $this->buildDebugSubject($rawHtml);
 
@@ -1019,7 +1014,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'two declarations separated by semicolon & space'
             => ['color: #000; width: 3px;', 'color: #000; width: 3px;'],
             'two declarations separated by semicolon & linefeed' => [
-                'color: #000;' . static::LF . 'width: 3px;',
+                "color: #000;\nwidth: 3px;",
                 'color: #000; width: 3px;',
             ],
             'two declarations separated by semicolon & Windows line ending' => [
@@ -1161,7 +1156,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyPreservesCaseForAttributeValuesFromPassedInCss()
     {
-        $cssDeclaration = 'content: \'Hello World\';';
+        $cssDeclaration = "content: 'Hello World';";
         $subject = $this->buildDebugSubject('<html><body><p>target</p></body></html>');
         $subject->setCss('p {' . $cssDeclaration . '}');
 
@@ -1175,7 +1170,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function emogrifyPreservesCaseForAttributeValuesFromParsedStyleBlock()
     {
-        $cssDeclaration = 'content: \'Hello World\';';
+        $cssDeclaration = "content: 'Hello World';";
         $subject = $this->buildDebugSubject(
             '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>'
         );
@@ -2286,11 +2281,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $result = $subject->emogrify();
 
         static::assertSame(
-            $this->html5DocumentType . static::LF .
-            '<html>' . static::LF .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . static::LF .
-            '<body><p></p></body>' . static::LF .
-            '</html>' . static::LF,
+            $this->html5DocumentType . "\n" .
+            "<html>\n" .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
+            "<body><p></p></body>\n" .
+            "</html>\n",
             $result
         );
     }
