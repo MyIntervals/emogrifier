@@ -2,7 +2,6 @@
 
 namespace Pelago\Emogrifer\Tests\Unit;
 
-use Pelago\Emogrifier;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Tests\Support\Traits\AssertCss;
 
@@ -43,7 +42,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     private $html5DocumentType = '<!DOCTYPE html>';
 
     /**
-     * @var Emogrifier
+     * @var CssInliner
      */
     private $subject = null;
 
