@@ -322,9 +322,10 @@ class Emogrifier
      */
     public function emogrify()
     {
-        $this->domDocument = $this->createDomDocument();
+        $this->createDomDocument();
+        $this->process();
 
-        return $this->process($this->domDocument)->saveHTML();
+        return $this->domDocument->saveHTML();
     }
 
     /**
@@ -339,18 +340,18 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $this->domDocument = $this->createDomDocument();
+        $this->createDomDocument();
+        $this->process();
 
-        $processedDomDocument = $this->process($this->domDocument);
-        $bodyNodeHtml = $processedDomDocument->saveHTML($this->getBodyElement($processedDomDocument));
+        $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
-     * Creates a DOM document from $this->html.
+     * Creates a DOM document from $this->html and stores it in $this->domDocument.
      *
-     * @return \DOMDocument
+     * @return void
      *
      * @throws \BadMethodCallException
      */
@@ -360,10 +361,8 @@ class Emogrifier
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
 
-        $domDocument = $this->createRawDomDocument();
-        $this->ensureExistenceOfBodyElement($domDocument);
-
-        return $domDocument;
+        $this->createRawDomDocument();
+        $this->ensureExistenceOfBodyElement();
     }
 
     /**
@@ -371,15 +370,13 @@ class Emogrifier
      *
      * This method places the CSS inline.
      *
-     * @param \DOMDocument $domDocument
-     *
-     * @return \DOMDocument
+     * @return void
      *
      * @throws \InvalidArgumentException
      */
-    protected function process(\DOMDocument $domDocument)
+    protected function process()
     {
-        $xPath = new \DOMXPath($domDocument);
+        $xPath = new \DOMXPath($this->domDocument);
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
         \set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
@@ -426,11 +423,9 @@ class Emogrifier
 
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
-        $this->copyUninlineableCssToStyleNode($domDocument, $xPath, $cssRules['uninlineable']);
+        $this->copyUninlineableCssToStyleNode($xPath, $cssRules['uninlineable']);
 
         \restore_error_handler();
-
-        return $domDocument;
     }
 
     /**
@@ -1197,13 +1192,12 @@ class Emogrifier
     /**
      * Applies $cssRules to $domDocument, limited to the rules that actually apply to the document.
      *
-     * @param \DOMDocument $domDocument the document to match against
      * @param \DOMXPath $xPath
      * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyUninlineableCssToStyleNode(\DOMDocument $domDocument, \DOMXPath $xPath, array $cssRules)
+    private function copyUninlineableCssToStyleNode(\DOMXPath $xPath, array $cssRules)
     {
         $cssRulesRelevantForDocument = \array_filter(
             $cssRules,
@@ -1231,7 +1225,7 @@ class Emogrifier
             $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
-        $this->addStyleElementToDocument($domDocument, $cssConcatenator->getCss());
+        $this->addStyleElementToDocument($cssConcatenator->getCss());
     }
 
     /**
@@ -1304,44 +1298,40 @@ class Emogrifier
     }
 
     /**
-     * Adds a style element with $css to $document.
+     * Adds a style element with $css to $this->domDocument.
      *
      * This method is protected to allow overriding.
      *
      * @see https://github.com/jjriv/emogrifier/issues/103
      *
-     * @param \DOMDocument $document
      * @param string $css
      *
      * @return void
      */
-    protected function addStyleElementToDocument(\DOMDocument $document, $css)
+    protected function addStyleElementToDocument($css)
     {
-        $styleElement = $document->createElement('style', $css);
-        $styleAttribute = $document->createAttribute('type');
+        $styleElement = $this->domDocument->createElement('style', $css);
+        $styleAttribute = $this->domDocument->createAttribute('type');
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $bodyElement = $this->getBodyElement($document);
+        $bodyElement = $this->getBodyElement();
         $bodyElement->appendChild($styleElement);
     }
 
     /**
-     * Checks that $document has a BODY element and adds it if it is missing.
-     *
-     * @param \DOMDocument $document
+     * Checks that $this->domDocument has a BODY element and adds it if it is missing.
      *
      * @return void
      */
-    private function ensureExistenceOfBodyElement(\DOMDocument $document)
+    private function ensureExistenceOfBodyElement()
     {
-        if ($document->getElementsByTagName('body')->item(0) !== null) {
+        if ($this->domDocument->getElementsByTagName('body')->item(0) !== null) {
             return;
         }
 
-        $htmlElement = $document->getElementsByTagName('html')->item(0);
-
-        $htmlElement->appendChild($document->createElement('body'));
+        $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
+        $htmlElement->appendChild($this->domDocument->createElement('body'));
     }
 
     /**
@@ -1349,15 +1339,13 @@ class Emogrifier
      *
      * This method assumes that there always is a BODY element.
      *
-     * @param \DOMDocument $document
-     *
      * @return \DOMElement
      *
      * @throws \BadMethodCallException
      */
-    private function getBodyElement(\DOMDocument $document)
+    private function getBodyElement()
     {
-        $bodyElement = $document->getElementsByTagName('body')->item(0);
+        $bodyElement = $this->domDocument->getElementsByTagName('body')->item(0);
         if ($bodyElement === null) {
             throw new \BadMethodCallException(
                 'getBodyElement method may only be called after ensureExistenceOfBodyElement has been called.',
@@ -1445,9 +1433,9 @@ class Emogrifier
     }
 
     /**
-     * Creates a DOMDocument instance with the current HTML.
+     * Creates a DOMDocument instance with the current HTML and stores it in $this->domDocument.
      *
-     * @return \DOMDocument
+     * @return void
      */
     private function createRawDomDocument()
     {
@@ -1461,7 +1449,7 @@ class Emogrifier
         \libxml_use_internal_errors($libXmlState);
         $domDocument->normalizeDocument();
 
-        return $domDocument;
+        $this->domDocument = $domDocument;
     }
 
     /**
