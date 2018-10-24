@@ -280,7 +280,7 @@ class CssInliner
     }
 
     /**
-     * Applies $this->css to $domDocument.
+     * Applies $this->css to $this->domDocument.
      *
      * This method places the CSS inline.
      *
@@ -290,10 +290,10 @@ class CssInliner
      */
     protected function process()
     {
-        $xPath = new \DOMXPath($this->domDocument);
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
 
+        $xPath = new \DOMXPath($this->domDocument);
         $this->normalizeStyleAttributesOfAllNodes($xPath);
 
         // grab any existing style blocks from the html and append them to the existing CSS
@@ -829,7 +829,7 @@ class CssInliner
     }
 
     /**
-     * Applies $cssRules to $domDocument, limited to the rules that actually apply to the document.
+     * Applies $cssRules to $this->domDocument, limited to the rules that actually apply to the document.
      *
      * @param \DOMXPath $xPath
      * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`

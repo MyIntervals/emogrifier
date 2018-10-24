@@ -358,7 +358,7 @@ class Emogrifier
     }
 
     /**
-     * Applies $this->css to $domDocument.
+     * Applies $this->css to $this->domDocument.
      *
      * This method places the CSS inline.
      *
@@ -368,9 +368,9 @@ class Emogrifier
      */
     protected function process()
     {
-        $xPath = new \DOMXPath($this->domDocument);
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
+        $xPath = new \DOMXPath($this->domDocument);
         \set_error_handler([$this, 'handleXpathQueryWarnings'], E_WARNING);
 
         $this->normalizeStyleAttributesOfAllNodes($xPath);
@@ -1182,7 +1182,7 @@ class Emogrifier
     }
 
     /**
-     * Applies $cssRules to $domDocument, limited to the rules that actually apply to the document.
+     * Applies $cssRules to $this->domDocument, limited to the rules that actually apply to the document.
      *
      * @param \DOMXPath $xPath
      * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
