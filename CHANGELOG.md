@@ -59,6 +59,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   version 3.0 and removed for version 4.0.
 
 ### Removed
+- Drop the destructors
+  ([#619](https://github.com/MyIntervals/emogrifier/pull/619))
 
 ### Fixed
 - Add required XML PHP extension to `composer.json`
