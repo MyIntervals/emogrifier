@@ -314,7 +314,7 @@ class Emogrifier
      */
     public function emogrify()
     {
-        $this->createDomDocument();
+        $this->createUnifiedDomDocument();
         $this->process();
 
         return $this->domDocument->saveHTML();
@@ -332,7 +332,7 @@ class Emogrifier
      */
     public function emogrifyBodyContent()
     {
-        $this->createDomDocument();
+        $this->createUnifiedDomDocument();
         $this->process();
 
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
@@ -343,11 +343,13 @@ class Emogrifier
     /**
      * Creates a DOM document from $this->html and stores it in $this->domDocument.
      *
+     * The DOM document will always have a BODY element.
+     *
      * @return void
      *
      * @throws \BadMethodCallException
      */
-    private function createDomDocument()
+    private function createUnifiedDomDocument()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);

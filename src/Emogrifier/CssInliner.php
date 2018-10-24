@@ -217,7 +217,7 @@ class CssInliner
      */
     public function render()
     {
-        $this->createDomDocument();
+        $this->createUnifiedDomDocument();
 
         return $this->domDocument->saveHTML();
     }
@@ -235,7 +235,7 @@ class CssInliner
      */
     public function emogrify()
     {
-        $this->createDomDocument();
+        $this->createUnifiedDomDocument();
         $this->process();
 
         return $this->domDocument->saveHTML();
@@ -254,7 +254,7 @@ class CssInliner
      */
     public function emogrifyBodyContent()
     {
-        $this->createDomDocument();
+        $this->createUnifiedDomDocument();
 
         $this->process();
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
@@ -265,11 +265,13 @@ class CssInliner
     /**
      * Creates a DOM document from $this->html and stores it in $this->domDocument.
      *
+     * The DOM document will always have a BODY element and a document type.
+     *
      * @return void
      *
      * @throws \BadMethodCallException
      */
-    private function createDomDocument()
+    private function createUnifiedDomDocument()
     {
         if ($this->html === '') {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
