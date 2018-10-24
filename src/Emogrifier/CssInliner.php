@@ -175,15 +175,22 @@ class CssInliner
     private $debug = false;
 
     /**
-     * The constructor.
+     * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
      *
-     * @param string $html the HTML to inline, must be UTF-8-encoded
+     * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public function __construct($html = '')
+    public function __construct($unprocessedHtml)
     {
+        if (!\is_string($unprocessedHtml)) {
+            throw new \InvalidArgumentException('The provided HTML must be a string.', 1540403176);
+        }
+        if ($unprocessedHtml === '') {
+            throw new \InvalidArgumentException('The provided HTML must not be empty.', 1540403181);
+        }
+
         $this->cssSelectorConverter = new CssSelectorConverter();
 
-        $this->setHtml($html);
+        $this->setHtml($unprocessedHtml);
     }
 
     /**

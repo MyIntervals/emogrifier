@@ -29,6 +29,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Reject empty HTML in `setHtml()`
+  ([#622](https://github.com/MyIntervals/emogrifier/pull/622))
 - Stop passing the DOM document around
   ([#618](https://github.com/MyIntervals/emogrifier/pull/618))
 - Improve performance by using explicit namespaces for PHP functions
