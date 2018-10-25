@@ -32,6 +32,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Remove the unprocessable tags from the DOM, not from the raw HTML
+  ([#627](https://github.com/MyIntervals/emogrifier/pull/627))
 - Reject empty HTML in `setHtml()`
   ([#622](https://github.com/MyIntervals/emogrifier/pull/622))
 - Stop passing the DOM document around

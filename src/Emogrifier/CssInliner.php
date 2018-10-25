@@ -298,7 +298,7 @@ class CssInliner
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->unifyHtml($html));
+        $domDocument->loadHTML($this->prepareHtmlForDomConversion($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
         $domDocument->normalizeDocument();
@@ -307,17 +307,16 @@ class CssInliner
     }
 
     /**
-     * Returns the HTML with the unprocessable HTML tags removed and
-     * with added document type and Content-Type meta tag if needed.
+     * Returns the HTML with added document type and Content-Type meta tag if needed,
+     * ensuring that the HTML will be good for creating a DOM document from it.
      *
      * @param string $html
      *
      * @return string the unified HTML
      */
-    private function unifyHtml($html)
+    private function prepareHtmlForDomConversion($html)
     {
-        $htmlWithoutUnprocessableTags = $this->removeUnprocessableTags($html);
-        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithoutUnprocessableTags);
+        $htmlWithDocumentType = $this->ensureDocumentType($html);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
@@ -337,6 +336,7 @@ class CssInliner
         $this->purgeVisitedNodes();
 
         $xPath = new \DOMXPath($this->domDocument);
+        $this->removeUnprocessableTags();
         $this->normalizeStyleAttributesOfAllNodes($xPath);
 
         // grab any existing style blocks from the html and append them to the existing CSS
@@ -1136,25 +1136,22 @@ class CssInliner
     }
 
     /**
-     * Removes the unprocessable tags from $html (if this feature is enabled).
+     * Removes empty unprocessable tags from the DOM document.
      *
-     * @param string $html
-     *
-     * @return string the reworked HTML with the unprocessable tags removed
+     * @return void
      */
-    private function removeUnprocessableTags($html)
+    private function removeUnprocessableTags()
     {
-        if (empty($this->unprocessableHtmlTags)) {
-            return $html;
+        foreach ($this->unprocessableHtmlTags as $tagName) {
+            $nodes = $this->domDocument->getElementsByTagName($tagName);
+            /** @var \DOMNode $node */
+            foreach ($nodes as $node) {
+                $hasContent = $node->hasChildNodes() || $node->hasChildNodes();
+                if (!$hasContent) {
+                    $node->parentNode->removeChild($node);
+                }
+            }
         }
-
-        $unprocessableHtmlTags = \implode('|', $this->unprocessableHtmlTags);
-
-        return \preg_replace(
-            '/<\\/?(' . $unprocessableHtmlTags . ')[^>]*>/i',
-            '',
-            $html
-        );
     }
 
     /**
