@@ -91,7 +91,7 @@ abstract class AbstractHtmlProcessor
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->unifyHtml($html));
+        $domDocument->loadHTML($this->prepareHtmlForDomConversion($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
 
@@ -99,13 +99,14 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Returns the HTML with added document type and Content-Type meta tag (if any of this is missing).
+     * Returns the HTML with added document type and Content-Type meta tag if needed,
+     * ensuring that the HTML will be good for creating a DOM document from it.
      *
      * @param string $html
      *
      * @return string the unified HTML
      */
-    private function unifyHtml($html)
+    private function prepareHtmlForDomConversion($html)
     {
         $htmlWithDocumentType = $this->ensureDocumentType($html);
 
