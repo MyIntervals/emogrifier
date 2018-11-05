@@ -95,11 +95,6 @@ class Emogrifier
     /**
      * @var string
      */
-    private $html = '';
-
-    /**
-     * @var string
-     */
     private $css = '';
 
     /**
@@ -267,7 +262,7 @@ class Emogrifier
     private $debug = false;
 
     /**
-     * @param string $unprocessedHtml the HTML to emogrify, must be UTF-8-encoded
+     * @param string $unprocessedHtml the HTML to process, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
     public function __construct($unprocessedHtml = '', $css = '')
@@ -279,24 +274,24 @@ class Emogrifier
     }
 
     /**
-     * Sets the HTML to emogrify.
+     * Sets the HTML to process.
      *
-     * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
+     * @param string $html the HTML to process, must be UTF-encoded, must not be empty
      *
      * @return void
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public function setHtml($unprocessedHtml)
+    public function setHtml($html)
     {
-        if (!\is_string($unprocessedHtml)) {
+        if (!\is_string($html)) {
             throw new \InvalidArgumentException('The provided HTML must be a string.', 1540403913);
         }
-        if ($unprocessedHtml === '') {
+        if ($html === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1540403910);
         }
 
-        $this->html = $unprocessedHtml;
+        $this->createUnifiedDomDocument($html);
     }
 
     /**
@@ -312,7 +307,7 @@ class Emogrifier
     }
 
     /**
-     * Applies $this->css to $this->html and returns the HTML with the CSS
+     * Applies $this->css to the given HTML and returns the HTML with the CSS
      * applied.
      *
      * This method places the CSS inline.
@@ -325,14 +320,13 @@ class Emogrifier
     {
         $this->assertExistenceOfHtml();
 
-        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         return $this->domDocument->saveHTML();
     }
 
     /**
-     * Applies $this->css to $this->html and returns only the HTML content
+     * Applies $this->css to the given HTML and returns only the HTML content
      * within the <body> tag.
      *
      * This method places the CSS inline.
@@ -345,7 +339,6 @@ class Emogrifier
     {
         $this->assertExistenceOfHtml();
 
-        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
@@ -360,7 +353,7 @@ class Emogrifier
      */
     private function assertExistenceOfHtml()
     {
-        if ($this->html === '') {
+        if ($this->domDocument === null) {
             throw new \BadMethodCallException('Please set some HTML first.', 1390393096);
         }
     }

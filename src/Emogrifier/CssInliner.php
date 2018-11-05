@@ -71,11 +71,6 @@ class CssInliner
     /**
      * @var string
      */
-    private $html = '';
-
-    /**
-     * @var string
-     */
     private $css = '';
 
     /**
@@ -194,15 +189,15 @@ class CssInliner
     }
 
     /**
-     * Sets the HTML to emogrify.
+     * Sets the HTML to process.
      *
-     * @param string $html the HTML to emogrify, must be UTF-8-encoded
+     * @param string $html the HTML to process, must be UTF-8-encoded
      *
      * @return void
      */
     private function setHtml($html)
     {
-        $this->html = $html;
+        $this->createUnifiedDomDocument($html);
     }
 
     /**
@@ -224,13 +219,11 @@ class CssInliner
      */
     public function render()
     {
-        $this->createUnifiedDomDocument($this->html);
-
         return $this->domDocument->saveHTML();
     }
 
     /**
-     * Applies $this->css to $this->html and returns the HTML with the CSS
+     * Applies $this->css to the given HTML and returns the HTML with the CSS
      * applied.
      *
      * This method places the CSS inline.
@@ -242,14 +235,13 @@ class CssInliner
      */
     public function emogrify()
     {
-        $this->createUnifiedDomDocument($this->html);
         $this->process();
 
         return $this->domDocument->saveHTML();
     }
 
     /**
-     * Applies $this->css to $this->html and returns only the HTML content
+     * Applies $this->css to the given HTML and returns only the HTML content
      * within the <body> tag.
      *
      * This method places the CSS inline.
@@ -261,8 +253,6 @@ class CssInliner
      */
     public function emogrifyBodyContent()
     {
-        $this->createUnifiedDomDocument($this->html);
-
         $this->process();
         $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
 
