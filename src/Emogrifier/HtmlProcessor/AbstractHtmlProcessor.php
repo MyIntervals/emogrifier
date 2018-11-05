@@ -40,7 +40,19 @@ abstract class AbstractHtmlProcessor
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
-        $this->createUnifiedDomDocument($unprocessedHtml);
+        $this->setHtml($unprocessedHtml);
+    }
+
+    /**
+     * Sets the HTML to process.
+     *
+     * @param string $html the HTML to process, must be UTF-8-encoded
+     *
+     * @return void
+     */
+    private function setHtml($html)
+    {
+        $this->createUnifiedDomDocument($html);
     }
 
     /**
