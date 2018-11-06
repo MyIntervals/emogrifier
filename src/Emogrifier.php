@@ -295,6 +295,16 @@ class Emogrifier
     }
 
     /**
+     * Provides access to the internal DOMDocument representation of the HTML in its current state.
+     *
+     * @return \DOMDocument
+     */
+    public function getDomDocument()
+    {
+        return $this->domDocument;
+    }
+
+    /**
      * Sets the CSS to merge with the HTML.
      *
      * @param string $css the CSS to merge, must be UTF-8-encoded

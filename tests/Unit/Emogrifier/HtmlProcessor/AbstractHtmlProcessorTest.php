@@ -342,10 +342,10 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $html = "<!DOCTYPE html>\n<html>\n<head>" .
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' .
             "</head>\n<body>\n<br>\n</body>\n</html>\n";
-
         $subject = new TestingHtmlProcessor($html);
 
         $domDocument = $subject->getDomDocument();
+
         self::assertSame($html, $domDocument->saveHTML());
     }
 }
