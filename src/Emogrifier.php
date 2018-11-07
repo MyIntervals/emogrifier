@@ -317,6 +317,16 @@ class Emogrifier
     }
 
     /**
+     * Renders the normalized and processed HTML.
+     *
+     * @return string
+     */
+    protected function render()
+    {
+        return $this->domDocument->saveHTML();
+    }
+
+    /**
      * Applies $this->css to the given HTML and returns the HTML with the CSS
      * applied.
      *
@@ -332,7 +342,7 @@ class Emogrifier
 
         $this->process();
 
-        return $this->domDocument->saveHTML();
+        return $this->render();
     }
 
     /**
@@ -358,6 +368,8 @@ class Emogrifier
 
     /**
      * Checks that some HTML has been set, and throws an exception otherwise.
+     *
+     * @return void
      *
      * @throws \BadMethodCallException
      */

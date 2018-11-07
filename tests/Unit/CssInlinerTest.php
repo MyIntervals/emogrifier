@@ -146,11 +146,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
-    public function emogrifyAddsMissingHtmlTag($html)
+    public function renderAddsMissingHtmlTag($html)
     {
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<html>', $result);
     }
@@ -174,11 +174,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
-    public function emogrifyAddsMissingHeadTag($html)
+    public function renderAddsMissingHeadTag($html)
     {
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<head>', $result);
     }
@@ -202,11 +202,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
-    public function emogrifyAddsMissingBodyTag($html)
+    public function renderAddsMissingBodyTag($html)
     {
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<body>', $result);
     }
@@ -214,11 +214,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyPutsMissingBodyElementAroundBodyContent()
+    public function renderPutsMissingBodyElementAroundBodyContent()
     {
         $subject = $this->buildDebugSubject('<p>Hello</p>');
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<body><p>Hello</p></body>', $result);
     }
@@ -242,12 +242,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function emogrifyKeepsSpecialCharacters($codeNotToBeChanged)
+    public function renderKeepsSpecialCharacters($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains($codeNotToBeChanged, $result);
     }
@@ -294,12 +294,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider documentTypeDataProvider
      */
-    public function emogrifyForHtmlWithDocumentTypeKeepsDocumentType($documentType)
+    public function renderForHtmlWithDocumentTypeKeepsDocumentType($documentType)
     {
         $html = $documentType . '<html></html>';
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains($documentType, $result);
     }
@@ -307,11 +307,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsMissingContentTypeMetaTag()
+    public function renderAddsMissingContentTypeMetaTag()
     {
         $subject = $this->buildDebugSubject('<p>Hello</p>');
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
     }
@@ -319,12 +319,12 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyNotAddsSecondContentTypeMetaTag()
+    public function renderNotAddsSecondContentTypeMetaTag()
     {
         $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
         $subject = $this->buildDebugSubject($html);
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
         static::assertSame(1, $numberOfContentTypeMetaTags);
@@ -2251,13 +2251,13 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider documentTypeDataProvider
      */
-    public function emogrifyConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
+    public function renderConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
     {
         $subject = $this->buildDebugSubject(
             $documentType . '<html><body><br/></body></html>'
         );
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<br>', $result);
     }
@@ -2265,11 +2265,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAutomaticallyClosesUnclosedTag()
+    public function renderAutomaticallyClosesUnclosedTag()
     {
         $subject = $this->buildDebugSubject('<html><body><p></body></html>');
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertContains('<body><p></p></body>', $result);
     }
@@ -2277,11 +2277,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyReturnsCompleteHtmlDocument()
+    public function renderReturnsCompleteHtmlDocument()
     {
         $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
 
-        $result = $subject->emogrify();
+        $result = $subject->render();
 
         static::assertSame(
             $this->html5DocumentType . "\n" .
