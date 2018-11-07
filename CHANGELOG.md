@@ -8,9 +8,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Add a `getDomDocument()` method
-  ([#630](https://github.com/jjriv/emogrifier/pull/630))
+  ([#630](https://github.com/MyIntervals/emogrifier/pull/630))
 - Add a Composer script for PHP CS Fixer 
-  ([#607](https://github.com/jjriv/emogrifier/pull/607))
+  ([#607](https://github.com/MyIntervals/emogrifier/pull/607))
 - Copy matching rules with dynamic pseudo-classes or pseudo-elements in
   selectors to the style element
   ([#280](https://github.com/MyIntervals/emogrifier/issues/280),
