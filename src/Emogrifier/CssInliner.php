@@ -240,14 +240,13 @@ class CssInliner
      *
      * @return string
      *
-     * @throws \BadMethodCallException
      * @throws SyntaxErrorException
      */
     public function emogrify()
     {
         $this->process();
 
-        return $this->domDocument->saveHTML();
+        return $this->render();
     }
 
     /**
@@ -258,7 +257,6 @@ class CssInliner
      *
      * @return string
      *
-     * @throws \BadMethodCallException
      * @throws SyntaxErrorException
      */
     public function emogrifyBodyContent()
