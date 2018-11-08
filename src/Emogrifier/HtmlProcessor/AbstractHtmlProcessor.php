@@ -76,6 +76,30 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Renders the content of the BODY element of the normalized and processed HTML.
+     *
+     * @return string
+     */
+    public function renderBodyContent()
+    {
+        $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
+
+        return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+    }
+
+    /**
+     * Returns the BODY element.
+     *
+     * This method assumes that there always is a BODY element.
+     *
+     * @return \DOMElement
+     */
+    private function getBodyElement()
+    {
+        return $this->domDocument->getElementsByTagName('body')->item(0);
+    }
+
+    /**
      * Creates a DOM document from the given HTML and stores it in $this->domDocument.
      *
      * The DOM document will always have a BODY element and a document type.

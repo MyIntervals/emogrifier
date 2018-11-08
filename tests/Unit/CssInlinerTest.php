@@ -75,6 +75,31 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function renderBodyContentForEmptyBodyReturnsEmptyString()
+    {
+        $subject = $this->buildDebugSubject('<html><body></body></html>');
+
+        $result = $subject->renderBodyContent();
+
+        static::assertSame('', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function renderBodyContentReturnsBodyContent()
+    {
+        $bodyContent = '<p>Hello world</p>';
+        $subject = $this->buildDebugSubject('<html><body>' . $bodyContent . '</body></html>');
+
+        $result = $subject->renderBodyContent();
+
+        static::assertSame($bodyContent, $result);
+    }
+
+    /**
+     * @test
+     */
     public function getDomDocumentReturnsDomDocument()
     {
         $subject = new CssInliner('<html></html>');
@@ -118,6 +143,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      *
      * @param mixed $html
+     *
      * @dataProvider nonHtmlDataProvider
      */
     public function constructorWithNoHtmlDataThrowsException($html)

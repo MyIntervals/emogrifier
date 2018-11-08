@@ -60,6 +60,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @expectedException \InvalidArgumentException
      *
      * @param mixed $html
+     *
      * @dataProvider nonHtmlDataProvider
      */
     public function constructorWithNoHtmlDataThrowsException($html)
@@ -85,6 +86,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      *
      * @param string $input
      * @param string $expectedHtml
+     *
      * @dataProvider invalidHtmlDataProvider
      */
     public function renderRepairsBrokenHtml($input, $expectedHtml)
@@ -113,6 +115,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $html
+     *
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
     public function addsMissingHtmlTag($html)
@@ -140,6 +143,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $html
+     *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
     public function addsMissingHeadTag($html)
@@ -167,6 +171,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $html
+     *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
     public function addsMissingBodyTag($html)
@@ -206,6 +211,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $codeNotToBeChanged
+     *
      * @dataProvider specialCharactersDataProvider
      */
     public function keepsSpecialCharacters($codeNotToBeChanged)
@@ -256,6 +262,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $documentType
+     *
      * @dataProvider documentTypeDataProvider
      */
     public function keepsExistingDocumentType($documentType)
@@ -298,6 +305,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $documentType
+     *
      * @dataProvider documentTypeDataProvider
      */
     public function convertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
@@ -313,15 +321,41 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      * @test
      *
      * @param string $documentType
+     *
      * @dataProvider documentTypeDataProvider
      */
-    public function keepsNonMmlSelfClosingTags($documentType)
+    public function keepsNonXmlSelfClosingTags($documentType)
     {
         $subject = new TestingHtmlProcessor($documentType . '<html><body><br></body></html>');
 
         $result = $subject->render();
 
         static::assertContains('<body><br></body>', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function renderBodyContentForEmptyBodyReturnsEmptyString()
+    {
+        $subject = new TestingHtmlProcessor('<html><body></body></html>');
+
+        $result = $subject->renderBodyContent();
+
+        static::assertSame('', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function renderBodyContentReturnsBodyContent()
+    {
+        $bodyContent = '<p>Hello world</p>';
+        $subject = new TestingHtmlProcessor('<html><body>' . $bodyContent . '</body></html>');
+
+        $result = $subject->renderBodyContent();
+
+        static::assertSame($bodyContent, $result);
     }
 
     /**

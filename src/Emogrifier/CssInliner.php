@@ -233,6 +233,30 @@ class CssInliner
     }
 
     /**
+     * Renders the content of the BODY element of the normalized and processed HTML.
+     *
+     * @return string
+     */
+    public function renderBodyContent()
+    {
+        $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
+
+        return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+    }
+
+    /**
+     * Returns the BODY element.
+     *
+     * This method assumes that there always is a BODY element.
+     *
+     * @return \DOMElement
+     */
+    private function getBodyElement()
+    {
+        return $this->domDocument->getElementsByTagName('body')->item(0);
+    }
+
+    /**
      * Applies $this->css to the given HTML and returns the HTML with the CSS
      * applied.
      *
@@ -262,9 +286,8 @@ class CssInliner
     public function emogrifyBodyContent()
     {
         $this->process();
-        $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
 
-        return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+        return $this->renderBodyContent();
     }
 
     /**
@@ -1033,28 +1056,6 @@ class CssInliner
 
         $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
         $htmlElement->appendChild($this->domDocument->createElement('body'));
-    }
-
-    /**
-     * Returns the BODY element.
-     *
-     * This method assumes that there always is a BODY element.
-     *
-     * @return \DOMElement
-     *
-     * @throws \BadMethodCallException
-     */
-    private function getBodyElement()
-    {
-        $bodyElement = $this->domDocument->getElementsByTagName('body')->item(0);
-        if ($bodyElement === null) {
-            throw new \BadMethodCallException(
-                'getBodyElement method may only be called after ensureExistenceOfBodyElement has been called.',
-                1508173775
-            );
-        }
-
-        return $bodyElement;
     }
 
     /**
