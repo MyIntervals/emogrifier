@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add a `renderBodyContent()` method
+  ([#633](https://github.com/MyIntervals/emogrifier/pull/633))
 - Add a `getDomDocument()` method
   ([#630](https://github.com/MyIntervals/emogrifier/pull/630))
 - Add a Composer script for PHP CS Fixer 
