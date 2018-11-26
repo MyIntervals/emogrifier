@@ -70,6 +70,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   version 3.0 and removed for version 4.0.
 
 ### Removed
+- Drop the `@version` PHPDoc annotations
+  ([#637](https://github.com/MyIntervals/emogrifier/pull/637))
 - Drop the destructors
   ([#619](https://github.com/MyIntervals/emogrifier/pull/619))
 
