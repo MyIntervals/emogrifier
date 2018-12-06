@@ -8,6 +8,7 @@ php:
 - 7.0
 - 7.1
 - 7.2
+- 7.3
 
 cache:
   directories:
@@ -24,9 +25,10 @@ before_install:
 
 install:
 - >
+  export IGNORE_PLATFORM_REQS="$(composer php:version |grep -q '^7.3' && printf -- --ignore-platform-reqs)";
   echo;
   echo "Updating the dependencies";
-  composer update --with-dependencies $DEPENDENCIES_PREFERENCE;
+  composer update $IGNORE_PLATFORM_REQS --with-dependencies $DEPENDENCIES_PREFERENCE;
   composer show;
 
 script:
@@ -55,7 +57,7 @@ script:
   function version_gte() { test "$(printf '%s\n' "$@" | sort -n -t. -r | head -n 1)" = "$1"; };
   if version_gte $(composer php:version) 7; then
     echo "Installing slevomat/coding-standard only for PHP 7.x";
-    composer require --dev slevomat/coding-standard:^4.0 $DEPENDENCIES_PREFERENCE;
+    composer require $IGNORE_PLATFORM_REQS --dev slevomat/coding-standard:^4.0 $DEPENDENCIES_PREFERENCE;
     echo "Running PHP_CodeSniffer";
     composer ci:php:sniff;
   else
