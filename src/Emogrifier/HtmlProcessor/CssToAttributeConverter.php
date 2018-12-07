@@ -10,6 +10,8 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  *
  * To trigger the conversion, call the convertCssToVisualAttributes method.
  *
+ * @internal This class currently is a new technology preview, and its API is still in flux. Don't use it in production.
+ *
  * @author Oliver Klee <github@oliverklee.de>
  */
 class CssToAttributeConverter extends AbstractHtmlProcessor

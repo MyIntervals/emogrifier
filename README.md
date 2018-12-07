@@ -37,13 +37,11 @@ into inline style attributes in your HTML code.
 - [Processing HTML](#processing-html)
 - [Maintainers](#maintainers)
 
-
 ## How it Works
 
 Emogrifier automagically transmogrifies your HTML by parsing your CSS and
 inserting your CSS definitions into tags within your HTML based on your CSS
 selectors.
-
 
 ## Installation
 
@@ -53,7 +51,6 @@ project's composer.json, or you can use composer as below:
 ```bash
 composer require pelago/emogrifier
 ```
-
 
 ## Usage
 
@@ -78,7 +75,6 @@ $emogrifier->setHtml($html);
 $emogrifier->setCss($css);
 ```
 
-
 After you have set the HTML and CSS, you can call the `emogrify` method to
 merge both:
 
@@ -95,7 +91,6 @@ the complete HTML document, you can use the `emogrifyBodyContent` instead:
 ```php
 $bodyContent = $emogrifier->emogrifyBodyContent();
 ```
-
 
 ## Options
 
@@ -133,7 +128,6 @@ calling the `emogrify` method:
   attributes set. This option will be removed in Emogrifier 3.0. Please use the
   `CssToAttributeConverter` class instead.
 
-
 ## Installing with Composer
 
 Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally
@@ -146,13 +140,13 @@ curl -s https://getcomposer.org/installer | php
 Run the following command for a local installation:
 
 ```bash
-php composer.phar require pelago/emogrifier:^2.0.0
+php composer.phar require pelago/emogrifier:^2.1.0
 ```
 
 Or for a global installation, run the following command:
 
 ```bash
-composer require pelago/emogrifier:^2.0.0
+composer require pelago/emogrifier:^2.1.0
 ```
 
 You can also add follow lines to your `composer.json` and run the
@@ -160,12 +154,11 @@ You can also add follow lines to your `composer.json` and run the
 
 ```json
 "require": {
-  "pelago/emogrifier": "^2.0.0"
+  "pelago/emogrifier": "^2.1.0"
 }
 ```
 
 See https://getcomposer.org/ for more information and documentation.
-
 
 ## Supported CSS selectors
 
@@ -201,7 +194,6 @@ The following selectors are not implemented yet:
    (some of them will never be supported)
  * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
 
-
 ## Caveats
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like
@@ -235,7 +227,6 @@ The following selectors are not implemented yet:
   (but not all of them). It does not support pseudo selectors. (Emogrifier
   works by converting CSS selectors to XPath selectors, and pseudo selectors
   cannot be converted accurately).
-
 
 ## Processing HTML
 
@@ -272,24 +263,28 @@ $converter = new \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter($rawHt
 $visualHtml = $converter->convertCssToVisualAttributes()->render();
 ```
 
+### Technology preview of new classes
+
+Currently, a refactoring effort is underway, aiming towards replacing the
+grown-over-time `Emogrifier` class with the new `CssInliner` class and moving
+additional HTML processing into separate `CssProcessor` classes (which will
+inherit from `AbstractHtmlProcessor`). You can try the new classes, but be
+aware that the APIs of the new classes still are subject to change. 
 
 ## Steps to release a new version
 
 1. Create a pull request "Prepare release of version x.y.z" with the following
    changes.
-2. Set the new version number in the `@version` annotation in the class PHPDoc
-   of [Emogrifier.php](src/Emogrifier.php).
-3. In the [composer.json](composer.json), update the `branch-alias` entry to
+1. In the [composer.json](composer.json), update the `branch-alias` entry to
    point to the release _after_ the upcoming release.
-4. In the [README.md](README.md), update the version numbers in the section
+1. In the [README.md](README.md), update the version numbers in the section
    [Installing with Composer](#installing-with-composer).
-5. In the [CHANGELOG.md](CHANGELOG.md), set the version number and remove any
+1. In the [CHANGELOG.md](CHANGELOG.md), set the version number and remove any
    empty sections.
-6. Have the pull request reviewed and merged.
-7. In the [Releases tab](https://github.com/MyIntervals/emogrifier/releases),
+1. Have the pull request reviewed and merged.
+1. In the [Releases tab](https://github.com/MyIntervals/emogrifier/releases),
    create a new release and copy the change log entries to the new release.
-8. Post about the new release on social media.
-
+1. Post about the new release on social media.
 
 ## Maintainers
 
