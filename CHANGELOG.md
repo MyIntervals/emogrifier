@@ -3,8 +3,19 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
-
 ## x.y.z
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 2.1.0
 
 ### Added
 - PHP 7.3 support
@@ -37,6 +48,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#476](https://github.com/jjriv/emogrifier/pull/476))
 
 ### Changed
+- Mark the work-in-progress classes as `@internal`
+  ([#640](https://github.com/MyIntervals/emogrifier/pull/640))
 - Remove the unprocessable tags from the DOM, not from the raw HTML
   ([#627](https://github.com/MyIntervals/emogrifier/pull/627))
 - Reject empty HTML in `setHtml()`
@@ -107,7 +120,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Allow CSS property values containing newlines
   ([#504](https://github.com/MyIntervals/emogrifier/pull/504))
 
-
 ## 2.0.0
 
 ### Added
@@ -159,7 +171,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Silence purposefully ignored PHP Warnings
   ([#400](https://github.com/MyIntervals/emogrifier/pull/400))
 
-
 ## 1.2.0 (2017-03-02)
 
 ### Added
@@ -175,7 +186,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#371](https://github.com/MyIntervals/emogrifier/pull/371))
 - Ignore "auto" width and height
   ([#365](https://github.com/MyIntervals/emogrifier/pull/365))
-
 
 ## 1.1.0 (2016-09-18)
 
@@ -220,7 +230,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#293](https://github.com/MyIntervals/emogrifier/pull/293))
 - Second !important rule needs to overwrite the first one
   ([#292](https://github.com/MyIntervals/emogrifier/pull/292))
-
 
 ## 1.0.0 (2015-10-15)
 
