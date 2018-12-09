@@ -1519,15 +1519,43 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function emogrifyAddsStyleElementToBody()
+    public function emogrifyKeepsExistingStyleElementWithMedia()
     {
-        $html = $this->html5DocumentType . '<html><head><!-- original content --></head></html>';
+        $html = $this->html5DocumentType . '<html><head><!-- original content --></head><body></body></html>';
         $this->subject->setHtml($html);
         $this->subject->setCss('@media all { html { some-property: value; } }');
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body><style type="text/css">', $result);
+        static::assertContains('<style type="text/css">', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsExistingStyleElementWithMediaInHead()
+    {
+        $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
+        $html = '<html><head>' . $style . '</head><body></body></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        static::assertRegExp('/<head>.*<style.*<\\/head>/s', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyKeepsExistingStyleElementWithMediaOutOfBody()
+    {
+        $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
+        $html = '<html><head>' . $style . '</head><body></body></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        static::assertNotRegExp('/<body>.*<style/s', $result);
     }
 
     /**
@@ -2926,23 +2954,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         static::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function emogrifyMovesStyleElementFromHeadToBody()
-    {
-        $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
-        $html = '<html><head>' . $style . '</head></html>';
-        $this->subject->setHtml($html);
-
-        $result = $this->subject->emogrify();
-
-        static::assertContainsCss(
-            '<body>' . $style . '</body>',
-            $result
-        );
     }
 
     /**

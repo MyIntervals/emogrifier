@@ -257,6 +257,18 @@ class CssInliner
     }
 
     /**
+     * Returns the HEAD element.
+     *
+     * This method assumes that there always is a HEAD element.
+     *
+     * @return \DOMElement
+     */
+    private function getHeadElement()
+    {
+        return $this->domDocument->getElementsByTagName('head')->item(0);
+    }
+
+    /**
      * Applies $this->css to the given HTML and returns the HTML with the CSS
      * applied.
      *
@@ -1039,8 +1051,8 @@ class CssInliner
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
-        $bodyElement = $this->getBodyElement();
-        $bodyElement->appendChild($styleElement);
+        $headElement = $this->getHeadElement();
+        $headElement->appendChild($styleElement);
     }
 
     /**
@@ -1172,6 +1184,8 @@ class CssInliner
 
     /**
      * Adds a Content-Type meta tag for the charset.
+     *
+     * This method also ensures that there is a HEAD element.
      *
      * @param string $html
      *

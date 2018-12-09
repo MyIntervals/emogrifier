@@ -171,6 +171,8 @@ abstract class AbstractHtmlProcessor
     /**
      * Adds a Content-Type meta tag for the charset.
      *
+     * This method also ensures that there is a HEAD element.
+
      * @param string $html
      *
      * @return string the HTML with the meta tag added

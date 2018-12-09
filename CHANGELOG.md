@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Keep the `style` element the `head`
+  ([#642](https://github.com/MyIntervals/emogrifier/pull/642))
 
 ## 2.1.0
 
