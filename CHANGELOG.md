@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## 1.2.2
 
 ### Fixed
+- PHP 7.3 support
+  ([#643](https://github.com/MyIntervals/emogrifier/pull/643))
+  - Allow PHP 7.3 in `composer.json`
+  - Test in Travis for PHP 7.3
 - Escape hyphens in regular expressions
   ([#599](https://github.com/MyIntervals/emogrifier/pull/599))
 
