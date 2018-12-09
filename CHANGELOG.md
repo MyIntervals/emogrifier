@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Escape hyphens in regular expressions
   ([#599](https://github.com/MyIntervals/emogrifier/pull/599))
 
+### Removed
+- Drop the `@version` PHPDoc annotations
+  ([#644](https://github.com/MyIntervals/emogrifier/pull/644))
+
 ## 1.2.1
 
 ### Added
