@@ -258,6 +258,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
             'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
             'HTML entities' => ['a &amp; b &gt; c'],
+            'curly braces' => ['{Happy new year!}'],
         ];
     }
 
@@ -268,7 +269,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function renderKeepsSpecialCharacters($codeNotToBeChanged)
+    public function renderKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = $this->buildDebugSubject($html);
@@ -297,7 +298,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
+    public function emogrifyBodyContentKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = $this->buildDebugSubject($html);

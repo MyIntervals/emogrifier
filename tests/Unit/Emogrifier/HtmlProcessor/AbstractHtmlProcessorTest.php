@@ -204,6 +204,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
             'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
             'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
             'HTML entities' => ['a &amp; b &gt; c'],
+            'curly braces' => ['{Happy new year!}'],
         ];
     }
 
@@ -214,7 +215,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function keepsSpecialCharacters($codeNotToBeChanged)
+    public function keepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = new TestingHtmlProcessor($html);

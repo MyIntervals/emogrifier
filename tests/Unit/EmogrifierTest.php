@@ -230,6 +230,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
             'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
             'HTML entities' => ['a &amp; b &gt; c'],
+            'curly braces' => ['{Happy new year!}'],
         ];
     }
 
@@ -240,7 +241,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function emogrifyKeepsSpecialCharacters($codeNotToBeChanged)
+    public function emogrifyKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $this->subject->setHtml($html);
@@ -257,7 +258,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function emogrifyBodyContentKeepsSpecialCharacters($codeNotToBeChanged)
+    public function emogrifyBodyContentKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $this->subject->setHtml($html);
