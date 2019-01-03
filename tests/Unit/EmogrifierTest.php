@@ -269,6 +269,70 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Provides a list of common template variable formats.
+     * To be extended...
+     *
+     * @return string[]
+     */
+    private function templateVariablesProvider()
+    {
+        return ['{var}', '{$var}'];
+    }
+
+    /**
+     * Provides a list of elements & attributes which should not be URI-encoded.
+     *
+     * @return string[]
+     */
+    private function elementsWithUriSpecificAttributesProvider()
+    {
+        return [
+            'a[href] + %s' => '<a href="%s"></a>',
+            'link[href] + %s' => '<link href="%s">',
+            'base[href] + %s' => '<base href="%s">',
+            'script[src] + %s' => '<script src="%s"></script>',
+            'form[action] + %s' => '<form action="%s"></form>',
+            'iframe[src] + %s' => '<iframe src="%s"></iframe>',
+            'iframe[srcdoc] + %s' => '<iframe srcdoc="%s"></iframe>',
+            'q[cite] + %s' => '<q cite="%s"></q>',
+            'blockquote[cite] + %s' => '<blockquote cite="%s"></blockquote>',
+            'ins[cite] + %s' => '<ins cite="%s"></ins>',
+            'del[cite] + %s' => '<del cite="%s"></del>',
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function attributesWithSpecialCharactersDataProvider()
+    {
+        $data = [];
+        foreach ($this->elementsWithUriSpecificAttributesProvider() as $nameTemplate => $attributeTemplate) {
+            foreach ($this->templateVariablesProvider() as $variable) {
+                $data[\sprintf($nameTemplate, $variable)] = [\sprintf($attributeTemplate, $variable)];
+            }
+        }
+        return $data;
+    }
+
+    /**
+     * @test
+     *
+     * @param string $codeNotToBeChanged
+     *
+     * @dataProvider attributesWithSpecialCharactersDataProvider
+     */
+    public function emogrifyKeepsSpecialCharactersInUriSpecificAttributes($codeNotToBeChanged)
+    {
+        $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
+        $this->subject->setHtml($html);
+
+        $result = $this->subject->emogrify();
+
+        static::assertContains($codeNotToBeChanged, $result);
+    }
+
+    /**
      * @test
      */
     public function addsMissingHtml5DocumentType()
