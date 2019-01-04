@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Correct translated xpath of `:nth-child` selector
+  ([#648](https://github.com/MyIntervals/emogrifier/pull/648))
 
 ## 2.1.1
 
