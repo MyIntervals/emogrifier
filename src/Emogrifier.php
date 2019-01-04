@@ -1784,21 +1784,21 @@ class Emogrifier
             if ($parseResult[static::MULTIPLIER] < 0) {
                 $parseResult[static::MULTIPLIER] = \abs($parseResult[static::MULTIPLIER]);
                 $xPathExpression = \sprintf(
-                    '*[(last() - position()) mod %1%u = %2$u]/static::%3$s',
+                    '*[(last() - position()) mod %1%u = %2$u]/self::%3$s',
                     $parseResult[static::MULTIPLIER],
                     $parseResult[static::INDEX],
                     $match[1]
                 );
             } else {
                 $xPathExpression = \sprintf(
-                    '*[position() mod %1$u = %2$u]/static::%3$s',
+                    '*[position() mod %1$u = %2$u]/self::%3$s',
                     $parseResult[static::MULTIPLIER],
                     $parseResult[static::INDEX],
                     $match[1]
                 );
             }
         } else {
-            $xPathExpression = \sprintf('*[%1$u]/static::%2$s', $parseResult[static::INDEX], $match[1]);
+            $xPathExpression = \sprintf('*[%1$u]/self::%2$s', $parseResult[static::INDEX], $match[1]);
         }
 
         return $xPathExpression;
