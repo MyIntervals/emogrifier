@@ -1518,7 +1518,11 @@ class Emogrifier
     private function removeUnprocessableTags()
     {
         foreach ($this->unprocessableHtmlTags as $tagName) {
-            $nodes = $this->domDocument->getElementsByTagName($tagName);
+            // Deleting nodes from a 'live' NodeList invalidates iteration on it, so a copy must be made to iterate.
+            $nodes = [];
+            foreach ($this->domDocument->getElementsByTagName($tagName) as $node) {
+                $nodes[] = $node;
+            }
             /** @var \DOMNode $node */
             foreach ($nodes as $node) {
                 $hasContent = $node->hasChildNodes() || $node->hasChildNodes();

@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Remove all ‘unprocessable’ (e.g. `<wbr>`) tags
+  ([#650](https://github.com/MyIntervals/emogrifier/pull/650))
 - Correct translated xpath of `:nth-child` selector
   ([#648](https://github.com/MyIntervals/emogrifier/pull/648))
 

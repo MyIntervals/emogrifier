@@ -370,11 +370,26 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyByDefaultRemovesWbrTag()
+    public function wbrTagDataProvider()
     {
-        $html = '<html>foo<wbr/>bar</html>';
+        return [
+            'single <wbr> tag' => ['<body>foo<wbr/>bar</body>'],
+            'two sibling <wbr> tags' => ['<body>foo<wbr/>bar<wbr/>baz</body>'],
+            'two non-sibling <wbr> tags' => ['<body><p>foo<wbr/>bar</p><p>bar<wbr/>baz</p></body>'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider wbrTagDataProvider
+     */
+    public function emogrifyByDefaultRemovesWbrTag($html)
+    {
         $subject = $this->buildDebugSubject($html);
 
         $result = $subject->emogrify();
@@ -387,7 +402,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagRemovesEmptyTag()
     {
-        $subject = $this->buildDebugSubject('<html><p></p></html>');
+        $subject = $this->buildDebugSubject('<body><p></p></body>');
 
         $subject->addUnprocessableHtmlTag('p');
         $result = $subject->emogrify();
@@ -400,7 +415,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagNotRemovesNonEmptyTag()
     {
-        $subject = $this->buildDebugSubject('<html><p>foobar</p></html>');
+        $subject = $this->buildDebugSubject('<body><p>foobar</p></body>');
 
         $subject->addUnprocessableHtmlTag('p');
         $result = $subject->emogrify();
@@ -413,7 +428,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
     {
-        $subject = $this->buildDebugSubject('<html><p></p></html>');
+        $subject = $this->buildDebugSubject('<body><p></p></body>');
 
         $subject->addUnprocessableHtmlTag('p');
         $subject->removeUnprocessableHtmlTag('p');
