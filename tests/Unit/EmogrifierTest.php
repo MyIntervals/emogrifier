@@ -342,11 +342,26 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function emogrifyByDefaultRemovesWbrTag()
+    public function wbrTagDataProvider()
     {
-        $html = '<html>foo<wbr/>bar</html>';
+        return [
+            'single <wbr> tag' => ['<body>foo<wbr/>bar</body>'],
+            'two sibling <wbr> tags' => ['<body>foo<wbr/>bar<wbr/>baz</body>'],
+            'two non-sibling <wbr> tags' => ['<body><p>foo<wbr/>bar</p><p>bar<wbr/>baz</p></body>'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider wbrTagDataProvider
+     */
+    public function emogrifyByDefaultRemovesWbrTag($html)
+    {
         $this->subject->setHtml($html);
 
         $result = $this->subject->emogrify();
@@ -359,7 +374,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagRemovesEmptyTag()
     {
-        $this->subject->setHtml('<html><p></p></html>');
+        $this->subject->setHtml('<body><p></p></body>');
 
         $this->subject->addUnprocessableHtmlTag('p');
         $result = $this->subject->emogrify();
@@ -372,7 +387,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function addUnprocessableTagNotRemovesNonEmptyTag()
     {
-        $this->subject->setHtml('<html><p>foobar</p></html>');
+        $this->subject->setHtml('<body><p>foobar</p></body>');
 
         $this->subject->addUnprocessableHtmlTag('p');
         $result = $this->subject->emogrify();
@@ -385,7 +400,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
     {
-        $this->subject->setHtml('<html><p></p></html>');
+        $this->subject->setHtml('<body><p></p></body>');
 
         $this->subject->addUnprocessableHtmlTag('p');
         $this->subject->removeUnprocessableHtmlTag('p');
