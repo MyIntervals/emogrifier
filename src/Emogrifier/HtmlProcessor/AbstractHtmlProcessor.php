@@ -24,6 +24,13 @@ abstract class AbstractHtmlProcessor
     const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
     /**
+     * @var string Regular expression part to match tag names that PHP's DOMDocument implementation is not aware are
+     *      self-closing.  These are mostly HTML5 elements, but for completeness <command> (obsolete) and <keygen>
+     *      (deprecated) from the list at https://bugs.php.net/bug.php?id=73175 are also included.
+     */
+    const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
+
+    /**
      * @var \DOMDocument
      */
     protected $domDocument = null;
@@ -74,7 +81,7 @@ abstract class AbstractHtmlProcessor
      */
     public function render()
     {
-        return $this->domDocument->saveHTML();
+        return $this->renderDomDocument();
     }
 
     /**
@@ -84,9 +91,25 @@ abstract class AbstractHtmlProcessor
      */
     public function renderBodyContent()
     {
-        $bodyNodeHtml = $this->domDocument->saveHTML($this->getBodyElement());
+        $bodyNodeHtml = $this->renderDomDocument($this->getBodyElement());
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+    }
+
+    /**
+     * Renders the DOMDocument as HTML, eliminating any invalid closing tags for void elements.
+     *
+     * @param \DOMNode|null $node Optional parameter to output a subset of the document.
+     *
+     * @return string
+     */
+    protected function renderDomDocument(\DOMNode $node = null)
+    {
+        return \preg_replace(
+            '%</' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%',
+            '',
+            $this->domDocument->saveHTML($node)
+        );
     }
 
     /**
@@ -137,7 +160,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Returns the HTML with added document type and Content-Type meta tag if needed,
+     * Returns the HTML with added document type, Content-Type meta tag, and self-closing slashes, if needed,
      * ensuring that the HTML will be good for creating a DOM document from it.
      *
      * @param string $html
@@ -146,7 +169,9 @@ abstract class AbstractHtmlProcessor
      */
     private function prepareHtmlForDomConversion($html)
     {
-        $htmlWithDocumentType = $this->ensureDocumentType($html);
+        $htmlWithSelfClosingSlashes = $this->ensurePhpUnrecognizedSelfClosingTagsAreXml($html);
+
+        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithSelfClosingSlashes);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
@@ -202,6 +227,23 @@ abstract class AbstractHtmlProcessor
         }
 
         return $reworkedHtml;
+    }
+
+    /**
+     * Makes sure that any self-closing tags not recognized as such by PHP's DOMDocument implementation have a
+     * self-closing slash.
+     *
+     * @param string $html
+     *
+     * @return string HTML with problematic tags converted.
+     */
+    private function ensurePhpUnrecognizedSelfClosingTagsAreXml($html)
+    {
+        return \preg_replace(
+            '%<' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
+            '$0/',
+            $html
+        );
     }
 
     /**

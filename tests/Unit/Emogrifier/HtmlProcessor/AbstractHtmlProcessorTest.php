@@ -303,35 +303,137 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @test
-     *
-     * @param string $documentType
-     *
-     * @dataProvider documentTypeDataProvider
+     * @return string[][]
      */
-    public function convertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
+    public function xmlSelfClosingTagDataProvider()
     {
-        $subject = new TestingHtmlProcessor($documentType . '<html><body><br/></body></html>');
+        return [
+            '<br>' => ['<br/>', 'br'],
+            '<wbr>' => ['foo<wbr/>bar', 'wbr'],
+            '<embed>' => [
+                '<embed type="video/mp4" src="https://example.com/flower.mp4" width="250" height="200"/>',
+                'embed',
+            ],
+            '<picture> with <source> and <img>' => [
+                '<picture><source srcset="https://example.com/flower-800x600.jpeg" media="(min-width: 600px)"/>'
+                    . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
+                'source',
+            ],
+            '<video> with <track>' => [
+                '<video controls width="250" src="https://example.com/flower.mp4">'
+                    . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
+                'track',
+            ],
+        ];
+    }
 
-        $result = $subject->render();
+    /**
+     * @return string[][]
+     */
+    public function nonXmlSelfClosingTagDataProvider()
+    {
+        return \array_map(
+            function (array $dataset) {
+                $dataset[0] = \str_replace('/>', '>', $dataset[0]);
+                return $dataset;
+            },
+            $this->xmlSelfClosingTagDataProvider()
+        );
+    }
 
-        static::assertContains('<body><br></body>', $result);
+    /**
+     * @return string[][] Each dataset has three elements in the following order:
+     *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
+     *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
+     *         - The name of a self-closing tag contained in the HTML (e.g. "br").
+     */
+    public function selfClosingTagDataProvider()
+    {
+        return \array_map(
+            function (array $dataset) {
+                \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
+                return $dataset;
+            },
+            $this->xmlSelfClosingTagDataProvider()
+        );
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function documentTypeAndSelfClosingTagDataProvider()
+    {
+        $documentTypeDatasets = $this->documentTypeDataProvider();
+        $selfClosingTagDatasets = $this->selfClosingTagDataProvider();
+        $datasets = [];
+        foreach ($documentTypeDatasets as $documentTypeDatasetName => $documentTypeDataset) {
+            foreach ($selfClosingTagDatasets as $selfClosingTagDatasetName => $selfClosingTagDataset) {
+                $datasets[$documentTypeDatasetName . ' & ' . $selfClosingTagDatasetName]
+                    = \array_merge($documentTypeDataset, $selfClosingTagDataset);
+            }
+        }
+        return $datasets;
     }
 
     /**
      * @test
      *
      * @param string $documentType
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $htmlWithXmlSelfClosingTags
      *
-     * @dataProvider documentTypeDataProvider
+     * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
-    public function keepsNonXmlSelfClosingTags($documentType)
-    {
-        $subject = new TestingHtmlProcessor($documentType . '<html><body><br></body></html>');
+    public function convertsXmlSelfClosingTagsToNonXmlSelfClosingTag(
+        $documentType,
+        $htmlWithNonXmlSelfClosingTags,
+        $htmlWithXmlSelfClosingTags
+    ) {
+        $subject = new TestingHtmlProcessor(
+            $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
+        );
 
         $result = $subject->render();
 
-        static::assertContains('<body><br></body>', $result);
+        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $documentType
+     * @param string $htmlWithNonXmlSelfClosingTags
+     *
+     * @dataProvider documentTypeAndSelfClosingTagDataProvider
+     */
+    public function keepsNonXmlSelfClosingTags($documentType, $htmlWithNonXmlSelfClosingTags)
+    {
+        $subject = new TestingHtmlProcessor(
+            $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->render();
+
+        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function notAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = new TestingHtmlProcessor(
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->render();
+
+        static::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -361,6 +463,25 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function renderBodyContentNotAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = new TestingHtmlProcessor(
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->renderBodyContent();
+
+        static::assertNotContains('</' . $tagName, $result);
+    }
+
+    /**
+     * @test
      */
     public function getDomDocumentReturnsDomDocument()
     {
@@ -382,5 +503,28 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $domDocument = $subject->getDomDocument();
 
         self::assertSame($html, $domDocument->saveHTML());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function getDomDocumentVoidElementNotHasChildNodes($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = new TestingHtmlProcessor(
+            // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
+        );
+
+        $domDocument = $subject->getDomDocument();
+
+        $voidElements = $domDocument->getElementsByTagName($tagName);
+        foreach ($voidElements as $element) {
+            static::assertFalse($element->hasChildNodes());
+        }
     }
 }
