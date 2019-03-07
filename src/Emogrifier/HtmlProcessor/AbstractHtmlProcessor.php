@@ -26,7 +26,9 @@ abstract class AbstractHtmlProcessor
     /**
      * @var string Regular expression part to match tag names that PHP's DOMDocument implementation is not aware are
      *      self-closing.  These are mostly HTML5 elements, but for completeness <command> (obsolete) and <keygen>
-     *      (deprecated) from the list at https://bugs.php.net/bug.php?id=73175 are also included.
+     *      (deprecated) are also included.
+     *
+     * @see https://bugs.php.net/bug.php?id=73175
      */
     const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
 
@@ -81,7 +83,9 @@ abstract class AbstractHtmlProcessor
      */
     public function render()
     {
-        return $this->renderDomDocument();
+        $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML();
+
+        return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
     }
 
     /**
@@ -91,25 +95,22 @@ abstract class AbstractHtmlProcessor
      */
     public function renderBodyContent()
     {
-        $bodyNodeHtml = $this->renderDomDocument($this->getBodyElement());
+        $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML($this->getBodyElement());
+        $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
         return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
     }
 
     /**
-     * Renders the DOMDocument as HTML, eliminating any invalid closing tags for void elements.
+     * Eliminates any invalid closing tags for void elements from the given HTML.
      *
-     * @param \DOMNode|null $node Optional parameter to output a subset of the document.
+     * @param string $html
      *
      * @return string
      */
-    protected function renderDomDocument(\DOMNode $node = null)
+    private function removeSelfClosingTagsClosingTags($html)
     {
-        return \preg_replace(
-            '%</' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%',
-            '',
-            $this->domDocument->saveHTML($node)
-        );
+        return \preg_replace('%</' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
     }
 
     /**
@@ -170,7 +171,6 @@ abstract class AbstractHtmlProcessor
     private function prepareHtmlForDomConversion($html)
     {
         $htmlWithSelfClosingSlashes = $this->ensurePhpUnrecognizedSelfClosingTagsAreXml($html);
-
         $htmlWithDocumentType = $this->ensureDocumentType($htmlWithSelfClosingSlashes);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
