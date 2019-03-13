@@ -25,7 +25,7 @@ abstract class AbstractHtmlProcessor
 
     /**
      * @var string Regular expression part to match tag names that PHP's DOMDocument implementation is not aware are
-     *      self-closing.  These are mostly HTML5 elements, but for completeness <command> (obsolete) and <keygen>
+     *      self-closing. These are mostly HTML5 elements, but for completeness <command> (obsolete) and <keygen>
      *      (deprecated) are also included.
      *
      * @see https://bugs.php.net/bug.php?id=73175
