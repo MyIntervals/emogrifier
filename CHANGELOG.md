@@ -14,6 +14,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Support all HTML5 self-closing tags, including `<embed>`, `<source>`,
+  `<track>` and `<wbr>`
+  ([#653](https://github.com/MyIntervals/emogrifier/pull/653))
 - Remove all ‘unprocessable’ (e.g. `<wbr>`) tags
   ([#650](https://github.com/MyIntervals/emogrifier/pull/650))
 - Correct translated xpath of `:nth-child` selector
