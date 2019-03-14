@@ -2368,7 +2368,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         static::assertContains('@media only screen and (max-width: 480px)', $result);
     }
 
-
     /**
      * @return string[][]
      */
