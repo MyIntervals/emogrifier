@@ -99,6 +99,25 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function renderBodyContentNotAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = $this->buildDebugSubject(
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->renderBodyContent();
+
+        static::assertNotContains('</' . $tagName, $result);
+    }
+
+    /**
+     * @test
      */
     public function getDomDocumentReturnsDomDocument()
     {
@@ -120,6 +139,29 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $domDocument = $subject->getDomDocument();
 
         self::assertSame($html, $domDocument->saveHTML());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function getDomDocumentVoidElementNotHasChildNodes($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = $this->buildDebugSubject(
+            // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
+        );
+
+        $domDocument = $subject->getDomDocument();
+
+        $voidElements = $domDocument->getElementsByTagName($tagName);
+        foreach ($voidElements as $element) {
+            static::assertFalse($element->hasChildNodes());
+        }
     }
 
     /**
@@ -2327,21 +2369,158 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function xmlSelfClosingTagDataProvider()
+    {
+        return [
+            '<br>' => ['<br/>', 'br'],
+            '<wbr>' => ['foo<wbr/>bar', 'wbr'],
+            '<embed>' => [
+                '<embed type="video/mp4" src="https://example.com/flower.mp4" width="250" height="200"/>',
+                'embed',
+            ],
+            '<picture> with <source> and <img>' => [
+                '<picture><source srcset="https://example.com/flower-800x600.jpeg" media="(min-width: 600px)"/>'
+                    . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
+                'source',
+            ],
+            '<video> with <track>' => [
+                '<video controls width="250" src="https://example.com/flower.mp4">'
+                    . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
+                'track',
+            ],
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonXmlSelfClosingTagDataProvider()
+    {
+        return \array_map(
+            function (array $dataset) {
+                $dataset[0] = \str_replace('/>', '>', $dataset[0]);
+                return $dataset;
+            },
+            $this->xmlSelfClosingTagDataProvider()
+        );
+    }
+
+    /**
+     * @return string[][] Each dataset has three elements in the following order:
+     *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
+     *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
+     *         - The name of a self-closing tag contained in the HTML (e.g. "br").
+     */
+    public function selfClosingTagDataProvider()
+    {
+        return \array_map(
+            function (array $dataset) {
+                \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
+                return $dataset;
+            },
+            $this->xmlSelfClosingTagDataProvider()
+        );
+    }
+
+    /**
+     * Concatenates pairs of datasets (in a similar way to SQL `JOIN`) such that each new dataset consists of a 'row'
+     * from a left-hand-side dataset joined with a 'row' from a right-hand-side dataset.
+     *
+     * @param string[][] $leftDatasets
+     * @param string[][] $rightDatasets
+     *
+     * @return string[][] The new datasets comprise the first dataset from the left-hand side with each of the datasets
+     * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
+     * from the right-hand side.
+     */
+    public static function joinDatasets(array $leftDatasets, array $rightDatasets)
+    {
+        $datasets = [];
+        $doneFirstLeft = false;
+        foreach ($leftDatasets as $leftDatasetName => $leftDataset) {
+            foreach ($rightDatasets as $rightDatasetName => $rightDataset) {
+                $datasets[$leftDatasetName . ' & ' . $rightDatasetName]
+                    = \array_merge($leftDataset, $rightDataset);
+                if ($doneFirstLeft) {
+                    // Not all combinations are required,
+                    // just all of 'right' with one of 'left' and all of 'left' with one of 'right'.
+                    break;
+                }
+            }
+            $doneFirstLeft = true;
+        }
+        return $datasets;
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function documentTypeAndSelfClosingTagDataProvider()
+    {
+        return static::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
+    }
+
+    /**
      * @test
      *
      * @param string $documentType
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $htmlWithXmlSelfClosingTags
      *
-     * @dataProvider documentTypeDataProvider
+     * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
-    public function renderConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag($documentType)
-    {
+    public function renderConvertsXmlSelfClosingTagsToNonXmlSelfClosingTag(
+        $documentType,
+        $htmlWithNonXmlSelfClosingTags,
+        $htmlWithXmlSelfClosingTags
+    ) {
         $subject = $this->buildDebugSubject(
-            $documentType . '<html><body><br/></body></html>'
+            $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
         );
 
         $result = $subject->render();
 
-        static::assertContains('<br>', $result);
+        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $documentType
+     * @param string $htmlWithNonXmlSelfClosingTags
+     *
+     * @dataProvider documentTypeAndSelfClosingTagDataProvider
+     */
+    public function renderKeepsNonXmlSelfClosingTags($documentType, $htmlWithNonXmlSelfClosingTags)
+    {
+        $subject = $this->buildDebugSubject(
+            $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->render();
+
+        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param string $tagName
+     *
+     * @dataProvider nonXmlSelfClosingTagDataProvider
+     */
+    public function renderNotAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
+    {
+        $subject = $this->buildDebugSubject(
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+        );
+
+        $result = $subject->render();
+
+        static::assertNotContains('</' . $tagName, $result);
     }
 
     /**
