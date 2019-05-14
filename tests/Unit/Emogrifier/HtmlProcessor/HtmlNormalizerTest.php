@@ -17,6 +17,6 @@ class HtmlNormalizerTest extends \PHPUnit_Framework_TestCase
      */
     public function classIsAbstractHtmlProcessor()
     {
-        static::assertInstanceOf(AbstractHtmlProcessor::class, new HtmlNormalizer('<html></html>'));
+        self::assertInstanceOf(AbstractHtmlProcessor::class, new HtmlNormalizer('<html></html>'));
     }
 }

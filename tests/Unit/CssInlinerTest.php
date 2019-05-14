@@ -70,7 +70,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertSame($formattedHtml, $result);
+        self::assertSame($formattedHtml, $result);
     }
 
     /**
@@ -82,7 +82,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame('', $result);
+        self::assertSame('', $result);
     }
 
     /**
@@ -95,7 +95,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame($bodyContent, $result);
+        self::assertSame($bodyContent, $result);
     }
 
     /**
@@ -114,7 +114,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -126,7 +126,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->getDomDocument();
 
-        static::assertInstanceOf(\DOMDocument::class, $result);
+        self::assertInstanceOf(\DOMDocument::class, $result);
     }
 
     /**
@@ -163,7 +163,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
         foreach ($voidElements as $element) {
-            static::assertFalse($element->hasChildNodes());
+            self::assertFalse($element->hasChildNodes());
         }
     }
 
@@ -223,7 +223,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<html>', $result);
+        self::assertContains('<html>', $result);
     }
 
     /**
@@ -251,7 +251,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<head>', $result);
+        self::assertContains('<head>', $result);
     }
 
     /**
@@ -279,7 +279,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>', $result);
+        self::assertContains('<body>', $result);
     }
 
     /**
@@ -291,7 +291,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body><p>Hello</p></body>', $result);
+        self::assertContains('<body><p>Hello</p></body>', $result);
     }
 
     /**
@@ -321,7 +321,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains($codeNotToBeChanged, $result);
+        self::assertContains($codeNotToBeChanged, $result);
     }
 
     /**
@@ -333,7 +333,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<!DOCTYPE html>', $result);
+        self::assertContains('<!DOCTYPE html>', $result);
     }
 
     /**
@@ -350,7 +350,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertContains($codeNotToBeChanged, $result);
+        self::assertContains($codeNotToBeChanged, $result);
     }
 
     /**
@@ -385,7 +385,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains($documentType, $result);
+        self::assertContains($documentType, $result);
     }
 
     /**
@@ -397,7 +397,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
+        self::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
     }
 
     /**
@@ -411,7 +411,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $result = $subject->render();
 
         $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
-        static::assertSame(1, $numberOfContentTypeMetaTags);
+        self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
     /**
@@ -451,7 +451,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('<wbr', $subject->render());
+        self::assertNotContains('<wbr', $subject->render());
     }
 
     /**
@@ -464,7 +464,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addUnprocessableHtmlTag('p');
 
         $result = $subject->inlineCss('')->render();
-        static::assertNotContains('<p>', $result);
+        self::assertNotContains('<p>', $result);
     }
 
     /**
@@ -477,7 +477,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addUnprocessableHtmlTag('p');
 
         $result = $subject->inlineCss('')->render();
-        static::assertContains('<p>', $result);
+        self::assertContains('<p>', $result);
     }
 
     /**
@@ -491,7 +491,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->removeUnprocessableHtmlTag('p');
 
         $result = $subject->inlineCss('')->render();
-        static::assertContains('<p>', $result);
+        self::assertContains('<p>', $result);
     }
 
     /**
@@ -792,11 +792,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
-        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $subject->render());
+        self::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $subject->render());
     }
 
     /**
@@ -881,11 +881,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
-        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $subject->render());
+        self::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $subject->render());
     }
 
     /**
@@ -977,7 +977,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $lessSpecificSelector,
         $moreSpecificSelector
     ) {
-        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
             $lessSpecificSelector . ' { color: red; } ' .
@@ -986,7 +986,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             $lessSpecificSelector . ' { background-color: red; }'
         );
 
-        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $subject->render());
+        self::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $subject->render());
     }
 
     /**
@@ -1059,7 +1059,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $selector1,
         $selector2
     ) {
-        $subject = $this->buildDebugSubject(static::COMMON_TEST_HTML);
+        $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
             $selector1 . ' { color: red; } ' .
@@ -1068,7 +1068,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             $selector1 . ' { background-color: green; }'
         );
 
-        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $subject->render());
+        self::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $subject->render());
     }
 
     /**
@@ -1107,7 +1107,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('html {' . $cssDeclaration . '}');
 
-        static::assertContains('<html style="color: #000;">', $subject->render());
+        self::assertContains('<html style="color: #000;">', $subject->render());
     }
 
     /**
@@ -1159,7 +1159,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
 
-        static::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $subject->render());
+        self::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $subject->render());
     }
 
     /**
@@ -1188,7 +1188,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
 
-        static::assertContains('<html style="">', $subject->render());
+        self::assertContains('<html style="">', $subject->render());
     }
 
     /**
@@ -1201,7 +1201,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains($styleAttribute, $subject->render());
+        self::assertContains($styleAttribute, $subject->render());
     }
 
     /**
@@ -1216,7 +1216,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $subject->render());
+        self::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $subject->render());
     }
 
     /**
@@ -1228,7 +1228,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p{color:blue;}html{color:red;}');
 
-        static::assertContains('<html style="color: red;">', $subject->render());
+        self::assertContains('<html style="color: red;">', $subject->render());
     }
 
     /**
@@ -1240,7 +1240,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('style="color: #ccc;"', $subject->render());
+        self::assertContains('style="color: #ccc;"', $subject->render());
     }
 
     /**
@@ -1252,7 +1252,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('html {mArGiN:0 2pX;}');
 
-        static::assertContains('style="margin: 0 2pX;"', $subject->render());
+        self::assertContains('style="margin: 0 2pX;"', $subject->render());
     }
 
     /**
@@ -1265,7 +1265,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p {' . $cssDeclaration . '}');
 
-        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
     }
 
     /**
@@ -1280,7 +1280,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
     }
 
     /**
@@ -1292,7 +1292,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('<style', $subject->render());
+        self::assertNotContains('<style', $subject->render());
     }
 
     /**
@@ -1324,8 +1324,8 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('');
 
         $result = $subject->render();
-        static::assertContains('color: red', $result);
-        static::assertContains('background-color: blue', $result);
+        self::assertContains('color: red', $result);
+        self::assertContains('background-color: blue', $result);
     }
 
     /**
@@ -1341,8 +1341,8 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('');
 
         $result = $subject->render();
-        static::assertContains('color: red', $result);
-        static::assertContains('background-color: blue', $result);
+        self::assertContains('color: red', $result);
+        self::assertContains('background-color: blue', $result);
     }
 
     /**
@@ -1408,7 +1408,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($unneededCss);
 
-        static::assertNotContains($markerNotExpectedInHtml, $subject->render());
+        self::assertNotContains($markerNotExpectedInHtml, $subject->render());
     }
 
     /**
@@ -1424,7 +1424,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($unneededCss . ' body { color: green; }');
 
-        static::assertContains('<body style="color: green;">', $subject->render());
+        self::assertContains('<body style="color: green;">', $subject->render());
     }
 
     /**
@@ -1473,7 +1473,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCss($css, $subject->render());
+        self::assertContainsCss($css, $subject->render());
     }
 
     /**
@@ -1567,7 +1567,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
 
-        static::assertContainsCss($rule1 . $rule2, $subject->render());
+        self::assertContainsCss($rule1 . $rule2, $subject->render());
     }
 
     /**
@@ -1581,7 +1581,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->removeAllowedMediaType('screen');
 
         $subject->inlineCss($css);
-        static::assertNotContains('@media', $subject->render());
+        self::assertNotContains('@media', $subject->render());
     }
 
     /**
@@ -1595,7 +1595,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addAllowedMediaType('braille');
 
         $subject->inlineCss($css);
-        static::assertContainsCss($css, $subject->render());
+        self::assertContainsCss($css, $subject->render());
     }
 
     /**
@@ -1607,7 +1607,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('@media all { html { some-property: value; } }');
 
-        static::assertContains('<!-- original content -->', $subject->render());
+        self::assertContains('<!-- original content -->', $subject->render());
     }
 
     /**
@@ -1620,7 +1620,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('@media all { html { some-property: value; } }');
 
-        static::assertContains('<style type="text/css">', $subject->render());
+        self::assertContains('<style type="text/css">', $subject->render());
     }
 
     /**
@@ -1634,7 +1634,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertRegExp('/<head>.*<style.*<\\/head>/s', $subject->render());
+        self::assertRegExp('/<head>.*<style.*<\\/head>/s', $subject->render());
     }
 
     /**
@@ -1648,7 +1648,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotRegExp('/<body>.*<style/s', $subject->render());
+        self::assertNotRegExp('/<body>.*<style/s', $subject->render());
     }
 
     /**
@@ -1703,7 +1703,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
+        self::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
     }
 
     /**
@@ -1723,7 +1723,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContains('<style type="text/css">' . $css . '</style>', $subject->render());
+        self::assertContains('<style type="text/css">' . $css . '</style>', $subject->render());
     }
 
     /**
@@ -1739,7 +1739,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
+        self::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
     }
 
     /**
@@ -1755,7 +1755,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->render());
     }
 
     /**
@@ -1789,7 +1789,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertNotContainsCss($css, $subject->render());
+        self::assertNotContainsCss($css, $subject->render());
     }
 
     /**
@@ -1805,7 +1805,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->render());
     }
 
     /**
@@ -1821,7 +1821,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContainsCss($css, $subject->render());
+        self::assertNotContainsCss($css, $subject->render());
     }
 
     /**
@@ -1837,7 +1837,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->render());
     }
 
     /**
@@ -1850,8 +1850,8 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('@media screen {} @media tv { h1 { color: red; } }');
 
         $result = $subject->render();
-        static::assertNotContains('style=', $result);
-        static::assertNotContains('@media screen', $result);
+        self::assertNotContains('style=', $result);
+        self::assertNotContains('@media screen', $result);
     }
 
     /**
@@ -1864,8 +1864,8 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('@media screen { } @media tv { h1 { color: red; } }');
 
         $result = $subject->render();
-        static::assertNotContains('style=', $result);
-        static::assertNotContains('@media screen', $result);
+        self::assertNotContains('style=', $result);
+        self::assertNotContains('@media screen', $result);
     }
 
     /**
@@ -1892,7 +1892,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('@media ' . $emptyRuleMediaType . ' {} @media all { h1 { color: red; } }');
 
-        static::assertContainsCss('@media all { h1 { color: red; } }', $subject->render());
+        self::assertContainsCss('@media all { h1 { color: red; } }', $subject->render());
     }
 
     /**
@@ -1908,7 +1908,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('@media ' . $emptyRuleMediaType . ' {} @media speech { h1 { color: red; } }');
 
-        static::assertNotContains('@media', $subject->render());
+        self::assertNotContains('@media', $subject->render());
     }
 
     /**
@@ -2080,7 +2080,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCss($css, $subject->render());
+        self::assertContainsCss($css, $subject->render());
     }
 
     /**
@@ -2092,7 +2092,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p:hover, a:hover { color: green; }');
 
-        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $subject->render());
+        self::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $subject->render());
     }
 
     /**
@@ -2105,8 +2105,8 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('p, a:hover { color: green; }');
 
         $result = $subject->render();
-        static::assertContains('<p style="color: green;">', $result);
-        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
+        self::assertContains('<p style="color: green;">', $result);
+        self::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
     }
 
     /**
@@ -2139,7 +2139,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             . ' { h1 { color: red; } }'
         );
 
-        static::assertContains('<h1 style="color: green;">', $subject->render());
+        self::assertContains('<h1 style="color: green;">', $subject->render());
     }
 
     /**
@@ -2159,7 +2159,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
             . ' { h1 { color: red; } } h1 { font-size: 24px; }'
         );
 
-        static::assertContains('<h1 style="color: green; font-size: 24px;">', $subject->render());
+        self::assertContains('<h1 style="color: green; font-size: 24px;">', $subject->render());
     }
 
     /**
@@ -2174,7 +2174,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<html style="' . $styleAttributeValue . '">', $subject->render());
+        self::assertContains('<html style="' . $styleAttributeValue . '">', $subject->render());
     }
 
     /**
@@ -2190,7 +2190,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->render());
     }
 
     /**
@@ -2207,7 +2207,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
     }
 
     /**
@@ -2220,7 +2220,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('<html style', $subject->render());
+        self::assertNotContains('<html style', $subject->render());
     }
 
     /**
@@ -2237,7 +2237,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
     }
 
     /**
@@ -2255,7 +2255,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('');
 
         $result = $subject->render();
-        static::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
+        self::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
     }
 
     /**
@@ -2272,7 +2272,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}');
 
-        static::assertContains(
+        self::assertContains(
             '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
             $subject->render()
         );
@@ -2290,7 +2290,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px; padding-bottom:0;}');
 
-        static::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $subject->render());
+        self::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $subject->render());
     }
 
     /**
@@ -2302,7 +2302,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('div.foo { display: none; }');
 
-        static::assertNotContains('<div class="foo"></div>', $subject->render());
+        self::assertNotContains('<div class="foo"></div>', $subject->render());
     }
 
     /**
@@ -2317,7 +2317,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertNotContains('<div', $subject->render());
+        self::assertNotContains('<div', $subject->render());
     }
 
     /**
@@ -2330,7 +2330,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->disableInvisibleNodeRemoval();
         $subject->inlineCss('div.foo { display: none; }');
 
-        static::assertContains('<div class="foo" style="display: none;">', $subject->render());
+        self::assertContains('<div class="foo" style="display: none;">', $subject->render());
     }
 
     /**
@@ -2342,7 +2342,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('@media only screen and (max-width: 480px) { body { color: #ffffff } /* some comment */ }');
 
-        static::assertContains('@media only screen and (max-width: 480px)', $subject->render());
+        self::assertContains('@media only screen and (max-width: 480px)', $subject->render());
     }
 
     /**
@@ -2436,7 +2436,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function documentTypeAndSelfClosingTagDataProvider()
     {
-        return static::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
+        return self::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
     }
 
     /**
@@ -2459,7 +2459,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -2478,7 +2478,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -2497,7 +2497,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -2509,7 +2509,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body><p></p></body>', $result);
+        self::assertContains('<body><p></p></body>', $result);
     }
 
     /**
@@ -2521,7 +2521,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertSame(
+        self::assertSame(
             $this->html5DocumentType . "\n" .
             "<html>\n" .
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
@@ -2540,7 +2540,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame('<p></p>', $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -2552,7 +2552,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame('<p></p>', $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -2582,7 +2582,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !important; }');
 
-        static::assertContains('<p style="margin: 1px;">', $subject->render());
+        self::assertContains('<p style="margin: 1px;">', $subject->render());
     }
 
     /**
@@ -2594,7 +2594,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !important; }');
 
-        static::assertContains('<p style="text-align: center; margin: 1px;">', $subject->render());
+        self::assertContains('<p style="text-align: center; margin: 1px;">', $subject->render());
     }
 
     /**
@@ -2606,7 +2606,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !ImPorTant; }');
 
-        static::assertContains('<p style="margin: 1px !ImPorTant;">', $subject->render());
+        self::assertContains('<p style="margin: 1px !ImPorTant;">', $subject->render());
     }
 
     /**
@@ -2618,7 +2618,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !important; } p { margin: 2px !important; }');
 
-        static::assertContains('<p style="margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px;">', $subject->render());
     }
 
     /**
@@ -2630,7 +2630,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px; } p { margin: 2px; }');
 
-        static::assertContains('<p style="margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px;">', $subject->render());
     }
 
     /**
@@ -2642,7 +2642,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !important; } p { margin: 2px; }');
 
-        static::assertContains('<p style="margin: 1px;">', $subject->render());
+        self::assertContains('<p style="margin: 1px;">', $subject->render());
     }
 
     /**
@@ -2654,7 +2654,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        static::assertContains('<p style="margin-top: 1px; margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin-top: 1px; margin: 2px;">', $subject->render());
     }
 
     /**
@@ -2666,7 +2666,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; } p { margin-top: 3px; }');
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
     }
 
     /**
@@ -2678,7 +2678,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
     }
 
     /**
@@ -2690,7 +2690,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin-top: 1px; }');
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
     }
 
     /**
@@ -2703,7 +2703,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($uselessQuery);
 
-        static::assertNotContains('@media', $subject->render());
+        self::assertNotContains('@media', $subject->render());
     }
 
     /**
@@ -2716,7 +2716,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($usefulQuery);
 
-        static::assertContainsCss($usefulQuery, $subject->render());
+        self::assertContainsCss($usefulQuery, $subject->render());
     }
 
     /**
@@ -2728,7 +2728,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('p { margin: 1px !important; padding: 1px;}');
 
-        static::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $subject->render());
+        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $subject->render());
     }
 
     /**
@@ -2741,7 +2741,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        static::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->render());
     }
 
     /**
@@ -2754,7 +2754,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addExcludedSelector(' p.x ');
         $subject->inlineCss('p { margin: 0; }');
 
-        static::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->render());
     }
 
     /**
@@ -2767,7 +2767,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        static::assertContains('<p style="margin: 0;"></p>', $subject->render());
+        self::assertContains('<p style="margin: 0;"></p>', $subject->render());
     }
 
     /**
@@ -2781,7 +2781,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->removeExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        static::assertContains('<p class="x" style="margin: 0;"></p>', $subject->render());
+        self::assertContains('<p class="x" style="margin: 0;"></p>', $subject->render());
     }
 
     /**
@@ -2809,7 +2809,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->addExcludedSelector('..p');
         $subject->inlineCss('');
 
-        static::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->render());
     }
 
     /**
@@ -2826,9 +2826,9 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $subject->inlineCss('p { color: red };');
 
         $result = $subject->render();
-        static::assertContains('<p class="x"></p>', $result);
-        static::assertContains('<p class="y" style="color: red;"></p>', $result);
-        static::assertContains('<p class="z"></p>', $result);
+        self::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="y" style="color: red;"></p>', $result);
+        self::assertContains('<p class="z"></p>', $result);
     }
 
     /**
@@ -2841,7 +2841,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($emptyQuery);
 
-        static::assertNotContains('@media', $subject->render());
+        self::assertNotContains('@media', $subject->render());
     }
 
     /**
@@ -2862,7 +2862,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCssCount(1, $css, $subject->render());
+        self::assertContainsCssCount(1, $css, $subject->render());
     }
 
     /**
@@ -2883,7 +2883,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCssCount(1, $css, $subject->render());
+        self::assertContainsCssCount(1, $css, $subject->render());
     }
 
     /**
@@ -2908,7 +2908,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCssCount(1, $css, $subject->render());
+        self::assertContainsCssCount(1, $css, $subject->render());
     }
 
     /**
@@ -2944,7 +2944,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('html {' . $styleRule . '}');
 
-        static::assertContains('<html style="' . $styleRule . '">', $subject->render());
+        self::assertContains('<html style="' . $styleRule . '">', $subject->render());
     }
 
     /**
@@ -2956,7 +2956,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('div:last-child::after {float: right;}');
 
-        static::assertContains('<div></div>', $subject->render());
+        self::assertContains('<div></div>', $subject->render());
     }
 
     /**
@@ -2970,7 +2970,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<p style="padding: 10px; padding-left: 20px;">', $subject->render());
+        self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $subject->render());
     }
 
     /**
@@ -3038,7 +3038,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss('');
 
-        static::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $subject->render());
+        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $subject->render());
     }
 
     /**
@@ -3065,6 +3065,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
         $subject->inlineCss($css);
 
-        static::assertContainsCss($css, $subject->render());
+        self::assertContainsCss($css, $subject->render());
     }
 }

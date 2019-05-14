@@ -59,7 +59,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $subject = new Emogrifier('<html></html>');
 
-        static::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
+        self::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
     }
 
     /**
@@ -150,7 +150,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html>', $result);
+        self::assertContains('<html>', $result);
     }
 
     /**
@@ -178,7 +178,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<head>', $result);
+        self::assertContains('<head>', $result);
     }
 
     /**
@@ -206,7 +206,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body>', $result);
+        self::assertContains('<body>', $result);
     }
 
     /**
@@ -218,7 +218,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body><p>Hello</p></body>', $result);
+        self::assertContains('<body><p>Hello</p></body>', $result);
     }
 
     /**
@@ -248,7 +248,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($codeNotToBeChanged, $result);
+        self::assertContains($codeNotToBeChanged, $result);
     }
 
     /**
@@ -265,7 +265,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        static::assertContains($codeNotToBeChanged, $result);
+        self::assertContains($codeNotToBeChanged, $result);
     }
 
     /**
@@ -277,7 +277,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<!DOCTYPE html>', $result);
+        self::assertContains('<!DOCTYPE html>', $result);
     }
 
     /**
@@ -312,7 +312,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($documentType, $result);
+        self::assertContains($documentType, $result);
     }
 
     /**
@@ -324,7 +324,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
+        self::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
     }
 
     /**
@@ -338,7 +338,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $result = $this->subject->emogrify();
 
         $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
-        static::assertSame(1, $numberOfContentTypeMetaTags);
+        self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
     /**
@@ -366,7 +366,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<wbr', $result);
+        self::assertNotContains('<wbr', $result);
     }
 
     /**
@@ -384,7 +384,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->removeUnprocessableHtmlTag('wbr');
         $result = $this->subject->emogrify();
 
-        static::assertSame($numberOfWbrTags, \substr_count($result, '<wbr'));
+        self::assertSame($numberOfWbrTags, \substr_count($result, '<wbr'));
     }
 
     /**
@@ -397,7 +397,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addUnprocessableHtmlTag('p');
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<p>', $result);
+        self::assertNotContains('<p>', $result);
     }
 
     /**
@@ -410,7 +410,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addUnprocessableHtmlTag('p');
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p>', $result);
+        self::assertContains('<p>', $result);
     }
 
     /**
@@ -424,7 +424,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->removeUnprocessableHtmlTag('p');
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p>', $result);
+        self::assertContains('<p>', $result);
     }
 
     /**
@@ -725,12 +725,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setHtml(self::COMMON_TEST_HTML);
         $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+        self::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
@@ -815,12 +815,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setHtml(self::COMMON_TEST_HTML);
         $this->subject->setCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
+        self::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $result);
     }
 
     /**
@@ -912,7 +912,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $lessSpecificSelector,
         $moreSpecificSelector
     ) {
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setHtml(self::COMMON_TEST_HTML);
         $this->subject->setCss(
             $lessSpecificSelector . ' { color: red; } ' .
             $moreSpecificSelector . ' { color: green; } ' .
@@ -922,7 +922,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
+        self::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
     }
 
     /**
@@ -995,7 +995,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $selector1,
         $selector2
     ) {
-        $this->subject->setHtml(static::COMMON_TEST_HTML);
+        $this->subject->setHtml(self::COMMON_TEST_HTML);
         $this->subject->setCss(
             $selector1 . ' { color: red; } ' .
             $selector2 . ' { color: green; } ' .
@@ -1005,7 +1005,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
+        self::assertContains($matchedTagPart . ' style="color: green; background-color: green;"', $result);
     }
 
     /**
@@ -1045,7 +1045,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html style="color: #000;">', $result);
+        self::assertContains('<html style="color: #000;">', $result);
     }
 
     /**
@@ -1098,7 +1098,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $result);
+        self::assertContains('<html style="' . $expectedStyleAttributeContent . '">', $result);
     }
 
     /**
@@ -1128,7 +1128,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html style="">', $result);
+        self::assertContains('<html style="">', $result);
     }
 
     /**
@@ -1141,7 +1141,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains($styleAttribute, $result);
+        self::assertContains($styleAttribute, $result);
     }
 
     /**
@@ -1157,7 +1157,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $result);
+        self::assertContains('style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"', $result);
     }
 
     /**
@@ -1170,7 +1170,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html style="color: red;">', $result);
+        self::assertContains('<html style="color: red;">', $result);
     }
 
     /**
@@ -1182,7 +1182,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('style="color: #ccc;"', $result);
+        self::assertContains('style="color: #ccc;"', $result);
     }
 
     /**
@@ -1195,7 +1195,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('style="margin: 0 2pX;"', $result);
+        self::assertContains('style="margin: 0 2pX;"', $result);
     }
 
     /**
@@ -1209,7 +1209,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
 
     /**
@@ -1224,7 +1224,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $result);
     }
 
     /**
@@ -1236,7 +1236,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<style', $result);
+        self::assertNotContains('<style', $result);
     }
 
     /**
@@ -1269,8 +1269,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $html = $this->subject->emogrify();
 
-        static::assertContains('color: red', $html);
-        static::assertContains('background-color: blue', $html);
+        self::assertContains('color: red', $html);
+        self::assertContains('background-color: blue', $html);
     }
 
     /**
@@ -1286,8 +1286,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $subject->setHtml($html);
 
         $html = $subject->emogrify();
-        static::assertContains('color: red', $html);
-        static::assertContains('background-color: blue', $html);
+        self::assertContains('color: red', $html);
+        self::assertContains('background-color: blue', $html);
     }
 
     /**
@@ -1354,7 +1354,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains($markerNotExpectedInHtml, $result);
+        self::assertNotContains($markerNotExpectedInHtml, $result);
     }
 
     /**
@@ -1371,7 +1371,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body style="color: green;">', $result);
+        self::assertContains('<body style="color: green;">', $result);
     }
 
     /**
@@ -1421,7 +1421,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($css, $result);
+        self::assertContainsCss($css, $result);
     }
 
     /**
@@ -1516,7 +1516,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($rule1 . $rule2, $result);
+        self::assertContainsCss($rule1 . $rule2, $result);
     }
 
     /**
@@ -1531,7 +1531,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('@media', $result);
+        self::assertNotContains('@media', $result);
     }
 
     /**
@@ -1546,7 +1546,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($css, $result);
+        self::assertContainsCss($css, $result);
     }
 
     /**
@@ -1559,7 +1559,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<!-- original content -->', $result);
+        self::assertContains('<!-- original content -->', $result);
     }
 
     /**
@@ -1573,7 +1573,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<style type="text/css">', $result);
+        self::assertContains('<style type="text/css">', $result);
     }
 
     /**
@@ -1587,7 +1587,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertRegExp('/<head>.*<style.*<\\/head>/s', $result);
+        self::assertRegExp('/<head>.*<style.*<\\/head>/s', $result);
     }
 
     /**
@@ -1601,7 +1601,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotRegExp('/<body>.*<style/s', $result);
+        self::assertNotRegExp('/<body>.*<style/s', $result);
     }
 
     /**
@@ -1657,7 +1657,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
+        self::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1679,7 +1679,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<style type="text/css">' . $css . '</style>', $result);
+        self::assertContains('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1695,7 +1695,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
+        self::assertContainsCss('<style type="text/css">' . $css . '</style>', $result);
     }
 
     /**
@@ -1712,7 +1712,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
+        self::assertNotContains('style=', $result);
     }
 
     /**
@@ -1747,7 +1747,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContainsCss($css, $result);
+        self::assertNotContainsCss($css, $result);
     }
 
     /**
@@ -1764,7 +1764,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
+        self::assertNotContains('style=', $result);
     }
 
     /**
@@ -1780,7 +1780,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContainsCss($css, $result);
+        self::assertNotContainsCss($css, $result);
     }
 
     /**
@@ -1796,7 +1796,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
+        self::assertNotContains('style=', $result);
     }
 
     /**
@@ -1809,8 +1809,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
-        static::assertNotContains('@media screen', $result);
+        self::assertNotContains('style=', $result);
+        self::assertNotContains('@media screen', $result);
     }
 
     /**
@@ -1823,8 +1823,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
-        static::assertNotContains('@media screen', $result);
+        self::assertNotContains('style=', $result);
+        self::assertNotContains('@media screen', $result);
     }
 
     /**
@@ -1852,7 +1852,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss('@media all { h1 { color: red; } }', $result);
+        self::assertContainsCss('@media all { h1 { color: red; } }', $result);
     }
 
     /**
@@ -1869,7 +1869,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('@media', $result);
+        self::assertNotContains('@media', $result);
     }
 
     /**
@@ -2046,7 +2046,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($css, $result);
+        self::assertContainsCss($css, $result);
     }
 
     /**
@@ -2059,7 +2059,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
+        self::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
     }
 
     /**
@@ -2072,8 +2072,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="color: green;">', $result);
-        static::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
+        self::assertContains('<p style="color: green;">', $result);
+        self::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $result);
     }
 
     /**
@@ -2107,7 +2107,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<h1 style="color: green;">', $result);
+        self::assertContains('<h1 style="color: green;">', $result);
     }
 
     /**
@@ -2128,7 +2128,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<h1 style="color: green; font-size: 24px;">', $result);
+        self::assertContains('<h1 style="color: green; font-size: 24px;">', $result);
     }
 
     /**
@@ -2141,7 +2141,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<html style="' . $styleAttributeValue . '">', $result);
+        self::assertContains('<html style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
@@ -2155,7 +2155,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('style=', $result);
+        self::assertNotContains('style=', $result);
     }
 
     /**
@@ -2172,7 +2172,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
@@ -2185,7 +2185,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<html style', $result);
+        self::assertNotContains('<html style', $result);
     }
 
     /**
@@ -2202,7 +2202,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="' . $styleAttributeValue . '">', $result);
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $result);
     }
 
     /**
@@ -2219,7 +2219,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
+        self::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
     }
 
     /**
@@ -2237,7 +2237,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
+        self::assertContains(
             '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
             $result
         );
@@ -2256,7 +2256,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $result);
+        self::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $result);
     }
 
     /**
@@ -2269,7 +2269,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<div class="foo"></div>', $result);
+        self::assertNotContains('<div class="foo"></div>', $result);
     }
 
     /**
@@ -2284,7 +2284,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('<div', $result);
+        self::assertNotContains('<div', $result);
     }
 
     /**
@@ -2298,7 +2298,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->disableInvisibleNodeRemoval();
         $result = $this->subject->emogrify();
 
-        static::assertContains('<div class="foo" style="display: none;">', $result);
+        self::assertContains('<div class="foo" style="display: none;">', $result);
     }
 
     /**
@@ -2313,7 +2313,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('@media only screen and (max-width: 480px)', $result);
+        self::assertContains('@media only screen and (max-width: 480px)', $result);
     }
 
     /**
@@ -2410,7 +2410,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function documentTypeAndSelfClosingTagDataProvider()
     {
-        return static::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
+        return self::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
     }
 
     /**
@@ -2436,7 +2436,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -2457,7 +2457,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -2477,7 +2477,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -2499,7 +2499,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
         foreach ($voidElements as $element) {
-            static::assertFalse($element->hasChildNodes());
+            self::assertFalse($element->hasChildNodes());
         }
     }
 
@@ -2512,7 +2512,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<body><p></p></body>', $result);
+        self::assertContains('<body><p></p></body>', $result);
     }
 
     /**
@@ -2524,7 +2524,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertSame(
+        self::assertSame(
             $this->html5DocumentType . "\n" .
             "<html>\n" .
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
@@ -2543,7 +2543,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        static::assertSame('<p></p>', $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -2555,7 +2555,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        static::assertSame('<p></p>', $result);
+        self::assertSame('<p></p>', $result);
     }
 
     /**
@@ -2575,7 +2575,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrifyBodyContent();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -2605,7 +2605,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 1px;">', $result);
+        self::assertContains('<p style="margin: 1px;">', $result);
     }
 
     /**
@@ -2618,7 +2618,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="text-align: center; margin: 1px;">', $result);
+        self::assertContains('<p style="text-align: center; margin: 1px;">', $result);
     }
 
     /**
@@ -2631,7 +2631,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 1px !ImPorTant;">', $result);
+        self::assertContains('<p style="margin: 1px !ImPorTant;">', $result);
     }
 
     /**
@@ -2644,7 +2644,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 2px;">', $result);
+        self::assertContains('<p style="margin: 2px;">', $result);
     }
 
     /**
@@ -2657,7 +2657,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 2px;">', $result);
+        self::assertContains('<p style="margin: 2px;">', $result);
     }
 
     /**
@@ -2670,7 +2670,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 1px;">', $result);
+        self::assertContains('<p style="margin: 1px;">', $result);
     }
 
     /**
@@ -2683,7 +2683,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin-top: 1px; margin: 2px;">', $result);
+        self::assertContains('<p style="margin-top: 1px; margin: 2px;">', $result);
     }
 
     /**
@@ -2696,7 +2696,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
 
     /**
@@ -2709,7 +2709,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
 
     /**
@@ -2722,7 +2722,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $result);
     }
 
     /**
@@ -2736,7 +2736,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('@media', $result);
+        self::assertNotContains('@media', $result);
     }
 
     /**
@@ -2750,7 +2750,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($usefulQuery, $result);
+        self::assertContainsCss($usefulQuery, $result);
     }
 
     /**
@@ -2763,7 +2763,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
+        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
     }
 
     /**
@@ -2777,7 +2777,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addExcludedSelector('p.x');
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="x"></p>', $result);
     }
 
     /**
@@ -2791,7 +2791,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addExcludedSelector(' p.x ');
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="x"></p>', $result);
     }
 
     /**
@@ -2805,7 +2805,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->addExcludedSelector('p.x');
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="margin: 0;"></p>', $result);
+        self::assertContains('<p style="margin: 0;"></p>', $result);
     }
 
     /**
@@ -2821,7 +2821,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="x" style="margin: 0;"></p>', $result);
+        self::assertContains('<p class="x" style="margin: 0;"></p>', $result);
     }
 
     /**
@@ -2851,7 +2851,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="x"></p>', $result);
     }
 
     /**
@@ -2869,9 +2869,9 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="x"></p>', $result);
-        static::assertContains('<p class="y" style="color: red;"></p>', $result);
-        static::assertContains('<p class="z"></p>', $result);
+        self::assertContains('<p class="x"></p>', $result);
+        self::assertContains('<p class="y" style="color: red;"></p>', $result);
+        self::assertContains('<p class="z"></p>', $result);
     }
 
     /**
@@ -2885,7 +2885,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertNotContains('@media', $result);
+        self::assertNotContains('@media', $result);
     }
 
     /**
@@ -2907,7 +2907,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCssCount(1, $css, $result);
+        self::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2929,7 +2929,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCssCount(1, $css, $result);
+        self::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2955,7 +2955,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCssCount(1, $css, $result);
+        self::assertContainsCssCount(1, $css, $result);
     }
 
     /**
@@ -2992,7 +2992,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains(
+        self::assertContains(
             '<html style="' . $styleRule . '">',
             $result
         );
@@ -3085,7 +3085,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->enableCssToHtmlMapping();
         $html = $this->subject->emogrify();
 
-        static::assertRegExp('/<' . \preg_quote($tagName, '/') . '[^>]+' . \preg_quote($attributes, '/') . '/', $html);
+        self::assertRegExp('/<' . \preg_quote($tagName, '/') . '[^>]+' . \preg_quote($attributes, '/') . '/', $html);
     }
 
     /**
@@ -3142,7 +3142,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $this->subject->enableCssToHtmlMapping();
         $html = $this->subject->emogrify();
 
-        static::assertNotContains(
+        self::assertNotContains(
             $attribute . '=',
             $html
         );
@@ -3158,7 +3158,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $html = $this->subject->emogrify();
 
-        static::assertNotContains(
+        self::assertNotContains(
             'align=',
             $html
         );
@@ -3174,7 +3174,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $html = $this->subject->emogrify();
 
-        static::assertContains('<div></div>', $html);
+        self::assertContains('<div></div>', $html);
     }
 
     /**
@@ -3188,7 +3188,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
+        self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
     }
 
     /**
@@ -3200,7 +3200,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
     {
-        static::assertTrue(
+        self::assertTrue(
             \preg_match('/<' . \preg_quote($tagName, '/') . '[^>]+' . \preg_quote($attribute, '/') . '/', $html) > 0
         );
     }
@@ -3233,7 +3233,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p class="autoWidth" style="width: auto;">', $result);
+        self::assertContains('<p class="autoWidth" style="width: auto;">', $result);
     }
 
     /**
@@ -3301,7 +3301,7 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
+        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $result);
     }
 
     /**
@@ -3332,6 +3332,6 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->emogrify();
 
-        static::assertContainsCss($css, $result);
+        self::assertContainsCss($css, $result);
     }
 }

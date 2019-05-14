@@ -17,7 +17,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function fixtureIsAbstractHtmlProcessor()
     {
-        static::assertInstanceOf(AbstractHtmlProcessor::class, new TestingHtmlProcessor('<html></html>'));
+        self::assertInstanceOf(AbstractHtmlProcessor::class, new TestingHtmlProcessor('<html></html>'));
     }
 
     /**
@@ -38,7 +38,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $subject = new TestingHtmlProcessor($rawHtml);
 
-        static::assertSame($formattedHtml, $subject->render());
+        self::assertSame($formattedHtml, $subject->render());
     }
 
     /**
@@ -94,7 +94,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $subject = new TestingHtmlProcessor($input);
         $result = $subject->render();
 
-        static::assertContains($expectedHtml, $result);
+        self::assertContains($expectedHtml, $result);
     }
 
     /**
@@ -124,7 +124,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<html>', $result);
+        self::assertContains('<html>', $result);
     }
 
     /**
@@ -152,7 +152,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<head>', $result);
+        self::assertContains('<head>', $result);
     }
 
     /**
@@ -180,7 +180,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>', $result);
+        self::assertContains('<body>', $result);
     }
 
     /**
@@ -192,7 +192,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body><p>Hello</p></body>', $result);
+        self::assertContains('<body><p>Hello</p></body>', $result);
     }
 
     /**
@@ -222,7 +222,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains($codeNotToBeChanged, $result);
+        self::assertContains($codeNotToBeChanged, $result);
     }
 
     /**
@@ -234,7 +234,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<!DOCTYPE html>', $result);
+        self::assertContains('<!DOCTYPE html>', $result);
     }
 
     /**
@@ -273,7 +273,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains($documentType, $result);
+        self::assertContains($documentType, $result);
     }
 
     /**
@@ -285,7 +285,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
+        self::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
     }
 
     /**
@@ -299,7 +299,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $result = $subject->render();
 
         $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
-        static::assertSame(1, $numberOfContentTypeMetaTags);
+        self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
     /**
@@ -393,7 +393,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function documentTypeAndSelfClosingTagDataProvider()
     {
-        return static::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
+        return self::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
     }
 
     /**
@@ -416,7 +416,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -435,7 +435,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -454,7 +454,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->render();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -466,7 +466,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame('', $result);
+        self::assertSame('', $result);
     }
 
     /**
@@ -479,7 +479,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertSame($bodyContent, $result);
+        self::assertSame($bodyContent, $result);
     }
 
     /**
@@ -498,7 +498,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $result = $subject->renderBodyContent();
 
-        static::assertNotContains('</' . $tagName, $result);
+        self::assertNotContains('</' . $tagName, $result);
     }
 
     /**
@@ -508,7 +508,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     {
         $subject = new TestingHtmlProcessor('<html></html>');
 
-        static::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
+        self::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
     }
 
     /**
@@ -545,7 +545,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
         foreach ($voidElements as $element) {
-            static::assertFalse($element->hasChildNodes());
+            self::assertFalse($element->hasChildNodes());
         }
     }
 }

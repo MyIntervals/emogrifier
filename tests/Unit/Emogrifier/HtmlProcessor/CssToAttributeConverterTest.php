@@ -17,7 +17,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function classIsAbstractHtmlProcessor()
     {
-        static::assertInstanceOf(AbstractHtmlProcessor::class, new CssToAttributeConverter('<html></html>'));
+        self::assertInstanceOf(AbstractHtmlProcessor::class, new CssToAttributeConverter('<html></html>'));
     }
 
     /**
@@ -28,7 +28,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html style="text-align: right;"></html>';
         $subject = new CssToAttributeConverter($html);
 
-        static::assertContains('<html style="text-align: right;">', $subject->render());
+        self::assertContains('<html style="text-align: right;">', $subject->render());
     }
 
     /**
@@ -39,7 +39,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
         $html = '<html style="text-align: right;"></html>';
         $subject = new CssToAttributeConverter($html);
 
-        static::assertSame($subject, $subject->convertCssToVisualAttributes());
+        self::assertSame($subject, $subject->convertCssToVisualAttributes());
     }
 
     /**
@@ -122,7 +122,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
         $subject->convertCssToVisualAttributes();
         $html = $subject->render();
 
-        static::assertContains($attributes, $html);
+        self::assertContains($attributes, $html);
     }
 
     /**
@@ -161,6 +161,6 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
         $subject->convertCssToVisualAttributes();
         $html = $subject->render();
 
-        static::assertContains($body, $html);
+        self::assertContains($body, $html);
     }
 }
