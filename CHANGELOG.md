@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Separate `CssInliner::inlineCss` and the rendering
+  ([#654](https://github.com/MyIntervals/emogrifier/pull/654))
 
 ### Deprecated
 

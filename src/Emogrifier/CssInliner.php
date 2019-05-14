@@ -78,11 +78,6 @@ class CssInliner
     protected $domDocument = null;
 
     /**
-     * @var string
-     */
-    private $css = '';
-
-    /**
      * @var bool[]
      */
     private $excludedSelectors = [];
@@ -220,18 +215,6 @@ class CssInliner
     }
 
     /**
-     * Sets the CSS to merge with the HTML.
-     *
-     * @param string $css the CSS to merge, must be UTF-8-encoded
-     *
-     * @return void
-     */
-    public function setCss($css)
-    {
-        $this->css = $css;
-    }
-
-    /**
      * Renders the normalized and processed HTML.
      *
      * @return string
@@ -293,40 +276,6 @@ class CssInliner
     }
 
     /**
-     * Applies $this->css to the given HTML and returns the HTML with the CSS
-     * applied.
-     *
-     * This method places the CSS inline.
-     *
-     * @return string
-     *
-     * @throws SyntaxErrorException
-     */
-    public function emogrify()
-    {
-        $this->process();
-
-        return $this->render();
-    }
-
-    /**
-     * Applies $this->css to the given HTML and returns only the HTML content
-     * within the <body> tag.
-     *
-     * This method places the CSS inline.
-     *
-     * @return string
-     *
-     * @throws SyntaxErrorException
-     */
-    public function emogrifyBodyContent()
-    {
-        $this->process();
-
-        return $this->renderBodyContent();
-    }
-
-    /**
      * Creates a DOM document from the given HTML and stores it in $this->domDocument.
      *
      * The DOM document will always have a BODY element and a document type.
@@ -380,15 +329,15 @@ class CssInliner
     }
 
     /**
-     * Applies $this->css to $this->domDocument.
+     * Inlines the given CSS into the existing HTML.
      *
-     * This method places the CSS inline.
+     * @param string $css the CSS to inline, must be UTF-8-encoded
      *
-     * @return void
+     * @return CssInliner fluent interface
      *
      * @throws SyntaxErrorException
      */
-    protected function process()
+    public function inlineCss($css)
     {
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
@@ -397,15 +346,15 @@ class CssInliner
         $this->removeUnprocessableTags();
         $this->normalizeStyleAttributesOfAllNodes($xPath);
 
-        // grab any existing style blocks from the html and append them to the existing CSS
+        $combinedCss = $css;
+        // grab any existing style blocks from the HTML and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
-        $allCss = $this->css;
         if ($this->isStyleBlocksParsingEnabled) {
-            $allCss .= $this->getCssFromAllStyleNodes($xPath);
+            $combinedCss .= $this->getCssFromAllStyleNodes($xPath);
         }
 
         $excludedNodes = $this->getNodesToExclude($xPath);
-        $cssRules = $this->parseCssRules($allCss);
+        $cssRules = $this->parseCssRules($combinedCss);
         foreach ($cssRules['inlineable'] as $cssRule) {
             try {
                 $nodesMatchingCssSelectors = $xPath->query($this->cssSelectorConverter->toXPath($cssRule['selector']));
@@ -433,6 +382,8 @@ class CssInliner
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
         $this->copyUninlineableCssToStyleNode($xPath, $cssRules['uninlineable']);
+
+        return $this;
     }
 
     /**
