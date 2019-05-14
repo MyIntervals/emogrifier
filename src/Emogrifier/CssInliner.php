@@ -1014,7 +1014,7 @@ class CssInliner
      *
      * This method is protected to allow overriding.
      *
-     * @see https://github.com/jjriv/emogrifier/issues/103
+     * @see https://github.com/MyIntervals/emogrifier/issues/103
      *
      * @param string $css
      *
