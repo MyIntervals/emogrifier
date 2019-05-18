@@ -31,7 +31,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
     {
         $result = $this->subject->getCss();
 
-        static::assertSame('', $result);
+        self::assertSame('', $result);
     }
 
     /**
@@ -43,7 +43,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        static::assertSame('p{color: green;}', $result);
+        self::assertSame('p{color: green;}', $result);
     }
 
     /**
@@ -55,7 +55,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        static::assertSame('@media screen{p{color: green;}}', $result);
+        self::assertSame('@media screen{p{color: green;}}', $result);
     }
 
     /**
@@ -93,7 +93,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $expectedResult = \implode(',', $selectors1) . '{color: green;font-size: 16px;}';
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -106,7 +106,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        static::assertSame('p{color: green;font-size: 16px}', $result);
+        self::assertSame('p{color: green;font-size: 16px}', $result);
     }
 
     /**
@@ -174,7 +174,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $expectedResult = \implode(',', $combinedSelectors) . '{color: green;}';
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -195,7 +195,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         $expectedResult = \implode(',', $selectors1) . '{color: green;}'
             . \implode(',', $selectors2) . '{font-size: 16px;}';
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -208,7 +208,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        static::assertSame('@media screen{p{color: green;}ul{font-size: 16px;}}', $result);
+        self::assertSame('@media screen{p{color: green;}ul{font-size: 16px;}}', $result);
     }
 
     /**
@@ -228,7 +228,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $expectedResult = '@media screen{' . \implode(',', $selectors1) . '{color: green;font-size: 16px;}}';
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -252,7 +252,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $expectedResult = '@media screen{' . \implode(',', $combinedSelectors) . '{color: green;}}';
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 
     /**
@@ -265,7 +265,7 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
 
         $result = $this->subject->getCss();
 
-        static::assertSame('@media screen{p{color: green;}}@media print{p{color: green;}}', $result);
+        self::assertSame('@media screen{p{color: green;}}@media print{p{color: green;}}', $result);
     }
 
     /**
@@ -312,6 +312,6 @@ class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
         }
         $expectedResult = $expectedRule1Css . '.intervening{-intervening-property: 0;}' . $expectedRule2Css;
 
-        static::assertSame($expectedResult, $result);
+        self::assertSame($expectedResult, $result);
     }
 }

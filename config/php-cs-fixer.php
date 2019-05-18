@@ -76,6 +76,7 @@ return \PhpCsFixer\Config::create()
             'php_unit_construct' => true,
             'php_unit_fqcn_annotation' => true,
             'php_unit_set_up_tear_down_visibility' => true,
+            'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
             'phpdoc_add_missing_param_annotation' => true,
             'phpdoc_indent' => true,
             'phpdoc_separation' => true,

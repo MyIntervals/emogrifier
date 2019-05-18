@@ -55,8 +55,8 @@ trait AssertCss
      */
     private static function assertContainsCss($needle, $haystack)
     {
-        static::assertRegExp(
-            static::getCssNeedleRegExp($needle),
+        self::assertRegExp(
+            self::getCssNeedleRegExp($needle),
             $haystack,
             'Plain text needle: "' . $needle . '"'
         );
@@ -71,8 +71,8 @@ trait AssertCss
      */
     private static function assertNotContainsCss($needle, $haystack)
     {
-        static::assertNotRegExp(
-            static::getCssNeedleRegExp($needle),
+        self::assertNotRegExp(
+            self::getCssNeedleRegExp($needle),
             $haystack,
             'Plain text needle: "' . $needle . '"'
         );
@@ -91,9 +91,9 @@ trait AssertCss
         $needle,
         $haystack
     ) {
-        static::assertSame(
+        self::assertSame(
             $expectedCount,
-            \preg_match_all(static::getCssNeedleRegExp($needle), $haystack),
+            \preg_match_all(self::getCssNeedleRegExp($needle), $haystack),
             'Plain text needle: "' . $needle . "\"\nHaystack: \"" . $haystack . '"'
         );
     }
