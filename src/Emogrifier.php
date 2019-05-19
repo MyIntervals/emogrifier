@@ -461,7 +461,6 @@ class Emogrifier
     private function createRawDomDocument($html)
     {
         $domDocument = new \DOMDocument();
-        $domDocument->encoding = 'UTF-8';
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = true;
         $libXmlState = \libxml_use_internal_errors(true);
