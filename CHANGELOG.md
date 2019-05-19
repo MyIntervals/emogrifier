@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Always use `DOMDocument::normalizeDocument` after loading HTML
+  ([#662](https://github.com/MyIntervals/emogrifier/pull/662))
 - Support all HTML5 self-closing tags, including `<embed>`, `<source>`,
   `<track>` and `<wbr>`
   ([#653](https://github.com/MyIntervals/emogrifier/pull/653))

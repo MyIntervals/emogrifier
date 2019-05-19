@@ -156,6 +156,7 @@ abstract class AbstractHtmlProcessor
         $domDocument->loadHTML($this->prepareHtmlForDomConversion($html));
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
+        $domDocument->normalizeDocument();
 
         $this->domDocument = $domDocument;
     }
