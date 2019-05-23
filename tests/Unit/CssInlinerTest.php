@@ -301,7 +301,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     {
         return [
             'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
-            'UTF-8 umlauts' => ['Küss die Hand, schöne Frau.'],
+            'UTF-8 umlauts' => ['Küss die Hand, schöne Frau. イリノイ州シカゴにて、アイルランド系の家庭に、'],
             'HTML entities' => ['a &amp; b &gt; c'],
             'curly braces' => ['{Happy new year!}'],
         ];
