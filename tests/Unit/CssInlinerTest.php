@@ -445,13 +445,34 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider wbrTagDataProvider
      */
-    public function inlineCssByDefaultRemovesWbrTag($html)
+    public function inlineCssByDefaultKeepsWbrTag($html)
     {
         $subject = $this->buildDebugSubject($html);
 
         $subject->inlineCss('');
 
-        self::assertNotContains('<wbr', $subject->render());
+        $result = $subject->render();
+        $expectedWbrTagCount = \substr_count($html, '<wbr');
+        $resultWbrTagCount = \substr_count($result, '<wbr');
+        self::assertSame($expectedWbrTagCount, $resultWbrTagCount);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider wbrTagDataProvider
+     */
+    public function inlineCssAfterAddUnprocessableTagRemovesWbrTag($html)
+    {
+        $subject = $this->buildDebugSubject($html);
+        $subject->addUnprocessableHtmlTag('wbr');
+
+        $subject->inlineCss('');
+
+        $result = $subject->render();
+        self::assertNotContains('<wbr', $result);
     }
 
     /**

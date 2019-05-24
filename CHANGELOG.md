@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Keep `<wbr>` elements by default with `CssInliner`
+  ([#665](https://github.com/MyIntervals/emogrifier/pull/665))
 - Make the CssInliner inherit AbstractHtmlProcessor
   ([#660](https://github.com/MyIntervals/emogrifier/pull/660))
 - Separate `CssInliner::inlineCss` and the rendering

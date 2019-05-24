@@ -62,7 +62,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var string[]
      */
-    private $unprocessableHtmlTags = ['wbr'];
+    private $unprocessableHtmlTags = [];
 
     /**
      * @var bool[]
