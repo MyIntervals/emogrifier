@@ -1346,7 +1346,7 @@ class Emogrifier
         }
 
         // When there is no explicitly injected dependency, just use the default one.
-        if (is_null($this->cssConcatenator)) {
+        if (\is_null($this->cssConcatenator)) {
             // support use without autoload
             if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
                 require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
@@ -2077,7 +2077,7 @@ class Emogrifier
      *
      * @param Emogrifier\CssConcatenator $cssConcatenator Must be compatible with the default CssConcatenator.
      */
-    public function setCssConcatenator($cssConcatenator)
+    public function setCssConcatenator(Emogrifier\CssConcatenator $cssConcatenator)
     {
         $this->cssConcatenator = $cssConcatenator;
     }
