@@ -269,6 +269,13 @@ class Emogrifier
     private $debug = false;
 
     /**
+     * Holds the eventually injected CSS concatenator dependency.
+     *
+     * @var Emogrifier\CssConcatenator
+     */
+    private $cssConcatenator = null;
+
+    /**
      * @param string $unprocessedHtml the HTML to process, must be UTF-8-encoded
      * @param string $css the CSS to merge, must be UTF-8-encoded
      */
@@ -1338,17 +1345,20 @@ class Emogrifier
             return;
         }
 
-        // support use without autoload
-        if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
-            require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
+        // When there is no explicitly injected dependency, just use the default one.
+        if (is_null($this->cssConcatenator)) {
+            // support use without autoload
+            if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
+                require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
+            }
+            $this->cssConcatenator = new Emogrifier\CssConcatenator();
         }
 
-        $cssConcatenator = new Emogrifier\CssConcatenator();
         foreach ($cssRulesRelevantForDocument as $cssRule) {
-            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
+            $this->cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
-        $this->addStyleElementToDocument($cssConcatenator->getCss());
+        $this->addStyleElementToDocument($this->cssConcatenator->getCss());
     }
 
     /**
@@ -2060,5 +2070,15 @@ class Emogrifier
     public function setDebug($debug)
     {
         $this->debug = $debug;
+    }
+
+    /**
+     * Inject a custom CSS concatenator.
+     *
+     * @param Emogrifier\CssConcatenator $cssConcatenator Must be compatible with the default CssConcatenator.
+     */
+    public function setCssConcatenator($cssConcatenator)
+    {
+        $this->cssConcatenator = $cssConcatenator;
     }
 }
