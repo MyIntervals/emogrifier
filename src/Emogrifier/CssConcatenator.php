@@ -49,7 +49,7 @@ class CssConcatenator
      *
      * @var \stdClass[]
      */
-    private $mediaRules = [];
+    protected $mediaRules = [];
 
     /**
      * Appends a declaration block to the CSS.
