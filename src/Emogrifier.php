@@ -269,7 +269,9 @@ class Emogrifier
     private $debug = false;
 
     /**
-     * Holds the eventually injected CSS concatenator dependency.
+     * Holds the eventually injected CSS concatenator dependency or the "JIT-instantiated" default implementation.
+     * Do not access this property directly, use $this->resolveCssConcatenator() instead, where you need access to the
+     * CSS concatenator object.
      *
      * @var Emogrifier\CssConcatenator
      */
@@ -1345,20 +1347,13 @@ class Emogrifier
             return;
         }
 
-        // When there is no explicitly injected dependency, just use the default one.
-        if (\is_null($this->cssConcatenator)) {
-            // support use without autoload
-            if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
-                require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
-            }
-            $this->cssConcatenator = new Emogrifier\CssConcatenator();
-        }
+        $cssConcatenator = $this->resolveCssConcatenator();
 
         foreach ($cssRulesRelevantForDocument as $cssRule) {
-            $this->cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
+            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
-        $this->addStyleElementToDocument($this->cssConcatenator->getCss());
+        $this->addStyleElementToDocument($cssConcatenator->getCss());
     }
 
     /**
@@ -2080,5 +2075,25 @@ class Emogrifier
     public function setCssConcatenator(Emogrifier\CssConcatenator $cssConcatenator)
     {
         $this->cssConcatenator = $cssConcatenator;
+    }
+
+    /**
+     * Returns the resolved CSS concatenator object.
+     * Use this method instead of directly using $this->cssConcatenator, as that may be null.
+     *
+     * @return Emogrifier\CssConcatenator
+     */
+    protected function resolveCssConcatenator()
+    {
+        // When there is no explicitly injected dependency (or the default implementation was not yet instantiated),
+        // just set up the default one.
+        if (\is_null($this->cssConcatenator)) {
+            // support use without autoload
+            if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
+                require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
+            }
+            $this->cssConcatenator = new Emogrifier\CssConcatenator();
+        }
+        return $this->cssConcatenator;
     }
 }
