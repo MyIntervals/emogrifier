@@ -20,6 +20,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Call all static methods statically in `CssConcatenator`
+  ([#670](https://github.com/MyIntervals/emogrifier/pull/670))
 - Support all HTML5 self-closing tags, including `<embed>`, `<source>`,
   `<track>` and `<wbr>`
   ([#653](https://github.com/MyIntervals/emogrifier/pull/653))
