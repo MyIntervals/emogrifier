@@ -87,7 +87,7 @@ class CssConcatenator
      */
     public function getCss()
     {
-        return \implode('', \array_map([$this, 'getMediaRuleCss'], $this->mediaRules));
+        return \implode('', \array_map([static::class, 'getMediaRuleCss'], $this->mediaRules));
     }
 
     /**
