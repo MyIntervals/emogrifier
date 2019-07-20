@@ -3341,27 +3341,38 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     public function copyUninlineableCssToStyleNodeHasNoSideEffects()
     {
         $this->subject->setHtml('<html><a>foo</a><p>bar</p></html>');
-        $css = 'a:hover { color: green; } p:hover { color: blue; }';
+        // CSS: `a:hover { color: green; } p:hover { color: blue; }`
+        $uninlineableCssRules = [
+            [
+                'media' => '',
+                'selector' => 'a:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: green;',
+                'line' => 0,
+            ],
+            [
+                'media' => '',
+                'selector' => 'p:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: blue;',
+                'line' => 1,
+            ],
+        ];
 
-        $parseCssRules = new \ReflectionMethod(Emogrifier::class, 'parseCssRules');
-        $parseCssRules->setAccessible(true);
         $copyUninlineableCssToStyleNode = new \ReflectionMethod(Emogrifier::class, 'copyUninlineableCssToStyleNode');
         $copyUninlineableCssToStyleNode->setAccessible(true);
-        $render = new \ReflectionMethod(Emogrifier::class, 'render');
-        $render->setAccessible(true);
 
         $domDocument = $this->subject->getDomDocument();
         $xPath = new \DOMXPath($domDocument);
-        $cssRules = $parseCssRules->invoke($this->subject, $css);
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $cssRules['uninlineable']);
-        $expectedHtml = $render->invoke($this->subject);
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
+        $expectedHtml = $domDocument->saveHTML();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $cssRules['uninlineable']);
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
 
-        self::assertSame($expectedHtml, $render->invoke($this->subject));
+        self::assertSame($expectedHtml, $domDocument->saveHTML());
     }
 }

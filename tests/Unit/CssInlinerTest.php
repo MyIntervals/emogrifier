@@ -3095,24 +3095,37 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     public function copyUninlineableCssToStyleNodeHasNoSideEffects()
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a><p>bar</p></html>');
-        $css = 'a:hover { color: green; } p:hover { color: blue; }';
+        // CSS: `a:hover { color: green; } p:hover { color: blue; }`
+        $uninlineableCssRules = [
+            [
+                'media' => '',
+                'selector' => 'a:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: green;',
+                'line' => 0,
+            ],
+            [
+                'media' => '',
+                'selector' => 'p:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: blue;',
+                'line' => 1,
+            ],
+        ];
 
-        $parseCssRules = new \ReflectionMethod(CssInliner::class, 'parseCssRules');
-        $parseCssRules->setAccessible(true);
         $copyUninlineableCssToStyleNode = new \ReflectionMethod(CssInliner::class, 'copyUninlineableCssToStyleNode');
         $copyUninlineableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
         $xPath = new \DOMXPath($domDocument);
-        $cssRules = $parseCssRules->invoke($subject, $css);
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $cssRules['uninlineable']);
+        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $uninlineableCssRules);
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $cssRules['uninlineable']);
+        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $uninlineableCssRules);
 
         self::assertSame($expectedHtml, $subject->render());
     }
