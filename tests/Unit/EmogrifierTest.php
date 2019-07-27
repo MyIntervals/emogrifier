@@ -3334,4 +3334,45 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
         self::assertContainsCss($css, $result);
     }
+
+    /**
+     * @test
+     */
+    public function copyUninlineableCssToStyleNodeHasNoSideEffects()
+    {
+        $this->subject->setHtml('<html><a>foo</a><p>bar</p></html>');
+        // CSS: `a:hover { color: green; } p:hover { color: blue; }`
+        $uninlineableCssRules = [
+            [
+                'media' => '',
+                'selector' => 'a:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: green;',
+                'line' => 0,
+            ],
+            [
+                'media' => '',
+                'selector' => 'p:hover',
+                'hasUnmatchablePseudo' => true,
+                'declarationsBlock' => 'color: blue;',
+                'line' => 1,
+            ],
+        ];
+
+        $copyUninlineableCssToStyleNode = new \ReflectionMethod(Emogrifier::class, 'copyUninlineableCssToStyleNode');
+        $copyUninlineableCssToStyleNode->setAccessible(true);
+
+        $domDocument = $this->subject->getDomDocument();
+        $xPath = new \DOMXPath($domDocument);
+
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
+        $expectedHtml = $domDocument->saveHTML();
+
+        $styleElement = $domDocument->getElementsByTagName('style')->item(0);
+        $styleElement->parentNode->removeChild($styleElement);
+
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
+
+        self::assertSame($expectedHtml, $domDocument->saveHTML());
+    }
 }
