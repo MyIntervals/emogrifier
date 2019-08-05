@@ -333,7 +333,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function nonXmlSelfClosingTagDataProvider()
     {
         return \array_map(
-            function (array $dataset) {
+            static function (array $dataset) {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
                 return $dataset;
             },
@@ -350,7 +350,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function selfClosingTagDataProvider()
     {
         return \array_map(
-            function (array $dataset) {
+            static function (array $dataset) {
                 \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
                 return $dataset;
             },
