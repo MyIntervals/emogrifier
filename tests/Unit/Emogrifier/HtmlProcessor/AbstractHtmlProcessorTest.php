@@ -485,6 +485,23 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      *
+     * @param string $codeNotToBeChanged
+     *
+     * @dataProvider specialCharactersDataProvider
+     */
+    public function renderBodyContentKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
+    {
+        $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
+        $subject = new TestingHtmlProcessor($html);
+
+        $result = $subject->renderBodyContent();
+
+        self::assertContains($codeNotToBeChanged, $result);
+    }
+
+    /**
+     * @test
+     *
      * @param string $htmlWithNonXmlSelfClosingTags
      * @param string $tagName
      *
