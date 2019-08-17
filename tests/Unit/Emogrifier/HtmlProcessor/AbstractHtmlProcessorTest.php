@@ -15,9 +15,21 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function fixtureIsAbstractHtmlProcessor()
+    public function fromHtmlReturnsAbstractHtmlProcessor()
     {
-        self::assertInstanceOf(AbstractHtmlProcessor::class, new TestingHtmlProcessor('<html></html>'));
+        $subject = TestingHtmlProcessor::fromHtml('<html></html>');
+
+        self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
+    }
+
+    /**
+     * @test
+     */
+    public function fromHtmlReturnsInstanceOfCalledClass()
+    {
+        $subject = TestingHtmlProcessor::fromHtml('<html></html>');
+
+        self::assertInstanceOf(TestingHtmlProcessor::class, $subject);
     }
 
     /**
@@ -36,7 +48,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
             "<body></body>\n" .
             "</html>\n";
 
-        $subject = new TestingHtmlProcessor($rawHtml);
+        $subject = TestingHtmlProcessor::fromHtml($rawHtml);
 
         self::assertSame($formattedHtml, $subject->render());
     }
@@ -63,9 +75,9 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider nonHtmlDataProvider
      */
-    public function constructorWithNoHtmlDataThrowsException($html)
+    public function fromHtmlWithNoHtmlDataThrowsException($html)
     {
-        new TestingHtmlProcessor($html);
+        TestingHtmlProcessor::fromHtml($html);
     }
 
     /**
@@ -91,7 +103,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function renderRepairsBrokenHtml($input, $expectedHtml)
     {
-        $subject = new TestingHtmlProcessor($input);
+        $subject = TestingHtmlProcessor::fromHtml($input);
         $result = $subject->render();
 
         self::assertContains($expectedHtml, $result);
@@ -120,7 +132,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function addsMissingHtmlTag($html)
     {
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -148,7 +160,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function addsMissingHeadTag($html)
     {
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -176,7 +188,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function addsMissingBodyTag($html)
     {
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -188,7 +200,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function putsMissingBodyElementAroundBodyContent()
     {
-        $subject = new TestingHtmlProcessor('<p>Hello</p>');
+        $subject = TestingHtmlProcessor::fromHtml('<p>Hello</p>');
 
         $result = $subject->render();
 
@@ -218,7 +230,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function keepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -230,7 +242,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function addsMissingHtml5DocumentType()
     {
-        $subject = new TestingHtmlProcessor('<html></html>');
+        $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
         $result = $subject->render();
 
@@ -269,7 +281,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function keepsExistingDocumentType($documentType)
     {
         $html = $documentType . '<html></html>';
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -281,7 +293,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function addsMissingContentTypeMetaTag()
     {
-        $subject = new TestingHtmlProcessor('<p>Hello</p>');
+        $subject = TestingHtmlProcessor::fromHtml('<p>Hello</p>');
 
         $result = $subject->render();
 
@@ -294,7 +306,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function notAddsSecondContentTypeMetaTag()
     {
         $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
@@ -316,12 +328,12 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
             ],
             '<picture> with <source> and <img>' => [
                 '<picture><source srcset="https://example.com/flower-800x600.jpeg" media="(min-width: 600px)"/>'
-                    . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
+                . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
                 'source',
             ],
             '<video> with <track>' => [
                 '<video controls width="250" src="https://example.com/flower.mp4">'
-                    . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
+                . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
                 'track',
             ],
         ];
@@ -410,7 +422,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $htmlWithNonXmlSelfClosingTags,
         $htmlWithXmlSelfClosingTags
     ) {
-        $subject = new TestingHtmlProcessor(
+        $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
         );
 
@@ -429,7 +441,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function keepsNonXmlSelfClosingTags($documentType, $htmlWithNonXmlSelfClosingTags)
     {
-        $subject = new TestingHtmlProcessor(
+        $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
         );
 
@@ -448,7 +460,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function notAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
     {
-        $subject = new TestingHtmlProcessor(
+        $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
         );
 
@@ -462,7 +474,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function renderBodyContentForEmptyBodyReturnsEmptyString()
     {
-        $subject = new TestingHtmlProcessor('<html><body></body></html>');
+        $subject = TestingHtmlProcessor::fromHtml('<html><body></body></html>');
 
         $result = $subject->renderBodyContent();
 
@@ -475,7 +487,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function renderBodyContentReturnsBodyContent()
     {
         $bodyContent = '<p>Hello world</p>';
-        $subject = new TestingHtmlProcessor('<html><body>' . $bodyContent . '</body></html>');
+        $subject = TestingHtmlProcessor::fromHtml('<html><body>' . $bodyContent . '</body></html>');
 
         $result = $subject->renderBodyContent();
 
@@ -492,7 +504,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     public function renderBodyContentKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->renderBodyContent();
 
@@ -509,7 +521,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function renderBodyContentNotAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
     {
-        $subject = new TestingHtmlProcessor(
+        $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
         );
 
@@ -523,7 +535,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function getDomDocumentReturnsDomDocument()
     {
-        $subject = new TestingHtmlProcessor('<html></html>');
+        $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
         self::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
     }
@@ -536,7 +548,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $html = "<!DOCTYPE html>\n<html>\n<head>" .
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' .
             "</head>\n<body>\n<br>\n</body>\n</html>\n";
-        $subject = new TestingHtmlProcessor($html);
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $domDocument = $subject->getDomDocument();
 
@@ -553,8 +565,8 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function getDomDocumentVoidElementNotHasChildNodes($htmlWithNonXmlSelfClosingTags, $tagName)
     {
-        $subject = new TestingHtmlProcessor(
-            // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
+        // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
+        $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
         );
 

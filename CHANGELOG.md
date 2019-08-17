@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add `AbstractHtmlProcessor::fromHtml`
+  ([#675](https://github.com/MyIntervals/emogrifier/pull/675))
 
 ### Changed
 - Make the closures static

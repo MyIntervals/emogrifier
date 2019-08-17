@@ -41,7 +41,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     private function buildDebugSubject($html)
     {
-        $subject = new CssInliner($html);
+        $subject = CssInliner::fromHtml($html);
         $subject->setDebug(true);
 
         return $subject;
@@ -50,9 +50,19 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function fromHtmlReturnsInstanceOfCalledClass()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        self::assertInstanceOf(CssInliner::class, $subject);
+    }
+
+    /**
+     * @test
+     */
     public function isAbstractHtmlProcessor()
     {
-        $subject = new CssInliner('<html></html>');
+        $subject = CssInliner::fromHtml('<html></html>');
 
         self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
     }
@@ -62,7 +72,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssProvidesFluentInterface()
     {
-        $subject = new CssInliner('<html><p>Hello world!</p></html>');
+        $subject = CssInliner::fromHtml('<html><p>Hello world!</p></html>');
 
         $result = $subject->inlineCss('');
 
@@ -966,7 +976,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssInDebugModeForInvalidCssSelectorThrowsException()
     {
-        $subject = new CssInliner(
+        $subject = CssInliner::fromHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
         $subject->setDebug(true);
@@ -982,7 +992,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
             '<body><p></p></body></html>';
-        $subject = new CssInliner($html);
+        $subject = CssInliner::fromHtml($html);
         $subject->setDebug(false);
 
         $subject->inlineCss('');
@@ -1000,7 +1010,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
             '<body><p></p></body></html>';
-        $subject = new CssInliner($html);
+        $subject = CssInliner::fromHtml($html);
 
         $subject->inlineCss('');
 
@@ -2245,7 +2255,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssInDebugModeForInvalidExcludedSelectorThrowsException()
     {
-        $subject = new CssInliner('<html></html>');
+        $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(true);
 
         $subject->addExcludedSelector('..p');
@@ -2257,7 +2267,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssNotInDebugModeIgnoresInvalidExcludedSelector()
     {
-        $subject = new CssInliner('<html><p class="x"></p></html>');
+        $subject = CssInliner::fromHtml('<html><p class="x"></p></html>');
         $subject->setDebug(false);
 
         $subject->addExcludedSelector('..p');
@@ -2271,7 +2281,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssNotInDebugModeIgnoresOnlyInvalidExcludedSelector()
     {
-        $subject = new CssInliner('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
+        $subject = CssInliner::fromHtml('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
         $subject->setDebug(false);
 
         $subject->addExcludedSelector('p.x');
@@ -2502,7 +2512,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
-        $subject = new CssInliner('<html></html>');
+        $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(true);
 
         $subject->inlineCss('@media screen {p^^ {color: red;}}');
@@ -2513,7 +2523,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      */
     public function inlineCssNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks()
     {
-        $subject = new CssInliner('<html></html>');
+        $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(false);
         $css = '@media screen {p^^ {color: red;}}';
 
