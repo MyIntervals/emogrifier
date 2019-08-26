@@ -26,7 +26,7 @@ trait AssertCss
     {
         $needleMatcher = \preg_replace_callback(
             '/\\s*+([{},])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{},]|^\\s)[^>])++/',
-            function (array $matches) {
+            static function (array $matches) {
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{", "}" or ",", then possibly more whitespace
                     return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';

@@ -619,7 +619,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/[A-z\\-]+(?=\\:)/S',
-            function (array $m) {
+            static function (array $m) {
                 return \strtolower($m[0]);
             },
             $node->getAttribute('style')

@@ -1178,7 +1178,7 @@ class Emogrifier
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/[A-z\\-]+(?=\\:)/S',
-            function (array $m) {
+            static function (array $m) {
                 return \strtolower($m[0]);
             },
             $node->getAttribute('style')
@@ -1682,7 +1682,7 @@ class Emogrifier
         $paddedSelector = ' ' . $cssSelector . ' ';
         $lowercasePaddedSelector = \preg_replace_callback(
             '/\\s+\\w+\\s+/',
-            function (array $matches) {
+            static function (array $matches) {
                 return \strtolower($matches[0]);
             },
             $paddedSelector
