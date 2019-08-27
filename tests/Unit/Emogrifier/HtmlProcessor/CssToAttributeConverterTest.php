@@ -35,6 +35,18 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML('<html></html>');
+        $subject = CssToAttributeConverter::fromDomDocument($document);
+
+        self::assertInstanceOf(CssToAttributeConverter::class, $subject);
+    }
+
+    /**
+     * @test
+     */
     public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisuablAttributes()
     {
         $html = '<html style="text-align: right;"></html>';

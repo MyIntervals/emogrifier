@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add `AbstractHtmlProcessor::fromDomDocument`
+  ([#676](https://github.com/MyIntervals/emogrifier/pull/676))
 - Add `AbstractHtmlProcessor::fromHtml`
   ([#675](https://github.com/MyIntervals/emogrifier/pull/675))
 

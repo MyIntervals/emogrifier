@@ -47,6 +47,8 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Builds a new instance from the given HTML.
+     *
      * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
      *
      * @return static
@@ -64,6 +66,21 @@ abstract class AbstractHtmlProcessor
 
         $instance = new static();
         $instance->setHtml($unprocessedHtml);
+
+        return $instance;
+    }
+
+    /**
+     * Builds a new instance from the given DOM document.
+     *
+     * @param \DOMDocument $document a DOM document returned by getDomDocument() of another instance
+     *
+     * @return static
+     */
+    public static function fromDomDocument(\DOMDocument $document)
+    {
+        $instance = new static();
+        $instance->setDomDocument($document);
 
         return $instance;
     }
@@ -88,6 +105,16 @@ abstract class AbstractHtmlProcessor
     public function getDomDocument()
     {
         return $this->domDocument;
+    }
+
+    /**
+     * @param \DOMDocument $domDocument
+     *
+     * @return void
+     */
+    private function setDomDocument(\DOMDocument $domDocument)
+    {
+        $this->domDocument = $domDocument;
     }
 
     /**
@@ -171,7 +198,7 @@ abstract class AbstractHtmlProcessor
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
 
-        $this->domDocument = $domDocument;
+        $this->setDomDocument($domDocument);
     }
 
     /**
