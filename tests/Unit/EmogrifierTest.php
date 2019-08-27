@@ -2490,8 +2490,8 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
      */
     public function getDomDocumentVoidElementNotHasChildNodes($htmlWithNonXmlSelfClosingTags, $tagName)
     {
+        // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
         $this->subject->setHtml(
-            // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
         );
 

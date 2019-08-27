@@ -15,9 +15,21 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function fromHtmlReturnsInstanceOfCalledClass()
+    {
+        $subject = CssToAttributeConverter::fromHtml('<html></html>');
+
+        self::assertInstanceOf(CssToAttributeConverter::class, $subject);
+    }
+
+    /**
+     * @test
+     */
     public function classIsAbstractHtmlProcessor()
     {
-        self::assertInstanceOf(AbstractHtmlProcessor::class, new CssToAttributeConverter('<html></html>'));
+        $subject = CssToAttributeConverter::fromHtml('<html></html>');
+
+        self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
     }
 
     /**
@@ -26,7 +38,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
     public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisuablAttributes()
     {
         $html = '<html style="text-align: right;"></html>';
-        $subject = new CssToAttributeConverter($html);
+        $subject = CssToAttributeConverter::fromHtml($html);
 
         self::assertContains('<html style="text-align: right;">', $subject->render());
     }
@@ -37,7 +49,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
     public function convertCssToVisualAttributesUsesFluentInterface()
     {
         $html = '<html style="text-align: right;"></html>';
-        $subject = new CssToAttributeConverter($html);
+        $subject = CssToAttributeConverter::fromHtml($html);
 
         self::assertSame($subject, $subject->convertCssToVisualAttributes());
     }
@@ -117,7 +129,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function convertCssToVisualAttributesMapsSuitableCssToHtml($body, $attributes)
     {
-        $subject = new CssToAttributeConverter('<html><body>' . $body . '</body></html>');
+        $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
         $subject->convertCssToVisualAttributes();
         $html = $subject->render();
@@ -156,7 +168,7 @@ class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
      */
     public function convertCssToVisualAttributesNotMapsUnsuitableCssToHtml($body)
     {
-        $subject = new CssToAttributeConverter('<html><body>' . $body . '</body></html>');
+        $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
         $subject->convertCssToVisualAttributes();
         $html = $subject->render();

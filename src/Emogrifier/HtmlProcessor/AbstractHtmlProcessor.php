@@ -38,11 +38,22 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
+     * The constructor.
+     *
+     * Please use ::fromHtml instead.
+     */
+    private function __construct()
+    {
+    }
+
+    /**
      * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
+     *
+     * @return static
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public function __construct($unprocessedHtml)
+    public static function fromHtml($unprocessedHtml)
     {
         if (!\is_string($unprocessedHtml)) {
             throw new \InvalidArgumentException('The provided HTML must be a string.', 1515459744);
@@ -51,7 +62,10 @@ abstract class AbstractHtmlProcessor
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
-        $this->setHtml($unprocessedHtml);
+        $instance = new static();
+        $instance->setHtml($unprocessedHtml);
+
+        return $instance;
     }
 
     /**
