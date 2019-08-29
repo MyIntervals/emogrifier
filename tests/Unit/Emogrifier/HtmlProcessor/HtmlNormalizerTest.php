@@ -31,4 +31,16 @@ class HtmlNormalizerTest extends \PHPUnit_Framework_TestCase
 
         self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
     }
+
+    /**
+     * @test
+     */
+    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML('<html></html>');
+        $subject = HtmlNormalizer::fromDomDocument($document);
+
+        self::assertInstanceOf(HtmlNormalizer::class, $subject);
+    }
 }

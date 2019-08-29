@@ -35,6 +35,45 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
+    public function fromDomDocumentReturnsAbstractHtmlProcessor()
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML('<html></html>');
+        $subject = TestingHtmlProcessor::fromDomDocument($document);
+
+        self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
+    }
+
+    /**
+     * @test
+     */
+    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML('<html></html>');
+        $subject = TestingHtmlProcessor::fromDomDocument($document);
+
+        self::assertInstanceOf(TestingHtmlProcessor::class, $subject);
+    }
+
+    /**
+     * @test
+     */
+    public function renderRendersDocumentProvidedToFromDomDocument()
+    {
+        $innerHtml = '<p>Hello world!</p>';
+        $document = new \DOMDocument();
+        $document->loadHTML('<html>' . $innerHtml . '</html>');
+        $subject = TestingHtmlProcessor::fromDomDocument($document);
+
+        $html = $subject->render();
+
+        self::assertContains($innerHtml, $html);
+    }
+
+    /**
+     * @test
+     */
     public function reformatsHtml()
     {
         $rawHtml = '<!DOCTYPE HTML>' .
@@ -538,6 +577,18 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
         $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
         self::assertInstanceOf(\DOMDocument::class, $subject->getDomDocument());
+    }
+
+    /**
+     * @test
+     */
+    public function getDomDocumentReturnsDomDocumentProvidedToFromDomDocument()
+    {
+        $document = new \DOMDocument();
+        $document->loadHTML('<html></html>');
+        $subject = TestingHtmlProcessor::fromDomDocument($document);
+
+        self::assertSame($document, $subject->getDomDocument());
     }
 
     /**
