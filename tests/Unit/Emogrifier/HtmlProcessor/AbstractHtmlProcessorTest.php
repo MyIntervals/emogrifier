@@ -59,7 +59,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function renderRendersDocumentGivenViaFromDomDocument()
+    public function renderRendersDocumentProvidedToFromDomDocument()
     {
         $innerHtml = '<p>Hello world!</p>';
         $document = new \DOMDocument();
@@ -582,7 +582,7 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function getDomDocumentReturnsDomDocumentGivenForFromDomDocument()
+    public function getDomDocumentReturnsDomDocumentProvidedToFromDomDocument()
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
