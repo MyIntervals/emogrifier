@@ -179,7 +179,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css the CSS to inline, must be UTF-8-encoded
      *
-     * @return CssInliner fluent interface
+     * @return self fluent interface
      *
      * @throws SyntaxErrorException
      */
