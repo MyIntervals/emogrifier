@@ -534,6 +534,21 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Issue #677
+     *
+     * @test
+     */
+    public function renderBodyContentForBodyWithAttributeReturnsBodyContent()
+    {
+        $bodyContent = '<div>simple</div>';
+        $subject = TestingHtmlProcessor::fromHtml('<html><body class="foo">' . $bodyContent . '</body></html>');
+
+        $result = $subject->renderBodyContent();
+
+        self::assertSame($bodyContent, $result);
+    }
+
+    /**
      * @test
      *
      * @param string $codeNotToBeChanged

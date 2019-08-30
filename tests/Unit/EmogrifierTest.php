@@ -2559,6 +2559,22 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Issue #677
+     *
+     * @test
+     */
+    public function emogrifyBodyContentWithCssRuleForBodyReturnsBodyContent()
+    {
+        $bodyContent = '<div>simple</div>';
+        $this->subject->setHtml($bodyContent);
+        $this->subject->setCss('body { max-width: 100%; }');
+
+        $result = $this->subject->emogrifyBodyContent();
+
+        self::assertSame($bodyContent, $result);
+    }
+
+    /**
      * @test
      *
      * @param string $htmlWithNonXmlSelfClosingTags
