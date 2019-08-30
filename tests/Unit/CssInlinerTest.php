@@ -2520,15 +2520,14 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $copyUninlineableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
-        $xPath = new \DOMXPath($domDocument);
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $uninlineableCssRules);
+        $copyUninlineableCssToStyleNode->invoke($subject, $uninlineableCssRules);
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $xPath, $uninlineableCssRules);
+        $copyUninlineableCssToStyleNode->invoke($subject, $uninlineableCssRules);
 
         self::assertSame($expectedHtml, $subject->render());
     }

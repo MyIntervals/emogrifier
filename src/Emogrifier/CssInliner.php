@@ -180,23 +180,22 @@ class CssInliner extends AbstractHtmlProcessor
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
 
-        $xPath = new \DOMXPath($this->domDocument);
         $this->removeUnprocessableTags();
-        $this->normalizeStyleAttributesOfAllNodes($xPath);
+        $this->normalizeStyleAttributesOfAllNodes();
 
         $combinedCss = $css;
         // grab any existing style blocks from the HTML and append them to the existing CSS
         // (these blocks should be appended so as to have precedence over conflicting styles in the existing CSS)
         if ($this->isStyleBlocksParsingEnabled) {
-            $combinedCss .= $this->getCssFromAllStyleNodes($xPath);
+            $combinedCss .= $this->getCssFromAllStyleNodes();
         }
 
-        $excludedNodes = $this->getNodesToExclude($xPath);
+        $excludedNodes = $this->getNodesToExclude();
         $cssRules = $this->parseCssRules($combinedCss);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlineable'] as $cssRule) {
             try {
-                $nodesMatchingCssSelectors = $xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
+                $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
             } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;
@@ -217,9 +216,9 @@ class CssInliner extends AbstractHtmlProcessor
             $this->fillStyleAttributesWithMergedStyles();
         }
 
-        $this->removeImportantAnnotationFromAllInlineStyles($xPath);
+        $this->removeImportantAnnotationFromAllInlineStyles();
 
-        $this->copyUninlineableCssToStyleNode($xPath, $cssRules['uninlineable']);
+        $this->copyUninlineableCssToStyleNode($cssRules['uninlineable']);
 
         return $this;
     }
@@ -228,13 +227,11 @@ class CssInliner extends AbstractHtmlProcessor
      * Searches for all nodes with a style attribute and removes the "!important" annotations out of
      * the inline style declarations, eventually by rearranging declarations.
      *
-     * @param \DOMXPath $xPath
-     *
      * @return void
      */
-    private function removeImportantAnnotationFromAllInlineStyles(\DOMXPath $xPath)
+    private function removeImportantAnnotationFromAllInlineStyles()
     {
-        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
+        foreach ($this->getAllNodesWithStyleAttribute() as $node) {
             $this->removeImportantAnnotationFromNodeInlineStyle($node);
         }
     }
@@ -276,13 +273,11 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Returns a list with all DOM nodes that have a style attribute.
      *
-     * @param \DOMXPath $xPath
-     *
      * @return \DOMNodeList
      */
-    private function getAllNodesWithStyleAttribute(\DOMXPath $xPath)
+    private function getAllNodesWithStyleAttribute()
     {
-        return $xPath->query('//*[@style]');
+        return $this->xPath->query('//*[@style]');
     }
 
     /**
@@ -524,14 +519,12 @@ class CssInliner extends AbstractHtmlProcessor
      * We wouldn't have to do this if DOMXPath supported XPath 2.0.
      * Also stores a reference of nodes with existing inline styles so we don't overwrite them.
      *
-     * @param \DOMXPath $xPath
-     *
      * @return void
      */
-    private function normalizeStyleAttributesOfAllNodes(\DOMXPath $xPath)
+    private function normalizeStyleAttributesOfAllNodes()
     {
         /** @var \DOMElement $node */
-        foreach ($this->getAllNodesWithStyleAttribute($xPath) as $node) {
+        foreach ($this->getAllNodesWithStyleAttribute() as $node) {
             if ($this->isInlineStyleAttributesParsingEnabled) {
                 $this->normalizeStyleAttributes($node);
             }
@@ -665,21 +658,20 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Applies $cssRules to $this->domDocument, limited to the rules that actually apply to the document.
      *
-     * @param \DOMXPath $xPath
      * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyUninlineableCssToStyleNode(\DOMXPath $xPath, array $cssRules)
+    private function copyUninlineableCssToStyleNode(array $cssRules)
     {
         $cssRulesRelevantForDocument = \array_filter(
             $cssRules,
-            function (array $cssRule) use ($xPath) {
+            function (array $cssRule) {
                 $selector = $cssRule['selector'];
                 if ($cssRule['hasUnmatchablePseudo']) {
                     $selector = $this->removeUnmatchablePseudoComponents($selector);
                 }
-                return $this->existsMatchForCssSelector($xPath, $selector);
+                return $this->existsMatchForCssSelector($selector);
             }
         );
 
@@ -745,17 +737,16 @@ class CssInliner extends AbstractHtmlProcessor
      * When not in debug mode, it returns true also for invalid selectors (because they may be valid,
      * just not implemented/recognized yet by Emogrifier).
      *
-     * @param \DOMXPath $xPath
      * @param string $cssSelector
      *
      * @return bool
      *
      * @throws SyntaxErrorException
      */
-    private function existsMatchForCssSelector(\DOMXPath $xPath, $cssSelector)
+    private function existsMatchForCssSelector($cssSelector)
     {
         try {
-            $nodesMatchingSelector = $xPath->query($this->getCssSelectorConverter()->toXPath($cssSelector));
+            $nodesMatchingSelector = $this->xPath->query($this->getCssSelectorConverter()->toXPath($cssSelector));
         } catch (SyntaxErrorException $e) {
             if ($this->debug) {
                 throw $e;
@@ -769,13 +760,11 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Returns CSS content.
      *
-     * @param \DOMXPath $xPath
-     *
      * @return string
      */
-    private function getCssFromAllStyleNodes(\DOMXPath $xPath)
+    private function getCssFromAllStyleNodes()
     {
-        $styleNodes = $xPath->query('//style');
+        $styleNodes = $this->xPath->query('//style');
 
         if ($styleNodes === false) {
             return '';
@@ -1000,18 +989,16 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Find the nodes that are not to be emogrified.
      *
-     * @param \DOMXPath $xPath
-     *
      * @return \DOMElement[]
      *
      * @throws SyntaxErrorException
      */
-    private function getNodesToExclude(\DOMXPath $xPath)
+    private function getNodesToExclude()
     {
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
-                $matchingNodes = $xPath->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
+                $matchingNodes = $this->xPath->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
             } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;

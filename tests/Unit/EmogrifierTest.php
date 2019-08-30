@@ -3379,15 +3379,14 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
         $copyUninlineableCssToStyleNode->setAccessible(true);
 
         $domDocument = $this->subject->getDomDocument();
-        $xPath = new \DOMXPath($domDocument);
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $uninlineableCssRules);
         $expectedHtml = $domDocument->saveHTML();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $xPath, $uninlineableCssRules);
+        $copyUninlineableCssToStyleNode->invoke($this->subject, $uninlineableCssRules);
 
         self::assertSame($expectedHtml, $domDocument->saveHTML());
     }
