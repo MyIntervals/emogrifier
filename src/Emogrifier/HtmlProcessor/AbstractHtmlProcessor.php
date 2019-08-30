@@ -38,6 +38,11 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
+     * @var \DOMXPath
+     */
+    protected $xPath = null;
+
+    /**
      * The constructor.
      *
      * Please use ::fromHtml instead.
@@ -115,6 +120,7 @@ abstract class AbstractHtmlProcessor
     private function setDomDocument(\DOMDocument $domDocument)
     {
         $this->domDocument = $domDocument;
+        $this->xPath = new \DOMXPath($this->domDocument);
     }
 
     /**

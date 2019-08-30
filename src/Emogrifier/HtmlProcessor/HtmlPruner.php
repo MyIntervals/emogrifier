@@ -26,7 +26,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      */
     public function removeInvisibleNodes()
     {
-        $nodesWithStyleDisplayNone = (new \DOMXPath($this->domDocument))->query(self::DISPLAY_NONE_MATCHER);
+        $nodesWithStyleDisplayNone = $this->xPath->query(self::DISPLAY_NONE_MATCHER);
         if ($nodesWithStyleDisplayNone->length === 0) {
             return $this;
         }

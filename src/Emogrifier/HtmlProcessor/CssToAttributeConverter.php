@@ -72,9 +72,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     private function getAllNodesWithStyleAttribute()
     {
-        $xPath = new \DOMXPath($this->domDocument);
-
-        return $xPath->query('//*[@style]');
+        return $this->xPath->query('//*[@style]');
     }
 
     /**
