@@ -10,6 +10,11 @@ namespace Pelago\Emogrifier\HtmlProcessor;
 class HtmlPruner extends AbstractHtmlProcessor
 {
     /**
+     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
+     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
+     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
+     * to lowercase.
+     *
      * @var string
      */
     const DISPLAY_NONE_MATCHER = '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]';
