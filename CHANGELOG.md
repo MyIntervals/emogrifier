@@ -26,6 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Keep development files out of the Composer packages
+  ([#678](https://github.com/MyIntervals/emogrifier/pull/678))
 - Call all static methods statically in `CssConcatenator`
   ([#670](https://github.com/MyIntervals/emogrifier/pull/670))
 - Support all HTML5 self-closing tags, including `<embed>`, `<source>`,
