@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Add a `HtmlScrubber` class
+- Add a `HtmlPruner` class
   ([#679](https://github.com/MyIntervals/emogrifier/pull/679))
 - Add `AbstractHtmlProcessor::fromDomDocument`
   ([#676](https://github.com/MyIntervals/emogrifier/pull/676))

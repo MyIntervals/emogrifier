@@ -3,23 +3,23 @@
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
-use Pelago\Emogrifier\HtmlProcessor\HtmlScrubber;
+use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 
 /**
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class HtmlScrubberTest extends \PHPUnit_Framework_TestCase
+class HtmlPrunerTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @test
      */
     public function fromHtmlReturnsInstanceOfCalledClass()
     {
-        $subject = HtmlScrubber::fromHtml('<html></html>');
+        $subject = HtmlPruner::fromHtml('<html></html>');
 
-        self::assertInstanceOf(HtmlScrubber::class, $subject);
+        self::assertInstanceOf(HtmlPruner::class, $subject);
     }
 
     /**
@@ -27,7 +27,7 @@ class HtmlScrubberTest extends \PHPUnit_Framework_TestCase
      */
     public function classIsAbstractHtmlProcessor()
     {
-        $subject = HtmlScrubber::fromHtml('<html></html>');
+        $subject = HtmlPruner::fromHtml('<html></html>');
 
         self::assertInstanceOf(AbstractHtmlProcessor::class, $subject);
     }
@@ -39,9 +39,9 @@ class HtmlScrubberTest extends \PHPUnit_Framework_TestCase
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
-        $subject = HtmlScrubber::fromDomDocument($document);
+        $subject = HtmlPruner::fromDomDocument($document);
 
-        self::assertInstanceOf(HtmlScrubber::class, $subject);
+        self::assertInstanceOf(HtmlPruner::class, $subject);
     }
 
     /**
@@ -49,7 +49,7 @@ class HtmlScrubberTest extends \PHPUnit_Framework_TestCase
      */
     public function removeInvisibleNodesProvidesFluentInterface()
     {
-        $subject = HtmlScrubber::fromHtml('<html></html>');
+        $subject = HtmlPruner::fromHtml('<html></html>');
 
         $result = $subject->removeInvisibleNodes();
 
@@ -78,7 +78,7 @@ class HtmlScrubberTest extends \PHPUnit_Framework_TestCase
      */
     public function removeInvisibleNodesRemovesNodesWithDisplayNone($displayNone)
     {
-        $subject = HtmlScrubber::fromHtml('<html><body><div style="' . $displayNone . '"></div></body></html>');
+        $subject = HtmlPruner::fromHtml('<html><body><div style="' . $displayNone . '"></div></body></html>');
 
         $subject->removeInvisibleNodes();
 

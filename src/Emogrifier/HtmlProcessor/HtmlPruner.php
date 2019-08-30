@@ -7,7 +7,7 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class HtmlScrubber extends AbstractHtmlProcessor
+class HtmlPruner extends AbstractHtmlProcessor
 {
     /**
      * @var string
