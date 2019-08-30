@@ -434,7 +434,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      *
-     * @deprecated will be removed in Emogrifier 3.0
+     * @deprecated will be removed in Emogrifier 3.0, use the HtmlPruner class instead
      */
     public function disableInvisibleNodeRemoval()
     {
