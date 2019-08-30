@@ -1970,46 +1970,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
     /**
      * @test
      */
-    public function inlineCssByDefaultRemovesElementsWithDisplayNoneFromExternalCss()
-    {
-        $subject = $this->buildDebugSubject('<html><body><div class="foo"></div></body></html>');
-
-        $subject->inlineCss('div.foo { display: none; }');
-
-        self::assertNotContains('<div class="foo"></div>', $subject->render());
-    }
-
-    /**
-     * @test
-     */
-    public function inlineCssByDefaultRemovesElementsWithDisplayNoneInStyleAttribute()
-    {
-        $subject = $this->buildDebugSubject(
-            '<html><body><div class="foobar" style="display: none;"></div>' .
-            '</body></html>'
-        );
-
-        $subject->inlineCss('');
-
-        self::assertNotContains('<div', $subject->render());
-    }
-
-    /**
-     * @test
-     */
-    public function inlineCssAfterDisableInvisibleNodeRemovalPreservesInvisibleElements()
-    {
-        $subject = $this->buildDebugSubject('<html><body><div class="foo"></div></body></html>');
-
-        $subject->disableInvisibleNodeRemoval();
-        $subject->inlineCss('div.foo { display: none; }');
-
-        self::assertContains('<div class="foo" style="display: none;">', $subject->render());
-    }
-
-    /**
-     * @test
-     */
     public function inlineCssKeepsCssMediaQueriesWithCssCommentAfterMediaQuery()
     {
         $subject = $this->buildDebugSubject('<html><body></body></html>');

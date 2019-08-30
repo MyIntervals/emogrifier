@@ -18,7 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#674](https://github.com/MyIntervals/emogrifier/pull/674))
 - Keep `<wbr>` elements by default with `CssInliner`
   ([#665](https://github.com/MyIntervals/emogrifier/pull/665))
-- Make the CssInliner inherit AbstractHtmlProcessor
+- Make the `CssInliner` inherit `AbstractHtmlProcessor`
   ([#660](https://github.com/MyIntervals/emogrifier/pull/660))
 - Separate `CssInliner::inlineCss` and the rendering
   ([#654](https://github.com/MyIntervals/emogrifier/pull/654))
@@ -26,6 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Deprecated
 
 ### Removed
+- Drop the removal of invisible nodes from `CssInliner`
+  ([#684](https://github.com/MyIntervals/emogrifier/pull/684))
 
 ### Fixed
 - Remove opening `<body>` tag from `body` content when element has attribute(s)

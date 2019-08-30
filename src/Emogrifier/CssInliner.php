@@ -120,14 +120,6 @@ class CssInliner extends AbstractHtmlProcessor
     private $isStyleBlocksParsingEnabled = true;
 
     /**
-     * Determines whether elements with the `display: none` property are
-     * removed from the DOM.
-     *
-     * @var bool
-     */
-    private $shouldRemoveInvisibleNodes = true;
-
-    /**
      * For calculating selector precedence order.
      * Keys are a regular expression part to match before a CSS name.
      * Values are a multiplier factor per match to weight specificity.
@@ -224,27 +216,12 @@ class CssInliner extends AbstractHtmlProcessor
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
-        $this->postProcess($xPath);
 
         $this->removeImportantAnnotationFromAllInlineStyles($xPath);
 
         $this->copyUninlineableCssToStyleNode($xPath, $cssRules['uninlineable']);
 
         return $this;
-    }
-
-    /**
-     * Applies some optional post-processing to the HTML in the DOM document.
-     *
-     * @param \DOMXPath $xPath
-     *
-     * @return void
-     */
-    private function postProcess(\DOMXPath $xPath)
-    {
-        if ($this->shouldRemoveInvisibleNodes) {
-            $this->removeInvisibleNodes($xPath);
-        }
     }
 
     /**
@@ -430,18 +407,6 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Disables the removal of elements with `display: none` properties.
-     *
-     * @return void
-     *
-     * @deprecated will be removed in Emogrifier 3.0, use the HtmlPruner class instead
-     */
-    public function disableInvisibleNodeRemoval()
-    {
-        $this->shouldRemoveInvisibleNodes = false;
-    }
-
-    /**
      * Clears all caches.
      *
      * @return void
@@ -550,36 +515,6 @@ class CssInliner extends AbstractHtmlProcessor
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
-        }
-    }
-
-    /**
-     * This removes styles from your email that contain display:none.
-     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
-     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
-     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
-     * to lowercase.
-     *
-     * @param \DOMXPath $xPath
-     *
-     * @return void
-     */
-    private function removeInvisibleNodes(\DOMXPath $xPath)
-    {
-        $nodesWithStyleDisplayNone = $xPath->query(
-            '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]'
-        );
-        if ($nodesWithStyleDisplayNone->length === 0) {
-            return;
-        }
-
-        // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
-        // we don't try to call removeChild on a nonexistent child node
-        /** @var \DOMNode $node */
-        foreach ($nodesWithStyleDisplayNone as $node) {
-            if ($node->parentNode && \is_callable([$node->parentNode, 'removeChild'])) {
-                $node->parentNode->removeChild($node);
-            }
         }
     }
 
