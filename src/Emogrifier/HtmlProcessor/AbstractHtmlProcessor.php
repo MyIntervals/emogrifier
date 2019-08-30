@@ -139,7 +139,7 @@ abstract class AbstractHtmlProcessor
         $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
-        return \str_replace(['<body>', '</body>'], '', $bodyNodeHtml);
+        return \preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
     }
 
     /**

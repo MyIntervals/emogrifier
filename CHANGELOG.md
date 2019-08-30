@@ -28,6 +28,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Remove opening `<body>` tag from `body` content when element has attribute(s)
+  ([#677](https://github.com/MyIntervals/emogrifier/issues/677),
+  [#683](https://github.com/MyIntervals/emogrifier/pull/683))
 - Keep development files out of the Composer packages
   ([#678](https://github.com/MyIntervals/emogrifier/pull/678))
 - Call all static methods statically in `CssConcatenator`
