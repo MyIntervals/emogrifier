@@ -26,6 +26,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Deprecated
 
 ### Removed
+- Drop the removal of unprocessable tags from `CssInliner`
+  ([#685](https://github.com/MyIntervals/emogrifier/pull/685))
 - Drop the removal of invisible nodes from `CssInliner`
   ([#684](https://github.com/MyIntervals/emogrifier/pull/684))
 

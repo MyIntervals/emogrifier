@@ -98,7 +98,7 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
      *
      * @dataProvider wbrTagDataProvider
      */
-    public function inlineCssByDefaultKeepsWbrTag($html)
+    public function inlineCssKeepsWbrTag($html)
     {
         $subject = $this->buildDebugSubject($html);
 
@@ -108,64 +108,6 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
         $expectedWbrTagCount = \substr_count($html, '<wbr');
         $resultWbrTagCount = \substr_count($result, '<wbr');
         self::assertSame($expectedWbrTagCount, $resultWbrTagCount);
-    }
-
-    /**
-     * @test
-     *
-     * @param string $html
-     *
-     * @dataProvider wbrTagDataProvider
-     */
-    public function inlineCssAfterAddUnprocessableTagRemovesWbrTag($html)
-    {
-        $subject = $this->buildDebugSubject($html);
-        $subject->addUnprocessableHtmlTag('wbr');
-
-        $subject->inlineCss('');
-
-        $result = $subject->render();
-        self::assertNotContains('<wbr', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function addUnprocessableTagRemovesEmptyTag()
-    {
-        $subject = $this->buildDebugSubject('<body><p></p></body>');
-
-        $subject->addUnprocessableHtmlTag('p');
-
-        $result = $subject->inlineCss('')->render();
-        self::assertNotContains('<p>', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function addUnprocessableTagNotRemovesNonEmptyTag()
-    {
-        $subject = $this->buildDebugSubject('<body><p>foobar</p></body>');
-
-        $subject->addUnprocessableHtmlTag('p');
-
-        $result = $subject->inlineCss('')->render();
-        self::assertContains('<p>', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function removeUnprocessableHtmlTagKeepsTagAgainAgain()
-    {
-        $subject = $this->buildDebugSubject('<body><p></p></body>');
-
-        $subject->addUnprocessableHtmlTag('p');
-        $subject->removeUnprocessableHtmlTag('p');
-
-        $result = $subject->inlineCss('')->render();
-        self::assertContains('<p>', $result);
     }
 
     /**

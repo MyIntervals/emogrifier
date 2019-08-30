@@ -60,11 +60,6 @@ class CssInliner extends AbstractHtmlProcessor
     private $excludedSelectors = [];
 
     /**
-     * @var string[]
-     */
-    private $unprocessableHtmlTags = [];
-
-    /**
      * @var bool[]
      */
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
@@ -181,7 +176,6 @@ class CssInliner extends AbstractHtmlProcessor
         $this->purgeVisitedNodes();
 
         $xPath = new \DOMXPath($this->domDocument);
-        $this->removeUnprocessableTags();
         $this->normalizeStyleAttributesOfAllNodes($xPath);
 
         $combinedCss = $css;
@@ -430,38 +424,6 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $this->visitedNodes = [];
         $this->styleAttributesForNodes = [];
-    }
-
-    /**
-     * Marks a tag for removal.
-     *
-     * There are some HTML tags that DOMDocument cannot process, and it will throw an error if it encounters them.
-     * In particular, DOMDocument will complain if you try to use HTML5 tags in an XHTML document.
-     *
-     * Note: The tags will not be removed if they have any content.
-     *
-     * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
-     */
-    public function addUnprocessableHtmlTag($tagName)
-    {
-        $this->unprocessableHtmlTags[] = $tagName;
-    }
-
-    /**
-     * Drops a tag from the removal list.
-     *
-     * @param string $tagName the tag name, e.g., "p"
-     *
-     * @return void
-     */
-    public function removeUnprocessableHtmlTag($tagName)
-    {
-        $key = \array_search($tagName, $this->unprocessableHtmlTags, true);
-        if ($key !== false) {
-            unset($this->unprocessableHtmlTags[$key]);
-        }
     }
 
     /**
@@ -887,29 +849,6 @@ class CssInliner extends AbstractHtmlProcessor
             }
         }
         return $splitCss;
-    }
-
-    /**
-     * Removes empty unprocessable tags from the DOM document.
-     *
-     * @return void
-     */
-    private function removeUnprocessableTags()
-    {
-        foreach ($this->unprocessableHtmlTags as $tagName) {
-            // Deleting nodes from a 'live' NodeList invalidates iteration on it, so a copy must be made to iterate.
-            $nodes = [];
-            foreach ($this->domDocument->getElementsByTagName($tagName) as $node) {
-                $nodes[] = $node;
-            }
-            /** @var \DOMNode $node */
-            foreach ($nodes as $node) {
-                $hasContent = $node->hasChildNodes() || $node->hasChildNodes();
-                if (!$hasContent) {
-                    $node->parentNode->removeChild($node);
-                }
-            }
-        }
     }
 
     /**
