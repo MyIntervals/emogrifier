@@ -82,6 +82,6 @@ class HtmlPrunerTest extends \PHPUnit_Framework_TestCase
 
         $subject->removeInvisibleNodes();
 
-        self::assertNotContains('<div>', $subject->render());
+        self::assertNotContains('<div', $subject->render());
     }
 }
