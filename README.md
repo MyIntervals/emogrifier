@@ -245,8 +245,7 @@ The `HtmlNormalizer` class normalizes the given HTML in the following ways:
 The class can be used like this:
 
 ```php
-$normalizer = new \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer($rawHtml);
-$cleanHtml = $normalizer->render();
+$cleanHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer::fromHtml($rawHtml)->render();
 ```
 
 ### Converting CSS styles to visual HTML attributes
@@ -259,7 +258,14 @@ will be converted to `width="100"`.
 The class can be used like this:
 
 ```php
-$converter = new \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter($rawHtml);
+$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromHtml($rawHtml);
+$visualHtml = $converter->convertCssToVisualAttributes()->render();
+```
+
+You can also have the `CssToAttributeConverter` work on a `DOMDocument`:
+
+```php
+$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument($domDocument);
 $visualHtml = $converter->convertCssToVisualAttributes()->render();
 ```
 
@@ -267,9 +273,24 @@ $visualHtml = $converter->convertCssToVisualAttributes()->render();
 
 Currently, a refactoring effort is underway, aiming towards replacing the
 grown-over-time `Emogrifier` class with the new `CssInliner` class and moving
-additional HTML processing into separate `CssProcessor` classes (which will
-inherit from `AbstractHtmlProcessor`). You can try the new classes, but be
-aware that the APIs of the new classes still are subject to change. 
+additional HTML processing into separate `CssProcessor` classes (which
+inherits from `AbstractHtmlProcessor`). You can try the new classes, but be
+aware that the APIs of the new classes still are subject to change before
+version 3.0.0.
+
+This is how to use the new `CssInliner`:
+
+```php
+$visualHtml = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->render();
+```
+
+You can also use the `DOMDocument` created by `CssInliner` to process it further:
+
+```php
+$domDocument = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
+$prunedHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($domDocument)
+  ->removeInvisibleNodes->render();
+```
 
 ## Steps to release a new version
 
