@@ -4,13 +4,14 @@ namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class CssToAttributeConverterTest extends \PHPUnit_Framework_TestCase
+class CssToAttributeConverterTest extends TestCase
 {
     /**
      * @test

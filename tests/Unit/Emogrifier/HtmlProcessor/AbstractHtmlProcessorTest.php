@@ -4,13 +4,14 @@ namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Tests\Unit\Emogrifier\HtmlProcessor\Fixtures\TestingHtmlProcessor;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
+class AbstractHtmlProcessorTest extends TestCase
 {
     /**
      * @test
@@ -108,7 +109,6 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      *
      * @param mixed $html
      *
@@ -116,6 +116,8 @@ class AbstractHtmlProcessorTest extends \PHPUnit_Framework_TestCase
      */
     public function fromHtmlWithNoHtmlDataThrowsException($html)
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         TestingHtmlProcessor::fromHtml($html);
     }
 

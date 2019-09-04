@@ -3,13 +3,14 @@
 namespace Pelago\Tests\Unit\Support\Traits;
 
 use Pelago\Tests\Support\Traits\AssertCss;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class AssertCssTest extends \PHPUnit_Framework_TestCase
+class AssertCssTest extends TestCase
 {
     use AssertCss;
 
@@ -181,11 +182,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleNotFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssFailsTestIfNeedleNotFound($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCss($needle, $haystack);
     }
 
@@ -209,11 +210,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertNotContainsCssFailsTestIfNeedleFound($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertNotContainsCss($needle, $haystack);
     }
 
@@ -237,11 +238,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCssCount(0, $needle, $haystack);
     }
 
@@ -265,11 +266,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleNotFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCssCount(1, $needle, $haystack);
     }
 
@@ -280,11 +281,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCssCount(1, $needle, $haystack . $haystack);
     }
 
@@ -308,11 +309,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleNotFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCssCount(2, $needle, $haystack);
     }
 
@@ -323,11 +324,11 @@ class AssertCssTest extends \PHPUnit_Framework_TestCase
      * @param string $haystack
      *
      * @dataProvider needleFoundDataProvider
-     *
-     * @expectedException \PHPUnit_Framework_ExpectationFailedException
      */
     public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce($needle, $haystack)
     {
+        $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
+
         self::assertContainsCssCount(2, $needle, $haystack);
     }
 }

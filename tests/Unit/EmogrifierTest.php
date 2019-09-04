@@ -4,6 +4,7 @@ namespace Pelago\Tests\Unit;
 
 use Pelago\Emogrifier;
 use Pelago\Tests\Support\Traits\AssertCss;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
@@ -11,7 +12,7 @@ use Pelago\Tests\Support\Traits\AssertCss;
  * @author Oliver Klee <github@oliverklee.de>
  * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
-class EmogrifierTest extends \PHPUnit_Framework_TestCase
+class EmogrifierTest extends TestCase
 {
     use AssertCss;
 
@@ -79,11 +80,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \BadMethodCallException
      */
     public function emogrifyForNoDataSetThrowsException()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $this->subject->emogrify();
     }
 
@@ -103,23 +104,25 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     * @expectedException \InvalidArgumentException
      *
      * @param mixed $html
+     *
      * @dataProvider nonHtmlDataProvider
      */
     public function setHtmlNoHtmlDataThrowsException($html)
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->subject->setHtml($html);
     }
 
     /**
      * @test
-     *
-     * @expectedException \BadMethodCallException
      */
     public function emogrifyBodyContentForNoDataSetThrowsException()
     {
+        $this->expectException(\BadMethodCallException::class);
+
         $this->subject->emogrifyBodyContent();
     }
 
@@ -1241,11 +1244,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function emogrifyInDebugModeForInvalidCssSelectorThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->subject->setDebug(true);
 
         $this->subject->setHtml(
@@ -2330,12 +2333,12 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
             ],
             '<picture> with <source> and <img>' => [
                 '<picture><source srcset="https://example.com/flower-800x600.jpeg" media="(min-width: 600px)"/>'
-                    . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
+                . '<img src="https://example.com/flower-400x300.jpeg"/></picture>',
                 'source',
             ],
             '<video> with <track>' => [
                 '<video controls width="250" src="https://example.com/flower.mp4">'
-                    . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
+                . '<track default kind="captions" srclang="en" src="https://example.com/flower.vtt"/></video>',
                 'track',
             ],
         ];
@@ -2842,11 +2845,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function emogrifyInDebugModeForInvalidExcludedSelectorThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->subject->setDebug(true);
 
         $this->subject->setHtml('<html></html>');
@@ -3322,11 +3325,11 @@ class EmogrifierTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \InvalidArgumentException
      */
     public function emogrifyInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
+        $this->expectException(\InvalidArgumentException::class);
+
         $this->subject->setDebug(true);
 
         $this->subject->setHtml('<html></html>');

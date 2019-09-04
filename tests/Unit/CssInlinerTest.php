@@ -5,6 +5,8 @@ namespace Pelago\Emogrifer\Tests\Unit;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Tests\Support\Traits\AssertCss;
+use PHPUnit\Framework\TestCase;
+use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 
 /**
  * Test case.
@@ -12,7 +14,7 @@ use Pelago\Tests\Support\Traits\AssertCss;
  * @author Oliver Klee <github@oliverklee.de>
  * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
-class CssInlinerTest extends \PHPUnit_Framework_TestCase
+class CssInlinerTest extends TestCase
 {
     use AssertCss;
 
@@ -913,11 +915,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
     public function inlineCssInDebugModeForInvalidCssSelectorThrowsException()
     {
+        $this->expectException(SyntaxErrorException::class);
+
         $subject = CssInliner::fromHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
         );
@@ -2152,11 +2154,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
     public function inlineCssInDebugModeForInvalidExcludedSelectorThrowsException()
     {
+        $this->expectException(SyntaxErrorException::class);
+
         $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(true);
 
@@ -2409,11 +2411,11 @@ class CssInlinerTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @test
-     *
-     * @expectedException \Symfony\Component\CssSelector\Exception\SyntaxErrorException
      */
     public function inlineCssInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
     {
+        $this->expectException(SyntaxErrorException::class);
+
         $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(true);
 

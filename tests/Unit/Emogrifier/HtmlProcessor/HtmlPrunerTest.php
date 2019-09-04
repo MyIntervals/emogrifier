@@ -4,13 +4,14 @@ namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class HtmlPrunerTest extends \PHPUnit_Framework_TestCase
+class HtmlPrunerTest extends TestCase
 {
     /**
      * @test
