@@ -10,6 +10,8 @@ return \PhpCsFixer\Config::create()
         [
             // copied from the TYPO3 Core
             '@PSR2' => true,
+            '@PHP56Migration' => true,
+            '@PHP56Migration:risky' => true,
             '@DoctrineAnnotation' => true,
             'no_leading_import_slash' => true,
             'no_trailing_comma_in_singleline_array' => true,
