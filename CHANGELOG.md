@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 2.2.0
+
+### Added
 - Add a `HtmlPruner` class
   ([#679](https://github.com/MyIntervals/emogrifier/pull/679))
 - Add `AbstractHtmlProcessor::fromDomDocument`
@@ -22,8 +34,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#660](https://github.com/MyIntervals/emogrifier/pull/660))
 - Separate `CssInliner::inlineCss` and the rendering
   ([#654](https://github.com/MyIntervals/emogrifier/pull/654))
-
-### Deprecated
 
 ### Removed
 - Drop the removal of unprocessable tags from `CssInliner`

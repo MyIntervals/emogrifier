@@ -141,13 +141,13 @@ curl -s https://getcomposer.org/installer | php
 Run the following command for a local installation:
 
 ```bash
-php composer.phar require pelago/emogrifier:^2.1.0
+php composer.phar require pelago/emogrifier:^2.2
 ```
 
 Or for a global installation, run the following command:
 
 ```bash
-composer require pelago/emogrifier:^2.1.0
+composer require pelago/emogrifier:^2.2
 ```
 
 You can also add follow lines to your `composer.json` and run the
@@ -155,7 +155,7 @@ You can also add follow lines to your `composer.json` and run the
 
 ```json
 "require": {
-  "pelago/emogrifier": "^2.1.0"
+  "pelago/emogrifier": "^2.2"
 }
 ```
 
