@@ -4,13 +4,14 @@ namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class HtmlNormalizerTest extends \PHPUnit_Framework_TestCase
+class HtmlNormalizerTest extends TestCase
 {
     /**
      * @test

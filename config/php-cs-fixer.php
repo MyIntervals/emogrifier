@@ -12,6 +12,7 @@ return \PhpCsFixer\Config::create()
             '@PSR2' => true,
             '@PHP56Migration' => true,
             '@PHP56Migration:risky' => true,
+            '@PHPUnit57Migration:risky' => true,
             '@DoctrineAnnotation' => true,
             'no_leading_import_slash' => true,
             'no_trailing_comma_in_singleline_array' => true,

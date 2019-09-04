@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Update the development dependencies
+  ([#691](https://github.com/MyIntervals/emogrifier/pull/691))
 
 ### Deprecated
 

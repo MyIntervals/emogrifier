@@ -3,13 +3,14 @@
 namespace Pelago\Tests\Unit\Emogrifier;
 
 use Pelago\Emogrifier\CssConcatenator;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Test case.
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class CssConcatenatorTest extends \PHPUnit_Framework_TestCase
+class CssConcatenatorTest extends TestCase
 {
     /**
      * @var CssConcatenator
