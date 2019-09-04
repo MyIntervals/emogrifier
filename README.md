@@ -110,11 +110,6 @@ calling the `emogrify` method:
   preserves all of the "style" attributes on tags in the HTML you pass to it.
   However if you want to discard all existing inline styles in the HTML before
   the CSS is applied, you should use this option.
-* `$emogrifier->disableInvisibleNodeRemoval()` - By default, Emogrifier removes
-  elements from the DOM that have the style attribute `display: none;`.  If
-  you would like to keep invisible elements in the DOM, use this option.
-  Note: This option will be removed in Emogrifier 3.0. HTML tags with
-  `display: none;` then will always be retained.
 * `$emogrifier->addAllowedMediaType(string $mediaName)` - By default, Emogrifier
   will keep only media types `all`, `screen` and `print`. If you want to keep
   some others, you can use this method to define them.
@@ -122,12 +117,6 @@ calling the `emogrify` method:
   method to remove media types that Emogrifier keeps.
 * `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
   being affected by emogrification.
-* `$emogrifier->enableCssToHtmlMapping()` - Some email clients don't support CSS
-  well, even if inline and prefer HTML attributes. This function allows you to
-  put properties such as height, width, background color and font color in your
-  CSS while the transformed content will have all the available HTML
-  attributes set. This option will be removed in Emogrifier 3.0. Please use the
-  `CssToAttributeConverter` class instead.
 
 ## Installing with Composer
 

@@ -171,14 +171,6 @@ class Emogrifier
     private $isStyleBlocksParsingEnabled = true;
 
     /**
-     * Determines whether elements with the `display: none` property are
-     * removed from the DOM.
-     *
-     * @var bool
-     */
-    private $shouldRemoveInvisibleNodes = true;
-
-    /**
      * For calculating selector precedence order.
      * Keys are a regular expression part to match before a CSS name.
      * Values are a multiplier factor per match to weight specificity.
@@ -229,14 +221,6 @@ class Emogrifier
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w\\-_\\s\\/]+)[\'"]?\\]/'
         => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
     ];
-
-    /**
-     * Determines whether CSS styles that have an equivalent HTML attribute
-     * should be mapped and attached to those elements.
-     *
-     * @var bool
-     */
-    private $shouldMapCssToHtml = false;
 
     /**
      * This multi-level array contains simple mappings of CSS properties to
@@ -547,43 +531,12 @@ class Emogrifier
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
-        $this->postProcess();
 
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->copyUninlineableCssToStyleNode($cssRules['uninlineable']);
 
         \restore_error_handler();
-    }
-
-    /**
-     * Applies some optional post-processing to the HTML in the DOM document.
-     *
-     * @return void
-     */
-    private function postProcess()
-    {
-        if ($this->shouldMapCssToHtml) {
-            $this->mapAllInlineStylesToHtmlAttributes();
-        }
-        if ($this->shouldRemoveInvisibleNodes) {
-            $this->removeInvisibleNodes();
-        }
-    }
-
-    /**
-     * Searches for all nodes with a style attribute, transforms the CSS found
-     * to HTML attributes and adds those attributes to each node.
-     *
-     * @return void
-     */
-    private function mapAllInlineStylesToHtmlAttributes()
-    {
-        /** @var \DOMElement $node */
-        foreach ($this->getAllNodesWithStyleAttribute() as $node) {
-            $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
-            $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
-        }
     }
 
     /**
@@ -972,31 +925,6 @@ class Emogrifier
     }
 
     /**
-     * Disables the removal of elements with `display: none` properties.
-     *
-     * @deprecated will be removed in Emogrifier 3.0
-     *
-     * @return void
-     */
-    public function disableInvisibleNodeRemoval()
-    {
-        $this->shouldRemoveInvisibleNodes = false;
-    }
-
-    /**
-     * Enables the attachment/override of HTML attributes for which a
-     * corresponding CSS property has been set.
-     *
-     * @deprecated will be removed in Emogrifier 3.0, use the CssToAttributeConverter instead
-     *
-     * @return void
-     */
-    public function enableCssToHtmlMapping()
-    {
-        $this->shouldMapCssToHtml = true;
-    }
-
-    /**
      * Clears all caches.
      *
      * @return void
@@ -1106,34 +1034,6 @@ class Emogrifier
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
-        }
-    }
-
-    /**
-     * This removes styles from your email that contain display:none.
-     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
-     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
-     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
-     * to lowercase.
-     *
-     * @return void
-     */
-    private function removeInvisibleNodes()
-    {
-        $nodesWithStyleDisplayNone = $this->xPath->query(
-            '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]'
-        );
-        if ($nodesWithStyleDisplayNone->length === 0) {
-            return;
-        }
-
-        // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
-        // we don't try to call removeChild on a nonexistent child node
-        /** @var \DOMNode $node */
-        foreach ($nodesWithStyleDisplayNone as $node) {
-            if ($node->parentNode && \is_callable([$node->parentNode, 'removeChild'])) {
-                $node->parentNode->removeChild($node);
-            }
         }
     }
 

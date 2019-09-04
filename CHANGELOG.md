@@ -14,6 +14,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Deprecated
 
 ### Removed
+- Drop `enableCssToHtmlMapping` and `disableInvisibleNodeRemoval`
+  ([#692](https://github.com/MyIntervals/emogrifier/pull/692))
 - Drop support for PHP 5.5
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
