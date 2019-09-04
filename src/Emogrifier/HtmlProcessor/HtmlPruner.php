@@ -36,7 +36,7 @@ class HtmlPruner extends AbstractHtmlProcessor
         /** @var \DOMNode $node */
         foreach ($nodesWithStyleDisplayNone as $node) {
             $parentNode = $node->parentNode;
-            if ($parentNode !== null && \is_callable([$parentNode, 'removeChild'])) {
+            if ($parentNode !== null) {
                 $parentNode->removeChild($node);
             }
         }

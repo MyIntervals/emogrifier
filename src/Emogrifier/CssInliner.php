@@ -294,51 +294,53 @@ class CssInliner extends AbstractHtmlProcessor
     private function parseCssRules($css)
     {
         $cssKey = \md5($css);
-        if (!isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
-            $matches = $this->getCssRuleMatches($css);
-
-            $cssRules = [
-                'inlineable' => [],
-                'uninlineable' => [],
-            ];
-            /** @var string[][] $matches */
-            /** @var string[] $cssRule */
-            foreach ($matches as $key => $cssRule) {
-                $cssDeclaration = \trim($cssRule['declarations']);
-                if ($cssDeclaration === '') {
-                    continue;
-                }
-
-                $selectors = \explode(',', $cssRule['selectors']);
-                foreach ($selectors as $selector) {
-                    // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
-                    // only allow structural pseudo-classes
-                    $hasPseudoElement = \strpos($selector, '::') !== false;
-                    $hasUnsupportedPseudoClass = (bool)\preg_match(
-                        '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
-                        $selector
-                    );
-                    $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
-
-                    $parsedCssRule = [
-                        'media' => $cssRule['media'],
-                        'selector' => \trim($selector),
-                        'hasUnmatchablePseudo' => $hasUnmatchablePseudo,
-                        'declarationsBlock' => $cssDeclaration,
-                        // keep track of where it appears in the file, since order is important
-                        'line' => $key,
-                    ];
-                    $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlineable' : 'uninlineable';
-                    $cssRules[$ruleType][] = $parsedCssRule;
-                }
-            }
-
-            \usort($cssRules['inlineable'], [$this, 'sortBySelectorPrecedence']);
-
-            $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
+        if (isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
+            return $this->caches[static::CACHE_KEY_CSS][$cssKey];
         }
 
-        return $this->caches[static::CACHE_KEY_CSS][$cssKey];
+        $matches = $this->getCssRuleMatches($css);
+
+        $cssRules = [
+            'inlineable' => [],
+            'uninlineable' => [],
+        ];
+        /** @var string[][] $matches */
+        /** @var string[] $cssRule */
+        foreach ($matches as $key => $cssRule) {
+            $cssDeclaration = \trim($cssRule['declarations']);
+            if ($cssDeclaration === '') {
+                continue;
+            }
+
+            $selectors = \explode(',', $cssRule['selectors']);
+            foreach ($selectors as $selector) {
+                // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
+                // only allow structural pseudo-classes
+                $hasPseudoElement = \strpos($selector, '::') !== false;
+                $hasUnsupportedPseudoClass = (bool)\preg_match(
+                    '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
+                    $selector
+                );
+                $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
+
+                $parsedCssRule = [
+                    'media' => $cssRule['media'],
+                    'selector' => \trim($selector),
+                    'hasUnmatchablePseudo' => $hasUnmatchablePseudo,
+                    'declarationsBlock' => $cssDeclaration,
+                    // keep track of where it appears in the file, since order is important
+                    'line' => $key,
+                ];
+                $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlineable' : 'uninlineable';
+                $cssRules[$ruleType][] = $parsedCssRule;
+            }
+        }
+
+        \usort($cssRules['inlineable'], [$this, 'sortBySelectorPrecedence']);
+
+        $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
+
+        return $cssRules;
     }
 
     /**
@@ -727,7 +729,6 @@ class CssInliner extends AbstractHtmlProcessor
     private function getCssFromAllStyleNodes()
     {
         $styleNodes = $this->xPath->query('//style');
-
         if ($styleNodes === false) {
             return '';
         }
@@ -866,20 +867,22 @@ class CssInliner extends AbstractHtmlProcessor
     private function getCssSelectorPrecedence($selector)
     {
         $selectorKey = \md5($selector);
-        if (!isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
-            $precedence = 0;
-            foreach ($this->selectorPrecedenceMatchers as $matcher => $value) {
-                if (\trim($selector) === '') {
-                    break;
-                }
-                $number = 0;
-                $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
-                $precedence += ($value * $number);
-            }
-            $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
+        if (isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
+            return $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey];
         }
 
-        return $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey];
+        $precedence = 0;
+        foreach ($this->selectorPrecedenceMatchers as $matcher => $value) {
+            if (\trim($selector) === '') {
+                break;
+            }
+            $number = 0;
+            $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
+            $precedence += ($value * $number);
+        }
+        $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
+
+        return $precedence;
     }
 
     /**

@@ -174,13 +174,12 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         $mapping = $this->cssToHtmlMap[$property];
         $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, $mapping['nodes'], true);
         $valuesMatch = !isset($mapping['values']) || \in_array($value, $mapping['values'], true);
-        if (!$nodesMatch || !$valuesMatch) {
-            return false;
+        $canBeMapped = $nodesMatch && $valuesMatch;
+        if ($canBeMapped) {
+            $node->setAttribute($mapping['attribute'], $value);
         }
 
-        $node->setAttribute($mapping['attribute'], $value);
-
-        return true;
+        return $canBeMapped;
     }
 
     /**
@@ -224,10 +223,12 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         // parse out the color, if any
         $styles = \explode(' ', $value);
         $first = $styles[0];
-        if (!\is_numeric($first[0]) && \strpos($first, 'url') !== 0) {
-            // as this is not a position or image, assume it's a color
-            $node->setAttribute('bgcolor', $first);
+        if (\is_numeric($first[0]) || \strpos($first, 'url') === 0) {
+            return;
         }
+
+        // as this is not a position or image, assume it's a color
+        $node->setAttribute('bgcolor', $first);
     }
 
     /**
