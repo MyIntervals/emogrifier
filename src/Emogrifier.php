@@ -171,14 +171,6 @@ class Emogrifier
     private $isStyleBlocksParsingEnabled = true;
 
     /**
-     * Determines whether elements with the `display: none` property are
-     * removed from the DOM.
-     *
-     * @var bool
-     */
-    private $shouldRemoveInvisibleNodes = true;
-
-    /**
      * For calculating selector precedence order.
      * Keys are a regular expression part to match before a CSS name.
      * Values are a multiplier factor per match to weight specificity.
@@ -228,42 +220,6 @@ class Emogrifier
         // type and attribute value with $ (suffix match)
         '/([\\w\\*]+)\\[(\\w+)[\\s]*\\$\\=[\\s]*[\'"]?([\\w\\-_\\s\\/]+)[\'"]?\\]/'
         => '\\1[substring(@\\2, string-length(@\\2) - string-length("\\3") + 1) = "\\3"]',
-    ];
-
-    /**
-     * Determines whether CSS styles that have an equivalent HTML attribute
-     * should be mapped and attached to those elements.
-     *
-     * @var bool
-     */
-    private $shouldMapCssToHtml = false;
-
-    /**
-     * This multi-level array contains simple mappings of CSS properties to
-     * HTML attributes. If a mapping only applies to certain HTML nodes or
-     * only for certain values, the mapping is an object with a whitelist
-     * of nodes and values.
-     *
-     * @var mixed[][]
-     */
-    private $cssToHtmlMap = [
-        'background-color' => [
-            'attribute' => 'bgcolor',
-        ],
-        'text-align' => [
-            'attribute' => 'align',
-            'nodes' => ['p', 'div', 'td'],
-            'values' => ['left', 'right', 'center', 'justify'],
-        ],
-        'float' => [
-            'attribute' => 'align',
-            'nodes' => ['table', 'img'],
-            'values' => ['left', 'right'],
-        ],
-        'border-spacing' => [
-            'attribute' => 'cellspacing',
-            'nodes' => ['table'],
-        ],
     ];
 
     /**
@@ -547,43 +503,12 @@ class Emogrifier
         if ($this->isInlineStyleAttributesParsingEnabled) {
             $this->fillStyleAttributesWithMergedStyles();
         }
-        $this->postProcess();
 
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->copyUninlineableCssToStyleNode($cssRules['uninlineable']);
 
         \restore_error_handler();
-    }
-
-    /**
-     * Applies some optional post-processing to the HTML in the DOM document.
-     *
-     * @return void
-     */
-    private function postProcess()
-    {
-        if ($this->shouldMapCssToHtml) {
-            $this->mapAllInlineStylesToHtmlAttributes();
-        }
-        if ($this->shouldRemoveInvisibleNodes) {
-            $this->removeInvisibleNodes();
-        }
-    }
-
-    /**
-     * Searches for all nodes with a style attribute, transforms the CSS found
-     * to HTML attributes and adds those attributes to each node.
-     *
-     * @return void
-     */
-    private function mapAllInlineStylesToHtmlAttributes()
-    {
-        /** @var \DOMElement $node */
-        foreach ($this->getAllNodesWithStyleAttribute() as $node) {
-            $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
-            $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
-        }
     }
 
     /**
@@ -641,213 +566,6 @@ class Emogrifier
     private function getAllNodesWithStyleAttribute()
     {
         return $this->xPath->query('//*[@style]');
-    }
-
-    /**
-     * Applies $styles to $node.
-     *
-     * This method maps CSS styles to HTML attributes and adds those to the
-     * node.
-     *
-     * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
-     * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
-     */
-    private function mapCssToHtmlAttributes(array $styles, \DOMElement $node)
-    {
-        foreach ($styles as $property => $value) {
-            // Strip !important indicator
-            $value = \trim(\str_replace('!important', '', $value));
-            $this->mapCssToHtmlAttribute($property, $value, $node);
-        }
-    }
-
-    /**
-     * Tries to apply the CSS style to $node as an attribute.
-     *
-     * This method maps a CSS rule to HTML attributes and adds those to the node.
-     *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
-     */
-    private function mapCssToHtmlAttribute($property, $value, \DOMElement $node)
-    {
-        if (!$this->mapSimpleCssProperty($property, $value, $node)) {
-            $this->mapComplexCssProperty($property, $value, $node);
-        }
-    }
-
-    /**
-     * Looks up the CSS property in the mapping table and maps it if it matches the conditions.
-     *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
-     *
-     * @return bool true if the property can be mapped using the simple mapping table
-     */
-    private function mapSimpleCssProperty($property, $value, \DOMElement $node)
-    {
-        if (!isset($this->cssToHtmlMap[$property])) {
-            return false;
-        }
-
-        $mapping = $this->cssToHtmlMap[$property];
-        $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, $mapping['nodes'], true);
-        $valuesMatch = !isset($mapping['values']) || \in_array($value, $mapping['values'], true);
-        if (!$nodesMatch || !$valuesMatch) {
-            return false;
-        }
-
-        $node->setAttribute($mapping['attribute'], $value);
-
-        return true;
-    }
-
-    /**
-     * Maps CSS properties that need special transformation to an HTML attribute.
-     *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
-     */
-    private function mapComplexCssProperty($property, $value, \DOMElement $node)
-    {
-        switch ($property) {
-            case 'background':
-                $this->mapBackgroundProperty($node, $value);
-                break;
-            case 'width':
-                // intentional fall-through
-            case 'height':
-                $this->mapWidthOrHeightProperty($node, $value, $property);
-                break;
-            case 'margin':
-                $this->mapMarginProperty($node, $value);
-                break;
-            case 'border':
-                $this->mapBorderProperty($node, $value);
-                break;
-            default:
-        }
-    }
-
-    /**
-     * Maps the "background" CSS property to visual HTML attributes.
-     *
-     * @param \DOMElement $node node to apply styles to
-     * @param string $value the value of the style rule to map
-     *
-     * @return void
-     */
-    private function mapBackgroundProperty(\DOMElement $node, $value)
-    {
-        // parse out the color, if any
-        $styles = \explode(' ', $value);
-        $first = $styles[0];
-        if (!\is_numeric($first[0]) && \strpos($first, 'url') !== 0) {
-            // as this is not a position or image, assume it's a color
-            $node->setAttribute('bgcolor', $first);
-        }
-    }
-
-    /**
-     * Maps the "width" or "height" CSS properties to visual HTML attributes.
-     *
-     * @param \DOMElement $node node to apply styles to
-     * @param string $value the value of the style rule to map
-     * @param string $property the name of the CSS property to map
-     *
-     * @return void
-     */
-    private function mapWidthOrHeightProperty(\DOMElement $node, $value, $property)
-    {
-        // only parse values in px and %, but not values like "auto"
-        if (\preg_match('/^\\d+(px|%)$/', $value)) {
-            // Remove 'px'. This regex only conserves numbers and %.
-            $number = \preg_replace('/[^0-9.%]/', '', $value);
-            $node->setAttribute($property, $number);
-        }
-    }
-
-    /**
-     * Maps the "margin" CSS property to visual HTML attributes.
-     *
-     * @param \DOMElement $node node to apply styles to
-     * @param string $value the value of the style rule to map
-     *
-     * @return void
-     */
-    private function mapMarginProperty(\DOMElement $node, $value)
-    {
-        if (!$this->isTableOrImageNode($node)) {
-            return;
-        }
-
-        $margins = $this->parseCssShorthandValue($value);
-        if ($margins['left'] === 'auto' && $margins['right'] === 'auto') {
-            $node->setAttribute('align', 'center');
-        }
-    }
-
-    /**
-     * Maps the "border" CSS property to visual HTML attributes.
-     *
-     * @param \DOMElement $node node to apply styles to
-     * @param string $value the value of the style rule to map
-     *
-     * @return void
-     */
-    private function mapBorderProperty(\DOMElement $node, $value)
-    {
-        if (!$this->isTableOrImageNode($node)) {
-            return;
-        }
-
-        if ($value === 'none' || $value === '0') {
-            $node->setAttribute('border', '0');
-        }
-    }
-
-    /**
-     * Checks whether $node is a table or img element.
-     *
-     * @param \DOMElement $node
-     *
-     * @return bool
-     */
-    private function isTableOrImageNode(\DOMElement $node)
-    {
-        return $node->nodeName === 'table' || $node->nodeName === 'img';
-    }
-
-    /**
-     * Parses a shorthand CSS value and splits it into individual values
-     *
-     * @param string $value a string of CSS value with 1, 2, 3 or 4 sizes
-     *                      For example: padding: 0 auto;
-     *                      '0 auto' is split into top: 0, left: auto, bottom: 0,
-     *                      right: auto.
-     *
-     * @return string[] an array of values for top, right, bottom and left (using these as associative array keys)
-     */
-    private function parseCssShorthandValue($value)
-    {
-        $values = \preg_split('/\\s+/', $value);
-
-        $css = [];
-        $css['top'] = $values[0];
-        $css['right'] = (\count($values) > 1) ? $values[1] : $css['top'];
-        $css['bottom'] = (\count($values) > 2) ? $values[2] : $css['top'];
-        $css['left'] = (\count($values) > 3) ? $values[3] : $css['right'];
-
-        return $css;
     }
 
     /**
@@ -972,31 +690,6 @@ class Emogrifier
     }
 
     /**
-     * Disables the removal of elements with `display: none` properties.
-     *
-     * @deprecated will be removed in Emogrifier 3.0
-     *
-     * @return void
-     */
-    public function disableInvisibleNodeRemoval()
-    {
-        $this->shouldRemoveInvisibleNodes = false;
-    }
-
-    /**
-     * Enables the attachment/override of HTML attributes for which a
-     * corresponding CSS property has been set.
-     *
-     * @deprecated will be removed in Emogrifier 3.0, use the CssToAttributeConverter instead
-     *
-     * @return void
-     */
-    public function enableCssToHtmlMapping()
-    {
-        $this->shouldMapCssToHtml = true;
-    }
-
-    /**
      * Clears all caches.
      *
      * @return void
@@ -1106,34 +799,6 @@ class Emogrifier
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
-        }
-    }
-
-    /**
-     * This removes styles from your email that contain display:none.
-     * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
-     * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
-     * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
-     * to lowercase.
-     *
-     * @return void
-     */
-    private function removeInvisibleNodes()
-    {
-        $nodesWithStyleDisplayNone = $this->xPath->query(
-            '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]'
-        );
-        if ($nodesWithStyleDisplayNone->length === 0) {
-            return;
-        }
-
-        // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
-        // we don't try to call removeChild on a nonexistent child node
-        /** @var \DOMNode $node */
-        foreach ($nodesWithStyleDisplayNone as $node) {
-            if ($node->parentNode && \is_callable([$node->parentNode, 'removeChild'])) {
-                $node->parentNode->removeChild($node);
-            }
         }
     }
 
