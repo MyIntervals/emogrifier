@@ -31,12 +31,10 @@ class HtmlPruner extends AbstractHtmlProcessor
             return $this;
         }
 
-        // The checks on parentNode and is_callable below ensure that if we've deleted the parent node,
-        // we don't try to call removeChild on a nonexistent child node.
         /** @var \DOMNode $node */
         foreach ($nodesWithStyleDisplayNone as $node) {
             $parentNode = $node->parentNode;
-            if ($parentNode !== null && \is_callable([$parentNode, 'removeChild'])) {
+            if ($parentNode !== null) {
                 $parentNode->removeChild($node);
             }
         }
