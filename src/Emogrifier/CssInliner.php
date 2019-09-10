@@ -680,26 +680,27 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Helper for `removeUnmatchablePseudoComponents()` to replace/remove a selector `:not` component if its argument
+     * Helps `removeUnmatchablePseudoComponents()` replace or remove a selector `:not(...)` component if its argument
      * contains pseudo-elements or dynamic pseudo-classes.
      *
-     * @param string[] $matches Array of capturing groups matched by the regular expression.
-     *        Index 0 contains the full match ":not(...)", preceded by a whitespace character if present.
-     *        Index 1 contains any preceding whitespace character or an empty string if none present.
-     *        Index 2 contains the `:not` argument with the surrounding brackets (i.e. "(...)").
+     * @param string[] $matches array of elements matched by the regular expression
      *
      * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
      *         whitespace followed by "*", or an empty string if there was no preceding whitespace
      */
     private function replaceUnmatchableNotComponent(array $matches)
     {
-        if (\preg_match(
+        list($notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets) = $matches;
+
+        $hasUnmatchablePseudo = \preg_match(
             '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
-            $matches[2]
-        )) {
-            return $matches[1] !== '' ? $matches[1] . '*' : '';
+            $notArgumentInBrackets
+        );
+
+        if ($hasUnmatchablePseudo) {
+            return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
         } else {
-            return $matches[0];
+            return $notComponentWithAnyPrecedingWhitespace;
         }
     }
 
