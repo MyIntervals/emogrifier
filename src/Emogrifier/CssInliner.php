@@ -665,18 +665,9 @@ class CssInliner extends AbstractHtmlProcessor
     {
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
-        $selectorWithNotsRemoved = \ltrim(\preg_replace_callback(
+        $selectorWithoutNots = \ltrim(\preg_replace_callback(
             '/(\\s?+):not(\\([^\\(\\)]*+(?:(?2)[^\\(\\)]*+)*+\\))/i',
-            static function (array $matches) {
-                if (\preg_match(
-                    '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
-                    $matches[2]
-                )) {
-                    return $matches[1] !== '' ? $matches[1] . '*' : '';
-                } else {
-                    return $matches[0];
-                }
-            },
+            [$this, 'replaceUnmatchableNotComponent'],
             ' ' . $selector
         ));
 
@@ -684,8 +675,32 @@ class CssInliner extends AbstractHtmlProcessor
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],
-            $selectorWithNotsRemoved
+            $selectorWithoutNots
         );
+    }
+
+    /**
+     * Helper for `removeUnmatchablePseudoComponents()` to replace/remove a selector `:not` component if its argument
+     * contains pseudo-elements or dynamic pseudo-classes.
+     *
+     * @param string[] $matches Array of capturing groups matched by the regular expression.
+     *        Index 0 contains the full match ":not(...)", preceded by a whitespace character if present.
+     *        Index 1 contains any preceding whitespace character or an empty string if none present.
+     *        Index 2 contains the `:not` argument with the surrounding brackets (i.e. "(...)").
+     *
+     * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
+     *         whitespace followed by "*", or an empty string if there was no preceding whitespace
+     */
+    private function replaceUnmatchableNotComponent(array $matches)
+    {
+        if (\preg_match(
+            '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
+            $matches[2]
+        )) {
+            return $matches[1] !== '' ? $matches[1] . '*' : '';
+        } else {
+            return $matches[0];
+        }
     }
 
     /**
