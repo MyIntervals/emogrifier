@@ -1563,6 +1563,14 @@ class CssInlinerTest extends TestCase
                 'selectorPseudoComponent' => ':lang(en)',
                 'declarationsBlock' => 'color: green;',
             ],
+            'not with pseudo-class' => [
+                'selectorPseudoComponent' => ':not(:hover)',
+                'declarationsBlock' => 'color: green;',
+            ],
+            'nested not with pseudo-class' => [
+                'selectorPseudoComponent' => ':not(:not(:hover))',
+                'declarationsBlock' => 'color: green;',
+            ],
         ];
 
         $datasets = [];

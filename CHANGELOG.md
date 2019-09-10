@@ -20,6 +20,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Allow `:not(:behavioural-pseudo-class)` in selectors
+  ([#697](https://github.com/MyIntervals/emogrifier/pull/697))
 
 ## 2.2.0
 

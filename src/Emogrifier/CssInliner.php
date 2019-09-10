@@ -654,6 +654,7 @@ class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Removes pseudo-elements and dynamic pseudo-classes from a CSS selector, replacing them with "*" if necessary.
+     * If such a pseudo-component is within the argument of `:not`, the entire `:not` component is removed or replaced.
      *
      * @param string $selector
      *
@@ -662,11 +663,28 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeUnmatchablePseudoComponents($selector)
     {
+        // The regex allows nested brackets via `(?2)`.
+        // A space is temporarily prepended because the callback can't determine if the match was at the very start.
+        $selectorWithNotsRemoved = \ltrim(\preg_replace_callback(
+            '/(\\s?+):not(\\([^\\(\\)]*+(?:(?2)[^\\(\\)]*+)*+\\))/i',
+            static function (array $matches) {
+                if (\preg_match(
+                    '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
+                    $matches[2]
+                )) {
+                    return $matches[1] !== '' ? $matches[1] . '*' : '';
+                } else {
+                    return $matches[0];
+                }
+            },
+            ' ' . $selector
+        ));
+
         $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],
-            $selector
+            $selectorWithNotsRemoved
         );
     }
 
