@@ -24,10 +24,11 @@ class EmogrifierTest extends TestCase
             <body>
                 <p class="p-1"><span>some text</span></p>
                 <p class="p-2"><span title="bonjour">some</span> text</p>
-                <p class="p-3"><span title="buenas dias">some</span> more text</p>
+                <div class="div-3"><span title="buenas dias">some</span> more text</div>
                 <p class="p-4" id="p4"><span title="avez-vous">some</span> more <span id="text">text</span></p>
                 <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                 <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
+                <p class="p-7"></p>
             </body>
         </html>
     ';
@@ -645,12 +646,12 @@ class EmogrifierTest extends TestCase
                 '<span title="title: subtitle; author" style="%1$s">',
             ],
             'adjacent => 2nd of many' => ['p + p { %1$s }', '<p class="p-2" style="%1$s">'],
-            'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-6" style="%1$s">'],
-            'adjacent (without space after +) => last of many' => ['p +p { %1$s }', '<p class="p-6" style="%1$s">'],
-            'adjacent (without space before +) => last of many' => ['p+ p { %1$s }', '<p class="p-6" style="%1$s">'],
+            'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-7" style="%1$s">'],
+            'adjacent (without space after +) => last of many' => ['p +p { %1$s }', '<p class="p-7" style="%1$s">'],
+            'adjacent (without space before +) => last of many' => ['p+ p { %1$s }', '<p class="p-7" style="%1$s">'],
             'adjacent (without space before or after +) => last of many' => [
                 'p+p { %1$s }',
-                '<p class="p-6" style="%1$s">',
+                '<p class="p-7" style="%1$s">',
             ],
             'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
             'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
@@ -707,7 +708,37 @@ class EmogrifierTest extends TestCase
             // broken: first-child => 1st of many
             'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
             // broken: last-child => last of many
-            'type & :last-child => last of many' => ['p:last-child { %1$s }', '<p class="p-6" style="%1$s">'],
+            'type & :last-child => last of many' => ['p:last-child { %1$s }', '<p class="p-7" style="%1$s">'],
+            // broken: nth-child without preceding component - OK if preceded by universal selector
+            ':nth-child(even) => 2nd of many' => ['*:nth-child(even) { %1$s }', '<p class="p-2" style="%1$s">'],
+            ':nth-child(even) => 4th of many' => ['*:nth-child(even) { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
+            ':nth-child(2n) => 2nd of many' => ['*:nth-child(2n) { %1$s }', '<p class="p-2" style="%1$s">'],
+            ':nth-child(2n) => 4th of many' => ['*:nth-child(2n) { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
+            ':nth-child(3) => 3rd of many' => ['*:nth-child(3) { %1$s }', '<div class="div-3" style="%1$s">'],
+            // broken: nth-child(Xn+Y)
+            'type & :nth-child(even) => 2nd of many' => ['p:nth-child(even) { %1$s }', '<p class="p-2" style="%1$s">'],
+            // broken: nth-of-type without preceding type
+            'type & :nth-of-type(even) => 2nd of many of type' => [
+                'p:nth-of-type(even) { %1$s }',
+                '<p class="p-2" style="%1$s">',
+            ],
+            'type & :nth-of-type(even) => 4th of many of type' => [
+                'p:nth-of-type(even) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            'type & :nth-of-type(2n) => 2nd of many of type' => [
+                'p:nth-of-type(2n) { %1$s }',
+                '<p class="p-2" style="%1$s">',
+            ],
+            'type & :nth-of-type(2n) => 4th of many of type' => [
+                'p:nth-of-type(2n) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            'type & :nth-of-type(3) => 3rd of many of type' => [
+                'p:nth-of-type(3) { %1$s }',
+                '<p class="p-4" id="p4" style="%1$s">',
+            ],
+            // broken: nth-of-type(Xn+Y)
             // broken: :not with type => other type
             // broken: :not with class => no class
             // broken: :not with class => other class
@@ -799,9 +830,37 @@ class EmogrifierTest extends TestCase
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
             'type & :first-child => not 2nd of many' => ['p:first-child { %1$s }', '<p class="p-2">'],
-            'type & :first-child => not last of many' => ['p:first-child { %1$s }', '<p class="p-6">'],
+            'type & :first-child => not last of many' => ['p:first-child { %1$s }', '<p class="p-7">'],
             'type & :last-child => not 1st of many' => ['p:last-child { %1$s }', '<p class="p-1">'],
             'type & :last-child => not 2nd of many' => ['p:last-child { %1$s }', '<p class="p-2">'],
+            ':nth-child(even) => not 1st of many' => ['*:nth-child(even) { %1$s }', '<p class="p-1">'],
+            ':nth-child(even) => not 3rd of many' => ['*:nth-child(even) { %1$s }', '<div class="div-3">'],
+            ':nth-child(2n) => not 1st of many' => ['*:nth-child(2n) { %1$s }', '<p class="p-1">'],
+            ':nth-child(2n) => not 3rd of many' => ['*:nth-child(2n) { %1$s }', '<div class="div-3">'],
+            ':nth-child(3) => not 1st of many' => ['*:nth-child(3) { %1$s }', '<p class="p-1">'],
+            ':nth-child(3) => not 2nd of many' => ['*:nth-child(3) { %1$s }', '<p class="p-2">'],
+            ':nth-child(3) => not 4th of many' => ['*:nth-child(3) { %1$s }', '<p class="p-4" id="p4">'],
+            ':nth-child(3) => not 6th of many' => ['*:nth-child(3) { %1$s }', '<p class="p-6">'],
+            'type & :nth-of-type(even) => not 1st of many of type' => [
+                'p:nth-of-type(even) { %1$s }',
+                '<p class="p-1">',
+            ],
+            'type & :nth-of-type(even) => not 3rd of many of type' => [
+                'p:nth-of-type(even) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            'type & :nth-of-type(2n) => not 1st of many of type' => ['p:nth-of-type(2n) { %1$s }', '<p class="p-1">'],
+            'type & :nth-of-type(2n) => not 3rd of many of type' => [
+                'p:nth-of-type(2n) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            'type & :nth-of-type(3) => not 1st of many of type' => ['p:nth-of-type(3) { %1$s }', '<p class="p-1">'],
+            'type & :nth-of-type(3) => not 2nd of many of type' => ['p:nth-of-type(3) { %1$s }', '<p class="p-2">'],
+            'type & :nth-of-type(3) => not 4th of many of type' => [
+                'p:nth-of-type(3) { %1$s }',
+                '<p class="p-5 additional-class">',
+            ],
+            'type & :nth-of-type(3) => not 6th of many of type' => ['p:nth-of-type(3) { %1$s }', '<p class="p-7">'],
             'type & :not with class => not with class' => ['p:not(.p-1) { %1$s }', '<p class="p-1">'],
         ];
     }
