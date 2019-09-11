@@ -77,7 +77,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = CssInliner::fromHtml('<html><p>Hello world!</p></html>');
 
-        $result = $subject->inlineCss('');
+        $result = $subject->inlineCss();
 
         self::assertSame($subject, $result);
     }
@@ -105,7 +105,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject($html);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         $result = $subject->render();
         $expectedWbrTagCount = \substr_count($html, '<wbr');
@@ -916,7 +916,7 @@ class CssInlinerTest extends TestCase
         $styleAttribute = 'style="color: #ccc;"';
         $subject = $this->buildDebugSubject('<html ' . $styleAttribute . '></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains($styleAttribute, $subject->render());
     }
@@ -955,7 +955,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject('<html style="COLOR:#ccc;"></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('style="color: #ccc;"', $subject->render());
     }
@@ -995,7 +995,7 @@ class CssInlinerTest extends TestCase
             '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>'
         );
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
     }
@@ -1007,7 +1007,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css"></style></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotContains('<style', $subject->render());
     }
@@ -1024,7 +1024,7 @@ class CssInlinerTest extends TestCase
         );
         $subject->setDebug(true);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
     }
 
     /**
@@ -1038,7 +1038,7 @@ class CssInlinerTest extends TestCase
         $subject = CssInliner::fromHtml($html);
         $subject->setDebug(false);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         $result = $subject->render();
         self::assertContains('color: red', $result);
@@ -1055,7 +1055,7 @@ class CssInlinerTest extends TestCase
             '<body><p></p></body></html>';
         $subject = CssInliner::fromHtml($html);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         $result = $subject->render();
         self::assertContains('color: red', $result);
@@ -1349,7 +1349,7 @@ class CssInlinerTest extends TestCase
         $html = '<html><head>' . $style . '</head><body></body></html>';
         $subject = $this->buildDebugSubject($html);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertRegExp('/<head>.*<style.*<\\/head>/s', $subject->render());
     }
@@ -1363,7 +1363,7 @@ class CssInlinerTest extends TestCase
         $html = '<html><head>' . $style . '</head><body></body></html>';
         $subject = $this->buildDebugSubject($html);
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotRegExp('/<body>.*<style/s', $subject->render());
     }
@@ -1454,7 +1454,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1><p></p></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
     }
@@ -1536,7 +1536,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotContainsCss($css, $subject->render());
     }
@@ -1552,7 +1552,7 @@ class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotContains('style=', $subject->render());
     }
@@ -1897,7 +1897,7 @@ class CssInlinerTest extends TestCase
             '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>'
         );
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<html style="' . $styleAttributeValue . '">', $subject->render());
     }
@@ -1913,7 +1913,7 @@ class CssInlinerTest extends TestCase
         );
         $subject->disableStyleBlocksParsing();
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotContains('style=', $subject->render());
     }
@@ -1930,7 +1930,7 @@ class CssInlinerTest extends TestCase
         );
         $subject->disableStyleBlocksParsing();
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
     }
@@ -1943,7 +1943,7 @@ class CssInlinerTest extends TestCase
         $subject = $this->buildDebugSubject('<html style="color: #ccc;"></html>');
         $subject->disableInlineStyleAttributesParsing();
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertNotContains('<html style', $subject->render());
     }
@@ -1960,7 +1960,7 @@ class CssInlinerTest extends TestCase
         );
         $subject->disableInlineStyleAttributesParsing();
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
     }
@@ -1977,7 +1977,7 @@ class CssInlinerTest extends TestCase
             '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
         );
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         $result = $subject->render();
         self::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
@@ -2270,7 +2270,7 @@ class CssInlinerTest extends TestCase
         $subject->setDebug(true);
 
         $subject->addExcludedSelector('..p');
-        $subject->inlineCss('');
+        $subject->inlineCss();
     }
 
     /**
@@ -2282,7 +2282,7 @@ class CssInlinerTest extends TestCase
         $subject->setDebug(false);
 
         $subject->addExcludedSelector('..p');
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p class="x"></p>', $subject->render());
     }
@@ -2443,7 +2443,7 @@ class CssInlinerTest extends TestCase
             '<html><head><style>p {padding:10px};</style></head><body><p style="padding-left:20px;"></p></body></html>'
         );
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $subject->render());
     }
@@ -2511,7 +2511,7 @@ class CssInlinerTest extends TestCase
             '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
         );
 
-        $subject->inlineCss('');
+        $subject->inlineCss();
 
         self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $subject->render());
     }

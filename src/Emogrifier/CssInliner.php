@@ -170,7 +170,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @throws SyntaxErrorException
      */
-    public function inlineCss($css)
+    public function inlineCss($css = '')
     {
         $this->clearAllCaches();
         $this->purgeVisitedNodes();
