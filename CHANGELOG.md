@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#698](https://github.com/MyIntervals/emogrifier/pull/698))
 
 ### Changed
+- Make the `$css` parameter of the `inlineCss` method optional
+  ([#700](https://github.com/MyIntervals/emogrifier/pull/700))
 - Update the development dependencies
   ([#691](https://github.com/MyIntervals/emogrifier/pull/691))
 
