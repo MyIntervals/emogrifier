@@ -46,7 +46,7 @@ selectors.
 
 ## Installation
 
-For installing emogrifier, either add pelago/emogrifier to your
+For installing emogrifier, either add `pelago/emogrifier` to your
 project's composer.json, or you can use composer as below:
 
 ```bash
@@ -117,38 +117,6 @@ calling the `emogrify` method:
   method to remove media types that Emogrifier keeps.
 * `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
   being affected by emogrification.
-
-## Installing with Composer
-
-Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally
-or install [Composer](https://getcomposer.org/) globally:
-
-```bash
-curl -s https://getcomposer.org/installer | php
-```
-
-Run the following command for a local installation:
-
-```bash
-php composer.phar require pelago/emogrifier:^2.2
-```
-
-Or for a global installation, run the following command:
-
-```bash
-composer require pelago/emogrifier:^2.2
-```
-
-You can also add follow lines to your `composer.json` and run the
-`composer update` command:
-
-```json
-"require": {
-  "pelago/emogrifier": "^2.2"
-}
-```
-
-See https://getcomposer.org/ for more information and documentation.
 
 ## Supported CSS selectors
 
