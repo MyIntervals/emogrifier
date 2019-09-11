@@ -151,7 +151,7 @@ the complete HTML document, you can use the `emogrifyBodyContent` instead:
 $bodyContent = $emogrifier->emogrifyBodyContent();
 ```
 
-### Options
+#### Options
 
 There are several options that you can set on the Emogrifier object before
 calling the `emogrify` method:
