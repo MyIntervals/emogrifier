@@ -31,7 +31,6 @@ into inline style attributes in your HTML code.
 - [Installation](#installation)
 - [Usage](#usage)
 - [Options](#options)
-- [Installing with Composer](#installing-with-composer)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
 - [Technology preview of new classes](#technology-preview-of-new-classes)
@@ -46,12 +45,14 @@ selectors.
 
 ## Installation
 
-For installing emogrifier, either add `pelago/emogrifier` to your
-project's composer.json, or you can use composer as below:
+For installing emogrifier, either add `pelago/emogrifier` to the `require`
+section in your project's `composer.json`, or you can use composer as below:
 
 ```bash
 composer require pelago/emogrifier
 ```
+
+See https://getcomposer.org/ for more information and documentation.
 
 ## Usage
 
