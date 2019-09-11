@@ -654,6 +654,7 @@ class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Removes pseudo-elements and dynamic pseudo-classes from a CSS selector, replacing them with "*" if necessary.
+     * If such a pseudo-component is within the argument of `:not`, the entire `:not` component is removed or replaced.
      *
      * @param string $selector
      *
@@ -662,12 +663,45 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeUnmatchablePseudoComponents($selector)
     {
+        // The regex allows nested brackets via `(?2)`.
+        // A space is temporarily prepended because the callback can't determine if the match was at the very start.
+        $selectorWithoutNots = \ltrim(\preg_replace_callback(
+            '/(\\s?+):not(\\([^\\(\\)]*+(?:(?2)[^\\(\\)]*+)*+\\))/i',
+            [$this, 'replaceUnmatchableNotComponent'],
+            ' ' . $selector
+        ));
+
         $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],
-            $selector
+            $selectorWithoutNots
         );
+    }
+
+    /**
+     * Helps `removeUnmatchablePseudoComponents()` replace or remove a selector `:not(...)` component if its argument
+     * contains pseudo-elements or dynamic pseudo-classes.
+     *
+     * @param string[] $matches array of elements matched by the regular expression
+     *
+     * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
+     *         whitespace followed by "*", or an empty string if there was no preceding whitespace
+     */
+    private function replaceUnmatchableNotComponent(array $matches)
+    {
+        list($notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets) = $matches;
+
+        $hasUnmatchablePseudo = \preg_match(
+            '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
+            $notArgumentInBrackets
+        );
+
+        if ($hasUnmatchablePseudo) {
+            return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
+        } else {
+            return $notComponentWithAnyPrecedingWhitespace;
+        }
     }
 
     /**
