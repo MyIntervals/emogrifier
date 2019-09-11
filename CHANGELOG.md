@@ -17,6 +17,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#691](https://github.com/MyIntervals/emogrifier/pull/691))
 
 ### Deprecated
+- Deprecate the Emogrifier class
+  ([#701](https://github.com/MyIntervals/emogrifier/pull/701))
 
 ### Removed
 - Drop `enableCssToHtmlMapping` and `disableInvisibleNodeRemoval`

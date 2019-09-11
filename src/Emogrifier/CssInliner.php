@@ -13,8 +13,6 @@ use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
  *
  * For more information, please see the README.md file.
  *
- * @internal This class currently is a new technology preview, and its API is still in flux. Don't use it in production.
- *
  * @author Cameron Brooks
  * @author Jaime Prado
  * @author Oliver Klee <github@oliverklee.de>
