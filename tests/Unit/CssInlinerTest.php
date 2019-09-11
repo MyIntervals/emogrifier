@@ -905,7 +905,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
 
-        self::assertContains('<html style="">', $subject->render());
+        self::assertContains('<html>', $subject->render());
     }
 
     /**

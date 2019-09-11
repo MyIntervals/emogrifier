@@ -1190,7 +1190,7 @@ class EmogrifierTest extends TestCase
 
         $result = $this->subject->emogrify();
 
-        self::assertContains('<html style="">', $result);
+        self::assertContains('<html>', $result);
     }
 
     /**
