@@ -714,6 +714,11 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function copyInlineableCssToStyleAttribute(\DOMElement $node, array $cssRule)
     {
+        $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
+        if ($newStyleDeclarations === []) {
+            return;
+        }
+
         // if it has a style attribute, get it, process it, and append (overwrite) new stuff
         if ($node->hasAttribute('style')) {
             // break it up into an associative array
@@ -721,7 +726,6 @@ class CssInliner extends AbstractHtmlProcessor
         } else {
             $oldStyleDeclarations = [];
         }
-        $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
         $node->setAttribute(
             'style',
             $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)

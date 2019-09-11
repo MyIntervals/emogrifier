@@ -27,6 +27,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Don't create empty `style` attributes for unparsable declarations
+  ([#259](https://github.com/MyIntervals/emogrifier/issues/259),
+  [#702](https://github.com/MyIntervals/emogrifier/pull/702))
 - Allow `:not(:behavioural-pseudo-class)` in selectors
   ([#697](https://github.com/MyIntervals/emogrifier/pull/697))
 
@@ -93,7 +96,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#633](https://github.com/MyIntervals/emogrifier/pull/633))
 - Add a `getDomDocument()` method
   ([#630](https://github.com/MyIntervals/emogrifier/pull/630))
-- Add a Composer script for PHP CS Fixer 
+- Add a Composer script for PHP CS Fixer
   ([#607](https://github.com/MyIntervals/emogrifier/pull/607))
 - Copy matching rules with dynamic pseudo-classes or pseudo-elements in
   selectors to the style element
