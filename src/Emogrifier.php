@@ -7,6 +7,8 @@ namespace Pelago;
  *
  * For more information, please see the README.md file.
  *
+ * @deprecated Will be removed for version 4.0.0. Please use the CssInliner class instead.
+ *
  * @author Cameron Brooks
  * @author Jaime Prado
  * @author Oliver Klee <github@oliverklee.de>
