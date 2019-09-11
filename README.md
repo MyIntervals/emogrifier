@@ -30,10 +30,8 @@ into inline style attributes in your HTML code.
 - [How it works](#how-it-works)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Options](#options)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
-- [Technology preview of new classes](#technology-preview-of-new-classes)
 - [Steps to release a new version](#steps-to-release-a-new-version)
 - [Maintainers](#maintainers)
 
@@ -55,6 +53,66 @@ composer require pelago/emogrifier
 See https://getcomposer.org/ for more information and documentation.
 
 ## Usage
+
+### Inlining Css
+
+This is how to use the `CssInliner` class:
+
+```php
+$visualHtml = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->render();
+```
+
+You can also use the `DOMDocument` created by `CssInliner` to process it further:
+
+```php
+$domDocument = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
+$prunedHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($domDocument)
+  ->removeInvisibleNodes->render();
+```
+
+### Normalizing and cleaning up HTML
+
+The `HtmlNormalizer` class normalizes the given HTML in the following ways:
+
+- add a document type (HTML5) if missing
+- disentangle incorrectly nested tags
+- add HEAD and BODY elements (if they are missing)
+- reformat the HTML
+
+The class can be used like this:
+
+```php
+$cleanHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer::fromHtml($rawHtml)->render();
+```
+
+### Converting CSS styles to visual HTML attributes
+
+The `CssToAttributeConverter` converts a few style attributes values to visual
+HTML attributes. This allows to get at least a bit of visual styling for email
+clients that do not support CSS well. For example, `style="width: 100px"`
+will be converted to `width="100"`.
+
+The class can be used like this:
+
+```php
+$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromHtml($rawHtml);
+$visualHtml = $converter->convertCssToVisualAttributes()->render();
+```
+
+You can also have the `CssToAttributeConverter` work on a `DOMDocument`:
+
+```php
+$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument($domDocument);
+$visualHtml = $converter->convertCssToVisualAttributes()->render();
+```
+
+### Using the legacy Emogrifier class
+
+In version 3.0.0, the `Emogrifier` class has been deprecated, and it will be
+removed for version 4.0.0. Please update your code to use the new
+`CssInliner` class instead.
+
+If you are still using the deprecated class, here is how to use it:
 
 First, you provide Emogrifier with the HTML and CSS you would like to merge.
 This can happen directly during instantiation:
@@ -94,7 +152,7 @@ the complete HTML document, you can use the `emogrifyBodyContent` instead:
 $bodyContent = $emogrifier->emogrifyBodyContent();
 ```
 
-## Options
+#### Options
 
 There are several options that you can set on the Emogrifier object before
 calling the `emogrify` method:
@@ -186,65 +244,6 @@ The following selectors are not implemented yet:
   (but not all of them). It does not support pseudo selectors. (Emogrifier
   works by converting CSS selectors to XPath selectors, and pseudo selectors
   cannot be converted accurately).
-
-## Technology preview of new classes
-
-Currently, a refactoring effort is underway, aiming towards replacing the
-grown-over-time `Emogrifier` class with the new `CssInliner` class and moving
-additional HTML processing into separate classes which inherit from
-`AbstractHtmlProcessor`. You can try the new classes, but be
-aware that the APIs of the new classes still are subject to change before
-version 3.0.0.
-
-This is how to use the new `CssInliner`:
-
-```php
-$visualHtml = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->render();
-```
-
-You can also use the `DOMDocument` created by `CssInliner` to process it further:
-
-```php
-$domDocument = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
-$prunedHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($domDocument)
-  ->removeInvisibleNodes->render();
-```
-
-### Normalizing and cleaning up HTML
-
-The `HtmlNormalizer` class normalizes the given HTML in the following ways:
-
-- add a document type (HTML5) if missing
-- disentangle incorrectly nested tags
-- add HEAD and BODY elements (if they are missing)
-- reformat the HTML
-
-The class can be used like this:
-
-```php
-$cleanHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer::fromHtml($rawHtml)->render();
-```
-
-### Converting CSS styles to visual HTML attributes
-
-The `CssToAttributeConverter` converts a few style attributes values to visual
-HTML attributes. This allows to get at least a bit of visual styling for email
-clients that do not support CSS well. For example, `style="width: 100px"`
-will be converted to `width="100"`.
-
-The class can be used like this:
-
-```php
-$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromHtml($rawHtml);
-$visualHtml = $converter->convertCssToVisualAttributes()->render();
-```
-
-You can also have the `CssToAttributeConverter` work on a `DOMDocument`:
-
-```php
-$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument($domDocument);
-$visualHtml = $converter->convertCssToVisualAttributes()->render();
-```
 
 ## Steps to release a new version
 
