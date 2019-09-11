@@ -30,7 +30,6 @@ into inline style attributes in your HTML code.
 - [How it works](#how-it-works)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Installing with Composer](#installing-with-composer)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
 - [Steps to release a new version](#steps-to-release-a-new-version)
@@ -44,12 +43,14 @@ selectors.
 
 ## Installation
 
-For installing emogrifier, either add pelago/emogrifier to your
-project's composer.json, or you can use composer as below:
+For installing emogrifier, either add `pelago/emogrifier` to the `require`
+section in your project's `composer.json`, or you can use composer as below:
 
 ```bash
 composer require pelago/emogrifier
 ```
+
+See https://getcomposer.org/ for more information and documentation.
 
 ## Usage
 
@@ -175,38 +176,6 @@ calling the `emogrify` method:
   method to remove media types that Emogrifier keeps.
 * `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
   being affected by emogrification.
-
-## Installing with Composer
-
-Download the [`composer.phar`](https://getcomposer.org/composer.phar) locally
-or install [Composer](https://getcomposer.org/) globally:
-
-```bash
-curl -s https://getcomposer.org/installer | php
-```
-
-Run the following command for a local installation:
-
-```bash
-php composer.phar require pelago/emogrifier:^2.2
-```
-
-Or for a global installation, run the following command:
-
-```bash
-composer require pelago/emogrifier:^2.2
-```
-
-You can also add follow lines to your `composer.json` and run the
-`composer update` command:
-
-```json
-"require": {
-  "pelago/emogrifier": "^2.2"
-}
-```
-
-See https://getcomposer.org/ for more information and documentation.
 
 ## Supported CSS selectors
 
