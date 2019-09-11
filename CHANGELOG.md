@@ -27,6 +27,15 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Attribute selectors with hyphen in attribute name
+  ([#284](https://github.com/MyIntervals/emogrifier/issues/284),
+  [#704](https://github.com/MyIntervals/emogrifier/pull/702))
+- Attribute selectors with space, hyphen, colon, semicolon or (most) other
+  non-alphanumeric characters in attribute value
+  ([#284](https://github.com/MyIntervals/emogrifier/issues/284),
+  [#333](https://github.com/MyIntervals/emogrifier/issues/333),
+  [#550](https://github.com/MyIntervals/emogrifier/issues/550),
+  [#704](https://github.com/MyIntervals/emogrifier/pull/702))
 - Don't create empty `style` attributes for unparsable declarations
   ([#259](https://github.com/MyIntervals/emogrifier/issues/259),
   [#702](https://github.com/MyIntervals/emogrifier/pull/702))
