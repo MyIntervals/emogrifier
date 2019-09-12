@@ -129,6 +129,14 @@ class CssInliner extends AbstractHtmlProcessor
     ];
 
     /**
+     * array of data describing CSS rules which apply to the document but cannot be inlined, in the format returned by
+     * `parseCssRules`
+     *
+     * @var string[][]
+     */
+    private $matchingUninlinableCssRules = [];
+
+    /**
      * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
      *
      * @var bool
@@ -210,7 +218,8 @@ class CssInliner extends AbstractHtmlProcessor
 
         $this->removeImportantAnnotationFromAllInlineStyles();
 
-        $this->copyUninlinableCssToStyleNode($cssRules['uninlinable']);
+        $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
+        $this->copyUninlinableCssToStyleNode();
 
         return $this;
     }
@@ -618,15 +627,16 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Applies $cssRules to $this->domDocument, limited to the rules that actually apply to the document.
+     * Determines which of `$cssRules` actually apply to `$this->domDocument`, and sets them in
+     * `$this->matchingUninlinableCssRules`.
      *
-     * @param string[][] $cssRules The "uninlinable" array of CSS rules returned by `parseCssRules`
+     * @param string[][] $cssRules the "uninlinable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyUninlinableCssToStyleNode(array $cssRules)
+    private function determineMatchingUninlinableCssRules(array $cssRules)
     {
-        $cssRulesRelevantForDocument = \array_filter(
+        $this->matchingUninlinableCssRules = \array_filter(
             $cssRules,
             function (array $cssRule) {
                 $selector = $cssRule['selector'];
@@ -636,14 +646,23 @@ class CssInliner extends AbstractHtmlProcessor
                 return $this->existsMatchForCssSelector($selector);
             }
         );
+    }
 
-        if ($cssRulesRelevantForDocument === []) {
+    /**
+     * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
+     * element.
+     *
+     * @return void
+     */
+    private function copyUninlinableCssToStyleNode()
+    {
+        if ($this->matchingUninlinableCssRules === []) {
             // avoid adding empty style element (or including unneeded class dependency)
             return;
         }
 
         $cssConcatenator = new CssConcatenator();
-        foreach ($cssRulesRelevantForDocument as $cssRule) {
+        foreach ($this->matchingUninlinableCssRules as $cssRule) {
             $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }
 
