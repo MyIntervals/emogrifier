@@ -627,6 +627,20 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
+     * Gets the array of selectors present in the CSS provided to `inlineCss()` for which the declarations could not be
+     * applied as inline styles, but which may affect elements in the HTML.  The relevant CSS will have been placed in a
+     * `<style>` element.  The selectors may include those used within @media rules or those involving dynamic
+     * pseudo-classes (such as `:hover`) or pseudo-elements (such as `::after`).  `inlineCss()` must have been called
+     * first, otherwise an empty array is returned.
+     *
+     * @return string[]
+     */
+    public function getMatchingUninlinableSelectors()
+    {
+        return \array_column($this->matchingUninlinableCssRules, 'selector');
+    }
+
+    /**
      * Determines which of `$cssRules` actually apply to `$this->domDocument`, and sets them in
      * `$this->matchingUninlinableCssRules`.
      *

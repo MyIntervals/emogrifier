@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add `CssInliner::getMatchingUninlinableSelectors`
+  ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
+  [#707](https://github.com/MyIntervals/emogrifier/pull/707))
 - Add tests for `:nth-child` and `:nth-of-type`
   ([#71](https://github.com/MyIntervals/emogrifier/issues/71),
   [#698](https://github.com/MyIntervals/emogrifier/pull/698))
