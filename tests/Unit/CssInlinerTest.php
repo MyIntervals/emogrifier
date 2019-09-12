@@ -2621,11 +2621,11 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function copyUninlineableCssToStyleNodeHasNoSideEffects()
+    public function copyUninlinableCssToStyleNodeHasNoSideEffects()
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a><p>bar</p></html>');
         // CSS: `a:hover { color: green; } p:hover { color: blue; }`
-        $uninlineableCssRules = [
+        $uninlinableCssRules = [
             [
                 'media' => '',
                 'selector' => 'a:hover',
@@ -2642,18 +2642,18 @@ class CssInlinerTest extends TestCase
             ],
         ];
 
-        $copyUninlineableCssToStyleNode = new \ReflectionMethod(CssInliner::class, 'copyUninlineableCssToStyleNode');
-        $copyUninlineableCssToStyleNode->setAccessible(true);
+        $copyUninlinableCssToStyleNode = new \ReflectionMethod(CssInliner::class, 'copyUninlinableCssToStyleNode');
+        $copyUninlinableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $uninlineableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($subject, $uninlinableCssRules);
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($subject, $uninlineableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($subject, $uninlinableCssRules);
 
         self::assertSame($expectedHtml, $subject->render());
     }
