@@ -185,7 +185,7 @@ class CssInliner extends AbstractHtmlProcessor
         $excludedNodes = $this->getNodesToExclude();
         $cssRules = $this->parseCssRules($combinedCss);
         $cssSelectorConverter = $this->getCssSelectorConverter();
-        foreach ($cssRules['inlineable'] as $cssRule) {
+        foreach ($cssRules['inlinable'] as $cssRule) {
             try {
                 $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
             } catch (SyntaxErrorException $e) {
@@ -200,7 +200,7 @@ class CssInliner extends AbstractHtmlProcessor
                 if (\in_array($node, $excludedNodes, true)) {
                     continue;
                 }
-                $this->copyInlineableCssToStyleAttribute($node, $cssRule);
+                $this->copyInlinableCssToStyleAttribute($node, $cssRule);
             }
         }
 
@@ -210,7 +210,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         $this->removeImportantAnnotationFromAllInlineStyles();
 
-        $this->copyUninlineableCssToStyleNode($cssRules['uninlineable']);
+        $this->copyUninlinableCssToStyleNode($cssRules['uninlinable']);
 
         return $this;
     }
@@ -277,8 +277,8 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css a string of raw CSS code
      *
-     * @return string[][][] A 2-entry array with the key "inlineable" containing rules which can be inlined as `style`
-     *         attributes and the key "uninlineable" containing rules which cannot.  Each value is an array of string
+     * @return string[][][] A 2-entry array with the key "inlinable" containing rules which can be inlined as `style`
+     *         attributes and the key "uninlinable" containing rules which cannot.  Each value is an array of string
      *         sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from a `@media` rule),
@@ -299,8 +299,8 @@ class CssInliner extends AbstractHtmlProcessor
         $matches = $this->getCssRuleMatches($css);
 
         $cssRules = [
-            'inlineable' => [],
-            'uninlineable' => [],
+            'inlinable' => [],
+            'uninlinable' => [],
         ];
         /** @var string[][] $matches */
         /** @var string[] $cssRule */
@@ -329,12 +329,12 @@ class CssInliner extends AbstractHtmlProcessor
                     // keep track of where it appears in the file, since order is important
                     'line' => $key,
                 ];
-                $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlineable' : 'uninlineable';
+                $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlinable' : 'uninlinable';
                 $cssRules[$ruleType][] = $parsedCssRule;
             }
         }
 
-        \usort($cssRules['inlineable'], [$this, 'sortBySelectorPrecedence']);
+        \usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence']);
 
         $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
@@ -620,11 +620,11 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Applies $cssRules to $this->domDocument, limited to the rules that actually apply to the document.
      *
-     * @param string[][] $cssRules The "uninlineable" array of CSS rules returned by `parseCssRules`
+     * @param string[][] $cssRules The "uninlinable" array of CSS rules returned by `parseCssRules`
      *
      * @return void
      */
-    private function copyUninlineableCssToStyleNode(array $cssRules)
+    private function copyUninlinableCssToStyleNode(array $cssRules)
     {
         $cssRulesRelevantForDocument = \array_filter(
             $cssRules,
@@ -712,7 +712,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function copyInlineableCssToStyleAttribute(\DOMElement $node, array $cssRule)
+    private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule)
     {
         $newStyleDeclarations = $this->parseCssDeclarationsBlock($cssRule['declarationsBlock']);
         if ($newStyleDeclarations === []) {

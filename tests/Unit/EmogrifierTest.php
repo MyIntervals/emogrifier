@@ -3185,11 +3185,11 @@ class EmogrifierTest extends TestCase
     /**
      * @test
      */
-    public function copyUninlineableCssToStyleNodeHasNoSideEffects()
+    public function copyUninlinableCssToStyleNodeHasNoSideEffects()
     {
         $this->subject->setHtml('<html><a>foo</a><p>bar</p></html>');
         // CSS: `a:hover { color: green; } p:hover { color: blue; }`
-        $uninlineableCssRules = [
+        $uninlinableCssRules = [
             [
                 'media' => '',
                 'selector' => 'a:hover',
@@ -3206,18 +3206,18 @@ class EmogrifierTest extends TestCase
             ],
         ];
 
-        $copyUninlineableCssToStyleNode = new \ReflectionMethod(Emogrifier::class, 'copyUninlineableCssToStyleNode');
-        $copyUninlineableCssToStyleNode->setAccessible(true);
+        $copyUninlinableCssToStyleNode = new \ReflectionMethod(Emogrifier::class, 'copyUninlinableCssToStyleNode');
+        $copyUninlinableCssToStyleNode->setAccessible(true);
 
         $domDocument = $this->subject->getDomDocument();
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $uninlineableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules);
         $expectedHtml = $domDocument->saveHTML();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlineableCssToStyleNode->invoke($this->subject, $uninlineableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules);
 
         self::assertSame($expectedHtml, $domDocument->saveHTML());
     }
