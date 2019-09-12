@@ -30,7 +30,11 @@ class CssInlinerTest extends TestCase
                 <p class="p-4" id="p4"><span title="avez-vous">some</span> more <span id="text">text</span></p>
                 <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                 <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                <p class="p-7"></p>
+                <p class="p-7"><a
+                    href="https://example.org/"
+                    data-ascii-1="! &quot; # $ % &amp; &#039; ( ) * + , - . / : ; &lt; = &gt; ?"
+                    data-ascii-2="@ [ \ ] ^ _ ` { | } ~"
+                ><span id="example-org">link text</span></a></p>
             </body>
         </html>
     ';
@@ -173,7 +177,10 @@ class CssInlinerTest extends TestCase
             // broken: attribute value with *, double quotes => with exact match
             // broken: attribute value with *, single quotes => with exact match
             // broken: attribute value with *, no quotes => with exact match
-            // broken: type & attribute presence => with type & attribute
+            'type & attribute presence => with type & attribute' => [
+                'span[title] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
             'type & attribute exact value, double quotes => with type & exact attribute value match' => [
                 'span[title="bonjour"] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -266,7 +273,10 @@ class CssInlinerTest extends TestCase
                 'span[title^=bonjour] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
             ],
-            // broken: type & two-word attribute value with ^, double quotes => with exact match
+            'type & two-word attribute value with ^, double quotes => with exact match' => [
+                'span[title^="buenas dias"] { %1$s }',
+                '<span title="buenas dias" style="%1$s">',
+            ],
             'type & attribute value with ^, double quotes => with prefix math' => [
                 'span[title^="bon"] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -372,13 +382,18 @@ class CssInlinerTest extends TestCase
                 '[id="p4"] span { %1$s }',
                 '<p class="p-4" id="p4"><span title="avez-vous" style="%1$s">',
             ],
-            // broken: descendant of type & attribute presence => parent with type & attribute
+            'descendant of type & attribute presence => parent with type & attribute' => [
+                'p[id] span { %1$s }',
+                '<p class="p-4" id="p4"><span title="avez-vous" style="%1$s">',
+            ],
             'descendant of type & attribute exact value => parent with type & exact attribute match' => [
                 'p[id="p4"] span { %1$s }',
                 '<p class="p-4" id="p4"><span title="avez-vous" style="%1$s">',
             ],
-            // broken: descendant of type & attribute exact two-word value => parent with type & exact attribute match
-            //         (exact match doesn't currently match hyphens, which would be needed to match the class attribute)
+            'descendant of type & attribute exact two-word value => parent with type & exact attribute match' => [
+                'p[class="p-5 additional-class"] span { %1$s }',
+                '<p class="p-5 additional-class"><span title="buenas dias bom dia" style="%1$s">',
+            ],
             'descendant of type & attribute value with ~ => parent with type & exact attribute match' => [
                 'p[class~="p-1"] span { %1$s }',
                 '<p class="p-1"><span style="%1$s">',
@@ -386,6 +401,30 @@ class CssInlinerTest extends TestCase
             'descendant of type & attribute value with ~ => parent with type & word as 1st of 2 in attribute' => [
                 'p[class~="p-5"] span { %1$s }',
                 '<p class="p-5 additional-class"><span title="buenas dias bom dia" style="%1$s">',
+            ],
+            'child of attribute presence with - in name => child of parent with expected attribute' => [
+                'a[data-ascii-1] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
+            ],
+            'child of attribute value with ^ matching : => child of parent with expected prefix match' => [
+                'a[href^="https:"] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
+            ],
+            'child of attribute value with ~ matching - => child of parent with expected word match' => [
+                'a[data-ascii-1~="-"] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
+            ],
+            'child of attribute value with * matching - => child of parent with expected part match' => [
+                'a[data-ascii-1*="-"] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
+            ],
+            'child of attribute value with ~ matching ; => child of parent with expected word match' => [
+                'a[data-ascii-1~=";"] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
+            ],
+            'child of attribute value with * matching ; => child of parent with expected part match' => [
+                'a[data-ascii-1*=";"] > #example-org { %1$s }',
+                '<span id="example-org" style="%1$s">',
             ],
             // broken: first-child => 1st of many
             'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
@@ -497,6 +536,10 @@ class CssInlinerTest extends TestCase
                 '[title="njo"] { %1$s }',
                 '<span title="bonjour">',
             ],
+            'type & attribute presence => not element of type without that attribute' => [
+                'span[title] { %1$s }',
+                '<span>',
+            ],
             'type & attribute value with ~ => not element with only prefix match in attribute value' => [
                 'span[title~="bon"] { %1$s }',
                 '<span title="bonjour">',
@@ -512,6 +555,14 @@ class CssInlinerTest extends TestCase
             'type & attribute value with ^, double quotes => not element with only suffix match in attribute value' => [
                 'span[title^="jour"] { %1$s }',
                 '<span title="bonjour">',
+            ],
+            'type & two word attribute value with ^ => not element with only substring match in attribute value' => [
+                'span[title^="dias bom"] { %1$s }',
+                '<span title="buenas dias bom dia">',
+            ],
+            'type & two word attribute value with ^ => not element with only suffix match in attribute value' => [
+                'span[title^="bom dia"] { %1$s }',
+                '<span title="buenas dias bom dia">',
             ],
             'type & attribute value with $ => not element with only substring match in attribute value' => [
                 'span[title$="njo"] { %1$s }',
@@ -530,6 +581,30 @@ class CssInlinerTest extends TestCase
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
+            'child of attribute presence with - in name => not child of parent without expected attribute' => [
+                'a[data-some-other] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
+            'child of attribute value with ^ matching : => not child of parent without expected prefix match' => [
+                'a[href^="ftp:"] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
+            'child of attribute value with ~ matching - => not child of parent without expected word match' => [
+                'a[data-ascii-2~="-"] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
+            'child of attribute value with * matching - => not child of parent without expected part match' => [
+                'a[data-ascii-2*="-"] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
+            'child of attribute value with ~ matching ; => not child of parent without expected word match' => [
+                'a[data-ascii-2~=";"] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
+            'child of attribute value with * matching ; => not child of parent without expected part match' => [
+                'a[data-ascii-2*=";"] > #example-org { %1$s }',
+                '<span id="example-org">',
+            ],
             'type & :first-child => not 2nd of many' => ['p:first-child { %1$s }', '<p class="p-2">'],
             'type & :first-child => not last of many' => ['p:first-child { %1$s }', '<p class="p-7">'],
             'type & :last-child => not 1st of many' => ['p:last-child { %1$s }', '<p class="p-1">'],
