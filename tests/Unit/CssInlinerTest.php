@@ -2641,19 +2641,25 @@ class CssInlinerTest extends TestCase
                 'line' => 1,
             ],
         ];
+        $matchingUninlinableCssRulesProperty = new \ReflectionProperty(
+            CssInliner::class,
+            'matchingUninlinableCssRules'
+        );
+        $matchingUninlinableCssRulesProperty->setAccessible(true);
+        $matchingUninlinableCssRulesProperty->setValue($subject, $uninlinableCssRules);
 
         $copyUninlinableCssToStyleNode = new \ReflectionMethod(CssInliner::class, 'copyUninlinableCssToStyleNode');
         $copyUninlinableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
 
-        $copyUninlinableCssToStyleNode->invoke($subject, $uninlinableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($subject);
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlinableCssToStyleNode->invoke($subject, $uninlinableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($subject);
 
         self::assertSame($expectedHtml, $subject->render());
     }
