@@ -2621,6 +2621,83 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $subject = $this->buildDebugSubject('<html></html>');
+
+        $subject->getMatchingUninlinableSelectors();
+    }
+
+    /**
+     * @return string[][][]
+     */
+    public function matchingUninlinableSelectorsDataProvider()
+    {
+        return [
+            '1 matching uninlinable selector' => [['p:hover']],
+            '2 matching uninlinable selectors' => [['p:hover', 'p::after']],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string[] $selectors
+     *
+     * @dataProvider matchingUninlinableSelectorsDataProvider
+     */
+    public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors)
+    {
+        $css = \implode(' ', \array_map(
+            static function ($selector) {
+                return $selector . ' { color: green; }';
+            },
+            $selectors
+        ));
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+        $subject->inlineCss($css);
+
+        $result = $subject->getMatchingUninlinableSelectors();
+
+        foreach ($selectors as $selector) {
+            static::assertContains($selector, $result);
+        }
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonMatchingOrInlinableSelectorDataProvider()
+    {
+        return [
+            'non matching uninlinable selector' => ['a:hover'],
+            'matching inlinable selector' => ['p'],
+            'non matching inlinable selector' => ['a'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $selector
+     *
+     * @dataProvider nonMatchingOrInlinableSelectorDataProvider
+     */
+    public function getMatchingUninlinableSelectorsNotReturnsNonMatchingOrInlinableSelector($selector)
+    {
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+        $subject->inlineCss($selector . ' { color: red; }');
+
+        $result = $subject->getMatchingUninlinableSelectors();
+
+        static::assertSame([], $result);
+    }
+
+    /**
+     * @test
+     */
     public function copyUninlinableCssToStyleNodeHasNoSideEffects()
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a><p>bar</p></html>');

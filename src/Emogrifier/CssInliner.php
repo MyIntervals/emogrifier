@@ -134,7 +134,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @var string[][]
      */
-    private $matchingUninlinableCssRules = [];
+    private $matchingUninlinableCssRules = null;
 
     /**
      * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
@@ -624,6 +624,25 @@ class CssInliner extends AbstractHtmlProcessor
     private function attributeValueIsImportant($attributeValue)
     {
         return \strtolower(\substr(\trim($attributeValue), -10)) === '!important';
+    }
+
+    /**
+     * Gets the array of selectors present in the CSS provided to `inlineCss()` for which the declarations could not be
+     * applied as inline styles, but which may affect elements in the HTML.  The relevant CSS will have been placed in a
+     * `<style>` element.  The selectors may include those used within `@media` rules or those involving dynamic
+     * pseudo-classes (such as `:hover`) or pseudo-elements (such as `::after`).
+     *
+     * @return string[]
+     *
+     * @throws \BadMethodCallException if `inlineCss` has not been called first
+     */
+    public function getMatchingUninlinableSelectors()
+    {
+        if ($this->matchingUninlinableCssRules === null) {
+            throw new \BadMethodCallException('inlineCss must be called first', 1568385221);
+        }
+
+        return \array_column($this->matchingUninlinableCssRules, 'selector');
     }
 
     /**
