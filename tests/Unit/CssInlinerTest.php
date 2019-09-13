@@ -34,7 +34,7 @@ class CssInlinerTest extends TestCase
                     href="https://example.org/"
                     data-ascii-1="! &quot; # $ % &amp; &#039; ( ) * + , - . / : ; &lt; = &gt; ?"
                     data-ascii-2="@ [ \ ] ^ _ ` { | } ~"
-                ><span id="example-org">link text</span></a></p>
+                ><span id="example-org">link text</span></a><input disabled></p>
             </body>
         </html>
     ';
@@ -351,9 +351,22 @@ class CssInlinerTest extends TestCase
             'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
             'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
-            // broken: descendent attribute presence => with attribute
-            // broken: descendent attribute exact value => with exact attribute match
-            // broken: descendent type & attribute presence => with type & attribute
+            'descendent attribute presence => with attribute' => [
+                'body [title] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendent attribute exact value => with exact attribute match' => [
+                'body [title="bonjour"] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendent type & attribute presence => with type & attribute' => [
+                'body span[title] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
+            'descendent type & Boolean attribute presence => with type & attribute' => [
+                'html input[disabled] { %1$s }',
+                '<input disabled style="%1$s">',
+            ],
             'descendent type & attribute exact value => with type & exact attribute match' => [
                 'body span[title="bonjour"] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
