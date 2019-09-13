@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add `HtmlPruner::removeRedundantClasses`
+  ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
+  [#708](https://github.com/MyIntervals/emogrifier/pull/708))
 - Support multiple attributes selectors
   ([#385](https://github.com/MyIntervals/emogrifier/issues/385),
   [#721](https://github.com/MyIntervals/emogrifier/pull/721))

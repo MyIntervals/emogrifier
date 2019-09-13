@@ -41,4 +41,47 @@ class HtmlPruner extends AbstractHtmlProcessor
 
         return $this;
     }
+
+    /**
+     * Removes classes that are no longer required (e.g. because there are no longer any CSS rules that reference them)
+     * from `class` attributes.
+     *
+     * Note that this does not inspect the CSS, but expects to be provided with a list of classes that are still in use.
+     *
+     * This method also has the (presumably beneficial) side-effect of minifying (removing superfluous whitespace from)
+     * `class` attributes.
+     *
+     * @param string[] $classesToKeep list of class names that should not be removed
+     *
+     * @return self fluent interface
+     */
+    public function removeRedundantClasses(array $classesToKeep)
+    {
+        $nodesWithClassAttribute = $this->xPath->query('//*[@class]');
+
+        if ($classesToKeep !== []) {
+            // https://stackoverflow.com/questions/6329211/php-array-intersect-efficiency
+            // It's more efficient to invert the array and use `array_intersect_key()` when doing many intersections.
+            $classesToKeepAsKeys = \array_flip($classesToKeep);
+
+            foreach ($nodesWithClassAttribute as $node) {
+                $nodeClasses = \preg_split('/\\s++/', \trim($node->getAttribute('class')));
+                $nodeClassesToKeep = \array_flip(\array_intersect_key(
+                    \array_flip($nodeClasses),
+                    $classesToKeepAsKeys
+                ));
+                if ($nodeClassesToKeep !== []) {
+                    $node->setAttribute('class', \implode(' ', $nodeClassesToKeep));
+                } else {
+                    $node->removeAttribute('class');
+                }
+            }
+        } else {
+            foreach ($nodesWithClassAttribute as $node) {
+                $node->removeAttribute('class');
+            }
+        }
+
+        return $this;
+    }
 }
