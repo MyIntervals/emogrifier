@@ -2621,50 +2621,74 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelector()
+    public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled()
     {
-        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
-        $subject->inlineCss('p:hover { color: green; }');
+        $this->expectException(\BadMethodCallException::class);
 
-        $result = $subject->getMatchingUninlinableSelectors();
+        $subject = $this->buildDebugSubject('<html></html>');
 
-        static::assertContains('p:hover', $result);
+        $subject->getMatchingUninlinableSelectors();
+    }
+
+    /**
+     * @return string[][][]
+     */
+    public function matchingUninlinableSelectorsDataProvider()
+    {
+        return [
+            '1 matching uninlinable selector' => [['p:hover']],
+            '2 matching uninlinable selectors' => [['p:hover', 'p::after']],
+        ];
     }
 
     /**
      * @test
+     *
+     * @param string[] $selectors
+     *
+     * @dataProvider matchingUninlinableSelectorsDataProvider
      */
-    public function getMatchingUninlinableSelectorsReturnsMultipleMatchingUninlinableSelectors()
+    public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors)
     {
+        $css = \implode(' ', \array_map(
+            static function ($selector) {
+                return $selector . ' { color: green; }';
+            },
+            $selectors
+        ));
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
-        $subject->inlineCss('p:hover { color: green; } p::after { content: "bar"; }');
+        $subject->inlineCss($css);
 
         $result = $subject->getMatchingUninlinableSelectors();
 
-        static::assertContains('p:hover', $result);
-        static::assertContains('p::after', $result);
+        foreach ($selectors as $selector) {
+            static::assertContains($selector, $result);
+        }
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function nonMatchingOrInlinableSelectorDataProvider()
+    {
+        return [
+            'non matching uninlinable selector' => ['a:hover'],
+            'matching inlinable selector' => ['p'],
+            'non matching inlinable selector' => ['a'],
+        ];
     }
 
     /**
      * @test
+     *
+     * @param string $selector
+     *
+     * @dataProvider nonMatchingOrInlinableSelectorDataProvider
      */
-    public function getMatchingUninlinableSelectorsNotReturnsNonMatchingUninlinableSelector()
+    public function getMatchingUninlinableSelectorsNotReturnsNonMatchingOrInlinableSelector($selector)
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
-        $subject->inlineCss('a:hover { color: red; }');
-
-        $result = $subject->getMatchingUninlinableSelectors();
-
-        static::assertSame([], $result);
-    }
-
-    /**
-     * @test
-     */
-    public function getMatchingUninlinableSelectorsNotReturnsMatchingInlinableSelector()
-    {
-        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
-        $subject->inlineCss('p { color: red; }');
+        $subject->inlineCss($selector . ' { color: red; }');
 
         $result = $subject->getMatchingUninlinableSelectors();
 
