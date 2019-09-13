@@ -134,7 +134,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @var string[][]
      */
-    private $matchingUninlinableCssRules;
+    private $matchingUninlinableCssRules = null;
 
     /**
      * Emogrifier will throw Exceptions when it encounters an error instead of silently ignoring them.
@@ -638,7 +638,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     public function getMatchingUninlinableSelectors()
     {
-        if (!isset($this->matchingUninlinableCssRules)) {
+        if ($this->matchingUninlinableCssRules === null) {
             throw new \BadMethodCallException('inlineCss must be called first', 1568385221);
         }
 
