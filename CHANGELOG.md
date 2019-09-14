@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add an `ArrayIntersector` class
+  ([#708](https://github.com/MyIntervals/emogrifier/pull/708),
+  [#710](https://github.com/MyIntervals/emogrifier/pull/710))
 - Add `CssInliner::getMatchingUninlinableSelectors`
   ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
   [#707](https://github.com/MyIntervals/emogrifier/pull/707))
