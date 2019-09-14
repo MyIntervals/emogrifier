@@ -2,6 +2,8 @@
 
 namespace Pelago;
 
+use Pelago\Emogrifier\Utilities\CssConcatenator;
+
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
  *
@@ -1002,11 +1004,11 @@ class Emogrifier
         }
 
         // support use without autoload
-        if (!\class_exists('Pelago\\Emogrifier\\CssConcatenator')) {
-            require_once __DIR__ . '/Emogrifier/CssConcatenator.php';
+        if (!\class_exists('Pelago\\Emogrifier\\Utilities\\CssConcatenator')) {
+            require_once __DIR__ . '/Emogrifier/Utilities/CssConcatenator.php';
         }
 
-        $cssConcatenator = new Emogrifier\CssConcatenator();
+        $cssConcatenator = new CssConcatenator();
         foreach ($cssRulesRelevantForDocument as $cssRule) {
             $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
         }

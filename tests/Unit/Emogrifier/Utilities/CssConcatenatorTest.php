@@ -1,8 +1,8 @@
 <?php
 
-namespace Pelago\Tests\Unit\Emogrifier;
+namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
-use Pelago\Emogrifier\CssConcatenator;
+use Pelago\Emogrifier\Utilities\CssConcatenator;
 use PHPUnit\Framework\TestCase;
 
 /**

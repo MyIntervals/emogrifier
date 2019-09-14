@@ -3,6 +3,7 @@
 namespace Pelago\Emogrifier;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
+use Pelago\Emogrifier\Utilities\CssConcatenator;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 
