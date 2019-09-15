@@ -1,6 +1,6 @@
 <?php
 
-namespace Pelago\Emogrifier\HtmlProcessor;
+namespace Pelago\Emogrifier\Utilities;
 
 /**
  * When computing many array intersections using the same array, it is more efficient to use `array_flip()` first and

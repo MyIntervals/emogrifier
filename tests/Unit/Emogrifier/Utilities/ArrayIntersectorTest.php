@@ -1,8 +1,8 @@
 <?php
 
-namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
+namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
-use Pelago\Emogrifier\HtmlProcessor\ArrayIntersector;
+use Pelago\Emogrifier\Utilities\ArrayIntersector;
 use PHPUnit\Framework\TestCase;
 
 /**
