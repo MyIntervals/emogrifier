@@ -736,9 +736,8 @@ class CssInliner extends AbstractHtmlProcessor
 
         if ($hasUnmatchablePseudo) {
             return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
-        } else {
-            return $notComponentWithAnyPrecedingWhitespace;
         }
+        return $notComponentWithAnyPrecedingWhitespace;
     }
 
     /**
