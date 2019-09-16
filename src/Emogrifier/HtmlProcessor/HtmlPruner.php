@@ -2,10 +2,13 @@
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\Utilities\ArrayIntersector;
+
 /**
  * This class can remove things from HTML.
  *
  * @author Oliver Klee <github@oliverklee.de>
+ * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class HtmlPruner extends AbstractHtmlProcessor
 {
@@ -51,37 +54,59 @@ class HtmlPruner extends AbstractHtmlProcessor
      * This method also has the (presumably beneficial) side-effect of minifying (removing superfluous whitespace from)
      * `class` attributes.
      *
-     * @param string[] $classesToKeep list of class names that should not be removed
+     * @param string[] $classesToKeep class names that should not be removed
      *
      * @return self fluent interface
      */
-    public function removeRedundantClasses(array $classesToKeep)
+    public function removeRedundantClasses(array $classesToKeep = [])
     {
         $nodesWithClassAttribute = $this->xPath->query('//*[@class]');
 
         if ($classesToKeep !== []) {
-            // https://stackoverflow.com/questions/6329211/php-array-intersect-efficiency
-            // It's more efficient to invert the array and use `array_intersect_key()` when doing many intersections.
-            $classesToKeepAsKeys = \array_flip($classesToKeep);
-
-            foreach ($nodesWithClassAttribute as $node) {
-                $nodeClasses = \preg_split('/\\s++/', \trim($node->getAttribute('class')));
-                $nodeClassesToKeep = \array_flip(\array_intersect_key(
-                    \array_flip($nodeClasses),
-                    $classesToKeepAsKeys
-                ));
-                if ($nodeClassesToKeep !== []) {
-                    $node->setAttribute('class', \implode(' ', $nodeClassesToKeep));
-                } else {
-                    $node->removeAttribute('class');
-                }
-            }
+            $this->removeClassesFromNodes($nodesWithClassAttribute, $classesToKeep);
         } else {
-            foreach ($nodesWithClassAttribute as $node) {
-                $node->removeAttribute('class');
-            }
+            // Avoid unnecessary processing if there are no classes to keep.
+            $this->removeClassAttributeFromNodes($nodesWithClassAttribute);
         }
 
         return $this;
+    }
+
+    /**
+     * Removes classes from the `class` attribute of each element in `$nodeList`, except any in `$classesToKeep`,
+     * removing the `class` attribute itself if the resultant list is empty.
+     *
+     * @param \DOMNodeList $nodeList
+     * @param string[] $classesToKeep
+     *
+     * @return void
+     */
+    private function removeClassesFromNodes(\DOMNodeList $nodeList, array $classesToKeep)
+    {
+        $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
+
+        foreach ($nodeList as $node) {
+            $nodeClasses = \preg_split('/\\s++/', \trim($node->getAttribute('class')));
+            $nodeClassesToKeep = $classesToKeepIntersector->intersectWith($nodeClasses);
+            if ($nodeClassesToKeep !== []) {
+                $node->setAttribute('class', \implode(' ', $nodeClassesToKeep));
+            } else {
+                $node->removeAttribute('class');
+            }
+        }
+    }
+
+    /**
+     * Removes the `class` attribute from each element in `$nodeList`.
+     *
+     * @param \DOMNodeList $nodeList
+     *
+     * @return void
+     */
+    private function removeClassAttributeFromNodes(\DOMNodeList $nodeList)
+    {
+        foreach ($nodeList as $node) {
+            $node->removeAttribute('class');
+        }
     }
 }

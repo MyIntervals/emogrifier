@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
  * Test case.
  *
  * @author Oliver Klee <github@oliverklee.de>
+ * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class HtmlPrunerTest extends TestCase
 {
@@ -93,7 +94,7 @@ class HtmlPrunerTest extends TestCase
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
-        $result = $subject->removeRedundantClasses([]);
+        $result = $subject->removeRedundantClasses();
 
         self::assertSame($subject, $result);
     }
@@ -106,6 +107,7 @@ class HtmlPrunerTest extends TestCase
         return [
             'no classes to keep' => [[]],
             '1 class to keep' => [['foo']],
+            '2 classes to keep' => [['foo', 'bar']],
         ];
     }
 
@@ -129,53 +131,44 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function nonMatchedClassesDataProvider()
+    public function htmlAndNonMatchedClassesDataProvider()
     {
         return [
             '1 attribute, 1 class, no classes to keep' => [
-                'html' => '<p class="foo">hello</p>',
+                'HTML' => '<p class="foo">hello</p>',
                 'classes to keep' => [],
-                'classes expected to be removed' => ['foo'],
             ],
             '2 attributes, 1 different class each, no classes to keep' => [
-                'html' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
                 'classes to keep' => [],
-                'classes expected to be removed' => ['foo', 'bar'],
             ],
             '1 attribute, 1 class, 1 different class to keep' => [
-                'html' => '<p class="foo">hello</p>',
+                'HTML' => '<p class="foo">hello</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo'],
             ],
             '2 attributes, 1 different class each, 1 different class to keep' => [
-                'html' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo', 'bar'],
             ],
             '2 attributes, same 1 class each, 1 different class to keep' => [
-                'html' => '<p class="foo">hello</p><p class="foo">world</p>',
+                'HTML' => '<p class="foo">hello</p><p class="foo">world</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo'],
             ],
             '1 attribute, 2 classes, 1 different class to keep' => [
-                'html' => '<p class="foo bar">hello</p>',
+                'HTML' => '<p class="foo bar">hello</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo', 'bar'],
             ],
             '1 attribute, 1 class with extra whitespace, 1 different class to keep' => [
-                'html' => '<p class=" foo ">hello</p>',
+                'HTML' => '<p class=" foo ">hello</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo'],
             ],
             '1 attribute, 2 classes with extra whitespace, 1 different class to keep' => [
-                'html' => '<p class=" foo  bar ">hello</p>',
+                'HTML' => '<p class=" foo  bar ">hello</p>',
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo', 'bar'],
             ],
             '1 attribute, 2 classes separated by newline, 1 different class to keep' => [
-                'html' => "<p class=\"foo\nbar\">hello</p>",
+                'HTML' => "<p class=\"foo\nbar\">hello</p>",
                 'classes to keep' => ['baz'],
-                'classes expected to be removed' => ['foo', 'bar'],
             ],
         ];
     }
@@ -186,7 +179,7 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string[] $classesToKeep
      *
-     * @dataProvider nonMatchedClassesDataProvider
+     * @dataProvider htmlAndNonMatchedClassesDataProvider
      */
     public function removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep($html, array $classesToKeep)
     {
@@ -200,82 +193,50 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function classesDataProvider()
+    public function htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider()
     {
-        $nonMatchedClassesData = $this->nonMatchedClassesDataProvider();
-        $matchedClassesData = [
-            '1 attribute, 1 class, that class to be kept' => [
-                'html' => '<p class="foo">hello</p>',
-                'classes to keep' => ['foo'],
-            ],
-            '2 attributes, 1 different class each, both classes to be kept' => [
-                'html' => '<p class="foo">hello</p><p class="bar">world</p>',
-                'classes to keep' => ['foo', 'bar'],
-            ],
+        return [
             '2 attributes, 1 different class each, 1st class to be kept' => [
-                'html' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
                 'classes to keep' => ['foo'],
                 'classes expected to be removed' => ['bar'],
             ],
             '2 attributes, 1 different class each, 2nd class to be kept' => [
-                'html' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
                 'classes to keep' => ['bar'],
                 'classes expected to be removed' => ['foo'],
             ],
-            '2 attributes, same 1 class each, that class to be kept' => [
-                'html' => '<p class="foo">hello</p><p class="foo">world</p>',
-                'classes to keep' => ['foo'],
-            ],
-            '1 attribute, 2 classes, both to be kept' => [
-                'html' => '<p class="foo bar">hello</p>',
-                'classes to keep' => ['foo', 'bar'],
-            ],
             'first class in attribute is to be removed' => [
-                'html' => '<p class="foo bar baz">hello</p>',
+                'HTML' => '<p class="foo bar baz">hello</p>',
                 'classes to keep' => ['bar', 'baz'],
                 'classes expected to be removed' => ['foo'],
             ],
             'middle class in attribute is to be removed' => [
-                'html' => '<p class="foo bar baz">hello</p>',
+                'HTML' => '<p class="foo bar baz">hello</p>',
                 'classes to keep' => ['foo', 'baz'],
                 'classes expected to be removed' => ['bar'],
             ],
             'last class in attribute is to be removed' => [
-                'html' => '<p class="foo bar baz">hello</p>',
+                'HTML' => '<p class="foo bar baz">hello</p>',
                 'classes to keep' => ['foo', 'bar'],
                 'classes expected to be removed' => ['baz'],
             ],
         ];
-        $matchedClassesWithExtraWhitespaceData = $this->matchedClassesWithExtraWhitespaceDataProvider();
-
-        return $nonMatchedClassesData + $matchedClassesData + $matchedClassesWithExtraWhitespaceData;
     }
 
     /**
      * @return (string|string[])[][]
      */
-    public function matchedClassesWithExtraWhitespaceDataProvider()
+    public function htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider()
     {
         return [
-            '1 attribute, 1 class with extra whitespace, that class to be kept' => [
-                'html' => '<p class=" foo ">hello</p>',
-                'classes to keep' => ['foo'],
-            ],
-            '1 attribute, 2 classes with extra whitespace, both to be kept' => [
-                'html' => '<p class=" foo  bar ">hello</p>',
-                'classes to keep' => ['foo', 'bar'],
-            ],
             '1 attribute, 2 classes with extra whitespace, 1 to be kept' => [
-                'html' => '<p class=" foo  bar ">hello</p>',
+                'HTML' => '<p class=" foo  bar ">hello</p>',
                 'classes to keep' => ['foo'],
                 'classes expected to be removed' => ['bar'],
             ],
-            '1 attribute, 2 classes separated by newline, both to be kept' => [
-                'html' => "<p class=\"foo\nbar\">hello</p>",
-                'classes to keep' => ['foo', 'bar'],
-            ],
             '1 attribute, 2 classes separated by newline, 1 to be kept' => [
-                'html' => "<p class=\"foo\nbar\">hello</p>",
+                'HTML' => "<p class=\"foo\nbar\">hello</p>",
                 'classes to keep' => ['foo'],
                 'classes expected to be removed' => ['bar'],
             ],
@@ -289,13 +250,83 @@ class HtmlPrunerTest extends TestCase
      * @param string[] $classesToKeep
      * @param string[] $classesExpectedToBeRemoved
      *
-     * @dataProvider classesDataProvider
+     * @dataProvider htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
+     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
      */
-    public function removeRedundantClassesRemovesOnlyClassesNotToKeep(
+    public function removeRedundantClassesRemovesClassesNotToKeep(
         $html,
         array $classesToKeep,
-        array $classesExpectedToBeRemoved = []
+        array $classesExpectedToBeRemoved
     ) {
+        $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
+
+        $subject->removeRedundantClasses($classesToKeep);
+
+        $result = $subject->render();
+        foreach ($classesExpectedToBeRemoved as $class) {
+            self::assertNotContains($class, $result);
+        }
+    }
+
+    /**
+     * @return (string|string[])[][]
+     */
+    public function htmlAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider()
+    {
+        return [
+            '1 attribute, 1 class, that class to be kept' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'classes to keep' => ['foo'],
+            ],
+            '2 attributes, 1 different class each, both classes to be kept' => [
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'classes to keep' => ['foo', 'bar'],
+            ],
+            '2 attributes, same 1 class each, that class to be kept' => [
+                'HTML' => '<p class="foo">hello</p><p class="foo">world</p>',
+                'classes to keep' => ['foo'],
+            ],
+            '1 attribute, 2 classes, both to be kept' => [
+                'HTML' => '<p class="foo bar">hello</p>',
+                'classes to keep' => ['foo', 'bar'],
+            ],
+        ];
+    }
+
+    /**
+     * @return (string|string[])[][]
+     */
+    public function htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider()
+    {
+        return [
+            '1 attribute, 1 class with extra whitespace, that class to be kept' => [
+                'HTML' => '<p class=" foo ">hello</p>',
+                'classes to keep' => ['foo'],
+            ],
+            '1 attribute, 2 classes with extra whitespace, both to be kept' => [
+                'HTML' => '<p class=" foo  bar ">hello</p>',
+                'classes to keep' => ['foo', 'bar'],
+            ],
+            '1 attribute, 2 classes separated by newline, both to be kept' => [
+                'HTML' => "<p class=\"foo\nbar\">hello</p>",
+                'classes to keep' => ['foo', 'bar'],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     * @param string[] $classesToKeep
+     *
+     * @dataProvider htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
+     * @dataProvider htmlAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
+     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
+     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
+     */
+    public function removeRedundantClassesNotRemovesClassesToKeep($html, array $classesToKeep)
+    {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
         $subject->removeRedundantClasses($classesToKeep);
@@ -303,17 +334,12 @@ class HtmlPrunerTest extends TestCase
         $result = $subject->render();
         foreach ($classesToKeep as $class) {
             $expectedInstanceCount = \substr_count($html, $class);
-            if ($expectedInstanceCount !== 0) {
-                self::assertSame(
-                    $expectedInstanceCount,
-                    \substr_count($result, $class),
-                    'asserting \'' . $result . '\' contains ' . $expectedInstanceCount . ' instance(s) of "' . $class
-                    . '"'
-                );
-            }
-        }
-        foreach ($classesExpectedToBeRemoved as $class) {
-            self::assertNotContains($class, $result);
+            self::assertSame(
+                $expectedInstanceCount,
+                \substr_count($result, $class),
+                'asserting \'' . $result . '\' contains ' . $expectedInstanceCount . ' instance(s) of "' . $class
+                . '"'
+            );
         }
     }
 
@@ -323,7 +349,8 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string[] $classesToKeep
      *
-     * @dataProvider matchedClassesWithExtraWhitespaceDataProvider
+     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
+     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
      */
     public function removeRedundantClassesMinifiesClassAttributes($html, array $classesToKeep)
     {
