@@ -33,6 +33,8 @@ namespace Pelago\Emogrifier\Utilities;
  * `   }
  * ` }
  *
+ * @internal
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class CssConcatenator
