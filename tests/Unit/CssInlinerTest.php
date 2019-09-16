@@ -33,7 +33,7 @@ class CssInlinerTest extends TestCase
                 <p class="p-7"><a
                     href="https://example.org/"
                     data-ascii-1="! &quot; # $ % &amp; &#039; ( ) * + , - . / : ; &lt; = &gt; ?"
-                    data-ascii-2="@ [ \ ] ^ _ ` { | } ~"
+                    data-ascii-2="@ [ \\ ] ^ _ ` { | } ~"
                 ><span id="example-org">link text</span></a><input disabled></p>
             </body>
         </html>
@@ -2675,7 +2675,7 @@ class CssInlinerTest extends TestCase
         $result = $subject->getMatchingUninlinableSelectors();
 
         foreach ($selectors as $selector) {
-            static::assertContains($selector, $result);
+            self::assertContains($selector, $result);
         }
     }
 
@@ -2705,7 +2705,7 @@ class CssInlinerTest extends TestCase
 
         $result = $subject->getMatchingUninlinableSelectors();
 
-        static::assertSame([], $result);
+        self::assertSame([], $result);
     }
 
     /**

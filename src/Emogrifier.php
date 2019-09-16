@@ -1063,9 +1063,8 @@ class Emogrifier
 
         if ($hasUnmatchablePseudo) {
             return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
-        } else {
-            return $notComponentWithAnyPrecedingWhitespace;
         }
+        return $notComponentWithAnyPrecedingWhitespace;
     }
 
     /**
