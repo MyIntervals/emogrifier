@@ -20,22 +20,22 @@ class HtmlPruner extends AbstractHtmlProcessor
     const DISPLAY_NONE_MATCHER = '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]';
 
     /**
-     * Removes nodes that have a "display: none;" style.
+     * Removes elements that have a "display: none;" style.
      *
      * @return self fluent interface
      */
-    public function removeInvisibleNodes()
+    public function removeElementsWithDisplayNone()
     {
-        $nodesWithStyleDisplayNone = $this->xPath->query(self::DISPLAY_NONE_MATCHER);
-        if ($nodesWithStyleDisplayNone->length === 0) {
+        $elementsWithStyleDisplayNone = $this->xPath->query(self::DISPLAY_NONE_MATCHER);
+        if ($elementsWithStyleDisplayNone->length === 0) {
             return $this;
         }
 
-        /** @var \DOMNode $node */
-        foreach ($nodesWithStyleDisplayNone as $node) {
-            $parentNode = $node->parentNode;
+        /** @var \DOMNode $element */
+        foreach ($elementsWithStyleDisplayNone as $element) {
+            $parentNode = $element->parentNode;
             if ($parentNode !== null) {
-                $parentNode->removeChild($node);
+                $parentNode->removeChild($element);
             }
         }
 

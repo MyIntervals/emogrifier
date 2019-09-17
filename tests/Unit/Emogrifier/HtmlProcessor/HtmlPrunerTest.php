@@ -48,11 +48,11 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function removeInvisibleNodesProvidesFluentInterface()
+    public function removeElementsWithDisplayNoneProvidesFluentInterface()
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
-        $result = $subject->removeInvisibleNodes();
+        $result = $subject->removeElementsWithDisplayNone();
 
         self::assertSame($subject, $result);
     }
@@ -77,11 +77,11 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider displayNoneDataProvider
      */
-    public function removeInvisibleNodesRemovesNodesWithDisplayNone($displayNone)
+    public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone($displayNone)
     {
         $subject = HtmlPruner::fromHtml('<html><body><div style="' . $displayNone . '"></div></body></html>');
 
-        $subject->removeInvisibleNodes();
+        $subject->removeElementsWithDisplayNone();
 
         self::assertNotContains('<div', $subject->render());
     }
