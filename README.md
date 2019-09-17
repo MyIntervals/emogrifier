@@ -67,7 +67,7 @@ You can also use the `DOMDocument` created by `CssInliner` to process it further
 ```php
 $domDocument = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
 $prunedHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($domDocument)
-  ->removeInvisibleNodes->render();
+  ->removeElementsWithDisplayNone()->render();
 ```
 
 ### Normalizing and cleaning up HTML

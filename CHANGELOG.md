@@ -17,6 +17,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#698](https://github.com/MyIntervals/emogrifier/pull/698))
 
 ### Changed
+- Rename `HtmlPruner::removeInvisibleNodes` to
+  `HtmlPruner::removeElementsWithDisplayNone`
+  ([#717](https://github.com/MyIntervals/emogrifier/issues/717),
+  [#718](https://github.com/MyIntervals/emogrifier/pull/718))
 - Mark the utility classes as internal
   ([#715](https://github.com/MyIntervals/emogrifier/pull/715))
 - Move utility classes to the `Pelago\Emogrifier\Utilities` namespace
