@@ -60,53 +60,53 @@ class HtmlPruner extends AbstractHtmlProcessor
      */
     public function removeRedundantClasses(array $classesToKeep = [])
     {
-        $nodesWithClassAttribute = $this->xPath->query('//*[@class]');
+        $elementsWithClassAttribute = $this->xPath->query('//*[@class]');
 
         if ($classesToKeep !== []) {
-            $this->removeClassesFromNodes($nodesWithClassAttribute, $classesToKeep);
+            $this->removeClassesFromElements($elementsWithClassAttribute, $classesToKeep);
         } else {
             // Avoid unnecessary processing if there are no classes to keep.
-            $this->removeClassAttributeFromNodes($nodesWithClassAttribute);
+            $this->removeClassAttributeFromElements($elementsWithClassAttribute);
         }
 
         return $this;
     }
 
     /**
-     * Removes classes from the `class` attribute of each element in `$nodeList`, except any in `$classesToKeep`,
+     * Removes classes from the `class` attribute of each element in `$elements`, except any in `$classesToKeep`,
      * removing the `class` attribute itself if the resultant list is empty.
      *
-     * @param \DOMNodeList $nodeList
+     * @param \DOMNodeList $elements
      * @param string[] $classesToKeep
      *
      * @return void
      */
-    private function removeClassesFromNodes(\DOMNodeList $nodeList, array $classesToKeep)
+    private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep)
     {
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
-        foreach ($nodeList as $node) {
-            $nodeClasses = \preg_split('/\\s++/', \trim($node->getAttribute('class')));
-            $nodeClassesToKeep = $classesToKeepIntersector->intersectWith($nodeClasses);
-            if ($nodeClassesToKeep !== []) {
-                $node->setAttribute('class', \implode(' ', $nodeClassesToKeep));
+        foreach ($elements as $element) {
+            $elementClasses = \preg_split('/\\s++/', \trim($element->getAttribute('class')));
+            $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
+            if ($elementClassesToKeep !== []) {
+                $element->setAttribute('class', \implode(' ', $elementClassesToKeep));
             } else {
-                $node->removeAttribute('class');
+                $element->removeAttribute('class');
             }
         }
     }
 
     /**
-     * Removes the `class` attribute from each element in `$nodeList`.
+     * Removes the `class` attribute from each element in `$elements`.
      *
-     * @param \DOMNodeList $nodeList
+     * @param \DOMNodeList $elements
      *
      * @return void
      */
-    private function removeClassAttributeFromNodes(\DOMNodeList $nodeList)
+    private function removeClassAttributeFromElements(\DOMNodeList $elements)
     {
-        foreach ($nodeList as $node) {
-            $node->removeAttribute('class');
+        foreach ($elements as $element) {
+            $element->removeAttribute('class');
         }
     }
 }
