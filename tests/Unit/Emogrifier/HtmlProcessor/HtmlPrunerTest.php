@@ -102,7 +102,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return string[][][]
      */
-    public function classesToKeepDataProvider()
+    public function provideClassesToKeep()
     {
         return [
             'no classes to keep' => [[]],
@@ -116,7 +116,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @param string[] $classesToKeep
      *
-     * @dataProvider classesToKeepDataProvider
+     * @dataProvider provideClassesToKeep
      */
     public function removeRedundantClassesPreservesHtmlWithoutClasses(array $classesToKeep)
     {
@@ -131,7 +131,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function htmlAndNonMatchedClassesDataProvider()
+    public function provideHtmlAndNonMatchedClasses()
     {
         return [
             '1 attribute, 1 class, no classes to keep' => [
@@ -179,7 +179,7 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string[] $classesToKeep
      *
-     * @dataProvider htmlAndNonMatchedClassesDataProvider
+     * @dataProvider provideHtmlAndNonMatchedClasses
      */
     public function removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep($html, array $classesToKeep)
     {
@@ -193,7 +193,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider()
+    public function provideHtmlAndSomeMatchedClasses()
     {
         return [
             '2 attributes, 1 different class each, 1st class to be kept' => [
@@ -227,7 +227,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider()
+    public function provideHtmlWithExtraWhitespaceAndSomeMatchedClasses()
     {
         return [
             '1 attribute, 2 classes with extra whitespace, 1 to be kept' => [
@@ -250,8 +250,8 @@ class HtmlPrunerTest extends TestCase
      * @param string[] $classesToKeep
      * @param string[] $classesExpectedToBeRemoved
      *
-     * @dataProvider htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
-     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
+     * @dataProvider provideHtmlAndSomeMatchedClasses
+     * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      */
     public function removeRedundantClassesRemovesClassesNotToKeep(
         $html,
@@ -271,7 +271,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function htmlAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider()
+    public function provideHtmlAndAllMatchedClasses()
     {
         return [
             '1 attribute, 1 class, that class to be kept' => [
@@ -296,7 +296,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider()
+    public function provideHtmlWithExtraWhitespaceAndAllMatchedClasses()
     {
         return [
             '1 attribute, 1 class with extra whitespace, that class to be kept' => [
@@ -320,10 +320,10 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string[] $classesToKeep
      *
-     * @dataProvider htmlAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
-     * @dataProvider htmlAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
-     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
-     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
+     * @dataProvider provideHtmlAndSomeMatchedClasses
+     * @dataProvider provideHtmlAndAllMatchedClasses
+     * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
+     * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
     public function removeRedundantClassesNotRemovesClassesToKeep($html, array $classesToKeep)
     {
@@ -349,8 +349,8 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string[] $classesToKeep
      *
-     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithClassesExpectedToBeRemovedDataProvider
-     * @dataProvider htmlWithExtraWhitespaceAndMatchedClassesWithNoClassesExpectedToBeRemovedDataProvider
+     * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
+     * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
     public function removeRedundantClassesMinifiesClassAttributes($html, array $classesToKeep)
     {
