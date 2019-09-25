@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `> :first-child` and `> :last-child` in selectors
+  ([#384](https://github.com/MyIntervals/emogrifier/issues/384),
+  [#720](https://github.com/MyIntervals/emogrifier/pull/720))
 - Add an `ArrayIntersector` class
   ([#708](https://github.com/MyIntervals/emogrifier/pull/708),
   [#710](https://github.com/MyIntervals/emogrifier/pull/710))
