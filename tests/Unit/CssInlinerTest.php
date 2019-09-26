@@ -30,11 +30,18 @@ class CssInlinerTest extends TestCase
                 <p class="p-4" id="p4"><span title="avez-vous">some</span> more <span id="text">text</span></p>
                 <p class="p-5 additional-class"><span title="buenas dias bom dia">some</span> more text</p>
                 <p class="p-6"><span title="title: subtitle; author">some</span> more text</p>
-                <p class="p-7"><a
-                    href="https://example.org/"
-                    data-ascii-1="! &quot; # $ % &amp; &#039; ( ) * + , - . / : ; &lt; = &gt; ?"
-                    data-ascii-2="@ [ \\ ] ^ _ ` { | } ~"
-                ><span id="example-org">link text</span></a><input disabled></p>
+                <p class="p-7">
+                    <a
+                        href="https://example.org/"
+                        data-ascii-1="! &quot; # $ % &amp; &#039; ( ) * + , - . / : ; &lt; = &gt; ?"
+                        data-ascii-2="@ [ \\ ] ^ _ ` { | } ~"
+                    >
+                        <span id="example-org">link text</span>
+                    </a>
+                    <input disabled>
+                    <input type="text">
+                    <input disabled type="text" value="some anytext text">
+                </p>
             </body>
         </html>
     ';
@@ -439,6 +446,18 @@ class CssInlinerTest extends TestCase
                 'a[data-ascii-1*=";"] > #example-org { %1$s }',
                 '<span id="example-org" style="%1$s">',
             ],
+            'type, attribute exact value & Boolean attribute presence => with exact attribute match' => [
+                'input[type="text"][disabled] { %1$s }',
+                '<input disabled type="text" value="some anytext text" style="%1$s">',
+            ],
+            'type, attribute value with * & attribute exact value => with exact attribute match' => [
+                'input[value*="anytext"][type="text"] { %1$s }',
+                '<input disabled type="text" value="some anytext text" style="%1$s">',
+            ],
+            'descendant of universal, type, attribute value with * & attribute exact value => with attribute match' => [
+                '* input[value*="anytext"][type="text"] { %1$s }',
+                '<input disabled type="text" value="some anytext text" style="%1$s">',
+            ],
             ':first-child => 1st of many' => [':first-child { %1$s }', '<p class="p-1" style="%1$s">'],
             'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
             'child combinator & :first-child => 1st of many' => [
@@ -625,6 +644,14 @@ class CssInlinerTest extends TestCase
             'child of attribute value with * matching ; => not child of parent without expected part match' => [
                 'a[data-ascii-2*=";"] > #example-org { %1$s }',
                 '<span id="example-org">',
+            ],
+            'type, attribute exact value & Boolean attribute presence => not with only exact attribute match' => [
+                'input[type="text"][disabled] { %1$s }',
+                '<input type="text">',
+            ],
+            'type, attribute exact value & Boolean attribute presence => not with only attribute presence' => [
+                'input[type="text"][disabled] { %1$s }',
+                '<input disabled>',
             ],
             ':first-child => not 2nd of many' => [':first-child { %1$s }', '<p class="p-2">'],
             ':first-child => not last of many' => [':first-child { %1$s }', '<p class="p-7">'],

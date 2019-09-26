@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support multiple attributes selectors
+  ([#385](https://github.com/MyIntervals/emogrifier/issues/385),
+  [#721](https://github.com/MyIntervals/emogrifier/pull/721))
 - Support `> :first-child` and `> :last-child` in selectors
   ([#384](https://github.com/MyIntervals/emogrifier/issues/384),
   [#720](https://github.com/MyIntervals/emogrifier/pull/720))
