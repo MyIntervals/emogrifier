@@ -678,6 +678,10 @@ class EmogrifierTest extends TestCase
                 'body span[title~="buenas"] { %1$s }',
                 '<span title="buenas dias" style="%1$s">',
             ],
+            'descendent type & attribute value with ^ => with type & attribute prefix match' => [
+                'p span[title^=bon] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
             'descendant of type & class: type & attribute exact value, no quotes => with type & exact match (#381)' => [
                 'p.p-2 span[title=bonjour] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -829,6 +833,10 @@ class EmogrifierTest extends TestCase
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
+            'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
+                'p span[title^=njo] { %1$s }',
+                '<span title="bonjour">',
+            ],
             'type & :first-child => not 2nd of many' => ['p:first-child { %1$s }', '<p class="p-2">'],
             'type & :first-child => not last of many' => ['p:first-child { %1$s }', '<p class="p-7">'],
             'type & :last-child => not 1st of many' => ['p:last-child { %1$s }', '<p class="p-1">'],
