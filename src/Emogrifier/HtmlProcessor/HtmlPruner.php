@@ -54,7 +54,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      * This method also has the (presumably beneficial) side-effect of minifying (removing superfluous whitespace from)
      * `class` attributes.
      *
-     * @param string[] $classesToKeep class names that should not be removed
+     * @param string[] $classesToKeep names of classes that should not be removed
      *
      * @return self fluent interface
      */

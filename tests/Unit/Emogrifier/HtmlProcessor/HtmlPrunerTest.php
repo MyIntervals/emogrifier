@@ -334,12 +334,7 @@ class HtmlPrunerTest extends TestCase
         $result = $subject->render();
         foreach ($classesToKeep as $class) {
             $expectedInstanceCount = \substr_count($html, $class);
-            self::assertSame(
-                $expectedInstanceCount,
-                \substr_count($result, $class),
-                'asserting \'' . $result . '\' contains ' . $expectedInstanceCount . ' instance(s) of "' . $class
-                . '"'
-            );
+            self::assertSubstringCount($expectedInstanceCount, $result, $class);
         }
     }
 
@@ -360,7 +355,37 @@ class HtmlPrunerTest extends TestCase
 
         \preg_match_all('/class="([^"]*+)"/', $subject->render(), $classAttributeMatches);
         foreach ($classAttributeMatches[1] as $classAttributeValue) {
-            self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $classAttributeValue);
+            self::assertMinified($classAttributeValue);
         }
+    }
+
+    /**
+     * Asserts that the number of occurrences of `$needle` within the string `$haystack` is as expected.
+     *
+     * @param int $expectedCount
+     * @param string $haystack
+     * @param string $needle
+     *
+     * @throws \PHPUnit_Framework_AssertionFailedError
+     */
+    public static function assertSubstringCount($expectedCount, $haystack, $needle)
+    {
+        self::assertSame(
+            $expectedCount,
+            \substr_count($haystack, $needle),
+            'asserting \'' . $haystack . '\' contains ' . $expectedCount . ' instance(s) of "' . $needle . '"'
+        );
+    }
+
+    /**
+     * Asserts that a string does not contain consecutive whitespace characters, or begin or end with whitespace.
+     *
+     * @param string $string
+     *
+     * @throws \PHPUnit_Framework_AssertionFailedError
+     */
+    public static function assertMinified($string)
+    {
+        self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string);
     }
 }
