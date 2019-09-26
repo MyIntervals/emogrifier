@@ -219,7 +219,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ignored, [#507](https://github.com/MyIntervals/emogrifier/pull/507))
 - Allow attribute selectors in descendants
   ([#506](https://github.com/MyIntervals/emogrifier/pull/506),
-  [#381](https://github.com/MyIntervals/emogrifier/issues/381))
+  [#381](https://github.com/MyIntervals/emogrifier/issues/381),
+  [#443](https://github.com/MyIntervals/emogrifier/issues/443))
 - Allow adjacent sibling CSS selector combinator in minified CSS
   ([#505](https://github.com/MyIntervals/emogrifier/pull/505))
 - Allow CSS property values containing newlines

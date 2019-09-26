@@ -390,6 +390,10 @@ class CssInlinerTest extends TestCase
                 'body span[title~="buenas"] { %1$s }',
                 '<span title="buenas dias" style="%1$s">',
             ],
+            'descendent type & attribute value with ^ => with type & attribute prefix match' => [
+                'p span[title^=bon] { %1$s }',
+                '<span title="bonjour" style="%1$s">',
+            ],
             'descendant of type & class: type & attribute exact value, no quotes => with type & exact match (#381)' => [
                 'p.p-2 span[title=bonjour] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -621,6 +625,10 @@ class CssInlinerTest extends TestCase
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
+            'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
+                'p span[title^=njo] { %1$s }',
+                '<span title="bonjour">',
+            ],
             'child of attribute presence with - in name => not child of parent without expected attribute' => [
                 'a[data-some-other] > #example-org { %1$s }',
                 '<span id="example-org">',
