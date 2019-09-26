@@ -56,18 +56,60 @@ See https://getcomposer.org/ for more information and documentation.
 
 ### Inlining Css
 
-This is how to use the `CssInliner` class:
+The most basic way to use the `CssInliner` class is to create an instance with
+the original HTML, inline the external CSS, and then get back the resulting
+HTML:
 
 ```php
-$visualHtml = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->render();
+use Pelago\Emogrifier\CssInliner;
+
+…
+
+$visualHtml = CssInliner::fromHtml($html)->inlineCss($css)->render();
 ```
 
-You can also use the `DOMDocument` created by `CssInliner` to process it further:
+If there is no external CSS file and all CSS is located within `<style>`
+elements in the HTML, you can omit the `$css` parameter:
 
 ```php
-$domDocument = \Pelago\Emogrifier\CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
-$prunedHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlPruner::fromDomDocument($domDocument)
-  ->removeElementsWithDisplayNone()->render();
+$visualHtml = CssInliner::fromHtml($html)->inlineCss()->render();
+```
+
+If you would like to get back only the content of the `<body>` element instead of
+the complete HTML document, you can use the `renderBodyContent` method instead:
+
+```php
+$bodyContent = $visualHtml = CssInliner::fromHtml($html)->inlineCss()
+  ->renderBodyContent();
+```
+
+If you would like to modify the inlining process with any of the available
+[options](#options), you will need to call the corresponding methods
+before inlining the CSS. The code then would look like this:
+
+```php
+$visualHtml = CssInliner::fromHtml($html)->disableStyleBlocksParsing()
+  ->inlineCss($css)->render();
+```
+
+There are also some other HTML-processing classes available
+(all of which are subclasses of `AbstractHtmlProcessor`) which you can use
+to further change the HTML after inlining the CSS.
+(For more details on the classes, please have a look at the sections below.)
+`CssInliner` and all HTML-processing classes can share the same `DOMDocument`
+instance to work on:
+
+```php
+use Pelago\Emogrifier\CssInliner;
+use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
+use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
+
+…
+
+$domDocument = CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
+HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone();
+$finalHtml = CssToAttributeConverter::fromDomDocument($domDocument)
+  ->convertCssToVisualAttributes()->render();
 ```
 
 ### Normalizing and cleaning up HTML
@@ -82,7 +124,11 @@ The `HtmlNormalizer` class normalizes the given HTML in the following ways:
 The class can be used like this:
 
 ```php
-$cleanHtml = \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer::fromHtml($rawHtml)->render();
+use Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer;
+
+…
+
+$cleanHtml = HtmlNormalizer::fromHtml($rawHtml)->render();
 ```
 
 ### Converting CSS styles to visual HTML attributes
@@ -95,16 +141,46 @@ will be converted to `width="100"`.
 The class can be used like this:
 
 ```php
-$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromHtml($rawHtml);
-$visualHtml = $converter->convertCssToVisualAttributes()->render();
+use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
+
+…
+
+$visualHtml = CssToAttributeConverter::fromHtml($rawHtml)
+  ->convertCssToVisualAttributes()->render();
 ```
 
 You can also have the `CssToAttributeConverter` work on a `DOMDocument`:
 
 ```php
-$converter = \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter::fromDomDocument($domDocument);
-$visualHtml = $converter->convertCssToVisualAttributes()->render();
+$visualHtml = CssToAttributeConverter::fromDomDocument($domDocument)
+  ->convertCssToVisualAttributes()->render();
 ```
+
+### Options
+
+There are several options that you can set on the `CssInliner` instance before
+calling the `inlineCss` method (or on the `Emogrifier` instance before calling
+the `emogrify` method):
+
+* `->disableStyleBlocksParsing()` - By default, `CssInliner` will grab
+  all `<style>` blocks in the HTML and will apply the CSS styles as inline
+  "style" attributes to the HTML. The `<style>` blocks will then be removed
+  from the HTML. If you want to disable this functionality so that `CssInliner`
+  leaves these `<style>` blocks in the HTML and does not parse them, you should
+  use this option. If you use this option, the contents of the `<style>` blocks
+  will _not_ be applied as inline styles and any CSS you want `CssInliner` to
+  use must be passed in as described in the [Usage section](#usage) above.
+* `->disableInlineStylesParsing()` - By default, `CssInliner`
+  preserves all of the "style" attributes on tags in the HTML you pass to it.
+  However if you want to discard all existing inline styles in the HTML before
+  the CSS is applied, you should use this option.
+* `->addAllowedMediaType(string $mediaName)` - By default, `CssInliner`
+  will keep only media types `all`, `screen` and `print`. If you want to keep
+  some others, you can use this method to define them.
+* `->removeAllowedMediaType(string $mediaName)` - You can use this
+  method to remove media types that Emogrifier keeps.
+* `->addExcludedSelector(string $selector)` - Keeps elements from
+  being affected by CSS inlining.
 
 ### Using the legacy Emogrifier class
 
@@ -152,30 +228,47 @@ the complete HTML document, you can use the `emogrifyBodyContent` instead:
 $bodyContent = $emogrifier->emogrifyBodyContent();
 ```
 
-#### Options
+### Migrating from `Emogrifier` to `CssInliner`
 
-There are several options that you can set on the Emogrifier object before
-calling the `emogrify` method:
+#### Minimal example
 
-* `$emogrifier->disableStyleBlocksParsing()` - By default, Emogrifier will grab
-  all `<style>` blocks in the HTML and will apply the CSS styles as inline
-  "style" attributes to the HTML. The `<style>` blocks will then be removed
-  from the HTML. If you want to disable this functionality so that Emogrifier
-  leaves these `<style>` blocks in the HTML and does not parse them, you should
-  use this option. If you use this option, the contents of the `<style>` blocks
-  will _not_ be applied as inline styles and any CSS you want Emogrifier to
-  use must be passed in as described in the [Usage section](#usage) above.
-* `$emogrifier->disableInlineStylesParsing()` - By default, Emogrifier
-  preserves all of the "style" attributes on tags in the HTML you pass to it.
-  However if you want to discard all existing inline styles in the HTML before
-  the CSS is applied, you should use this option.
-* `$emogrifier->addAllowedMediaType(string $mediaName)` - By default, Emogrifier
-  will keep only media types `all`, `screen` and `print`. If you want to keep
-  some others, you can use this method to define them.
-* `$emogrifier->removeAllowedMediaType(string $mediaName)` - You can use this
-  method to remove media types that Emogrifier keeps.
-* `$emogrifier->addExcludedSelector(string $selector)` - Keeps elements from
-  being affected by emogrification.
+Old code using `Emogrifier`:
+
+```php
+$emogrifier = new Emogrifier($html);
+$html = $emogrifier->emogrify();
+```
+
+New code using `CssInliner`:
+
+```php
+$html = CssInliner::fromHtml($html)->inlineCss()->render();
+```
+
+NB: In this example, the old code removes elements with `display: none;`
+while the new code does not, as the default behaviors of the old and
+the new class differ in this regard.
+
+#### More complex example
+
+Old code using `Emogrifier`:
+
+```php
+$emogrifier = new Emogrifier($html, $css);
+$emogrifier->enableCssToHtmlMapping();
+
+$html = $emogrifier->emogrify();
+```
+
+New code using `CssInliner` and family:
+
+```php
+$domDocument = CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
+
+HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone(),
+$html = CssToAttributeConverter::fromDomDocument($domDocument)
+  ->convertCssToVisualAttributes()->render();
+```
 
 ## Supported CSS selectors
 
@@ -227,10 +320,10 @@ The following selectors are not implemented yet:
     * [http://www.email-standards.org/](http://www.email-standards.org/)
     * [https://www.campaignmonitor.com/css/](https://www.campaignmonitor.com/css/)
     * [http://templates.mailchimp.com/resources/email-client-css-support/](http://templates.mailchimp.com/resources/email-client-css-support/)
-* All CSS attributes that apply to a node will be applied, even if they are
+* All CSS attributes that apply to an element will be applied, even if they are
   redundant. For example, if you define a font attribute _and_ a font-size
-  attribute, both attributes will be applied to that node (in other words, the
-  more specific attribute will not be combined into the more general
+  attribute, both attributes will be applied to that element (in other words,
+  the more specific attribute will not be combined into the more general
   attribute).
 * There's a good chance you might encounter problems if your HTML is not
   well-formed and valid (DOMDocument might complain). If you get problems like
