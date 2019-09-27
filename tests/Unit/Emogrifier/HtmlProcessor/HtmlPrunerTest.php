@@ -368,7 +368,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    public static function assertSubstringCount($expectedCount, $haystack, $needle)
+    private static function assertSubstringCount($expectedCount, $haystack, $needle)
     {
         self::assertSame(
             $expectedCount,
@@ -384,7 +384,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    public static function assertMinified($string)
+    private static function assertMinified($string)
     {
         self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string);
     }
