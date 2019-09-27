@@ -40,6 +40,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#691](https://github.com/MyIntervals/emogrifier/pull/691))
 
 ### Deprecated
+- Support for PHP 5.6 will be removed in Emogrifier 4.0.
 - Deprecate the `Emogrifier` class
   ([#701](https://github.com/MyIntervals/emogrifier/pull/701))
 
