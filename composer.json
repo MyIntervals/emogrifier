@@ -69,6 +69,7 @@
         "php:fix": "php-cs-fixer --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "ci:php:lint": "find config src tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l",
         "ci:php:sniff": "phpcs config src tests",
+        "ci:php:fixer": "php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "phpmd src text config/phpmd.xml",
         "ci:tests:unit": "phpunit tests/",
         "ci:tests": [

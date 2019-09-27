@@ -62,3 +62,8 @@ script:
   else
     echo "Skipped PHP_CodeSniffer due to insufficient PHP version: $(composer php:version)";
   fi;
+
+- >
+  echo;
+  echo "Running PHP-CS-Fixer";
+  composer ci:php:fixer;

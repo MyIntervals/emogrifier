@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Check on Travis that PHP-CS-Fixer will not change anything
+  [#727](https://github.com/MyIntervals/emogrifier/pull/727))
 - Support `:not(…)` as an entire selector
   ([#469](https://github.com/MyIntervals/emogrifier/issues/469),
   [#725](https://github.com/MyIntervals/emogrifier/pull/725))
