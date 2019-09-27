@@ -524,9 +524,9 @@ class CssInlinerTest extends TestCase
                 'p:nth-of-type(-n+3) { %1$s }',
                 '<p class="p-4" id="p4" style="%1$s">',
             ],
-            // broken: :not with type => other type
-            // broken: :not with class => no class
-            // broken: :not with class => other class
+            ':not with type => other type' => [':not(p) { %1$s }', '<span style="%1$s">'],
+            ':not with class => no class' => [':not(.p-1) { %1$s }', '<span style="%1$s">'],
+            ':not with class => other class' => [':not(.p-1) { %1$s }', '<p class="p-2" style="%1$s">'],
             'type & :not with class => without class' => ['span:not(.foo) { %1$s }', '<span style="%1$s">'],
             'type & :not with class => with other class' => ['p:not(.foo) { %1$s }', '<p class="p-1" style="%1$s">'],
         ];
@@ -724,6 +724,8 @@ class CssInlinerTest extends TestCase
                 'p:nth-of-type(-n+3) { %1$s }',
                 '<p class="p-6">',
             ],
+            ':not with type => not that type' => [':not(p) { %1$s }', '<p class="p-1">'],
+            ':not with class => not that class' => [':not(.p-1) { %1$s }', '<p class="p-1">'],
             'type & :not with class => not with class' => ['p:not(.p-1) { %1$s }', '<p class="p-1">'],
         ];
     }

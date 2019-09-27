@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `:not(…)` as an entire selector
+  ([#469](https://github.com/MyIntervals/emogrifier/pull/469),
+  [#725](https://github.com/MyIntervals/emogrifier/pull/725))
 - Add `HtmlPruner::removeRedundantClasses`
   ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
   [#708](https://github.com/MyIntervals/emogrifier/pull/708))
