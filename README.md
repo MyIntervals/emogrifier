@@ -106,8 +106,10 @@ use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 
 …
 
-$domDocument = CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
-HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone();
+$cssInliner = CssInliner::fromHtml($html)->inlineCss($css);
+$domDocument = $cssInliner->getDomDocument();
+HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone()
+  ->removeRedundantClassesAfterCssInlined($cssInliner);
 $finalHtml = CssToAttributeConverter::fromDomDocument($domDocument)
   ->convertCssToVisualAttributes()->render();
 ```
@@ -154,6 +156,37 @@ You can also have the `CssToAttributeConverter` work on a `DOMDocument`:
 ```php
 $visualHtml = CssToAttributeConverter::fromDomDocument($domDocument)
   ->convertCssToVisualAttributes()->render();
+```
+
+### Removing redundant content and attributes from the HTML
+
+The `HtmlPruner` class can reduce the size of the HTML by removing elements with
+a `display: none` style declaration, and/or removing classes from `class`
+attributes that are not required.
+
+It can be used like this:
+
+```php
+use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
+
+…
+
+$prunedHtml = HtmlPruner::fromHtml($html)->removeElementsWithDisplayNone()
+  ->removeRedundantClasses($classesToKeep)->render();
+```
+
+The `removeRedundantClasses` method accepts a whitelist of names of classes that
+should be retained.  If this is a post-processing step after inlining CSS, you
+can alternatively use `removeRedundantClassesAfterCssInlined`, passing it the
+`CssInliner` instance that has inlined the CSS (and having the `HtmlPruner` work
+on the `DOMDocument`).  This will use information from the `CssInliner` to
+determine which classes are still required (namely, those used in uninlinable
+rules that have been copied to a `<style>` element):
+
+```php
+$prunedHtml = HtmlPruner::fromDomDocument($cssInliner->getDomDocument())
+  ->removeElementsWithDisplayNone()
+  ->removeRedundantClassesAfterCssInlined($cssInliner)->render();
 ```
 
 ### Options

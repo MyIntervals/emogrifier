@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add `HtmlPruner::removeRedundantClassesAfterCssInlined`
+  ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
+  [#724](https://github.com/MyIntervals/emogrifier/pull/724))
 - Check on Travis that PHP-CS-Fixer will not change anything
   [#727](https://github.com/MyIntervals/emogrifier/pull/727))
 - Support `:not(…)` as an entire selector

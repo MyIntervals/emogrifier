@@ -2,6 +2,7 @@
 
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
 use PHPUnit\Framework\TestCase;
@@ -356,6 +357,182 @@ class HtmlPrunerTest extends TestCase
         \preg_match_all('/class="([^"]*+)"/', $subject->render(), $classAttributeMatches);
         foreach ($classAttributeMatches[1] as $classAttributeValue) {
             self::assertMinified($classAttributeValue);
+        }
+    }
+
+    /**
+     * Builds a `CssInliner` fixture with the given HTML in a state where the given CSS has been inlined, and an
+     * `HtmlPruner` subject sharing the same `DOMDocument`.
+     *
+     * @param string $html
+     * @param string $css
+     *
+     * @return (CssInliner|HtmlPruner)[] The `CssInliner` fixture is in the `'cssInliner'` key and the `HtmlPruner`
+     *         subject is in the `'subject'` key.
+     */
+    private function buildSubjectAndCssInlinerWithCssInlined($html, $css)
+    {
+        $cssInliner = CssInliner::fromHtml($html);
+        $cssInliner->inlineCss($css);
+
+        $subject = HtmlPruner::fromDomDocument($cssInliner->getDomDocument());
+
+        return \compact('subject', 'cssInliner');
+    }
+
+    /**
+     * @test
+     */
+    public function removeRedundantClassesAfterCssInlinedProvidesFluentInterface()
+    {
+        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html></html>', ''));
+
+        $result = $subject->removeRedundantClassesAfterCssInlined($cssInliner);
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function removeRedundantClassesAfterCssInlinedThrowsExceptionIfInlineCssNotCalled()
+    {
+        $this->expectException(\BadMethodCallException::class);
+
+        $cssInliner = CssInliner::fromHtml('<html></html>');
+        $subject = HtmlPruner::fromDomDocument($cssInliner->getDomDocument());
+
+        $subject->removeRedundantClassesAfterCssInlined($cssInliner);
+    }
+
+    /**
+     * @return (string|string[])[][]
+     */
+    public function provideClassesNotInUninlinableRules()
+    {
+        return [
+            'inlinable rule with different class' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'CSS' => '.bar { color: red; }',
+                'classes expected to be removed' => ['foo'],
+            ],
+            'uninlinable rule with different class' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'CSS' => '.bar:hover { color: red; }',
+                'classes expected to be removed' => ['foo'],
+            ],
+            'inlinable rule with matching class' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'CSS' => '.foo { color: red; }',
+                'classes expected to be removed' => ['foo'],
+            ],
+            '2 instances of class to be removed' => [
+                'HTML' => '<p class="foo">hello</p><p class="foo">world</p>',
+                'CSS' => '.foo { color: red; }',
+                'classes expected to be removed' => ['foo'],
+            ],
+            '2 different classes to be removed' => [
+                'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
+                'CSS' => '.foo { color: red; }',
+                'classes expected to be removed' => ['foo', 'bar'],
+            ],
+            '2 different classes, 1 in inlinable rule, 1 in uninlinable rule' => [
+                'HTML' => '<p class="foo bar">hello</p>',
+                'CSS' => '.foo { color: red; } .bar:hover { color: green; }',
+                'classes expected to be removed' => ['foo'],
+            ],
+            'class with hyphen, underscore, uppercase letter and number in name' => [
+                'HTML' => '<p class="foo-2_A">hello</p>',
+                'CSS' => '.foo-2_A { color: red; }',
+                'classes expected to be removed' => ['foo-2_A'],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     * @param string $css
+     * @param string[] $classesExpectedToBeRemoved
+     *
+     * @dataProvider provideClassesNotInUninlinableRules
+     */
+    public function removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules(
+        $html,
+        $css,
+        array $classesExpectedToBeRemoved = []
+    ) {
+        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css));
+
+        $subject->removeRedundantClassesAfterCssInlined($cssInliner);
+
+        $result = $subject->render();
+        foreach ($classesExpectedToBeRemoved as $class) {
+            self::assertNotContains($class, $result);
+        }
+    }
+
+    /**
+     * @return (string|string[])[][]
+     */
+    public function provideClassesInUninlinableRules()
+    {
+        return [
+            'media rule' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'CSS' => '@media (max-width: 640px) { .foo { color: green; } }',
+                'classes to be kept' => ['foo'],
+            ],
+            'dynamic pseudo-class' => [
+                'HTML' => '<p class="foo">hello</p>',
+                'CSS' => '.foo:hover { color: green; }',
+                'classes to be kept' => ['foo'],
+            ],
+            '2 classes, in different uninlinable rules' => [
+                'HTML' => '<p class="foo bar">hello</p>',
+                'CSS' => '.foo:hover { color: green; } @media (max-width: 640px) { .bar { color: green; } }',
+                'classes to be kept' => ['foo', 'bar'],
+            ],
+            '1 class in uninlinable rule, 1 in inlinable rule' => [
+                'HTML' => '<p class="foo bar">hello</p>',
+                'CSS' => '.foo { color: red; } .bar:hover { color: green; }',
+                'classes to be kept' => ['bar'],
+            ],
+            '2 classes in same selector' => [
+                'HTML' => '<p class="foo bar">hello</p>',
+                'CSS' => '.foo.bar:hover { color: green; }',
+                'classes to be kept' => ['foo', 'bar'],
+            ],
+            'class with hyphen, underscore, uppercase letter and number in name' => [
+                'HTML' => '<p class="foo-2_A">hello</p>',
+                'CSS' => '.foo-2_A:hover { color: green; }',
+                'classes to be kept' => ['foo-2_A'],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     * @param string $css
+     * @param string[] $classesToBeKept
+     *
+     * @dataProvider provideClassesInUninlinableRules
+     */
+    public function removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules(
+        $html,
+        $css,
+        array $classesToBeKept = []
+    ) {
+        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css));
+
+        $subject->removeRedundantClassesAfterCssInlined($cssInliner);
+
+        $result = $subject->render();
+        foreach ($classesToBeKept as $class) {
+            self::assertContains($class, $result);
         }
     }
 
