@@ -41,7 +41,7 @@ class ArrayIntersector
      *
      * @param (int|string)[] $array
      *
-     * @return (int|string)[] Returns an array containing all of the values in `$array` whose values exist the array
+     * @return (int|string)[] Returns an array containing all of the values in `$array` whose values exist in the array
      *         with which this object was constructed.  Note that keys are preserved, order is maintained, but
      *         duplicates are removed.
      */
