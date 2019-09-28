@@ -365,9 +365,10 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssRuleMatches($css)
     {
-        $ruleMatches = [];
+        $cssWithoutComments = $this->removeCssComments($css);
+        $splitCss = $this->splitCssAndMediaQuery($cssWithoutComments);
 
-        $splitCss = $this->splitCssAndMediaQuery($css);
+        $ruleMatches = [];
         foreach ($splitCss as $cssPart) {
             // process each part for selectors and definitions
             \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
@@ -840,6 +841,18 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
+     * Removes comments from the supplied CSS.
+     *
+     * @param string $css
+     *
+     * @return string CSS with the comments removed
+     */
+    private function removeCssComments($css)
+    {
+        return \preg_replace('%/\\*[^*]*+(?:\\*(?!/)[^*]*+)*+\\*/%', '', $css);
+    }
+
+    /**
      * Splits input CSS code into an array of parts for different media querues, in order.
      * Each part is an array where:
      *
@@ -870,8 +883,6 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function splitCssAndMediaQuery($css)
     {
-        $cssWithoutComments = \preg_replace('/\\/\\*.*\\*\\//sU', '', $css);
-
         $mediaTypesExpression = '';
         if (!empty($this->allowedMediaTypes)) {
             $mediaTypesExpression = '|' . \implode('|', \array_keys($this->allowedMediaTypes));
@@ -882,7 +893,7 @@ class CssInliner extends AbstractHtmlProcessor
         $cssSplitForAllowedMediaTypes = \preg_split(
             '#(@media\\s++(?:only\\s++)?+(?:(?=[{\\(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
             . ')#misU',
-            $cssWithoutComments,
+            $css,
             -1,
             PREG_SPLIT_DELIM_CAPTURE
         );
