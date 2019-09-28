@@ -302,8 +302,8 @@ class CssInliner extends AbstractHtmlProcessor
     private function parseCssRules($css)
     {
         $cssKey = \md5($css);
-        if (isset($this->caches[static::CACHE_KEY_CSS][$cssKey])) {
-            return $this->caches[static::CACHE_KEY_CSS][$cssKey];
+        if (isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
+            return $this->caches[self::CACHE_KEY_CSS][$cssKey];
         }
 
         $matches = $this->getCssRuleMatches($css);
@@ -326,7 +326,7 @@ class CssInliner extends AbstractHtmlProcessor
                 // only allow structural pseudo-classes
                 $hasPseudoElement = \strpos($selector, '::') !== false;
                 $hasUnsupportedPseudoClass = (bool)\preg_match(
-                    '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
+                    '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
                     $selector
                 );
                 $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
@@ -346,7 +346,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         \usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence']);
 
-        $this->caches[static::CACHE_KEY_CSS][$cssKey] = $cssRules;
+        $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
         return $cssRules;
     }
@@ -414,10 +414,10 @@ class CssInliner extends AbstractHtmlProcessor
     private function clearAllCaches()
     {
         $this->caches = [
-            static::CACHE_KEY_CSS => [],
-            static::CACHE_KEY_SELECTOR => [],
-            static::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
-            static::CACHE_KEY_COMBINED_STYLES => [],
+            self::CACHE_KEY_CSS => [],
+            self::CACHE_KEY_SELECTOR => [],
+            self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
+            self::CACHE_KEY_COMBINED_STYLES => [],
         ];
     }
 
@@ -571,8 +571,8 @@ class CssInliner extends AbstractHtmlProcessor
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles)
     {
         $cacheKey = \serialize([$oldStyles, $newStyles]);
-        if (isset($this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
-            return $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey];
+        if (isset($this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey])) {
+            return $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey];
         }
 
         // Unset the overridden styles to preserve order, important if shorthand and individual properties are mixed
@@ -599,7 +599,7 @@ class CssInliner extends AbstractHtmlProcessor
         }
         $trimmedStyle = \rtrim($style);
 
-        $this->caches[static::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
+        $this->caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey] = $trimmedStyle;
 
         return $trimmedStyle;
     }
@@ -709,7 +709,7 @@ class CssInliner extends AbstractHtmlProcessor
             ' ' . $selector
         ));
 
-        $pseudoComponentMatcher = ':(?!' . static::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
+        $pseudoComponentMatcher = ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
         return \preg_replace(
             ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
             ['$1*', ''],
@@ -731,7 +731,7 @@ class CssInliner extends AbstractHtmlProcessor
         list($notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets) = $matches;
 
         $hasUnmatchablePseudo = \preg_match(
-            '/:(?!' . static::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
+            '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
             $notArgumentInBrackets
         );
 
@@ -952,8 +952,8 @@ class CssInliner extends AbstractHtmlProcessor
     private function getCssSelectorPrecedence($selector)
     {
         $selectorKey = \md5($selector);
-        if (isset($this->caches[static::CACHE_KEY_SELECTOR][$selectorKey])) {
-            return $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey];
+        if (isset($this->caches[self::CACHE_KEY_SELECTOR][$selectorKey])) {
+            return $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey];
         }
 
         $precedence = 0;
@@ -965,7 +965,7 @@ class CssInliner extends AbstractHtmlProcessor
             $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
             $precedence += ($value * $number);
         }
-        $this->caches[static::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
+        $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
 
         return $precedence;
     }
@@ -991,8 +991,8 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function parseCssDeclarationsBlock($cssDeclarationsBlock)
     {
-        if (isset($this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
-            return $this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
+        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
+            return $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
         }
 
         $properties = [];
@@ -1008,7 +1008,7 @@ class CssInliner extends AbstractHtmlProcessor
             $propertyValue = $matches[2];
             $properties[$propertyName] = $propertyValue;
         }
-        $this->caches[static::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
+        $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
 
         return $properties;
     }
