@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Preserve `display: none` elements with `-emogrifier-keep` class
+  ([#252](https://github.com/MyIntervals/emogrifier/issues/252),
+  [#737](https://github.com/MyIntervals/emogrifier/pull/737))
 - Preserve valid `@import` rules
   ([#338](https://github.com/MyIntervals/emogrifier/issues/338),
   [#334](https://github.com/MyIntervals/emogrifier/pull/334),

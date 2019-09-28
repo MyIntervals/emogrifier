@@ -189,6 +189,24 @@ $prunedHtml = HtmlPruner::fromDomDocument($cssInliner->getDomDocument())
   ->removeRedundantClassesAfterCssInlined($cssInliner)->render();
 ```
 
+The `removeElementsWithDisplayNone` method will not remove any elements which
+have the class `-emogrifier-keep`.  So if, for example, there are elements which
+by default have `display: none` but are revealed by an `@media` rule, or which
+are intended as a preheader, you can add that class to those elements.  The
+paragraph in this HTML snippet will not be removed even though it has
+`display: none` (which has presumably been applied by `CssInliner::inlineCss()`
+from a CSS rule `.preheader { display: none; }`):
+
+```html
+<p class="preheader -emogrifier-keep" style="display: none;">
+	Hello World!
+</p>
+```
+
+The `removeRedundantClassesAfterCssInlined` (or `removeRedundantClasses`)
+method, if invoked after `removeElementsWithDisplayNone`, will remove the
+`-emogrifier-keep` class.
+
 ### Options
 
 There are several options that you can set on the `CssInliner` instance before

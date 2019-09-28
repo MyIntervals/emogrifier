@@ -89,6 +89,36 @@ class HtmlPrunerTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideEmogrifierKeepClassAttribute()
+    {
+        return [
+            'special class alone' => ['-emogrifier-keep'],
+            'special class after another' => ['preheader -emogrifier-keep'],
+            'special class before another' => ['-emogrifier-keep preheader'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $classAttributeValue
+     *
+     * @dataProvider provideEmogrifierKeepClassAttribute
+     */
+    public function removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep($classAttributeValue)
+    {
+        $subject = HtmlPruner::fromHtml(
+            '<html><body><div class="' . $classAttributeValue . '" style="display: none;"></div></body></html>'
+        );
+
+        $subject->removeElementsWithDisplayNone();
+
+        self::assertContains('<div', $subject->render());
+    }
+
+    /**
      * @test
      */
     public function removeRedundantClassesProvidesFluentInterface()
