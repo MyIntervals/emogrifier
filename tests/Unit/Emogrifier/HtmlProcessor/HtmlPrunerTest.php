@@ -264,9 +264,7 @@ class HtmlPrunerTest extends TestCase
         $subject->removeRedundantClasses($classesToKeep);
 
         $result = $subject->render();
-        foreach ($classesExpectedToBeRemoved as $class) {
-            self::assertNotContains($class, $result);
-        }
+        self::assertContainsNone($classesExpectedToBeRemoved, $result);
     }
 
     /**
@@ -367,8 +365,8 @@ class HtmlPrunerTest extends TestCase
      * @param string $html
      * @param string $css
      *
-     * @return (CssInliner|HtmlPruner)[] The `CssInliner` fixture is in the `'cssInliner'` key and the `HtmlPruner`
-     *         subject is in the `'subject'` key.
+     * @return (CssInliner|HtmlPruner)[] The `HtmlPruner` subject is the first element, and the `CssInliner` fixture is
+     *         the second element.
      */
     private function buildSubjectAndCssInlinerWithCssInlined($html, $css)
     {
@@ -377,7 +375,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject = HtmlPruner::fromDomDocument($cssInliner->getDomDocument());
 
-        return \compact('subject', 'cssInliner');
+        return [$subject, $cssInliner];
     }
 
     /**
@@ -385,7 +383,7 @@ class HtmlPrunerTest extends TestCase
      */
     public function removeRedundantClassesAfterCssInlinedProvidesFluentInterface()
     {
-        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html></html>', ''));
+        list($subject, $cssInliner) = $this->buildSubjectAndCssInlinerWithCssInlined('<html></html>', '');
 
         $result = $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
@@ -463,14 +461,13 @@ class HtmlPrunerTest extends TestCase
         $css,
         array $classesExpectedToBeRemoved = []
     ) {
-        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css));
+        list($subject, $cssInliner)
+            = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
         $result = $subject->render();
-        foreach ($classesExpectedToBeRemoved as $class) {
-            self::assertNotContains($class, $result);
-        }
+        self::assertContainsNone($classesExpectedToBeRemoved, $result);
     }
 
     /**
@@ -526,13 +523,42 @@ class HtmlPrunerTest extends TestCase
         $css,
         array $classesToBeKept = []
     ) {
-        \extract($this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css));
+        list($subject, $cssInliner)
+            = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
         $result = $subject->render();
-        foreach ($classesToBeKept as $class) {
-            self::assertContains($class, $result);
+        self::assertContainsAll($classesToBeKept, $result);
+    }
+
+    /**
+     * Asserts that none of the `$needles` can be found within the string `$haystack`.
+     *
+     * @param string[] $needles
+     * @param string $haystack
+     *
+     * @throws \PHPUnit_Framework_AssertionFailedError
+     */
+    private static function assertContainsNone(array $needles, $haystack)
+    {
+        foreach ($needles as $needle) {
+            self::assertNotContains($needle, $haystack);
+        }
+    }
+
+    /**
+     * Asserts that all of the `$needles` can be found within the string `$haystack`.
+     *
+     * @param string[] $needles
+     * @param string $haystack
+     *
+     * @throws \PHPUnit_Framework_AssertionFailedError
+     */
+    private static function assertContainsAll(array $needles, $haystack)
+    {
+        foreach ($needles as $needle) {
+            self::assertContains($needle, $haystack);
         }
     }
 
