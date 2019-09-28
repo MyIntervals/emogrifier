@@ -1370,8 +1370,6 @@ class EmogrifierTest extends TestCase
         return [
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
-            '@import directive' => ['@import "foo.css";', '@import'],
-            'two @import directives, minified' => ['@import "foo.css";@import "bar.css";', '@import'],
             '@charset directive' => ['@charset "UTF-8";', '@charset'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
@@ -3191,6 +3189,132 @@ class EmogrifierTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideValidImportRules()
+    {
+        return [
+            'single @import' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            'uppercase @IMPORT' => [
+                'before' => '',
+                '@import' => '@IMPORT "foo.css";',
+                'after' => '',
+            ],
+            'mixed case @ImPoRt' => [
+                'before' => '',
+                '@import' => '@ImPoRt "foo.css";',
+                'after' => '',
+            ],
+            '2 @imports' => [
+                'before' => '',
+                '@import' => '@import "foo.css";' . "\n" . '@import "bar.css";',
+                'after' => '',
+            ],
+            '2 @imports, minified' => [
+                'before' => '',
+                '@import' => '@import "foo.css";@import "bar.css";',
+                'after' => '',
+            ],
+            '@import after @charset' => [
+                'before' => '@charset "UTF-8";' . "\n",
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            '@import followed by matching inlinable rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . 'p { color: green; }',
+            ],
+            '@import followed by matching uninlinable rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . 'p:hover { color: green; }',
+            ],
+            '@import followed by matching @media rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssBefore
+     * @param string $cssImports
+     * @param string $cssAfter
+     *
+     * @dataProvider provideValidImportRules
+     */
+    public function emogrifyPreservesValidImportRules($cssBefore, $cssImports, $cssAfter)
+    {
+        $this->subject->setHtml('<html><p>foo</p></html>');
+        $this->subject->setCss($cssBefore . $cssImports . $cssAfter);
+
+        $result = $this->subject->emogrify();
+
+        self::assertContains($cssImports, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function provideInvalidImportRules()
+    {
+        return [
+            '@import after other rule' => [
+                'p { color: red; }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after @media rule' => [
+                '@media (max-width: 640px) { p { color: red; } }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after incorrectly-cased @charset rule' => [
+                '@CHARSET "UTF-8";' . "\n"
+                . '@import "foo.css";',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideInvalidImportRules
+     */
+    public function emogrifyRemovesInvalidImportRules($css)
+    {
+        $this->subject->setHtml('<html><p>foo</p></html>');
+        $this->subject->setCss($css);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContains('@import', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function emogrifyNotCopiesInlinableRuleAfterImportRuleToStyleElement()
+    {
+        $cssImport = '@import "foo.css";';
+        $cssAfter = 'p { color: red; }';
+        $this->subject->setHtml('<html><p>foo</p></html>');
+        $this->subject->setCss($cssImport . "\n" . $cssAfter);
+
+        $result = $this->subject->emogrify();
+
+        self::assertNotContainsCss($cssAfter, $result);
+    }
+
+    /**
      * @test
      */
     public function copyUninlinableCssToStyleNodeHasNoSideEffects()
@@ -3219,13 +3343,13 @@ class EmogrifierTest extends TestCase
 
         $domDocument = $this->subject->getDomDocument();
 
-        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules, '');
         $expectedHtml = $domDocument->saveHTML();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules);
+        $copyUninlinableCssToStyleNode->invoke($this->subject, $uninlinableCssRules, '');
 
         self::assertSame($expectedHtml, $domDocument->saveHTML());
     }
