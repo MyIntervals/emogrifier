@@ -2,6 +2,7 @@
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\Utilities\ArrayIntersector;
 
 /**
@@ -108,5 +109,31 @@ class HtmlPruner extends AbstractHtmlProcessor
         foreach ($elements as $element) {
             $element->removeAttribute('class');
         }
+    }
+
+    /**
+     * After CSS has been inlined, there will likely be some classes in `class` attributes that are no longer referenced
+     * by any remaining (uninlinable) CSS.  This method removes such classes.
+     *
+     * Note that it does not inspect the remaining CSS, but uses information readily available from the `CssInliner`
+     * instance about the CSS rules that could not be inlined.
+     *
+     * @param CssInliner $cssInliner object instance that performed the CSS inlining
+     *
+     * @return self fluent interface
+     *
+     * @throws \BadMethodCallException if `inlineCss` has not first been called on `$cssInliner`
+     */
+    public function removeRedundantClassesAfterCssInlined(CssInliner $cssInliner)
+    {
+        $classesToKeepAsKeys = [];
+        foreach ($cssInliner->getMatchingUninlinableSelectors() as $selector) {
+            \preg_match_all('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
+            $classesToKeepAsKeys += \array_fill_keys($matches[1], true);
+        }
+
+        $this->removeRedundantClasses(\array_keys($classesToKeepAsKeys));
+
+        return $this;
     }
 }
