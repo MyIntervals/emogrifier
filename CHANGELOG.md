@@ -6,6 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Preserve valid `@import` rules
+  ([#338](https://github.com/MyIntervals/emogrifier/issues/338),
+  [#334](https://github.com/MyIntervals/emogrifier/pull/334),
+  [#732](https://github.com/MyIntervals/emogrifier/pull/732))
 - Add `HtmlPruner::removeRedundantClassesAfterCssInlined`
   ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
   [#724](https://github.com/MyIntervals/emogrifier/pull/724))

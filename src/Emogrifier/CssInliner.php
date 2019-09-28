@@ -191,8 +191,12 @@ class CssInliner extends AbstractHtmlProcessor
             $combinedCss .= $this->getCssFromAllStyleNodes();
         }
 
+        $cssWithoutComments = $this->removeCssComments($combinedCss);
+        list($cssWithoutCommentsCharsetOrImport, $cssImportRules)
+            = $this->extractImportAndCharsetRules($cssWithoutComments);
+
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->parseCssRules($combinedCss);
+        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetOrImport);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
@@ -220,7 +224,7 @@ class CssInliner extends AbstractHtmlProcessor
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
-        $this->copyUninlinableCssToStyleNode();
+        $this->copyUninlinableCssToStyleNode($cssImportRules);
 
         return $this;
     }
@@ -285,7 +289,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Extracts and parses the individual rules from a CSS string.
      *
-     * @param string $css a string of raw CSS code
+     * @param string $css a string of raw CSS code with comments removed
      *
      * @return string[][][] A 2-entry array with the key "inlinable" containing rules which can be inlined as `style`
      *         attributes and the key "uninlinable" containing rules which cannot.  Each value is an array of string
@@ -354,7 +358,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Parses a string of CSS into the media query, selectors and declarations for each ruleset in order.
      *
-     * @param string $css
+     * @param string $css CSS with comments removed
      *
      * @return string[][] Array of string sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
@@ -365,8 +369,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssRuleMatches($css)
     {
-        $cssWithoutComments = $this->removeCssComments($css);
-        $splitCss = $this->splitCssAndMediaQuery($cssWithoutComments);
+        $splitCss = $this->splitCssAndMediaQuery($css);
 
         $ruleMatches = [];
         foreach ($splitCss as $cssPart) {
@@ -673,21 +676,30 @@ class CssInliner extends AbstractHtmlProcessor
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
      *
+     * @param string $cssImportRules This may contain any `@import` rules that should precede the CSS placed in the
+     *        `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>` element will be
+     *        created containing just `$cssImportRules`.  `$cssImportRules` may be an empty string; if it is, and there
+     *        are no unlinlinable CSS rules, an empty `<style>` element will not be created.
+     *
      * @return void
      */
-    private function copyUninlinableCssToStyleNode()
+    private function copyUninlinableCssToStyleNode($cssImportRules)
     {
-        if ($this->matchingUninlinableCssRules === []) {
-            // avoid adding empty style element (or including unneeded class dependency)
-            return;
+        $css = $cssImportRules;
+
+        // avoid including unneeded class dependency if there are no rules
+        if ($this->matchingUninlinableCssRules !== []) {
+            $cssConcatenator = new CssConcatenator();
+            foreach ($this->matchingUninlinableCssRules as $cssRule) {
+                $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
+            }
+            $css .= $cssConcatenator->getCss();
         }
 
-        $cssConcatenator = new CssConcatenator();
-        foreach ($this->matchingUninlinableCssRules as $cssRule) {
-            $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
+        // avoid adding empty style element
+        if ($css !== '') {
+            $this->addStyleElementToDocument($css);
         }
-
-        $this->addStyleElementToDocument($cssConcatenator->getCss());
     }
 
     /**
@@ -850,6 +862,41 @@ class CssInliner extends AbstractHtmlProcessor
     private function removeCssComments($css)
     {
         return \preg_replace('%/\\*[^*]*+(?:\\*(?!/)[^*]*+)*+\\*/%', '', $css);
+    }
+
+    /**
+     * Extracts `@import` and `@charset` rules from the supplied CSS.  These rules must not be preceded by any other
+     * rules, or they will be ignored.  (From the CSS 2.1 specification: "CSS 2.1 user agents must ignore any '@import'
+     * rule that occurs inside a block or after any non-ignored statement other than an @charset or an @import rule."
+     * Note also that `@charset` is case sensitive whereas `@import` is not.)
+     *
+     * @param string $css CSS with comments removed
+     *
+     * @return string[] The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second
+     * element contains a concatenation of the valid `@import` rules, each followed by whatever whitespace followed it
+     * in the original CSS (so that either unminified or minified formatting is preserved); if there were no `@import`
+     * rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
+     */
+    private function extractImportAndCharsetRules($css)
+    {
+        $possiblyModifiedCss = $css;
+        $importRules = '';
+
+        while (\preg_match(
+            '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/',
+            $possiblyModifiedCss,
+            $matches
+        )) {
+            list($fullMatch, $atRuleAndFollowingWhitespace, $atRuleName) = $matches;
+
+            if (\strtolower($atRuleName) === 'import') {
+                $importRules .= $atRuleAndFollowingWhitespace;
+            }
+
+            $possiblyModifiedCss = \substr($possiblyModifiedCss, \strlen($fullMatch));
+        }
+
+        return [$possiblyModifiedCss, $importRules];
     }
 
     /**

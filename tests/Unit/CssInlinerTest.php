@@ -1216,8 +1216,6 @@ class CssInlinerTest extends TestCase
         return [
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
-            '@import directive' => ['@import "foo.css";', '@import'],
-            'two @import directives, minified' => ['@import "foo.css";@import "bar.css";', '@import'],
             '@charset directive' => ['@charset "UTF-8";', '@charset'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
@@ -2688,6 +2686,129 @@ class CssInlinerTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideValidImportRules()
+    {
+        return [
+            'single @import' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            'uppercase @IMPORT' => [
+                'before' => '',
+                '@import' => '@IMPORT "foo.css";',
+                'after' => '',
+            ],
+            'mixed case @ImPoRt' => [
+                'before' => '',
+                '@import' => '@ImPoRt "foo.css";',
+                'after' => '',
+            ],
+            '2 @imports' => [
+                'before' => '',
+                '@import' => '@import "foo.css";' . "\n" . '@import "bar.css";',
+                'after' => '',
+            ],
+            '2 @imports, minified' => [
+                'before' => '',
+                '@import' => '@import "foo.css";@import "bar.css";',
+                'after' => '',
+            ],
+            '@import after @charset' => [
+                'before' => '@charset "UTF-8";' . "\n",
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            '@import followed by matching inlinable rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . 'p { color: green; }',
+            ],
+            '@import followed by matching uninlinable rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . 'p:hover { color: green; }',
+            ],
+            '@import followed by matching @media rule' => [
+                'before' => '',
+                '@import' => '@import "foo.css";',
+                'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssBefore
+     * @param string $cssImports
+     * @param string $cssAfter
+     *
+     * @dataProvider provideValidImportRules
+     */
+    public function inlineCssPreservesValidImportRules($cssBefore, $cssImports, $cssAfter)
+    {
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+
+        $subject->inlineCss($cssBefore . $cssImports . $cssAfter);
+
+        self::assertContains($cssImports, $subject->render());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function provideInvalidImportRules()
+    {
+        return [
+            '@import after other rule' => [
+                'p { color: red; }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after @media rule' => [
+                '@media (max-width: 640px) { p { color: red; } }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after incorrectly-cased @charset rule' => [
+                '@CHARSET "UTF-8";' . "\n"
+                . '@import "foo.css";',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideInvalidImportRules
+     */
+    public function inlineCssRemovesInvalidImportRules($css)
+    {
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+
+        $subject->inlineCss($css);
+
+        self::assertNotContains('@import', $subject->render());
+    }
+
+    /**
+     * @test
+     */
+    public function inlineCssNotCopiesInlinableRuleAfterImportRuleToStyleElement()
+    {
+        $cssImport = '@import "foo.css";';
+        $cssAfter = 'p { color: red; }';
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+
+        $subject->inlineCss($cssImport . "\n" . $cssAfter);
+
+        self::assertNotContainsCss($cssAfter, $subject->render());
+    }
+
+    /**
      * @test
      */
     public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled()
@@ -2799,13 +2920,13 @@ class CssInlinerTest extends TestCase
 
         $domDocument = $subject->getDomDocument();
 
-        $copyUninlinableCssToStyleNode->invoke($subject);
+        $copyUninlinableCssToStyleNode->invoke($subject, '');
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlinableCssToStyleNode->invoke($subject);
+        $copyUninlinableCssToStyleNode->invoke($subject, '');
 
         self::assertSame($expectedHtml, $subject->render());
     }
