@@ -661,16 +661,23 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function determineMatchingUninlinableCssRules(array $cssRules)
     {
-        $this->matchingUninlinableCssRules = \array_filter(
-            $cssRules,
-            function (array $cssRule) {
-                $selector = $cssRule['selector'];
-                if ($cssRule['hasUnmatchablePseudo']) {
-                    $selector = $this->removeUnmatchablePseudoComponents($selector);
-                }
-                return $this->existsMatchForCssSelector($selector);
-            }
-        );
+        $this->matchingUninlinableCssRules = \array_filter($cssRules, [$this, 'existsMatchForSelectorInCssRule']);
+    }
+
+    /**
+     * @param string[] $cssRule
+     *
+     * @return bool
+     *
+     * @throws SyntaxErrorException
+     */
+    private function existsMatchForSelectorInCssRule(array $cssRule)
+    {
+        $selector = $cssRule['selector'];
+        if ($cssRule['hasUnmatchablePseudo']) {
+            $selector = $this->removeUnmatchablePseudoComponents($selector);
+        }
+        return $this->existsMatchForCssSelector($selector);
     }
 
     /**
