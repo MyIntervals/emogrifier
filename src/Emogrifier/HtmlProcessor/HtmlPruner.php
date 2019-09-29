@@ -21,7 +21,9 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @var string
      */
-    const DISPLAY_NONE_MATCHER = '//*[contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")]';
+    const DISPLAY_NONE_MATCHER
+        = '//*[@style and contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")'
+        . ' and not(@class and contains(concat(" ", normalize-space(@class), " "), " -emogrifier-keep "))]';
 
     /**
      * Removes elements that have a "display: none;" style.
