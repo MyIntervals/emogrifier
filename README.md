@@ -340,6 +340,7 @@ Emogrifier currently supports the following
     * value with `$` (suffix match)
     * value with `*` (substring match)
  * [adjacent](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors)
+ * [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_combinator)
  * [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
  * [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
@@ -356,7 +357,6 @@ The following selectors are not implemented yet:
      [descendant combinator](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_combinator)
      (e.g. `p *` is supported but `* p` is not)
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
- * [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_selectors)
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
    (some of them will never be supported)
  * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)

@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test general sibling combinator
+  ([#723](https://github.com/MyIntervals/emogrifier/issues/723),
+  [#745](https://github.com/MyIntervals/emogrifier/pull/745))
 - Test universal selector with combinators
   ([#723](https://github.com/MyIntervals/emogrifier/issues/723),
   [#743](https://github.com/MyIntervals/emogrifier/pull/743))

@@ -354,6 +354,20 @@ class CssInlinerTest extends TestCase
                 'p+p { %1$s }',
                 '<p class="p-7" style="%1$s">',
             ],
+            'general sibling => 2nd of many' => ['.p-1 ~ p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'general sibling => last of many' => ['.p-1 ~ p { %1$s }', '<p class="p-7" style="%1$s">'],
+            'general sibling (without space after ~) => last of many' => [
+                '.p-1 ~p { %1$s }',
+                '<p class="p-7" style="%1$s">',
+            ],
+            'general sibling (without space before ~) => last of many' => [
+                '.p-1~ p { %1$s }',
+                '<p class="p-7" style="%1$s">',
+            ],
+            'general sibling (without space before or after ~) => last of many' => [
+                '.p-1~p { %1$s }',
+                '<p class="p-7" style="%1$s">',
+            ],
             'child (with spaces around >) => direct child' => ['p > span { %1$s }', '<span style="%1$s">'],
             'child (without space after >) => direct child' => ['p >span { %1$s }', '<span style="%1$s">'],
             'child (without space before >) => direct child' => ['p> span { %1$s }', '<span style="%1$s">'],
@@ -364,6 +378,10 @@ class CssInlinerTest extends TestCase
             'adjacent universal => last of many' => ['p + * { %1$s }', '<p class="p-7" style="%1$s">'],
             'adjacent of universal => 2nd of many' => ['* + p { %1$s }', '<p class="p-2" style="%1$s">'],
             'adjacent of universal => last of many' => ['* + p { %1$s }', '<p class="p-7" style="%1$s">'],
+            'universal general sibling => 2nd of many' => ['.p-1 ~ * { %1$s }', '<p class="p-2" style="%1$s">'],
+            'universal general sibling => last of many' => ['.p-1 ~ * { %1$s }', '<p class="p-7" style="%1$s">'],
+            'general sibling of universal => 2nd of many' => ['* ~ p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'general sibling of universal => last of many' => ['* ~ p { %1$s }', '<p class="p-7" style="%1$s">'],
             // broken: child universal => direct child
             // broken: child of universal => direct child
             'descendent universal => child' => ['p * { %1$s }', '<span style="%1$s">'],
@@ -633,6 +651,7 @@ class CssInlinerTest extends TestCase
                 '<span title="bonjour">',
             ],
             'adjacent => not 1st of many' => ['p + p { %1$s }', '<p class="p-1">'],
+            'general sibling => not 1st of many' => ['p ~ p { %1$s }', '<p class="p-1">'],
             'child => not grandchild' => ['html > span { %1$s }', '<span>'],
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
@@ -641,6 +660,9 @@ class CssInlinerTest extends TestCase
             'adjacent universal => not last of many' => ['.p-2 + * { %1$s }', '<p class="p-7">'],
             'adjacent universal => not previous of many' => ['.p-2 + * { %1$s }', '<p class="p-1">'],
             'adjacent of universal => not 1st of many' => ['* + p { %1$s }', '<p class="p-1">'],
+            'universal general sibling => not 1st of many' => ['p ~ * { %1$s }', '<p class="p-1">'],
+            'universal general sibling => not previous of many' => ['.p-2 ~ * { %1$s }', '<p class="p-1">'],
+            'general sibling of universal => not 1st of many' => ['* ~ p { %1$s }', '<p class="p-1">'],
             'descendent universal => not parent' => ['p *', '<body>'],
             'descendent universal => not self' => ['p *', '<p class="p-1">'],
             'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
