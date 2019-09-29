@@ -346,6 +346,12 @@ class CssInlinerTest extends TestCase
                 'span[title*=": subtitle; author"] { %1$s }',
                 '<span title="title: subtitle; author" style="%1$s">',
             ],
+            // broken: type & attribute exact value, case insensitive => with case insensitive attribute value match
+            // broken: type & attribute value with ~, case insensitive => with case insensitive attribute word match
+            // broken: type & attribute value with |, case insensitive => with case insensitive match before hyphen
+            // broken: type & attribute value with ^, case insensitive => with case insensitive prefix math
+            // broken: type & attribute value with $, case insensitive => with case insensitive suffix math
+            // broken: type & attribute value with *, case insensitive => with case insensitive substring math
             'adjacent => 2nd of many' => ['p + p { %1$s }', '<p class="p-2" style="%1$s">'],
             'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-7" style="%1$s">'],
             'adjacent (without space after +) => last of many' => ['p +p { %1$s }', '<p class="p-7" style="%1$s">'],
