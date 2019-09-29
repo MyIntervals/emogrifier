@@ -157,6 +157,8 @@ class CssInlinerTest extends TestCase
             'ID => with ID' => ['#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
             'type & ID => type with ID' => ['p#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
             'universal => HTML' => ['* { %1$s }', '<html style="%1$s">'],
+            'universal => element with parent and children' => ['* { %1$s }', '<p class="p-1" style="%1$s">'],
+            'universal => leaf element' => ['* { %1$s }', '<span style="%1$s">'],
             'attribute presence => with attribute' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
             'attribute exact value, double quotes => with exact attribute match' => [
                 '[title="bonjour"] { %1$s }',
@@ -358,6 +360,16 @@ class CssInlinerTest extends TestCase
             'child (without space before or after >) => direct child' => ['p>span { %1$s }', '<span style="%1$s">'],
             'descendant => child' => ['p span { %1$s }', '<span style="%1$s">'],
             'descendant => grandchild' => ['body span { %1$s }', '<span style="%1$s">'],
+            'adjacent universal => 2nd of many' => ['p + * { %1$s }', '<p class="p-2" style="%1$s">'],
+            'adjacent universal => last of many' => ['p + * { %1$s }', '<p class="p-7" style="%1$s">'],
+            'adjacent of universal => 2nd of many' => ['* + p { %1$s }', '<p class="p-2" style="%1$s">'],
+            'adjacent of universal => last of many' => ['* + p { %1$s }', '<p class="p-7" style="%1$s">'],
+            // broken: child universal => direct child
+            // broken: child of universal => direct child
+            'descendent universal => child' => ['p * { %1$s }', '<span style="%1$s">'],
+            'descendent universal => grandchild' => ['body * { %1$s }', '<span style="%1$s">'],
+            // broken: descandant of universal => child
+            // broken: descandant of universal => grandchild
             'descendent attribute presence => with attribute' => [
                 'body [title] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -625,6 +637,12 @@ class CssInlinerTest extends TestCase
             'child => not parent' => ['span > html { %1$s }', '<html>'],
             'descendant => not sibling' => ['span span { %1$s }', '<span>'],
             'descendant => not parent' => ['p body { %1$s }', '<body>'],
+            'adjacent universal => not 1st of many' => ['p + * { %1$s }', '<p class="p-1">'],
+            'adjacent universal => not last of many' => ['.p-2 + * { %1$s }', '<p class="p-7">'],
+            'adjacent universal => not previous of many' => ['.p-2 + * { %1$s }', '<p class="p-1">'],
+            'adjacent of universal => not 1st of many' => ['* + p { %1$s }', '<p class="p-1">'],
+            'descendent universal => not parent' => ['p *', '<body>'],
+            'descendent universal => not self' => ['p *', '<p class="p-1">'],
             'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
                 'p span[title^=njo] { %1$s }',
                 '<span title="bonjour">',
