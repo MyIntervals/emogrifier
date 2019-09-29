@@ -523,6 +523,46 @@ class CssInlinerTest extends TestCase
             ':nth-child(-n+3) => 2nd of many' => [':nth-child(-n+3) { %1$s }', '<p class="p-2" style="%1$s">'],
             ':nth-child(-n+3) => 3rd of many' => [':nth-child(-n+3) { %1$s }', '<div class="div-3" style="%1$s">'],
             'type & :nth-child(even) => 2nd of many' => ['p:nth-child(even) { %1$s }', '<p class="p-2" style="%1$s">'],
+            ':nth-last-child(even) => 2nd last of many' => [
+                ':nth-last-child(even) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            ':nth-last-child(even) => 4th last of many' => [
+                ':nth-last-child(even) { %1$s }',
+                '<p class="p-4" id="p4" style="%1$s">',
+            ],
+            ':nth-last-child(2n) => 2nd last of many' => [
+                ':nth-last-child(2n) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            ':nth-last-child(2n) => 4th last of many' => [
+                ':nth-last-child(2n) { %1$s }',
+                '<p class="p-4" id="p4" style="%1$s">',
+            ],
+            ':nth-last-child(3) => 3rd last of many' => [
+                ':nth-last-child(3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            ':nth-last-child(2n+3) => 3rd last of many' => [
+                ':nth-last-child(2n+3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            ':nth-last-child(2n+3) => 5th last of many' => [
+                ':nth-last-child(2n+3) { %1$s }',
+                '<div class="div-3" style="%1$s">',
+            ],
+            ':nth-last-child(-n+3) => 2nd last of many' => [
+                ':nth-last-child(-n+3) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            ':nth-last-child(-n+3) => 3rd last of many' => [
+                ':nth-last-child(-n+3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            'type & :nth-last-child(even) => 2nd last of many' => [
+                'p:nth-last-child(even) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
             // broken: nth-of-type without preceding type
             'type & :nth-of-type(even) => 2nd of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
@@ -734,6 +774,33 @@ class CssInlinerTest extends TestCase
             ':nth-child(2n+3) => not 4th of many' => [':nth-child(2n+3) { %1$s }', '<p class="p-4" id="p4">'],
             ':nth-child(-n+3) => not 4th of many' => [':nth-child(-n+3) { %1$s }', '<p class="p-4" id="p4">'],
             ':nth-child(-n+3) => not 5th of many' => [':nth-child(-n+3) { %1$s }', '<p class="p-5 additional-class">'],
+            ':nth-last-child(even) => not last of many' => [':nth-last-child(even) { %1$s }', '<p class="p-7">'],
+            ':nth-last-child(even) => not 3rd last of many' => [
+                ':nth-last-child(even) { %1$s }',
+                '<p class="p-5 additional-class">',
+            ],
+            ':nth-last-child(2n) => not last of many' => [':nth-last-child(2n) { %1$s }', '<p class="p-7">'],
+            ':nth-last-child(2n) => not 3rd last of many' => [
+                ':nth-last-child(2n) { %1$s }',
+                '<p class="p-5 additional-class">',
+            ],
+            ':nth-last-child(3) => not last of many' => [':nth-last-child(3) { %1$s }', '<p class="p-7">'],
+            ':nth-last-child(3) => not 2nd last of many' => [':nth-last-child(3) { %1$s }', '<p class="p-6">'],
+            ':nth-last-child(3) => not 4th last of many' => [':nth-last-child(3) { %1$s }', '<p class="p-4" id="p4">'],
+            ':nth-last-child(3) => not 6th last of many' => [':nth-last-child(3) { %1$s }', '<p class="p-2">'],
+            ':nth-last-child(2n+3) => not last of many' => [':nth-last-child(2n+3) { %1$s }', '<p class="p-7">'],
+            ':nth-last-child(2n+3) => not 4th last of many' => [
+                ':nth-last-child(2n+3) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            ':nth-last-child(-n+3) => not 4th last of many' => [
+                ':nth-last-child(-n+3) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            ':nth-last-child(-n+3) => not 5th last of many' => [
+                ':nth-last-child(-n+3) { %1$s }',
+                '<div class="div-3">',
+            ],
             'type & :nth-of-type(even) => not 1st of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
                 '<p class="p-1">',

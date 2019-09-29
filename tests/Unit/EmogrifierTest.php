@@ -739,6 +739,7 @@ class EmogrifierTest extends TestCase
             ':nth-child(3) => 3rd of many' => ['*:nth-child(3) { %1$s }', '<div class="div-3" style="%1$s">'],
             // broken: nth-child(Xn+Y)
             'type & :nth-child(even) => 2nd of many' => ['p:nth-child(even) { %1$s }', '<p class="p-2" style="%1$s">'],
+            // broken: nth-last-child
             // broken: nth-of-type without preceding type
             'type & :nth-of-type(even) => 2nd of many of type' => [
                 'p:nth-of-type(even) { %1$s }',

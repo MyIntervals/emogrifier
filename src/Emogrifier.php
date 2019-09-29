@@ -77,7 +77,7 @@ class Emogrifier
      *
      * @var string
      */
-    const PSEUDO_CLASS_MATCHER = '[\\w\\-]+\\-(?:child|type\\()|not\\([[:ascii:]]*\\)';
+    const PSEUDO_CLASS_MATCHER = '(?:first|last|nth|only)-child|nth(?:-last)?+-of-type|not\\([[:ascii:]]*\\)';
 
     /**
      * @var string
