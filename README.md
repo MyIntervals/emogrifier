@@ -347,6 +347,10 @@ Emogrifier currently supports the following
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
+   * [nth-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
+   * [nth-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
+     (with a type, e.g. `p:nth-of-type(2n)` but not `*:nth-of-type(2n)` which
+     will behave as `*:nth-child(2n)`)
 
 The following selectors are not implemented yet:
 
