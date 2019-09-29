@@ -600,6 +600,43 @@ class CssInlinerTest extends TestCase
                 'p:nth-of-type(-n+3) { %1$s }',
                 '<p class="p-4" id="p4" style="%1$s">',
             ],
+            // broken: nth-last-of-type without preceding type
+            'type & :nth-last-of-type(even) => 2nd last of many of type' => [
+                'p:nth-last-of-type(even) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(even) => 4th last of many of type' => [
+                'p:nth-last-of-type(even) { %1$s }',
+                '<p class="p-4" id="p4" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(2n) => 2nd last of many of type' => [
+                'p:nth-last-of-type(2n) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(2n) => 4th last of many of type' => [
+                'p:nth-last-of-type(2n) { %1$s }',
+                '<p class="p-4" id="p4" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(3) => 3rd last of many of type' => [
+                'p:nth-last-of-type(3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(2n+3) => 3rd last of many of type' => [
+                'p:nth-last-of-type(2n+3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(2n+3) => 5th last of many of type' => [
+                'p:nth-last-of-type(2n+3) { %1$s }',
+                '<p class="p-2" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(-n+3) => 2nd last of many of type' => [
+                'p:nth-last-of-type(-n+3) { %1$s }',
+                '<p class="p-6" style="%1$s">',
+            ],
+            'type & :nth-last-of-type(-n+3) => 3rd last of many of type' => [
+                'p:nth-last-of-type(-n+3) { %1$s }',
+                '<p class="p-5 additional-class" style="%1$s">',
+            ],
             ':not with type => other type' => [':not(p) { %1$s }', '<span style="%1$s">'],
             ':not with class => no class' => [':not(.p-1) { %1$s }', '<span style="%1$s">'],
             ':not with class => other class' => [':not(.p-1) { %1$s }', '<p class="p-2" style="%1$s">'],
@@ -836,6 +873,54 @@ class CssInlinerTest extends TestCase
             'type & :nth-of-type(-n+3) => not 5th of many of type' => [
                 'p:nth-of-type(-n+3) { %1$s }',
                 '<p class="p-6">',
+            ],
+            'type & :nth-last-of-type(even) => not last of many of type' => [
+                'p:nth-last-of-type(even) { %1$s }',
+                '<p class="p-7">',
+            ],
+            'type & :nth-last-of-type(even) => not 3rd last of many of type' => [
+                'p:nth-last-of-type(even) { %1$s }',
+                '<p class="p-5 additional-class">',
+            ],
+            'type & :nth-last-of-type(2n) => not last of many of type' => [
+                'p:nth-last-of-type(2n) { %1$s }',
+                '<p class="p-7">',
+            ],
+            'type & :nth-last-of-type(2n) => not 3rd last of many of type' => [
+                'p:nth-last-of-type(2n) { %1$s }',
+                '<p class="p-5 additional-class">',
+            ],
+            'type & :nth-last-of-type(3) => not last of many of type' => [
+                'p:nth-last-of-type(3) { %1$s }',
+                '<p class="p-7">',
+            ],
+            'type & :nth-last-of-type(3) => not 2nd last of many of type' => [
+                'p:nth-last-of-type(3) { %1$s }',
+                '<p class="p-6">',
+            ],
+            'type & :nth-last-of-type(3) => not 4th last of many of type' => [
+                'p:nth-last-of-type(3) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            'type & :nth-last-of-type(3) => not 6th last of many of type' => [
+                'p:nth-last-of-type(3) { %1$s }',
+                '<p class="p-1">',
+            ],
+            'type & :nth-last-of-type(2n+3) => not last of many of type' => [
+                'p:nth-last-of-type(2n+3) { %1$s }',
+                '<p class="p-7">',
+            ],
+            'type & :nth-last-of-type(2n+3) => not 4th last of many of type' => [
+                'p:nth-last-of-type(2n+3) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            'type & :nth-last-of-type(-n+3) => not 4th last of many of type' => [
+                'p:nth-last-of-type(-n+3) { %1$s }',
+                '<p class="p-4" id="p4">',
+            ],
+            'type & :nth-last-of-type(-n+3) => not 5th last of many of type' => [
+                'p:nth-last-of-type(-n+3) { %1$s }',
+                '<p class="p-2">',
             ],
             ':not with type => not that type' => [':not(p) { %1$s }', '<p class="p-1">'],
             ':not with class => not that class' => [':not(.p-1) { %1$s }', '<p class="p-1">'],
