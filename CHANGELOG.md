@@ -73,6 +73,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Dynamic pseudo-class combined with static one (rules copied to `<style>`
+  element, [#746](https://github.com/MyIntervals/emogrifier/pull/746))
 - Descendant attribute selectors (such as `html input[disabled]`)
   ([#375](https://github.com/MyIntervals/emogrifier/pull/375),
   [#709](https://github.com/MyIntervals/emogrifier/pull/709))

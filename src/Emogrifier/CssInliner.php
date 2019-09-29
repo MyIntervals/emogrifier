@@ -51,7 +51,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @var string
      */
-    const PSEUDO_CLASS_MATCHER = '\\S+\\-(?:child|type\\()|not\\([[:ascii:]]*\\)';
+    const PSEUDO_CLASS_MATCHER = '[\\w\\-]+\\-(?:child|type\\()|not\\([[:ascii:]]*\\)';
 
     /**
      * @var bool[]

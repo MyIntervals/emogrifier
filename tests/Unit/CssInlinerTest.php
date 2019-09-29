@@ -1894,6 +1894,8 @@ class CssInlinerTest extends TestCase
             'pseudo-class & pseudo-element' => ['a:hover::after { content: "bar"; }'],
             'pseudo-element & pseudo-class' => ['a::after:hover { content: "bar"; }'],
             'two pseudo-classes' => ['a:focus:hover { color: green; }'],
+            'dynamic and static pseudo-classes' => ['a:hover:first-child { color: green; }'],
+            'static and dynamic pseudo-classes' => ['a:first-child:hover { color: green; }'],
         ];
 
         return \array_merge($datasetsWithSelectorPseudoComponents, $datasetsWithCombinedPseudoSelectors);
