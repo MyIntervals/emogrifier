@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test universal selector with combinators
+  ([#723](https://github.com/MyIntervals/emogrifier/issues/723),
+  [#743](https://github.com/MyIntervals/emogrifier/pull/743))
 - Preserve `display: none` elements with `-emogrifier-keep` class
   ([#252](https://github.com/MyIntervals/emogrifier/issues/252),
   [#737](https://github.com/MyIntervals/emogrifier/pull/737))

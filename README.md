@@ -329,7 +329,8 @@ Emogrifier currently supports the following
  * [type](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors)
  * [class](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)
  * [ID](https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors)
- * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors):
+ * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors)
+   (partial support)
  * [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
     * presence
     * exact value match
@@ -348,7 +349,12 @@ Emogrifier currently supports the following
 
 The following selectors are not implemented yet:
 
- * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors)
+ * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors):
+   * with
+     [child combinator](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_combinator)
+   * as ancestor with 
+     [descendant combinator](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_combinator)
+     (e.g. `p *` is supported but `* p` is not)
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
  * [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_selectors)
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
