@@ -199,7 +199,7 @@ from a CSS rule `.preheader { display: none; }`):
 
 ```html
 <p class="preheader -emogrifier-keep" style="display: none;">
-	Hello World!
+  Hello World!
 </p>
 ```
 
