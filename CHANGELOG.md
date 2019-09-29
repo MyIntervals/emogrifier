@@ -6,10 +6,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Test `:nth-last-child`
+- Support and test `:nth-last-child`
   ([#747](https://github.com/MyIntervals/emogrifier/issues/747),
   [#750](https://github.com/MyIntervals/emogrifier/pull/750))
-- Test general sibling combinator
+- Support and test general sibling combinator
   ([#723](https://github.com/MyIntervals/emogrifier/issues/723),
   [#745](https://github.com/MyIntervals/emogrifier/pull/745))
 - Test universal selector with combinators
