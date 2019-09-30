@@ -354,6 +354,7 @@ Emogrifier currently supports the following
      `*:nth-last-of-type(2n)` which will behave as `*:nth-last-child(2n)`)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
      (with a type)
+   * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
 
 The following selectors are not implemented yet:
 

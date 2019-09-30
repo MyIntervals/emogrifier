@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support and test `:only-child`
+  ([#747](https://github.com/MyIntervals/emogrifier/issues/747),
+  [#754](https://github.com/MyIntervals/emogrifier/pull/754))
 - Support and test `:nth-last-of-type`
   ([#747](https://github.com/MyIntervals/emogrifier/issues/747),
   [#751](https://github.com/MyIntervals/emogrifier/pull/751))
