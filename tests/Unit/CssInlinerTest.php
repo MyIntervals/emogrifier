@@ -6,6 +6,7 @@ use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 
 /**
@@ -680,11 +681,18 @@ class CssInlinerTest extends TestCase
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
+        $needleExpected = \sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2);
+
         $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(\sprintf($css, $cssDeclaration1, $cssDeclaration2));
 
-        self::assertContains(\sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2), $subject->render());
+        $result = $subject->render();
+        $selector = \trim(\strtok($css, '{'));
+        $cssSelectorConverter = new CssSelectorConverter();
+        $xPathExpression = $cssSelectorConverter->toXPath($selector);
+        $message = 'with converted XPath expression `' . $xPathExpression . '`';
+        self::assertContains($needleExpected, $result, $message);
     }
 
     /**
