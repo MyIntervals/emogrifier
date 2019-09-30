@@ -41,6 +41,7 @@ class CssInlinerTest extends TestCase
                     <input disabled>
                     <input type="text">
                     <input disabled type="text" value="some anytext text">
+                    <strong><em></em></strong>
                 </p>
             </body>
         </html>
@@ -643,6 +644,8 @@ class CssInlinerTest extends TestCase
                 'p:nth-last-of-type(-n+3) { %1$s }',
                 '<p class="p-5 additional-class" style="%1$s">',
             ],
+            ':empty => non-void element without content' => [':empty { %1$s }', '<em style="%1$s">'],
+            ':empty => void element' => [':empty { %1$s }', '<input type="text" style="%1$s">'],
             ':not with type => other type' => [':not(p) { %1$s }', '<span style="%1$s">'],
             ':not with class => no class' => [':not(.p-1) { %1$s }', '<span style="%1$s">'],
             ':not with class => other class' => [':not(.p-1) { %1$s }', '<p class="p-2" style="%1$s">'],
@@ -935,6 +938,8 @@ class CssInlinerTest extends TestCase
                 'p:nth-last-of-type(-n+3) { %1$s }',
                 '<p class="p-2">',
             ],
+            ':empty => not element with children' => [':empty { %1$s }', '<strong>'],
+            ':empty => not element with content' => [':empty { %1$s }', '<span>'],
             ':not with type => not that type' => [':not(p) { %1$s }', '<p class="p-1">'],
             ':not with class => not that class' => [':not(.p-1) { %1$s }', '<p class="p-1">'],
             'type & :not with class => not with class' => ['p:not(.p-1) { %1$s }', '<p class="p-1">'],
