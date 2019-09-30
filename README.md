@@ -371,6 +371,10 @@ The following selectors are not implemented yet:
      (e.g. `p *` is supported but `* p` is not)
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
  * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+   * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
+     without a type (will behave as `:first-child`)
+   * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
+     without a type (will behave as `:last-child`)
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
      without a type (will behave as `:nth-last-child()`)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
