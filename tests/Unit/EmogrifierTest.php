@@ -731,6 +731,7 @@ class EmogrifierTest extends TestCase
             'type & :first-child => 1st of many' => ['p:first-child { %1$s }', '<p class="p-1" style="%1$s">'],
             // broken: last-child => last of many
             'type & :last-child => last of many' => ['p:last-child { %1$s }', '<p class="p-7" style="%1$s">'],
+            // broken: only-child
             // broken: nth-child without preceding component - OK if preceded by universal selector
             ':nth-child(even) => 2nd of many' => ['*:nth-child(even) { %1$s }', '<p class="p-2" style="%1$s">'],
             ':nth-child(even) => 4th of many' => ['*:nth-child(even) { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
