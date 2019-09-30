@@ -231,7 +231,15 @@ the `emogrify` method):
 * `->removeAllowedMediaType(string $mediaName)` - You can use this
   method to remove media types that Emogrifier keeps.
 * `->addExcludedSelector(string $selector)` - Keeps elements from
-  being affected by CSS inlining.
+  being affected by CSS inlining.  Note that only elements matching the supplied
+  selector(s) will be excluded from CSS inlining, not necessarily their
+  descendants.  If you wish to exclude an entire subtree, you should provide
+  selector(s) which will match all elements in the subtree, for example by using
+  the universal selector:
+  ```php
+  $cssInliner->addExcludedSelector('.message-preview');
+  $cssInliner->addExcludedSelector('.message-preview *');
+  ```
 
 ### Using the legacy Emogrifier class
 

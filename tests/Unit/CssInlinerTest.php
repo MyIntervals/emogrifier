@@ -2649,6 +2649,21 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function addExcludedSelectorCanExcludeSubtree()
+    {
+        $htmlSubtree = '<div class="message-preview"><p><em>Message</em> <strong>preview.</strong></p></div>';
+        $subject = $this->buildDebugSubject('<html><body>' . $htmlSubtree . '<p>Another paragraph.</p></body></html>');
+
+        $subject->addExcludedSelector('.message-preview');
+        $subject->addExcludedSelector('.message-preview *');
+        $subject->inlineCss('p { margin: 0; } em { font-style: italic; } strong { font-weight: bold; }');
+
+        self::assertContains($htmlSubtree, $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
+     */
     public function removeExcludedSelectorGetsMatchingElementsToBeInlinedAgain()
     {
         $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');

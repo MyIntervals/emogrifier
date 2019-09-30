@@ -2908,6 +2908,22 @@ class EmogrifierTest extends TestCase
     /**
      * @test
      */
+    public function addExcludedSelectorCanExcludeSubtree()
+    {
+        $htmlSubtree = '<div class="message-preview"><p><em>Message</em> <strong>preview.</strong></p></div>';
+        $this->subject->setHtml('<html><body>' . $htmlSubtree . '<p>Another paragraph.</p></body></html>');
+        $this->subject->setCss('p { margin: 0; } em { font-style: italic; } strong { font-weight: bold; }');
+
+        $this->subject->addExcludedSelector('.message-preview');
+        $this->subject->addExcludedSelector('.message-preview *');
+        $result = $this->subject->emogrify();
+
+        self::assertContains($htmlSubtree, $result);
+    }
+
+    /**
+     * @test
+     */
     public function removeExcludedSelectorGetsMatchingElementsToBeEmogrifiedAgain()
     {
         $this->subject->setHtml('<html><body><p class="x"></p></body></html>');
