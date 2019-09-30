@@ -2048,8 +2048,18 @@ class EmogrifierTest extends TestCase
             'dynamic and static pseudo-classes' => ['a:hover:first-child { color: green; }'],
             'static and dynamic pseudo-classes' => ['a:first-child:hover { color: green; }'],
         ];
+        $datasetsWithUnsupportedStaticPseudoClasses = [
+            ':any-link' => ['a:any-link { color: green; }'],
+            ':nth-last-child' => ['a:nth-last-child(2n+1) { color: green; }'],
+            ':nth-last-of-type' => ['a:nth-last-of-type(2n+1) { color: green; }'],
+            ':only-child' => ['a:only-child { color: green; }'],
+        ];
 
-        return \array_merge($datasetsWithSelectorPseudoComponents, $datasetsWithCombinedPseudoSelectors);
+        return \array_merge(
+            $datasetsWithSelectorPseudoComponents,
+            $datasetsWithCombinedPseudoSelectors,
+            $datasetsWithUnsupportedStaticPseudoClasses
+        );
     }
 
     /**
