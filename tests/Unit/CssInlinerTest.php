@@ -576,6 +576,12 @@ class CssInlinerTest extends TestCase
                 'div:first-of-type { %1$s }',
                 '<div class="div-3" style="%1$s">',
             ],
+            // broken: last-of-type without preceding type
+            'type & :last-of-type => last of many' => ['p:last-of-type { %1$s }', '<p class="p-7" style="%1$s">'],
+            'type & :last-of-type => last of that type' => [
+                'div:last-of-type { %1$s }',
+                '<div class="div-3" style="%1$s">',
+            ],
             // broken: nth-of-type without preceding type
             'type & :nth-of-type(even) => 2nd of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
@@ -862,6 +868,8 @@ class CssInlinerTest extends TestCase
             ],
             'type & :first-of-type => not 2nd of many' => ['p:first-of-type { %1$s }', '<p class="p-2">'],
             'type & :first-of-type => not last of many' => ['p:first-of-type { %1$s }', '<p class="p-7">'],
+            'type & :last-of-type => not 1st of many' => ['p:last-of-type { %1$s }', '<p class="p-1">'],
+            'type & :last-of-type => not 2nd last of many' => ['p:last-of-type { %1$s }', '<p class="p-6">'],
             'type & :nth-of-type(even) => not 1st of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
                 '<p class="p-1">',

@@ -350,6 +350,8 @@ Emogrifier currently supports the following
      (with a type, e.g. `p:first-of-type` but not `*:first-of-type` which will
      behave as `*:first-child`)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
+   * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
+     (with a type)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
    * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
    * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
