@@ -661,16 +661,29 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function determineMatchingUninlinableCssRules(array $cssRules)
     {
-        $this->matchingUninlinableCssRules = \array_filter(
-            $cssRules,
-            function (array $cssRule) {
-                $selector = $cssRule['selector'];
-                if ($cssRule['hasUnmatchablePseudo']) {
-                    $selector = $this->removeUnmatchablePseudoComponents($selector);
-                }
-                return $this->existsMatchForCssSelector($selector);
-            }
-        );
+        $this->matchingUninlinableCssRules = \array_filter($cssRules, [$this, 'existsMatchForSelectorInCssRule']);
+    }
+
+    /**
+     * Checks whether there is at least one matching element for the CSS selector contained in the `selector` element
+     * of the provided CSS rule.
+     *
+     * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
+     * it will test for a match with its originating element.
+     *
+     * @param string[] $cssRule
+     *
+     * @return bool
+     *
+     * @throws SyntaxErrorException
+     */
+    private function existsMatchForSelectorInCssRule(array $cssRule)
+    {
+        $selector = $cssRule['selector'];
+        if ($cssRule['hasUnmatchablePseudo']) {
+            $selector = $this->removeUnmatchablePseudoComponents($selector);
+        }
+        return $this->existsMatchForCssSelector($selector);
     }
 
     /**

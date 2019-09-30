@@ -998,16 +998,7 @@ class Emogrifier
     {
         $css = $cssImportRules;
 
-        $cssRulesRelevantForDocument = \array_filter(
-            $cssRules,
-            function (array $cssRule) {
-                $selector = $cssRule['selector'];
-                if ($cssRule['hasUnmatchablePseudo']) {
-                    $selector = $this->removeUnmatchablePseudoComponents($selector);
-                }
-                return $this->existsMatchForCssSelector($selector);
-            }
-        );
+        $cssRulesRelevantForDocument = \array_filter($cssRules, [$this, 'existsMatchForSelectorInCssRule']);
 
         // avoid including unneeded class dependency if there are no rules
         if ($cssRulesRelevantForDocument !== []) {
@@ -1028,6 +1019,28 @@ class Emogrifier
         if ($css !== '') {
             $this->addStyleElementToDocument($css);
         }
+    }
+
+    /**
+     * Checks whether there is at least one matching element for the CSS selector contained in the `selector` element
+     * of the provided CSS rule.
+     *
+     * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
+     * it will test for a match with its originating element.
+     *
+     * @param string[] $cssRule
+     *
+     * @return bool
+     *
+     * @throws \InvalidArgumentException
+     */
+    private function existsMatchForSelectorInCssRule(array $cssRule)
+    {
+        $selector = $cssRule['selector'];
+        if ($cssRule['hasUnmatchablePseudo']) {
+            $selector = $this->removeUnmatchablePseudoComponents($selector);
+        }
+        return $this->existsMatchForCssSelector($selector);
     }
 
     /**
