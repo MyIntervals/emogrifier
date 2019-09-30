@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test that rules with `:optional` or `:required` are copied to the `<style>`
+  element ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
+  [#764](https://github.com/MyIntervals/emogrifier/pull/764))
 - Test that rules with `:only-of-type` are copied to the `<style>` element
   ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
   [#760](https://github.com/MyIntervals/emogrifier/pull/760))

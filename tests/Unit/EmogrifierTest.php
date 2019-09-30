@@ -2057,6 +2057,8 @@ class EmogrifierTest extends TestCase
             ':nth-last-of-type' => ['a:nth-last-of-type(2n+1) { color: green; }'],
             ':only-child' => ['a:only-child { color: green; }'],
             ':only-of-type' => ['a:only-of-type { color: green; }'],
+            ':optional' => ['input:optional { color: green; }'],
+            ':required' => ['input:required { color: green; }'],
         ];
 
         return \array_merge(
@@ -2075,7 +2077,7 @@ class EmogrifierTest extends TestCase
      */
     public function emogrifyKeepsRuleWithPseudoComponentInMatchingSelector($css)
     {
-        $this->subject->setHtml('<html><p><a id="a" class="a" href="a">foo</a></p></html>');
+        $this->subject->setHtml('<html><p><a id="a" class="a" href="a">foo</a><input></p></html>');
         $this->subject->setCss($css);
 
         $result = $this->subject->emogrify();
