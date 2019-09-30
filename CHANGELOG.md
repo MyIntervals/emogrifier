@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test that rules with `:any-link` are copied to the `<style>` element
+  ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
+  [#755](https://github.com/MyIntervals/emogrifier/pull/755))
 - Support and test `:only-child`
   ([#747](https://github.com/MyIntervals/emogrifier/issues/747),
   [#754](https://github.com/MyIntervals/emogrifier/pull/754))

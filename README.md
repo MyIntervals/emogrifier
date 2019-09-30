@@ -372,7 +372,8 @@ The following selectors are not implemented yet:
      without a type (will behave as `:nth-child()`)
    * any pseudo-classes not listed above as supported – rules involving them
      will nonetheless be preserved and copied to a `<style>` element in the 
-     HTML.
+     HTML – including (but not necessarily limited to) the following:
+     * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
      
 Rules involving the following selectors cannot be applied as inline styles.
 They will, however, be preserved and copied to a `<style>` element in the HTML:

@@ -648,6 +648,7 @@ class CssInlinerTest extends TestCase
             ':not with class => other class' => [':not(.p-1) { %1$s }', '<p class="p-2" style="%1$s">'],
             'type & :not with class => without class' => ['span:not(.foo) { %1$s }', '<span style="%1$s">'],
             'type & :not with class => with other class' => ['p:not(.foo) { %1$s }', '<p class="p-1" style="%1$s">'],
+            // broken: child of :any-link => child of anchor with href
         ];
     }
 
@@ -2061,8 +2062,15 @@ class CssInlinerTest extends TestCase
             'dynamic and static pseudo-classes' => ['a:hover:first-child { color: green; }'],
             'static and dynamic pseudo-classes' => ['a:first-child:hover { color: green; }'],
         ];
+        $datasetsWithUnsupportedStaticPseudoClasses = [
+            ':any-link' => ['a:any-link { color: green; }'],
+        ];
 
-        return \array_merge($datasetsWithSelectorPseudoComponents, $datasetsWithCombinedPseudoSelectors);
+        return \array_merge(
+            $datasetsWithSelectorPseudoComponents,
+            $datasetsWithCombinedPseudoSelectors,
+            $datasetsWithUnsupportedStaticPseudoClasses
+        );
     }
 
     /**
