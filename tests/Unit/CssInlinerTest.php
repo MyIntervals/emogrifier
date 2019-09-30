@@ -2117,7 +2117,9 @@ class CssInlinerTest extends TestCase
      */
     public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelector($css)
     {
-        $subject = $this->buildDebugSubject('<html><p><a id="a" class="a" href="a">foo</a><input></p></html>');
+        $subject = $this->buildDebugSubject(
+            '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>'
+        );
 
         $subject->inlineCss($css);
 

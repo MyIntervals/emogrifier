@@ -2077,7 +2077,9 @@ class EmogrifierTest extends TestCase
      */
     public function emogrifyKeepsRuleWithPseudoComponentInMatchingSelector($css)
     {
-        $this->subject->setHtml('<html><p><a id="a" class="a" href="a">foo</a><input></p></html>');
+        $this->subject->setHtml(
+            '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>'
+        );
         $this->subject->setCss($css);
 
         $result = $this->subject->emogrify();
