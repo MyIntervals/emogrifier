@@ -364,21 +364,56 @@ The following selectors are not implemented yet:
      [descendant combinator](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_combinator)
      (e.g. `p *` is supported but `* p` is not)
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
- * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
-   (some of them will never be supported)
+ * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+   * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
+     without a type (will behave as `:nth-last-child()`)
+   * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
+     without a type (will behave as `:nth-child()`)
+   * any pseudo-classes not listed above as supported – rules involving them
+     will nonetheless be preserved and copied to a `<style>` element in the 
+     HTML.
+     
+Rules involving the following selectors cannot be applied as inline styles.
+They will, however, be preserved and copied to a `<style>` element in the HTML:
+     
+ * dynamic [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
+   (such as `:hover`)
  * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
+   (such as `::after`)
 
 ## Caveats
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like
   ISO8859-1 or ISO8859-15 are not supported.
-* Emogrifier now preserves all valuable @media queries. Media queries
-  can be very useful in responsive email design. See
+* Emogrifier preserves all valuable `@media` rules.  Media queries can be very
+  useful in responsive email design.  See
   [media query support](https://litmus.com/help/email-clients/media-query-support/).
+  However, in order for them to be effective, you may need to add `!important`
+  to some of the declarations within them so that they will override CSS styles
+  that have been inlined.  For example, with the following CSS, the `font-size`
+  declaration in the `@media` rule would not override the font size for `p`
+  elements from the preceding rule after that has been inlined as 
+  `<p style="font-size: 16px;">` in the HTML, without the `!important` directive
+  (even though `!important` would not be necessary if the CSS were not inlined):
+  ```css
+  p {
+    font-size: 16px;
+  }
+  @media (max-width: 640px) {
+    p {
+      font-size: 14px !important;
+    }
+  } 
+  ```
+* Emogrifier cannot inline CSS rules involving selectors with pseudo-elements
+  (such as `::after`) or dynamic pseudo-classes (such as `:hover`) – it is
+  impossible.  However, such rules will be preserved and copied to a `<style>`
+  element, as for `@media` rules.  The same caveat about the possible need for
+  the `!important` directive applies in these cases too.
 * Emogrifier will grab existing inline style attributes _and_ will
   grab `<style>` blocks from your HTML, but it will not grab CSS files
-  referenced in <link> elements. (The problem email clients are going to ignore
-  these tags anyway, so why leave them in your HTML?)
+  referenced in `<link>` elements (though it will leave them intact for email
+  clients that support them).
 * Even with styles inline, certain CSS properties are ignored by certain email
   clients. For more information, refer to these resources:
     * [http://www.email-standards.org/](http://www.email-standards.org/)
@@ -397,10 +432,6 @@ The following selectors are not implemented yet:
 * Emogrifier automatically converts the provided (X)HTML into HTML5, i.e.,
   self-closing tags will lose their slash. To keep your HTML valid, it is
   recommended to use HTML5 instead of one of the XHTML variants.
-* Emogrifier only supports CSS1 level selectors and a few CSS2 level selectors
-  (but not all of them). It does not support pseudo selectors. (Emogrifier
-  works by converting CSS selectors to XPath selectors, and pseudo selectors
-  cannot be converted accurately).
 
 ## Steps to release a new version
 
