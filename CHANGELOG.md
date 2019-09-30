@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `:first-of-type`
+  ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
+  [#757](https://github.com/MyIntervals/emogrifier/pull/757))
 - Support `:empty`
   ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
   [#756](https://github.com/MyIntervals/emogrifier/pull/756))
