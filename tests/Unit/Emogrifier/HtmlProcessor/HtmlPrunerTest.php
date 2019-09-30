@@ -85,7 +85,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeElementsWithDisplayNone();
 
-        self::assertNotContains('<div', $subject->render());
+        self::assertNotContains('<div', $subject->renderBodyContent());
     }
 
     /**
@@ -115,7 +115,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeElementsWithDisplayNone();
 
-        self::assertContains('<div', $subject->render());
+        self::assertContains('<div', $subject->renderBodyContent());
     }
 
     /**
@@ -156,7 +156,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        self::assertContains($html, $subject->render());
+        self::assertContains($html, $subject->renderBodyContent());
     }
 
     /**
@@ -218,7 +218,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        self::assertNotContains('class', $subject->render());
+        self::assertNotContains('class', $subject->renderBodyContent());
     }
 
     /**
@@ -293,7 +293,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContainsNone($classesExpectedToBeRemoved, $result);
     }
 
@@ -360,7 +360,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         foreach ($classesToKeep as $class) {
             $expectedInstanceCount = \substr_count($html, $class);
             self::assertSubstringCount($expectedInstanceCount, $result, $class);
@@ -382,7 +382,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        \preg_match_all('/class="([^"]*+)"/', $subject->render(), $classAttributeMatches);
+        \preg_match_all('/class="([^"]*+)"/', $subject->renderBodyContent(), $classAttributeMatches);
         foreach ($classAttributeMatches[1] as $classAttributeValue) {
             self::assertMinified($classAttributeValue);
         }
@@ -496,7 +496,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContainsNone($classesExpectedToBeRemoved, $result);
     }
 
@@ -558,7 +558,7 @@ class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContainsAll($classesToBeKept, $result);
     }
 

@@ -48,7 +48,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisuablAttributes()
+    public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisualAttributes()
     {
         $html = '<html style="text-align: right;"></html>';
         $subject = CssToAttributeConverter::fromHtml($html);
@@ -145,7 +145,7 @@ class CssToAttributeConverterTest extends TestCase
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
         $subject->convertCssToVisualAttributes();
-        $html = $subject->render();
+        $html = $subject->renderBodyContent();
 
         self::assertContains($attributes, $html);
     }
@@ -184,7 +184,7 @@ class CssToAttributeConverterTest extends TestCase
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
         $subject->convertCssToVisualAttributes();
-        $html = $subject->render();
+        $html = $subject->renderBodyContent();
 
         self::assertContains($body, $html);
     }
