@@ -762,6 +762,7 @@ class EmogrifierTest extends TestCase
                 '<p class="p-4" id="p4" style="%1$s">',
             ],
             // broken: nth-of-type(Xn+Y)
+            // broken: nth-last-of-type
             // broken: :not with type => other type
             // broken: :not with class => no class
             // broken: :not with class => other class
