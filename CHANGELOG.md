@@ -72,6 +72,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#698](https://github.com/MyIntervals/emogrifier/pull/698))
 
 ### Changed
+- Relax the dependency on `symfony/css-selector`
+  ([#762](https://github.com/MyIntervals/emogrifier/pull/762))
 - Rename `HtmlPruner::removeInvisibleNodes` to
   `HtmlPruner::removeElementsWithDisplayNone`
   ([#717](https://github.com/MyIntervals/emogrifier/issues/717),
