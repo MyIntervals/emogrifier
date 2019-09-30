@@ -120,7 +120,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         $expectedWbrTagCount = \substr_count($html, '<wbr');
         $resultWbrTagCount = \substr_count($result, '<wbr');
         self::assertSame($expectedWbrTagCount, $resultWbrTagCount);
@@ -1367,7 +1367,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p {' . $cssDeclaration . '}');
 
-        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->renderBodyContent());
     }
 
     /**
@@ -1382,7 +1382,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->render());
+        self::assertContains('<p style="' . $cssDeclaration . '">target</p>', $subject->renderBodyContent());
     }
 
     /**
@@ -1425,7 +1425,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContains('color: red', $result);
         self::assertContains('background-color: blue', $result);
     }
@@ -1442,7 +1442,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContains('color: red', $result);
         self::assertContains('background-color: blue', $result);
     }
@@ -1855,7 +1855,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss($css);
 
-        self::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->renderBodyContent());
     }
 
     /**
@@ -1889,7 +1889,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss($css);
 
-        self::assertNotContainsCss($css, $subject->render());
+        self::assertNotContainsCss($css, $subject->renderBodyContent());
     }
 
     /**
@@ -1905,7 +1905,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss($css);
 
-        self::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->renderBodyContent());
     }
 
     /**
@@ -1921,7 +1921,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertNotContainsCss($css, $subject->render());
+        self::assertNotContainsCss($css, $subject->renderBodyContent());
     }
 
     /**
@@ -1937,7 +1937,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertNotContains('style=', $subject->render());
+        self::assertNotContains('style=', $subject->renderBodyContent());
     }
 
     /**
@@ -2277,7 +2277,7 @@ class CssInlinerTest extends TestCase
             . ' { h1 { color: red; } } h1 { font-size: 24px; }'
         );
 
-        self::assertContains('<h1 style="color: green; font-size: 24px;">', $subject->render());
+        self::assertContains('<h1 style="color: green; font-size: 24px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2325,7 +2325,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->renderBodyContent());
     }
 
     /**
@@ -2355,7 +2355,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->render());
+        self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->renderBodyContent());
     }
 
     /**
@@ -2372,7 +2372,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContains('<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">', $result);
     }
 
@@ -2392,7 +2392,7 @@ class CssInlinerTest extends TestCase
 
         self::assertContains(
             '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
-            $subject->render()
+            $subject->renderBodyContent()
         );
     }
 
@@ -2408,7 +2408,8 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px; padding-bottom:0;}');
 
-        self::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $subject->render());
+        $result = $subject->renderBodyContent();
+        self::assertContains('<p style="margin: 0; padding-bottom: 1px; text-align: center;">', $result);
     }
 
     /**
@@ -2450,7 +2451,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !important; }');
 
-        self::assertContains('<p style="margin: 1px;">', $subject->render());
+        self::assertContains('<p style="margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2462,7 +2463,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !important; }');
 
-        self::assertContains('<p style="text-align: center; margin: 1px;">', $subject->render());
+        self::assertContains('<p style="text-align: center; margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2474,7 +2475,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !ImPorTant; }');
 
-        self::assertContains('<p style="margin: 1px !ImPorTant;">', $subject->render());
+        self::assertContains('<p style="margin: 1px !ImPorTant;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2486,7 +2487,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !important; } p { margin: 2px !important; }');
 
-        self::assertContains('<p style="margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2498,7 +2499,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px; } p { margin: 2px; }');
 
-        self::assertContains('<p style="margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2510,7 +2511,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !important; } p { margin: 2px; }');
 
-        self::assertContains('<p style="margin: 1px;">', $subject->render());
+        self::assertContains('<p style="margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2522,7 +2523,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        self::assertContains('<p style="margin-top: 1px; margin: 2px;">', $subject->render());
+        self::assertContains('<p style="margin-top: 1px; margin: 2px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2534,7 +2535,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; } p { margin-top: 3px; }');
 
-        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2546,7 +2547,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin-top: 1px; } p { margin: 2px; }');
 
-        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2558,7 +2559,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin-top: 1px; }');
 
-        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->render());
+        self::assertContains('<p style="margin: 2px; margin-top: 3px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2596,7 +2597,8 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !important; padding: 1px;}');
 
-        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $subject->render());
+        $result = $subject->renderBodyContent();
+        self::assertContains('<p style="padding: 1px; text-align: center; margin: 2px;">', $result);
     }
 
     /**
@@ -2609,7 +2611,7 @@ class CssInlinerTest extends TestCase
         $subject->addExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        self::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->renderBodyContent());
     }
 
     /**
@@ -2622,7 +2624,7 @@ class CssInlinerTest extends TestCase
         $subject->addExcludedSelector(' p.x ');
         $subject->inlineCss('p { margin: 0; }');
 
-        self::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->renderBodyContent());
     }
 
     /**
@@ -2635,7 +2637,7 @@ class CssInlinerTest extends TestCase
         $subject->addExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        self::assertContains('<p style="margin: 0;"></p>', $subject->render());
+        self::assertContains('<p style="margin: 0;"></p>', $subject->renderBodyContent());
     }
 
     /**
@@ -2649,7 +2651,7 @@ class CssInlinerTest extends TestCase
         $subject->removeExcludedSelector('p.x');
         $subject->inlineCss('p { margin: 0; }');
 
-        self::assertContains('<p class="x" style="margin: 0;"></p>', $subject->render());
+        self::assertContains('<p class="x" style="margin: 0;"></p>', $subject->renderBodyContent());
     }
 
     /**
@@ -2677,7 +2679,7 @@ class CssInlinerTest extends TestCase
         $subject->addExcludedSelector('..p');
         $subject->inlineCss();
 
-        self::assertContains('<p class="x"></p>', $subject->render());
+        self::assertContains('<p class="x"></p>', $subject->renderBodyContent());
     }
 
     /**
@@ -2693,7 +2695,7 @@ class CssInlinerTest extends TestCase
         $subject->addExcludedSelector('p.z');
         $subject->inlineCss('p { color: red };');
 
-        $result = $subject->render();
+        $result = $subject->renderBodyContent();
         self::assertContains('<p class="x"></p>', $result);
         self::assertContains('<p class="y" style="color: red;"></p>', $result);
         self::assertContains('<p class="z"></p>', $result);
@@ -2824,7 +2826,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss('div:last-child::after {float: right;}');
 
-        self::assertContains('<div></div>', $subject->render());
+        self::assertContains('<div></div>', $subject->renderBodyContent());
     }
 
     /**
@@ -2838,7 +2840,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $subject->render());
+        self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $subject->renderBodyContent());
     }
 
     /**
@@ -2906,7 +2908,7 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $subject->render());
+        self::assertContains('<p style="' . $expectedStyleAttributeContent . '">', $subject->renderBodyContent());
     }
 
     /**
