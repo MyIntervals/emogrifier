@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `:empty`
+  ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
+  [#756](https://github.com/MyIntervals/emogrifier/pull/756))
 - Test that rules with `:any-link` are copied to the `<style>` element
   ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
   [#755](https://github.com/MyIntervals/emogrifier/pull/755))

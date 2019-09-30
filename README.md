@@ -344,6 +344,7 @@ Emogrifier currently supports the following
  * [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
  * [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+   * [empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)

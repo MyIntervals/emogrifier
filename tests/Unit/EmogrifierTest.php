@@ -2050,6 +2050,7 @@ class EmogrifierTest extends TestCase
         ];
         $datasetsWithUnsupportedStaticPseudoClasses = [
             ':any-link' => ['a:any-link { color: green; }'],
+            ':empty' => ['a:empty { color: green; }'],
             ':nth-last-child' => ['a:nth-last-child(2n+1) { color: green; }'],
             ':nth-last-of-type' => ['a:nth-last-of-type(2n+1) { color: green; }'],
             ':only-child' => ['a:only-child { color: green; }'],
