@@ -346,13 +346,15 @@ Emogrifier currently supports the following
  * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
    * [empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
+   * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
+     (with a type, e.g. `p:first-of-type` but not `*:first-of-type` which will
+     behave as `*:first-child`)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
    * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
    * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     (with a type, e.g. `p:nth-last-of-type(2n)` but not
-     `*:nth-last-of-type(2n)` which will behave as `*:nth-last-child(2n)`)
+     (with a type)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
      (with a type)
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
