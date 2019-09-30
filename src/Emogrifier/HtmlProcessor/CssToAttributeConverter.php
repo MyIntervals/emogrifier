@@ -99,9 +99,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         }
 
         $properties = [];
-        $declarations = \preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
-
-        foreach ($declarations as $declaration) {
+        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
@@ -219,9 +217,9 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     private function mapBackgroundProperty(\DOMElement $node, $value)
     {
         // parse out the color, if any
-        $styles = \explode(' ', $value);
+        $styles = \explode(' ', $value, 2);
         $first = $styles[0];
-        if (\is_numeric($first[0]) || \strpos($first, 'url') === 0) {
+        if (\is_numeric($first[0]) || \strncmp($first, 'url', 3) === 0) {
             return;
         }
 
@@ -304,6 +302,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     private function parseCssShorthandValue($value)
     {
+        /** @var string[] $values */
         $values = \preg_split('/\\s+/', $value);
 
         $css = [];

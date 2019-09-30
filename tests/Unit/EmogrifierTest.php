@@ -2586,6 +2586,7 @@ class EmogrifierTest extends TestCase
         $domDocument = $this->subject->getDomDocument();
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
+        /** @var \DOMElement $element */
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
@@ -3143,20 +3144,6 @@ class EmogrifierTest extends TestCase
         $result = $this->subject->emogrify();
 
         self::assertContains('<p style="padding: 10px; padding-left: 20px;">', $result);
-    }
-
-    /**
-     * Asserts that $html contains a $tagName tag with the $attribute attribute.
-     *
-     * @param string $html the HTML string we are searching in
-     * @param string $tagName the HTML tag we are looking for
-     * @param string $attribute the attribute we are looking for (with or even without a value)
-     */
-    private function assertHtmlStringContainsTagWithAttribute($html, $tagName, $attribute)
-    {
-        self::assertTrue(
-            \preg_match('/<' . \preg_quote($tagName, '/') . '[^>]+' . \preg_quote($attribute, '/') . '/', $html) > 0
-        );
     }
 
     /**

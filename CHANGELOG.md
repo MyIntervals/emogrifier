@@ -105,6 +105,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Fix PhpStorm code inspection warnings
+  ([#729](https://github.com/MyIntervals/emogrifier/issues/729),
+  [#770](https://github.com/MyIntervals/emogrifier/pull/770))
 - Uppercase type combined with class or ID in selector
   ([#590](https://github.com/MyIntervals/emogrifier/issues/590),
   [#769](https://github.com/MyIntervals/emogrifier/pull/769))

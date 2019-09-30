@@ -380,7 +380,7 @@ class CssInliner extends AbstractHtmlProcessor
     private function normalizeStyleAttributes(\DOMElement $node)
     {
         $normalizedOriginalStyle = \preg_replace_callback(
-            '/[A-z\\-]+(?=\\:)/S',
+            '/[a-zA-Z\\-]+(?=:)/S',
             static function (array $m) {
                 return \strtolower($m[0]);
             },
@@ -424,9 +424,7 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         $properties = [];
-        $declarations = \preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
-
-        foreach ($declarations as $declaration) {
+        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
@@ -562,7 +560,7 @@ class CssInliner extends AbstractHtmlProcessor
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from a `@media` rule),
      *         "selector" (the CSS selector, e.g., "*" or "header h1"),
-     *         "hasUnmatchablePseudo" (true if that selector contains psuedo-elements or dynamic pseudo-classes
+     *         "hasUnmatchablePseudo" (true if that selector contains pseudo-elements or dynamic pseudo-classes
      *         such that the declarations cannot be applied inline),
      *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
      *         e.g., "color: red; height: 4px;"),
@@ -589,8 +587,7 @@ class CssInliner extends AbstractHtmlProcessor
                 continue;
             }
 
-            $selectors = \explode(',', $cssRule['selectors']);
-            foreach ($selectors as $selector) {
+            foreach (\explode(',', $cssRule['selectors']) as $selector) {
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
                 $hasPseudoElement = \strpos($selector, '::') !== false;
@@ -699,7 +696,7 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Splits input CSS code into an array of parts for different media querues, in order.
+     * Splits input CSS code into an array of parts for different media queries, in order.
      * Each part is an array where:
      *
      * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
@@ -737,7 +734,7 @@ class CssInliner extends AbstractHtmlProcessor
         $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
 
         $cssSplitForAllowedMediaTypes = \preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:(?=[{\\(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
+            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
             . ')#misU',
             $css,
             -1,
@@ -1015,7 +1012,7 @@ class CssInliner extends AbstractHtmlProcessor
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim(\preg_replace_callback(
-            '/(\\s?+):not(\\([^\\(\\)]*+(?:(?2)[^\\(\\)]*+)*+\\))/i',
+            '/(\\s?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
             [$this, 'replaceUnmatchableNotComponent'],
             ' ' . $selector
         ));

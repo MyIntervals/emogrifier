@@ -88,6 +88,7 @@ class HtmlPruner extends AbstractHtmlProcessor
     {
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
+        /** @var \DOMNode $element */
         foreach ($elements as $element) {
             $elementClasses = \preg_split('/\\s++/', \trim($element->getAttribute('class')));
             $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
@@ -108,6 +109,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      */
     private function removeClassAttributeFromElements(\DOMNodeList $elements)
     {
+        /** @var \DOMNode $element */
         foreach ($elements as $element) {
             $element->removeAttribute('class');
         }

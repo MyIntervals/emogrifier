@@ -587,7 +587,7 @@ class Emogrifier
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from a `@media` rule),
      *         "selector" (the CSS selector, e.g., "*" or "header h1"),
-     *         "hasUnmatchablePseudo" (true if that selector contains psuedo-elements or dynamic pseudo-classes
+     *         "hasUnmatchablePseudo" (true if that selector contains pseudo-elements or dynamic pseudo-classes
      *         such that the declarations cannot be applied inline),
      *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
      *         e.g., "color: red; height: 4px;"),
@@ -611,8 +611,7 @@ class Emogrifier
                     continue;
                 }
 
-                $selectors = \explode(',', $cssRule['selectors']);
-                foreach ($selectors as $selector) {
+                foreach (\explode(',', $cssRule['selectors']) as $selector) {
                     // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                     // only allow structural pseudo-classes
                     $hasPseudoElement = \strpos($selector, '::') !== false;
@@ -752,6 +751,7 @@ class Emogrifier
     {
         $key = \array_search($tagName, $this->unprocessableHtmlTags, true);
         if ($key !== false) {
+            /** @var int|string $key */
             unset($this->unprocessableHtmlTags[$key]);
         }
     }
@@ -843,7 +843,7 @@ class Emogrifier
     private function normalizeStyleAttributes(\DOMElement $node)
     {
         $normalizedOriginalStyle = \preg_replace_callback(
-            '/[A-z\\-]+(?=\\:)/S',
+            '/[a-zA-Z\\-]+(?=:)/S',
             static function (array $m) {
                 return \strtolower($m[0]);
             },
@@ -1004,7 +1004,7 @@ class Emogrifier
         // avoid including unneeded class dependency if there are no rules
         if ($cssRulesRelevantForDocument !== []) {
             // support use without autoload
-            if (!\class_exists('Pelago\\Emogrifier\\Utilities\\CssConcatenator')) {
+            if (!\class_exists(CssConcatenator::class)) {
                 require_once __DIR__ . '/Emogrifier/Utilities/CssConcatenator.php';
             }
 
@@ -1058,7 +1058,7 @@ class Emogrifier
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim(\preg_replace_callback(
-            '/(\\s?+):not(\\([^\\(\\)]*+(?:(?2)[^\\(\\)]*+)*+\\))/i',
+            '/(\\s?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
             [$this, 'replaceUnmatchableNotComponent'],
             ' ' . $selector
         ));
@@ -1169,6 +1169,8 @@ class Emogrifier
      * Checks that $this->domDocument has a BODY element and adds it if it is missing.
      *
      * @return void
+     *
+     * @throws \UnexpectedValueException
      */
     private function ensureExistenceOfBodyElement()
     {
@@ -1177,6 +1179,9 @@ class Emogrifier
         }
 
         $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
+        if ($htmlElement === null) {
+            throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930874);
+        }
         $htmlElement->appendChild($this->domDocument->createElement('body'));
     }
 
@@ -1230,7 +1235,7 @@ class Emogrifier
     }
 
     /**
-     * Splits input CSS code into an array of parts for different media querues, in order.
+     * Splits input CSS code into an array of parts for different media queries, in order.
      * Each part is an array where:
      *
      * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
@@ -1268,7 +1273,7 @@ class Emogrifier
         $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
 
         $cssSplitForAllowedMediaTypes = \preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:(?=[{\\(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
+            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
             . ')#misU',
             $css,
             -1,
@@ -1318,8 +1323,7 @@ class Emogrifier
             }
             /** @var \DOMNode $node */
             foreach ($nodes as $node) {
-                $hasContent = $node->hasChildNodes() || $node->hasChildNodes();
-                if (!$hasContent) {
+                if (!$node->hasChildNodes()) {
                     $node->parentNode->removeChild($node);
                 }
             }
@@ -1468,13 +1472,13 @@ class Emogrifier
             $trimmedLowercaseSelector,
             $matches
         );
-        if (!$hasNotSelector) {
-            $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
-        } else {
+        if ($hasNotSelector) {
             /** @var string[] $matches */
             list(, $partBeforeNot, $notContents) = $matches;
             $xPath = '//' . $this->translateCssToXpathPass($partBeforeNot) .
                 '[not(' . $this->translateCssToXpathPassInline($notContents) . ')]';
+        } else {
+            $xPath = '//' . $this->translateCssToXpathPass($trimmedLowercaseSelector);
         }
         $this->caches[self::CACHE_KEY_SELECTOR][$xPathKey] = $xPath;
 
@@ -1579,10 +1583,8 @@ class Emogrifier
     private function matchClassAttributesInline(array $match)
     {
         return 'contains(concat(" ",@class," "),concat(" ","' .
-            \implode(
-                '"," "))][contains(concat(" ",@class," "),concat(" ","',
-                \explode('.', \substr($match[2], 1))
-            ) . '"," "))';
+            \str_replace('.', '"," "))][contains(concat(" ",@class," "),concat(" ","', \substr($match[2], 1)) .
+            '"," "))';
     }
 
     /**
@@ -1720,9 +1722,7 @@ class Emogrifier
         }
 
         $properties = [];
-        $declarations = \preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock);
-
-        foreach ($declarations as $declaration) {
+        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;

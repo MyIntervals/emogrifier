@@ -693,8 +693,7 @@ class CssInlinerTest extends TestCase
 
         $result = $subject->render();
         $selector = \trim(\strtok($css, '{'));
-        $cssSelectorConverter = new CssSelectorConverter();
-        $xPathExpression = $cssSelectorConverter->toXPath($selector);
+        $xPathExpression = (new CssSelectorConverter())->toXPath($selector);
         $message = 'with converted XPath expression `' . $xPathExpression . '`';
         self::assertContains($needleExpected, $result, $message);
     }
