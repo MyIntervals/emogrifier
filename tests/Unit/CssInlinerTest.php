@@ -354,6 +354,8 @@ class CssInlinerTest extends TestCase
             // broken: type & attribute value with ^, case insensitive => with case insensitive prefix math
             // broken: type & attribute value with $, case insensitive => with case insensitive suffix math
             // broken: type & attribute value with *, case insensitive => with case insensitive substring math
+            // broken: :required
+            // broken: :optional
             'adjacent => 2nd of many' => ['p + p { %1$s }', '<p class="p-2" style="%1$s">'],
             'adjacent => last of many' => ['p + p { %1$s }', '<p class="p-7" style="%1$s">'],
             'adjacent (without space after +) => last of many' => ['p +p { %1$s }', '<p class="p-7" style="%1$s">'],
@@ -2095,6 +2097,8 @@ class CssInlinerTest extends TestCase
         $datasetsWithUnsupportedStaticPseudoClasses = [
             ':any-link' => ['a:any-link { color: green; }'],
             ':only-of-type' => ['a:only-of-type { color: green; }'],
+            ':optional' => ['input:optional { color: green; }'],
+            ':required' => ['input:required { color: green; }'],
         ];
 
         return \array_merge(
@@ -2113,7 +2117,9 @@ class CssInlinerTest extends TestCase
      */
     public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelector($css)
     {
-        $subject = $this->buildDebugSubject('<html><p><a id="a" class="a" href="a">foo</a></p></html>');
+        $subject = $this->buildDebugSubject(
+            '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>'
+        );
 
         $subject->inlineCss($css);
 

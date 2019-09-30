@@ -380,6 +380,8 @@ The following selectors are not implemented yet:
      HTML – including (but not necessarily limited to) the following:
      * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
      * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
+     * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
+     * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
      
 Rules involving the following selectors cannot be applied as inline styles.
 They will, however, be preserved and copied to a `<style>` element in the HTML:
