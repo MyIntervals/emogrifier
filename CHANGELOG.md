@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test that rules with `:only-of-type` are copied to the `<style>` element
+  ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
+  [#760](https://github.com/MyIntervals/emogrifier/pull/760))
 - Support `:last-of-type`
   ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
   [#758](https://github.com/MyIntervals/emogrifier/pull/758))
