@@ -1022,9 +1022,17 @@ class Emogrifier
     }
 
     /**
+     * Checks whether there is at least one matching element for the CSS selector contained in the `selector` element
+     * of the provided CSS rule.
+     *
+     * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
+     * it will test for a match with its originating element.
+     *
      * @param string[] $cssRule
      *
      * @return bool
+     *
+     * @throws \InvalidArgumentException
      */
     private function existsMatchForSelectorInCssRule(array $cssRule)
     {
