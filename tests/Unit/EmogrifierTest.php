@@ -2056,6 +2056,7 @@ class EmogrifierTest extends TestCase
             ':nth-last-child' => ['a:nth-last-child(2n+1) { color: green; }'],
             ':nth-last-of-type' => ['a:nth-last-of-type(2n+1) { color: green; }'],
             ':only-child' => ['a:only-child { color: green; }'],
+            ':only-of-type' => ['a:only-of-type { color: green; }'],
         ];
 
         return \array_merge(

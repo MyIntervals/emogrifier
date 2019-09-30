@@ -582,6 +582,7 @@ class CssInlinerTest extends TestCase
                 'div:last-of-type { %1$s }',
                 '<div class="div-3" style="%1$s">',
             ],
+            // broken: only-of-type (https://github.com/symfony/symfony/issues/33773)
             // broken: nth-of-type without preceding type
             'type & :nth-of-type(even) => 2nd of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
@@ -2085,6 +2086,7 @@ class CssInlinerTest extends TestCase
         ];
         $datasetsWithUnsupportedStaticPseudoClasses = [
             ':any-link' => ['a:any-link { color: green; }'],
+            ':only-of-type' => ['a:only-of-type { color: green; }'],
         ];
 
         return \array_merge(
