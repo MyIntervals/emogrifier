@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test and document excluding entire subtree with `addExcludedSelector()`
+  ([#347](https://github.com/MyIntervals/emogrifier/issues/347),
+  [#768](https://github.com/MyIntervals/emogrifier/pull/768))
 - Test that rules with `:optional` or `:required` are copied to the `<style>`
   element ([#748](https://github.com/MyIntervals/emogrifier/issues/748),
   [#765](https://github.com/MyIntervals/emogrifier/pull/765))
