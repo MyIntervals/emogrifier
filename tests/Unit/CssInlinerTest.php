@@ -394,12 +394,12 @@ class CssInlinerTest extends TestCase
             'universal general sibling => last of many' => ['.p-1 ~ * { %1$s }', '<p class="p-7" style="%1$s">'],
             'general sibling of universal => 2nd of many' => ['* ~ p { %1$s }', '<p class="p-2" style="%1$s">'],
             'general sibling of universal => last of many' => ['* ~ p { %1$s }', '<p class="p-7" style="%1$s">'],
-            // broken: child universal => direct child
-            // broken: child of universal => direct child
+            'child universal => direct child' => ['body > * { %1$s }', '<p class="p-1" style="%1$s">'],
+            'child of universal => direct child' => ['* > body { %1$s }', '<body style="%1$s">'],
             'descendent universal => child' => ['p * { %1$s }', '<span style="%1$s">'],
             'descendent universal => grandchild' => ['body * { %1$s }', '<span style="%1$s">'],
-            // broken: descandant of universal => child
-            // broken: descandant of universal => grandchild
+            'descendant of universal => child' => ['* body { %1$s }', '<body style="%1$s">'],
+            'descendant of universal => grandchild' => ['* p { %1$s }', '<p class="p-1" style="%1$s">'],
             'descendent attribute presence => with attribute' => [
                 'body [title] { %1$s }',
                 '<span title="bonjour" style="%1$s">',
@@ -780,8 +780,13 @@ class CssInlinerTest extends TestCase
             'universal general sibling => not 1st of many' => ['p ~ * { %1$s }', '<p class="p-1">'],
             'universal general sibling => not previous of many' => ['.p-2 ~ * { %1$s }', '<p class="p-1">'],
             'general sibling of universal => not 1st of many' => ['* ~ p { %1$s }', '<p class="p-1">'],
+            'child universal => not parent' => ['body > * { %1$s }', '<html>'],
+            'child universal => not self' => ['body > * { %1$s }', '<body>'],
+            'child universal => not grandchild' => ['body > * { %1$s }', '<span>'],
+            'child of universal => not root element' => ['* > html { %1$s }', '<html>'],
             'descendent universal => not parent' => ['p *', '<body>'],
             'descendent universal => not self' => ['p *', '<p class="p-1">'],
+            'descendant of universal => not root element' => ['* html { %1$s }', '<html>'],
             'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
                 'p span[title^=njo] { %1$s }',
                 '<span title="bonjour">',

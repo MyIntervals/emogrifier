@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Test universal selector with combinators
+  ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
 
