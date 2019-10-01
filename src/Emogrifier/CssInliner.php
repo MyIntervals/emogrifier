@@ -783,7 +783,9 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule)
     {
-        $newStyleDeclarations = $this->parseCssDeclarationsBlock((string)$cssRule['declarationsBlock']);
+        /** @var string $declarationsBlock */
+        $declarationsBlock = $cssRule['declarationsBlock'];
+        $newStyleDeclarations = $this->parseCssDeclarationsBlock($declarationsBlock);
         if ($newStyleDeclarations === []) {
             return;
         }
