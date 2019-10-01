@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
 use Pelago\Emogrifier\Utilities\ArrayIntersector;
@@ -15,7 +17,7 @@ class ArrayIntersectorTest extends TestCase
     /**
      * @return (int|string)[][][]
      */
-    public function arraysDataProvider()
+    public function arraysDataProvider(): array
     {
         return [
             'empty arrays' => [

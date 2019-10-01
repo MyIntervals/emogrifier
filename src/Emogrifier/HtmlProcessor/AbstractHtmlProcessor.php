@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 /**
@@ -58,11 +60,8 @@ abstract class AbstractHtmlProcessor
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public static function fromHtml($unprocessedHtml)
+    public static function fromHtml(string $unprocessedHtml): AbstractHtmlProcessor
     {
-        if (!\is_string($unprocessedHtml)) {
-            throw new \InvalidArgumentException('The provided HTML must be a string.', 1515459744);
-        }
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
@@ -80,7 +79,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return static
      */
-    public static function fromDomDocument(\DOMDocument $document)
+    public static function fromDomDocument(\DOMDocument $document): AbstractHtmlProcessor
     {
         $instance = new static();
         $instance->setDomDocument($document);
@@ -95,7 +94,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function setHtml($html)
+    private function setHtml(string $html)
     {
         $this->createUnifiedDomDocument($html);
     }
@@ -105,7 +104,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return \DOMDocument
      */
-    public function getDomDocument()
+    public function getDomDocument(): \DOMDocument
     {
         return $this->domDocument;
     }
@@ -126,7 +125,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string
      */
-    public function render()
+    public function render(): string
     {
         $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML();
 
@@ -138,7 +137,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string
      */
-    public function renderBodyContent()
+    public function renderBodyContent(): string
     {
         $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
@@ -153,7 +152,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string
      */
-    private function removeSelfClosingTagsClosingTags($html)
+    private function removeSelfClosingTagsClosingTags(string $html): string
     {
         return \preg_replace('%</' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
     }
@@ -165,7 +164,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return \DOMElement
      */
-    private function getBodyElement()
+    private function getBodyElement(): \DOMElement
     {
         return $this->domDocument->getElementsByTagName('body')->item(0);
     }
@@ -179,7 +178,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function createUnifiedDomDocument($html)
+    private function createUnifiedDomDocument(string $html)
     {
         $this->createRawDomDocument($html);
         $this->ensureExistenceOfBodyElement();
@@ -192,7 +191,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function createRawDomDocument($html)
+    private function createRawDomDocument(string $html)
     {
         $domDocument = new \DOMDocument();
         $domDocument->strictErrorChecking = false;
@@ -213,7 +212,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string the unified HTML
      */
-    private function prepareHtmlForDomConversion($html)
+    private function prepareHtmlForDomConversion(string $html): string
     {
         $htmlWithSelfClosingSlashes = $this->ensurePhpUnrecognizedSelfClosingTagsAreXml($html);
         $htmlWithDocumentType = $this->ensureDocumentType($htmlWithSelfClosingSlashes);
@@ -228,7 +227,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string HTML with document type
      */
-    private function ensureDocumentType($html)
+    private function ensureDocumentType(string $html): string
     {
         $hasDocumentType = \stripos($html, '<!DOCTYPE') !== false;
         if ($hasDocumentType) {
@@ -247,7 +246,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string the HTML with the meta tag added
      */
-    private function addContentTypeMetaTag($html)
+    private function addContentTypeMetaTag(string $html): string
     {
         $hasContentTypeMetaTag = \stripos($html, 'Content-Type') !== false;
         if ($hasContentTypeMetaTag) {
@@ -282,7 +281,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string HTML with problematic tags converted.
      */
-    private function ensurePhpUnrecognizedSelfClosingTagsAreXml($html)
+    private function ensurePhpUnrecognizedSelfClosingTagsAreXml(string $html): string
     {
         return \preg_replace(
             '%<' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',

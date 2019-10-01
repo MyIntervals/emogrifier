@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\CssInliner;
@@ -62,7 +64,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return string[][]
      */
-    public function displayNoneDataProvider()
+    public function displayNoneDataProvider(): array
     {
         return [
             'whitespace, trailing semicolon' => ['display: none;'],
@@ -79,7 +81,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider displayNoneDataProvider
      */
-    public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone($displayNone)
+    public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone(string $displayNone)
     {
         $subject = HtmlPruner::fromHtml('<html><body><div style="' . $displayNone . '"></div></body></html>');
 
@@ -91,7 +93,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return string[][]
      */
-    public function provideEmogrifierKeepClassAttribute()
+    public function provideEmogrifierKeepClassAttribute(): array
     {
         return [
             'special class alone' => ['-emogrifier-keep'],
@@ -107,7 +109,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider provideEmogrifierKeepClassAttribute
      */
-    public function removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep($classAttributeValue)
+    public function removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep(string $classAttributeValue)
     {
         $subject = HtmlPruner::fromHtml(
             '<html><body><div class="' . $classAttributeValue . '" style="display: none;"></div></body></html>'
@@ -133,7 +135,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return string[][][]
      */
-    public function provideClassesToKeep()
+    public function provideClassesToKeep(): array
     {
         return [
             'no classes to keep' => [[]],
@@ -162,7 +164,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideHtmlAndNonMatchedClasses()
+    public function provideHtmlAndNonMatchedClasses(): array
     {
         return [
             '1 attribute, 1 class, no classes to keep' => [
@@ -212,8 +214,10 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider provideHtmlAndNonMatchedClasses
      */
-    public function removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep($html, array $classesToKeep)
-    {
+    public function removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep(
+        string $html,
+        array $classesToKeep
+    ) {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
         $subject->removeRedundantClasses($classesToKeep);
@@ -224,7 +228,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideHtmlAndSomeMatchedClasses()
+    public function provideHtmlAndSomeMatchedClasses(): array
     {
         return [
             '2 attributes, 1 different class each, 1st class to be kept' => [
@@ -258,7 +262,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideHtmlWithExtraWhitespaceAndSomeMatchedClasses()
+    public function provideHtmlWithExtraWhitespaceAndSomeMatchedClasses(): array
     {
         return [
             '1 attribute, 2 classes with extra whitespace, 1 to be kept' => [
@@ -285,7 +289,7 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      */
     public function removeRedundantClassesRemovesClassesNotToKeep(
-        $html,
+        string $html,
         array $classesToKeep,
         array $classesExpectedToBeRemoved
     ) {
@@ -300,7 +304,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideHtmlAndAllMatchedClasses()
+    public function provideHtmlAndAllMatchedClasses(): array
     {
         return [
             '1 attribute, 1 class, that class to be kept' => [
@@ -325,7 +329,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideHtmlWithExtraWhitespaceAndAllMatchedClasses()
+    public function provideHtmlWithExtraWhitespaceAndAllMatchedClasses(): array
     {
         return [
             '1 attribute, 1 class with extra whitespace, that class to be kept' => [
@@ -354,7 +358,7 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
-    public function removeRedundantClassesNotRemovesClassesToKeep($html, array $classesToKeep)
+    public function removeRedundantClassesNotRemovesClassesToKeep(string $html, array $classesToKeep)
     {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
@@ -376,7 +380,7 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
-    public function removeRedundantClassesMinifiesClassAttributes($html, array $classesToKeep)
+    public function removeRedundantClassesMinifiesClassAttributes(string $html, array $classesToKeep)
     {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
@@ -398,7 +402,7 @@ class HtmlPrunerTest extends TestCase
      * @return (CssInliner|HtmlPruner)[] The `HtmlPruner` subject is the first element, and the `CssInliner` fixture is
      *         the second element.
      */
-    private function buildSubjectAndCssInlinerWithCssInlined($html, $css)
+    private function buildSubjectAndCssInlinerWithCssInlined(string $html, string $css): array
     {
         $cssInliner = CssInliner::fromHtml($html);
         $cssInliner->inlineCss($css);
@@ -436,7 +440,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideClassesNotInUninlinableRules()
+    public function provideClassesNotInUninlinableRules(): array
     {
         return [
             'inlinable rule with different class' => [
@@ -487,8 +491,8 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideClassesNotInUninlinableRules
      */
     public function removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules(
-        $html,
-        $css,
+        string $html,
+        string $css,
         array $classesExpectedToBeRemoved = []
     ) {
         list($subject, $cssInliner)
@@ -503,7 +507,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @return (string|string[])[][]
      */
-    public function provideClassesInUninlinableRules()
+    public function provideClassesInUninlinableRules(): array
     {
         return [
             'media rule' => [
@@ -549,8 +553,8 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideClassesInUninlinableRules
      */
     public function removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules(
-        $html,
-        $css,
+        string $html,
+        string $css,
         array $classesToBeKept = []
     ) {
         list($subject, $cssInliner)
@@ -570,7 +574,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    private static function assertContainsNone(array $needles, $haystack)
+    private static function assertContainsNone(array $needles, string $haystack)
     {
         foreach ($needles as $needle) {
             self::assertNotContains($needle, $haystack);
@@ -585,7 +589,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    private static function assertContainsAll(array $needles, $haystack)
+    private static function assertContainsAll(array $needles, string $haystack)
     {
         foreach ($needles as $needle) {
             self::assertContains($needle, $haystack);
@@ -601,7 +605,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    private static function assertSubstringCount($expectedCount, $haystack, $needle)
+    private static function assertSubstringCount(int $expectedCount, string $haystack, string $needle)
     {
         self::assertSame(
             $expectedCount,
@@ -617,7 +621,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws \PHPUnit_Framework_AssertionFailedError
      */
-    private static function assertMinified($string)
+    private static function assertMinified(string $string)
     {
         self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string);
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
 use Pelago\Emogrifier\Utilities\CssConcatenator;
@@ -62,7 +64,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function equivalentSelectorsDataProvider()
+    public function equivalentSelectorsDataProvider(): array
     {
         return [
             'one selector' => [['p'], ['p']],
@@ -113,7 +115,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function differentSelectorsDataProvider()
+    public function differentSelectorsDataProvider(): array
     {
         return [
             'single selectors' => [
@@ -272,7 +274,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @return mixed[][]
      */
-    public function combinableRulesDataProvider()
+    public function combinableRulesDataProvider(): array
     {
         return [
             'same selectors' => [['p'], 'color: green;', ['p'], 'font-size: 16px;', ''],
@@ -294,10 +296,10 @@ class CssConcatenatorTest extends TestCase
      */
     public function appendNotCombinesNonadjacentRules(
         array $rule1Selectors,
-        $rule1DeclarationsBlock,
+        string $rule1DeclarationsBlock,
         array $rule2Selectors,
-        $rule2DeclarationsBlock,
-        $media
+        string $rule2DeclarationsBlock,
+        string $media
     ) {
         $this->subject->append($rule1Selectors, $rule1DeclarationsBlock, $media);
         $this->subject->append(['.intervening'], '-intervening-property: 0;');
