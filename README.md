@@ -431,11 +431,11 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
   (such as `::after`) or dynamic pseudo-classes (such as `:hover`) – it is
   impossible.  However, such rules will be preserved and copied to a `<style>`
   element, as for `@media` rules.  The same caveat about the possible need for
-  the `!important` directive applies in these cases too.
+  the `!important` directive also applies with pseudo-classes.
 * Emogrifier will grab existing inline style attributes _and_ will
   grab `<style>` blocks from your HTML, but it will not grab CSS files
-  referenced in `<link>` elements (though it will leave them intact for email
-  clients that support them).
+  referenced in `<link>` elements or `@import` rules (though it will leave them
+  intact for email clients that support them).
 * Even with styles inline, certain CSS properties are ignored by certain email
   clients. For more information, refer to these resources:
     * [http://www.email-standards.org/](http://www.email-standards.org/)
