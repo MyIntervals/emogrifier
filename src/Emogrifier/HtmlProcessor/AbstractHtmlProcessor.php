@@ -295,6 +295,8 @@ abstract class AbstractHtmlProcessor
      * Checks that $this->domDocument has a BODY element and adds it if it is missing.
      *
      * @return void
+     *
+     * @throws \UnexpectedValueException
      */
     private function ensureExistenceOfBodyElement()
     {
@@ -303,6 +305,9 @@ abstract class AbstractHtmlProcessor
         }
 
         $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
+        if ($htmlElement === null) {
+            throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
+        }
         $htmlElement->appendChild($this->domDocument->createElement('body'));
     }
 }

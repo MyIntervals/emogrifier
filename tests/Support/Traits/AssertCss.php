@@ -11,7 +11,7 @@ trait AssertCss
 {
     /**
      * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
-     * element added to the docuemnt, due to the way that certain parts are `trim`med.  Notably, whitespace either side
+     * element added to the document, due to the way that certain parts are `trim`med.  Notably, whitespace either side
      * of "{", "}" and "," or at the beginning of the CSS may be removed.
      *
      * This method helps takes care of that, by converting a search needle for an exact match into a regular expression

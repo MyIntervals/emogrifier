@@ -641,6 +641,7 @@ class AbstractHtmlProcessorTest extends TestCase
         $domDocument = $subject->getDomDocument();
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
+        /** @var \DOMElement $element */
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
