@@ -6,6 +6,18 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 3.0.0
+
+### Added
 - Test and document excluding entire subtree with `addExcludedSelector()`
   ([#347](https://github.com/MyIntervals/emogrifier/issues/347),
   [#768](https://github.com/MyIntervals/emogrifier/pull/768))
