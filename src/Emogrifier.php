@@ -843,7 +843,7 @@ class Emogrifier
     private function normalizeStyleAttributes(\DOMElement $node)
     {
         $normalizedOriginalStyle = \preg_replace_callback(
-            '/[a-zA-Z\\-]+(?=:)/S',
+            '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
             static function (array $m) {
                 return \strtolower($m[0]);
             },
