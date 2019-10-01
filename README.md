@@ -220,6 +220,10 @@ calling the `inlineCss` method:
   use this option. If you use this option, the contents of the `<style>` blocks
   will _not_ be applied as inline styles and any CSS you want `CssInliner` to
   use must be passed in as described in the [Usage section](#usage) above.
+* `->disableInlineStyleAttributesParsing()` - By default, `CssInliner`
+  preserves all of the "style" attributes on tags in the HTML you pass to it.
+  However if you want to discard all existing inline styles in the HTML before
+  the CSS is applied, you should use this option.
 * `->addAllowedMediaType(string $mediaName)` - By default, `CssInliner`
   will keep only media types `all`, `screen` and `print`. If you want to keep
   some others, you can use this method to define them.
