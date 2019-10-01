@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support for PHP 7.0 will be removed in Emogrifier 5.0.
 
 ### Removed
+- Drop the `Emogrifier` class
+  [#774](https://github.com/MyIntervals/emogrifier/pull/774))
 - Drop support for PHP 5.6
   ([#773](https://github.com/MyIntervals/emogrifier/pull/773))
 

@@ -210,8 +210,7 @@ method, if invoked after `removeElementsWithDisplayNone`, will remove the
 ### Options
 
 There are several options that you can set on the `CssInliner` instance before
-calling the `inlineCss` method (or on the `Emogrifier` instance before calling
-the `emogrify` method):
+calling the `inlineCss` method:
 
 * `->disableStyleBlocksParsing()` - By default, `CssInliner` will grab
   all `<style>` blocks in the HTML and will apply the CSS styles as inline
@@ -221,10 +220,6 @@ the `emogrify` method):
   use this option. If you use this option, the contents of the `<style>` blocks
   will _not_ be applied as inline styles and any CSS you want `CssInliner` to
   use must be passed in as described in the [Usage section](#usage) above.
-* `->disableInlineStylesParsing()` - By default, `CssInliner`
-  preserves all of the "style" attributes on tags in the HTML you pass to it.
-  However if you want to discard all existing inline styles in the HTML before
-  the CSS is applied, you should use this option.
 * `->addAllowedMediaType(string $mediaName)` - By default, `CssInliner`
   will keep only media types `all`, `screen` and `print`. If you want to keep
   some others, you can use this method to define them.
@@ -241,53 +236,7 @@ the `emogrify` method):
   $cssInliner->addExcludedSelector('.message-preview *');
   ```
 
-### Using the legacy Emogrifier class
-
-In version 3.0.0, the `Emogrifier` class has been deprecated, and it will be
-removed for version 4.0.0. Please update your code to use the new
-`CssInliner` class instead.
-
-If you are still using the deprecated class, here is how to use it:
-
-First, you provide Emogrifier with the HTML and CSS you would like to merge.
-This can happen directly during instantiation:
-
-```php
-$html = '<html><h1>Hello world!</h1></html>';
-$css = 'h1 {font-size: 32px;}';
-$emogrifier = new \Pelago\Emogrifier($html, $css);
-```
-
-You could also use the setters for providing this data after instantiation:
-
-```php
-$emogrifier = new \Pelago\Emogrifier();
-
-$html = '<html><h1>Hello world!</h1></html>';
-$css = 'h1 {font-size: 32px;}';
-
-$emogrifier->setHtml($html);
-$emogrifier->setCss($css);
-```
-
-After you have set the HTML and CSS, you can call the `emogrify` method to
-merge both:
-
-```php
-$mergedHtml = $emogrifier->emogrify();
-```
-
-Emogrifier automatically adds a Content-Type meta tag to set the charset for
-the document (if it is not provided).
-
-If you would like to get back only the content of the BODY element instead of
-the complete HTML document, you can use the `emogrifyBodyContent` instead:
-
-```php
-$bodyContent = $emogrifier->emogrifyBodyContent();
-```
-
-### Migrating from `Emogrifier` to `CssInliner`
+### Migrating from the dropped `Emogrifier` class to the `CssInliner` class
 
 #### Minimal example
 
