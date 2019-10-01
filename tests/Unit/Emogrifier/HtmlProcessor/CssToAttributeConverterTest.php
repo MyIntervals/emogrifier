@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
@@ -70,7 +72,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @return string[][]
      */
-    public function matchingCssToHtmlMappingDataProvider()
+    public function matchingCssToHtmlMappingDataProvider(): array
     {
         return [
             'background-color => bgcolor' => ['<p style="background-color: red;">hi</p>', 'bgcolor="red"'],
@@ -140,7 +142,7 @@ class CssToAttributeConverterTest extends TestCase
      *
      * @dataProvider matchingCssToHtmlMappingDataProvider
      */
-    public function convertCssToVisualAttributesMapsSuitableCssToHtml($body, $attributes)
+    public function convertCssToVisualAttributesMapsSuitableCssToHtml(string $body, string $attributes)
     {
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
@@ -153,7 +155,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @return string[][]
      */
-    public function notMatchingCssToHtmlMappingDataProvider()
+    public function notMatchingCssToHtmlMappingDataProvider(): array
     {
         return [
             'background URL' => ['<p style="background: url(bg.png);">Hello</p>'],
@@ -179,7 +181,7 @@ class CssToAttributeConverterTest extends TestCase
      *
      * @dataProvider notMatchingCssToHtmlMappingDataProvider
      */
-    public function convertCssToVisualAttributesNotMapsUnsuitableCssToHtml($body)
+    public function convertCssToVisualAttributesNotMapsUnsuitableCssToHtml(string $body)
     {
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 

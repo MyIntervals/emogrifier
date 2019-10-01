@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Support\Traits;
 
 /**
@@ -22,11 +24,11 @@ trait AssertCss
      *
      * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
      */
-    private static function getCssNeedleRegExp($needle)
+    private static function getCssNeedleRegExp(string $needle): string
     {
         $needleMatcher = \preg_replace_callback(
             '/\\s*+([{},])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{},]|^\\s)[^>])++/',
-            static function (array $matches) {
+            static function (array $matches): string {
                 if (isset($matches[1]) && $matches[1] !== '') {
                     // matched possibly some whitespace, followed by "{", "}" or ",", then possibly more whitespace
                     return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
@@ -53,7 +55,7 @@ trait AssertCss
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertContainsCss($needle, $haystack)
+    private static function assertContainsCss(string $needle, string $haystack)
     {
         self::assertRegExp(
             self::getCssNeedleRegExp($needle),
@@ -69,7 +71,7 @@ trait AssertCss
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertNotContainsCss($needle, $haystack)
+    private static function assertNotContainsCss(string $needle, string $haystack)
     {
         self::assertNotRegExp(
             self::getCssNeedleRegExp($needle),
@@ -87,9 +89,9 @@ trait AssertCss
      * @param string $haystack
      */
     private static function assertContainsCssCount(
-        $expectedCount,
-        $needle,
-        $haystack
+        int $expectedCount,
+        string $needle,
+        string $haystack
     ) {
         self::assertSame(
             $expectedCount,

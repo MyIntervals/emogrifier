@@ -42,8 +42,6 @@
     <rule ref="Squiz.Commenting.DocCommentAlignment"/>
     <rule ref="Squiz.Commenting.EmptyCatchComment"/>
     <rule ref="Squiz.Commenting.FunctionComment">
-        <!-- Allow PHP-5-compatible type hinting. -->
-        <exclude name="Squiz.Commenting.FunctionComment.ScalarTypeHintMissing"/>
         <!-- Allow no comment for self-describing parameter and exception class names. -->
         <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
         <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>

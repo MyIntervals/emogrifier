@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Unit\Support\Traits;
 
 use Pelago\Tests\Support\Traits\AssertCss;
@@ -52,7 +54,7 @@ class AssertCssTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithOptionalWhitespaceDataProvider()
+    public function contentWithOptionalWhitespaceDataProvider(): array
     {
         return [
             '"{" alone' => ['{', ''],
@@ -74,7 +76,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespace($contentToInsertAround, $otherContent)
+    public function getCssNeedleRegExpInsertsOptionalWhitespace(string $contentToInsertAround, string $otherContent)
     {
         $result = self::getCssNeedleRegExp($otherContent . $contentToInsertAround . $otherContent);
 
@@ -98,7 +100,7 @@ class AssertCssTest extends TestCase
     /**
      * @return string[][]
      */
-    public function styleTagDataProvider()
+    public function styleTagDataProvider(): array
     {
         return [
             'without space after' => ['<style>a'],
@@ -116,7 +118,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider styleTagDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag($needle)
+    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag(string $needle)
     {
         $result = self::getCssNeedleRegExp($needle);
 
@@ -126,7 +128,7 @@ class AssertCssTest extends TestCase
     /**
      * @return string[][]
      */
-    public function needleFoundDataProvider()
+    public function needleFoundDataProvider(): array
     {
         $cssStrings = [
             'unminified CSS' => 'html, body { color: green; }',
@@ -153,7 +155,7 @@ class AssertCssTest extends TestCase
     /**
      * @return string[][]
      */
-    public function needleNotFoundDataProvider()
+    public function needleNotFoundDataProvider(): array
     {
         return [
             'CSS part with "{" not in CSS' => ['p {', 'body { color: green; }'],
@@ -170,7 +172,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssPassesTestIfNeedleFound($needle, $haystack)
+    public function assertContainsCssPassesTestIfNeedleFound(string $needle, string $haystack)
     {
         self::assertContainsCss($needle, $haystack);
     }
@@ -183,7 +185,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssFailsTestIfNeedleNotFound($needle, $haystack)
+    public function assertContainsCssFailsTestIfNeedleNotFound(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -198,7 +200,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertNotContainsCssPassesTestIfNeedleNotFound($needle, $haystack)
+    public function assertNotContainsCssPassesTestIfNeedleNotFound(string $needle, string $haystack)
     {
         self::assertNotContainsCss($needle, $haystack);
     }
@@ -211,7 +213,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertNotContainsCssFailsTestIfNeedleFound($needle, $haystack)
+    public function assertNotContainsCssFailsTestIfNeedleFound(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -226,7 +228,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound($needle, $haystack)
+    public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound(string $needle, string $haystack)
     {
         self::assertContainsCssCount(0, $needle, $haystack);
     }
@@ -239,7 +241,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound($needle, $haystack)
+    public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -254,7 +256,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound($needle, $haystack)
+    public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound(string $needle, string $haystack)
     {
         self::assertContainsCssCount(1, $needle, $haystack);
     }
@@ -267,7 +269,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound($needle, $haystack)
+    public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -282,7 +284,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice($needle, $haystack)
+    public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -297,7 +299,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice($needle, $haystack)
+    public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice(string $needle, string $haystack)
     {
         self::assertContainsCssCount(2, $needle, $haystack . $haystack);
     }
@@ -310,7 +312,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound($needle, $haystack)
+    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 
@@ -325,7 +327,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce($needle, $haystack)
+    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce(string $needle, string $haystack)
     {
         $this->expectException(\PHPUnit_Framework_ExpectationFailedException::class);
 

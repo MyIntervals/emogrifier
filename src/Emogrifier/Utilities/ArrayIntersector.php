@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\Utilities;
 
 /**
@@ -45,7 +47,7 @@ class ArrayIntersector
      *         with which this object was constructed.  Note that keys are preserved, order is maintained, but
      *         duplicates are removed.
      */
-    public function intersectWith(array $array)
+    public function intersectWith(array $array): array
     {
         $invertedArray = \array_flip($array);
 

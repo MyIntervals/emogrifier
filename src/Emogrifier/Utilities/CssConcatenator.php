@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\Utilities;
 
 /**
@@ -61,7 +63,7 @@ class CssConcatenator
      * @param string $media The media query for the rule, e.g. "@media screen and (max-width:639px)",
      *                      or an empty string if none.
      */
-    public function append(array $selectors, $declarationsBlock, $media = '')
+    public function append(array $selectors, string $declarationsBlock, string $media = '')
     {
         $selectorsAsKeys = \array_flip($selectors);
 
@@ -87,7 +89,7 @@ class CssConcatenator
     /**
      * @return string
      */
-    public function getCss()
+    public function getCss(): string
     {
         return \implode('', \array_map([self::class, 'getMediaRuleCss'], $this->mediaRules));
     }
@@ -98,7 +100,7 @@ class CssConcatenator
      *
      * @return \stdClass Object with properties as described for elements of `$mediaRules`.
      */
-    private function getOrCreateMediaRuleToAppendTo($media)
+    private function getOrCreateMediaRuleToAppendTo(string $media): \stdClass
     {
         $lastMediaRule = \end($this->mediaRules);
         if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
@@ -122,7 +124,7 @@ class CssConcatenator
      *
      * @return bool
      */
-    private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2)
+    private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2): bool
     {
         return \count($selectorsAsKeys1) === \count($selectorsAsKeys2)
             && \count($selectorsAsKeys1) === \count($selectorsAsKeys1 + $selectorsAsKeys2);
@@ -133,7 +135,7 @@ class CssConcatenator
      *
      * @return string CSS for the media rule.
      */
-    private static function getMediaRuleCss(\stdClass $mediaRule)
+    private static function getMediaRuleCss(\stdClass $mediaRule): string
     {
         $css = \implode('', \array_map([self::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
         if ($mediaRule->media !== '') {
@@ -148,7 +150,7 @@ class CssConcatenator
      *
      * @return string CSS for the rule block.
      */
-    private static function getRuleBlockCss(\stdClass $ruleBlock)
+    private static function getRuleBlockCss(\stdClass $ruleBlock): string
     {
         $selectors = \array_keys($ruleBlock->selectorsAsKeys);
         return \implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';

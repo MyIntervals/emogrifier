@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor\Fixtures;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;

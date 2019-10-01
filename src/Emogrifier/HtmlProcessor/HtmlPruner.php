@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\CssInliner;
@@ -30,7 +32,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function removeElementsWithDisplayNone()
+    public function removeElementsWithDisplayNone(): self
     {
         $elementsWithStyleDisplayNone = $this->xPath->query(self::DISPLAY_NONE_MATCHER);
         if ($elementsWithStyleDisplayNone->length === 0) {
@@ -61,7 +63,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function removeRedundantClasses(array $classesToKeep = [])
+    public function removeRedundantClasses(array $classesToKeep = []): self
     {
         $elementsWithClassAttribute = $this->xPath->query('//*[@class]');
 
@@ -128,7 +130,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @throws \BadMethodCallException if `inlineCss` has not first been called on `$cssInliner`
      */
-    public function removeRedundantClassesAfterCssInlined(CssInliner $cssInliner)
+    public function removeRedundantClassesAfterCssInlined(CssInliner $cssInliner): self
     {
         $classesToKeepAsKeys = [];
         foreach ($cssInliner->getMatchingUninlinableSelectors() as $selector) {

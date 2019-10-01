@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 if (PHP_SAPI !== 'cli') {
     die('This script supports command line usage only. Please check your command.');
 }
@@ -11,17 +13,19 @@ return \PhpCsFixer\Config::create()
             '@DoctrineAnnotation' => true,
             '@PHP56Migration' => true,
             '@PHP56Migration:risky' => true,
+            '@PHP70Migration' => true,
+            '@PHP70Migration:risky' => true,
             '@PHPUnit57Migration:risky' => true,
             '@PSR2' => true,
             'array_syntax' => ['syntax' => 'short'],
+            'blank_line_after_opening_tag' => true,
             'cast_spaces' => ['space' => 'none'],
             'combine_consecutive_issets' => true,
             'combine_consecutive_unsets' => true,
             'compact_nullable_typehint' => true,
             'concat_space' => ['spacing' => 'one'],
-            'declare_equal_normalize' => ['space' => 'single'],
-            // PHP >= 7.0
-            // 'declare_strict_types' => true,
+            'declare_equal_normalize' => true,
+            'declare_strict_types' => true,
             'dir_constant' => true,
             'elseif' => true,
             'encoding' => true,
@@ -85,8 +89,7 @@ return \PhpCsFixer\Config::create()
             'space_after_semicolon' => true,
             'standardize_not_equals' => true,
             'ternary_operator_spaces' => true,
-            // PHP >= 7.0
-            // 'ternary_to_null_coalescing' => true,
+            'ternary_to_null_coalescing' => true,
             'trailing_comma_in_multiline_array' => true,
             'unary_operator_spaces' => true,
             'whitespace_after_comma_in_array' => true,

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
@@ -94,37 +96,19 @@ class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array[]
-     */
-    public function nonHtmlDataProvider()
-    {
-        return [
-            'empty string' => [''],
-            'null' => [null],
-            'integer' => [2],
-            'float' => [3.14159],
-            'object' => [new \stdClass()],
-        ];
-    }
-
-    /**
      * @test
-     *
-     * @param mixed $html
-     *
-     * @dataProvider nonHtmlDataProvider
      */
-    public function fromHtmlWithNoHtmlDataThrowsException($html)
+    public function fromHtmlWithEmptyStringThrowsException()
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        TestingHtmlProcessor::fromHtml($html);
+        TestingHtmlProcessor::fromHtml('');
     }
 
     /**
      * @return string[][]
      */
-    public function invalidHtmlDataProvider()
+    public function invalidHtmlDataProvider(): array
     {
         return [
             'broken nesting gets nested' => ['<b><i></b></i>', '<b><i></i></b>'],
@@ -142,7 +126,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider invalidHtmlDataProvider
      */
-    public function renderRepairsBrokenHtml($input, $expectedHtml)
+    public function renderRepairsBrokenHtml(string $input, string $expectedHtml)
     {
         $subject = TestingHtmlProcessor::fromHtml($input);
         $result = $subject->render();
@@ -153,7 +137,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithoutHtmlTagDataProvider()
+    public function contentWithoutHtmlTagDataProvider(): array
     {
         return [
             'doctype only' => ['<!DOCTYPE html>'],
@@ -171,7 +155,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
-    public function addsMissingHtmlTag($html)
+    public function addsMissingHtmlTag(string $html)
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -183,7 +167,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithoutHeadTagDataProvider()
+    public function contentWithoutHeadTagDataProvider(): array
     {
         return [
             'doctype only' => ['<!DOCTYPE html>'],
@@ -199,7 +183,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
-    public function addsMissingHeadTag($html)
+    public function addsMissingHeadTag(string $html)
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -211,7 +195,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithoutBodyTagDataProvider()
+    public function contentWithoutBodyTagDataProvider(): array
     {
         return [
             'doctype only' => ['<!DOCTYPE html>'],
@@ -227,7 +211,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
-    public function addsMissingBodyTag($html)
+    public function addsMissingBodyTag(string $html)
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -251,7 +235,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function specialCharactersDataProvider()
+    public function specialCharactersDataProvider(): array
     {
         return [
             'template markers with dollar signs & square brackets' => ['$[USER:NAME]$'],
@@ -268,7 +252,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function keepsSpecialCharactersInTextNodes($codeNotToBeChanged)
+    public function keepsSpecialCharactersInTextNodes(string $codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -293,7 +277,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function documentTypeDataProvider()
+    public function documentTypeDataProvider(): array
     {
         return [
             'HTML5' => ['<!DOCTYPE html>'],
@@ -319,7 +303,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider documentTypeDataProvider
      */
-    public function keepsExistingDocumentType($documentType)
+    public function keepsExistingDocumentType(string $documentType)
     {
         $html = $documentType . '<html></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -358,7 +342,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function xmlSelfClosingTagDataProvider()
+    public function xmlSelfClosingTagDataProvider(): array
     {
         return [
             '<br>' => ['<br/>', 'br'],
@@ -383,7 +367,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function nonXmlSelfClosingTagDataProvider()
+    public function nonXmlSelfClosingTagDataProvider(): array
     {
         return \array_map(
             static function (array $dataset) {
@@ -400,7 +384,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
      *         - The name of a self-closing tag contained in the HTML (e.g. "br").
      */
-    public function selfClosingTagDataProvider()
+    public function selfClosingTagDataProvider(): array
     {
         return \array_map(
             static function (array $dataset) {
@@ -422,7 +406,7 @@ class AbstractHtmlProcessorTest extends TestCase
      * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
      * from the right-hand side.
      */
-    public static function joinDatasets(array $leftDatasets, array $rightDatasets)
+    public static function joinDatasets(array $leftDatasets, array $rightDatasets): array
     {
         $datasets = [];
         $doneFirstLeft = false;
@@ -444,7 +428,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function documentTypeAndSelfClosingTagDataProvider()
+    public function documentTypeAndSelfClosingTagDataProvider(): array
     {
         return self::joinDatasets($this->documentTypeDataProvider(), $this->selfClosingTagDataProvider());
     }
@@ -459,9 +443,9 @@ class AbstractHtmlProcessorTest extends TestCase
      * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
     public function convertsXmlSelfClosingTagsToNonXmlSelfClosingTag(
-        $documentType,
-        $htmlWithNonXmlSelfClosingTags,
-        $htmlWithXmlSelfClosingTags
+        string $documentType,
+        string $htmlWithNonXmlSelfClosingTags,
+        string $htmlWithXmlSelfClosingTags
     ) {
         $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
@@ -480,7 +464,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
-    public function keepsNonXmlSelfClosingTags($documentType, $htmlWithNonXmlSelfClosingTags)
+    public function keepsNonXmlSelfClosingTags(string $documentType, string $htmlWithNonXmlSelfClosingTags)
     {
         $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
@@ -499,7 +483,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
-    public function notAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
+    public function notAddsClosingTagForSelfClosingTags(string $htmlWithNonXmlSelfClosingTags, string $tagName)
     {
         $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
@@ -557,7 +541,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function renderBodyContentKeepsSpecialCharactersInTextNodes($codeNotToBeChanged)
+    public function renderBodyContentKeepsSpecialCharactersInTextNodes(string $codeNotToBeChanged)
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -575,8 +559,10 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
-    public function renderBodyContentNotAddsClosingTagForSelfClosingTags($htmlWithNonXmlSelfClosingTags, $tagName)
-    {
+    public function renderBodyContentNotAddsClosingTagForSelfClosingTags(
+        string $htmlWithNonXmlSelfClosingTags,
+        string $tagName
+    ) {
         $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
         );
@@ -631,7 +617,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
-    public function getDomDocumentVoidElementNotHasChildNodes($htmlWithNonXmlSelfClosingTags, $tagName)
+    public function getDomDocumentVoidElementNotHasChildNodes(string $htmlWithNonXmlSelfClosingTags, string $tagName)
     {
         // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
         $subject = TestingHtmlProcessor::fromHtml(
