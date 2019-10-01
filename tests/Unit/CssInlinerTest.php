@@ -1608,13 +1608,18 @@ class CssInlinerTest extends TestCase
                 foreach ($possibleSurroundingCss as $descriptionAfter => $cssAfter) {
                     // every combination would be a ridiculous c.1000 datasets - choose a select few
                     // test all possible CSS before once
-                    if (($cssBetween === '' && $cssAfter === '')
+                    if (
+                        ($cssBetween === ''
+                        && $cssAfter === '')
                         // test all possible CSS between once
-                        || ($cssBefore === '' && $cssAfter === '')
+                        || ($cssBefore === ''
+                        && $cssAfter === '')
                         // test all possible CSS after once
-                        || ($cssBefore === '' && $cssBetween === '')
+                        || ($cssBefore === ''
+                        && $cssBetween === '')
                         // test with each possible CSS in all three positions
-                        || ($cssBefore === $cssBetween && $cssBetween === $cssAfter)
+                        || ($cssBefore === $cssBetween
+                        && $cssBetween === $cssAfter)
                     ) {
                         $description = ' with ' . $descriptionBefore . ' before, '
                             . $descriptionBetween . ' between, '

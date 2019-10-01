@@ -6,8 +6,11 @@
 
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
-    <!--The complete PSR-2 ruleset-->
-    <rule ref="PSR2"/>
+    <!-- The complete PSR-12 ruleset -->
+    <rule ref="PSR12">
+        <!-- Exclude a rule that requires PHP >= 7.1. -->
+        <exclude name="PSR12.Properties.ConstantVisibility"/>
+    </rule>
 
     <!-- Arrays -->
     <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>

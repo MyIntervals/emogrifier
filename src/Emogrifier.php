@@ -906,7 +906,8 @@ class Emogrifier
             }
 
             $newAttributeValue = $newStyles[$attributeName];
-            if ($this->attributeValueIsImportant($attributeValue)
+            if (
+                $this->attributeValueIsImportant($attributeValue)
                 && !$this->attributeValueIsImportant($newAttributeValue)
             ) {
                 unset($newStyles[$attributeName]);
@@ -1209,11 +1210,13 @@ class Emogrifier
         $possiblyModifiedCss = $css;
         $importRules = '';
 
-        while (\preg_match(
-            '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/',
-            $possiblyModifiedCss,
-            $matches
-        )) {
+        while (
+            \preg_match(
+                '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/',
+                $possiblyModifiedCss,
+                $matches
+            )
+        ) {
             list($fullMatch, $atRuleAndFollowingWhitespace, $atRuleName) = $matches;
 
             if (\strtolower($atRuleName) === 'import') {
