@@ -102,6 +102,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#690](https://github.com/MyIntervals/emogrifier/pull/690))
 
 ### Fixed
+- Uppercase type combined with class or ID in selector
+  ([#590](https://github.com/MyIntervals/emogrifier/issues/590),
+  [#769](https://github.com/MyIntervals/emogrifier/pull/769))
 - Dynamic pseudo-class combined with static one (rules copied to `<style>`
   element, [#746](https://github.com/MyIntervals/emogrifier/pull/746))
 - Descendant attribute selectors (such as `html input[disabled]`)
@@ -118,7 +121,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#550](https://github.com/MyIntervals/emogrifier/issues/550),
   [#540](https://github.com/MyIntervals/emogrifier/pull/540),
   [#704](https://github.com/MyIntervals/emogrifier/pull/702))
-- Don't create empty `style` attributes for unparsable declarations
+- Don’t create empty `style` attributes for unparsable declarations
   ([#259](https://github.com/MyIntervals/emogrifier/issues/259),
   [#702](https://github.com/MyIntervals/emogrifier/pull/702))
 - Allow `:not(:behavioural-pseudo-class)` in selectors

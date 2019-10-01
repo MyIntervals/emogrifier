@@ -461,8 +461,10 @@ class EmogrifierTest extends TestCase
                 '<p class="p-5 additional-class" style="%1$s">',
             ],
             'type & class => type with class' => ['p.p-2 { %1$s }', '<p class="p-2" style="%1$s">'],
+            // broken: type (case-insensitive) & class => type with class
             'ID => with ID' => ['#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
             'type & ID => type with ID' => ['p#p4 { %1$s }', '<p class="p-4" id="p4" style="%1$s">'],
+            // broken: type (case-insensitive) & ID => type with ID
             'universal => HTML' => ['* { %1$s }', '<html style="%1$s">'],
             'universal => element with parent and children' => ['* { %1$s }', '<p class="p-1" style="%1$s">'],
             'universal => leaf element' => ['* { %1$s }', '<span style="%1$s">'],
