@@ -77,7 +77,7 @@ class CssInliner extends AbstractHtmlProcessor
     ];
 
     /**
-     * @var CssSelectorConverter
+     * @var CssSelectorConverter|null
      */
     private $cssSelectorConverter = null;
 

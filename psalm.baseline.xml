@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
   <file src="src/CssInliner.php">
-    <DocblockTypeContradiction occurrences="2">
-      <code>$this-&gt;matchingUninlinableCssRules === null</code>
-      <code>$this-&gt;cssSelectorConverter === null</code>
-    </DocblockTypeContradiction>
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
     </InvalidArgument>
@@ -71,9 +67,6 @@
       <code>$this-&gt;styleAttributesForNodes</code>
       <code>$this-&gt;visitedNodes</code>
     </PossiblyNullArrayOffset>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>
