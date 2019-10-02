@@ -203,9 +203,9 @@ abstract class AbstractHtmlProcessor
      *
      * This method assumes that there always is a BODY element.
      *
-     * @return \DOMElement
+     * @return \DOMElement|null
      */
-    private function getBodyElement(): \DOMElement
+    private function getBodyElement()
     {
         return $this->getDomDocument()->getElementsByTagName('body')->item(0);
     }
