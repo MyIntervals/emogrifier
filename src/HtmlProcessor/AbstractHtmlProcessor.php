@@ -38,7 +38,7 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @var \DOMXPath
+     * @var \DOMXPath|null
      */
     protected $xPath = null;
 

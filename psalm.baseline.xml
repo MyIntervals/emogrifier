@@ -76,6 +76,13 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
+    <PossiblyNullReference occurrences="5">
+      <code>query</code>
+      <code>query</code>
+      <code>query</code>
+      <code>query</code>
+      <code>query</code>
+    </PossiblyNullReference>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>
@@ -95,9 +102,6 @@
     <NullableReturnStatement occurrences="1">
       <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('body')-&gt;item(0)</code>
     </NullableReturnStatement>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="src/HtmlProcessor/CssToAttributeConverter.php">
     <MixedArgument occurrences="3">
@@ -108,6 +112,9 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$property</code>
     </MixedArgumentTypeCoercion>
+    <PossiblyNullReference occurrences="1">
+      <code>query</code>
+    </PossiblyNullReference>
   </file>
   <file src="src/HtmlProcessor/HtmlPruner.php">
     <MixedArgument occurrences="1">
@@ -116,6 +123,10 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>\array_keys($classesToKeepAsKeys)</code>
     </MixedArgumentTypeCoercion>
+    <PossiblyNullReference occurrences="2">
+      <code>query</code>
+      <code>query</code>
+    </PossiblyNullReference>
     <RedundantCondition occurrences="1">
       <code>$parentNode !== null</code>
     </RedundantCondition>
