@@ -169,15 +169,6 @@
       <code>$previousDescription</code>
       <code>$precedingComponentDescription</code>
     </InvalidOperand>
-    <PossiblyNullArgument occurrences="1">
-      <code>$styleElement</code>
-    </PossiblyNullArgument>
-    <PossiblyNullPropertyFetch occurrences="1">
-      <code>$styleElement-&gt;parentNode</code>
-    </PossiblyNullPropertyFetch>
-    <PossiblyNullReference occurrences="1">
-      <code>removeChild</code>
-    </PossiblyNullReference>
     <RedundantConditionGivenDocblockType occurrences="2">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
