@@ -164,10 +164,23 @@ abstract class AbstractHtmlProcessor
      * Renders the content of the BODY element of the normalized and processed HTML.
      *
      * @return string
+     *
+     * @throws \UnexpectedValueException
      */
     public function renderBodyContent(): string
     {
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
+
+        if (false === $htmlWithPossibleErroneousClosingTags) {
+            throw new \UnexpectedValueException(
+                'Failed to save html on ' .
+                self::class .
+                '::getDomDocument() from ' .
+                self::class .
+                '::getBodyElement()'
+            );
+        }
+
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
         return \preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
