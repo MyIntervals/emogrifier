@@ -120,6 +120,24 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Provides access to the the internal DOMXPath instance corresponding to AbstractHtmlProcessor::$domDocument
+     *
+     * @throws \UnexpectedValueException
+     */
+    public function getXPath(): \DOMXPath
+    {
+        if (null === $this->xPath) {
+            throw new \UnexpectedValueException(
+                self::class .
+                '::setDomDocument() has not yet been called on ' .
+                static::class
+            );
+        }
+
+        return $this->xPath;
+    }
+
+    /**
      * @param \DOMDocument $domDocument
      *
      * @return void

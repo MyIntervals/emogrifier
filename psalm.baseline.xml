@@ -76,13 +76,6 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyNullReference occurrences="5">
-      <code>query</code>
-      <code>query</code>
-      <code>query</code>
-      <code>query</code>
-      <code>query</code>
-    </PossiblyNullReference>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>
@@ -112,9 +105,6 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$property</code>
     </MixedArgumentTypeCoercion>
-    <PossiblyNullReference occurrences="1">
-      <code>query</code>
-    </PossiblyNullReference>
   </file>
   <file src="src/HtmlProcessor/HtmlPruner.php">
     <MixedArgument occurrences="1">
@@ -123,10 +113,6 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>\array_keys($classesToKeepAsKeys)</code>
     </MixedArgumentTypeCoercion>
-    <PossiblyNullReference occurrences="2">
-      <code>query</code>
-      <code>query</code>
-    </PossiblyNullReference>
     <RedundantCondition occurrences="1">
       <code>$parentNode !== null</code>
     </RedundantCondition>
