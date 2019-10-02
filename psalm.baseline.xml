@@ -4,9 +4,6 @@
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
     </InvalidArgument>
-    <InvalidNullableReturnType occurrences="1">
-      <code>\DOMElement</code>
-    </InvalidNullableReturnType>
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
@@ -56,9 +53,9 @@
     <MoreSpecificReturnType occurrences="1">
       <code>array</code>
     </MoreSpecificReturnType>
-    <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('head')-&gt;item(0)</code>
-    </NullableReturnStatement>
+    <PossiblyNullReference occurrences="1">
+      <code>appendChild</code>
+    </PossiblyNullReference>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>

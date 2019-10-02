@@ -1117,9 +1117,9 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * This method assumes that there always is a HEAD element.
      *
-     * @return \DOMElement
+     * @return \DOMElement|null
      */
-    private function getHeadElement(): \DOMElement
+    private function getHeadElement()
     {
         return $this->getDomDocument()->getElementsByTagName('head')->item(0);
     }
