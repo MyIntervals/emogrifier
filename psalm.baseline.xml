@@ -99,17 +99,11 @@
     </MixedOperand>
     <NullableReturnStatement occurrences="2">
       <code>$this-&gt;domDocument</code>
-      <code>$this-&gt;domDocument-&gt;getElementsByTagName('body')-&gt;item(0)</code>
+      <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('body')-&gt;item(0)</code>
     </NullableReturnStatement>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyNullReference occurrences="4">
-      <code>saveHTML</code>
-      <code>saveHTML</code>
-      <code>getElementsByTagName</code>
-      <code>getElementsByTagName</code>
-    </PossiblyNullReference>
   </file>
   <file src="src/HtmlProcessor/CssToAttributeConverter.php">
     <MixedArgument occurrences="3">
