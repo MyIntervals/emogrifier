@@ -85,8 +85,7 @@
     </UnusedMethod>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
-    <InvalidNullableReturnType occurrences="2">
-      <code>\DOMDocument</code>
+    <InvalidNullableReturnType occurrences="1">
       <code>\DOMElement</code>
     </InvalidNullableReturnType>
     <MixedOperand occurrences="6">
@@ -97,8 +96,7 @@
       <code>static::CONTENT_TYPE_META_TAG</code>
       <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
     </MixedOperand>
-    <NullableReturnStatement occurrences="2">
-      <code>$this-&gt;domDocument</code>
+    <NullableReturnStatement occurrences="1">
       <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('body')-&gt;item(0)</code>
     </NullableReturnStatement>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
