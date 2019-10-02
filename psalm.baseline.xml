@@ -7,9 +7,6 @@
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$excludedNodes</code>
-    </LessSpecificReturnStatement>
     <MixedArgument occurrences="1">
       <code>$m[0]</code>
     </MixedArgument>
@@ -50,9 +47,6 @@
       <code>\DOMNodeList</code>
       <code>$cssRules</code>
     </MixedReturnTypeCoercion>
-    <MoreSpecificReturnType occurrences="1">
-      <code>array</code>
-    </MoreSpecificReturnType>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>

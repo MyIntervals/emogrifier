@@ -529,6 +529,7 @@ class CssInliner extends AbstractHtmlProcessor
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
+                /** @psalm-var \DOMNodeList<\DOMElement> */
                 $matchingNodes = $this->getXPath()->query(
                     $this->getCssSelectorConverter()->toXPath($selectorToExclude)
                 );
