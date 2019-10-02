@@ -7,6 +7,7 @@ namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
+use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -572,7 +573,7 @@ class HtmlPrunerTest extends TestCase
      * @param string[] $needles
      * @param string $haystack
      *
-     * @throws \PHPUnit_Framework_AssertionFailedError
+     * @throws AssertionFailedError
      */
     private static function assertContainsNone(array $needles, string $haystack)
     {
@@ -587,7 +588,7 @@ class HtmlPrunerTest extends TestCase
      * @param string[] $needles
      * @param string $haystack
      *
-     * @throws \PHPUnit_Framework_AssertionFailedError
+     * @throws AssertionFailedError
      */
     private static function assertContainsAll(array $needles, string $haystack)
     {
@@ -603,7 +604,7 @@ class HtmlPrunerTest extends TestCase
      * @param string $haystack
      * @param string $needle
      *
-     * @throws \PHPUnit_Framework_AssertionFailedError
+     * @throws AssertionFailedError
      */
     private static function assertSubstringCount(int $expectedCount, string $haystack, string $needle)
     {
@@ -619,7 +620,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @param string $string
      *
-     * @throws \PHPUnit_Framework_AssertionFailedError
+     * @throws AssertionFailedError
      */
     private static function assertMinified(string $string)
     {
