@@ -1100,6 +1100,8 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $css
      *
      * @return void
+     *
+     * @throws \UnexpectedValueException if <head> was not found.
      */
     protected function addStyleElementToDocument(string $css)
     {
@@ -1109,6 +1111,11 @@ class CssInliner extends AbstractHtmlProcessor
         $styleElement->appendChild($styleAttribute);
 
         $headElement = $this->getHeadElement();
+
+        if (null === $headElement) {
+            throw new \UnexpectedValueException('Could not find <head>');
+        }
+
         $headElement->appendChild($styleElement);
     }
 

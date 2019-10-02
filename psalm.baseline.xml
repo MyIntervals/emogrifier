@@ -53,9 +53,6 @@
     <MoreSpecificReturnType occurrences="1">
       <code>array</code>
     </MoreSpecificReturnType>
-    <PossiblyNullReference occurrences="1">
-      <code>appendChild</code>
-    </PossiblyNullReference>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>
