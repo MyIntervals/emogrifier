@@ -258,9 +258,6 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
-    <InvalidArgument occurrences="1">
-      <code>appendNotCombinesNonadjacentRules</code>
-    </InvalidArgument>
     <MixedArgumentTypeCoercion occurrences="2">
       <code>$rule1Selectors</code>
       <code>$rule2Selectors</code>
