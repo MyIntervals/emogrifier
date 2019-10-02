@@ -218,19 +218,6 @@
       <code>$classAttributeValue</code>
     </MixedAssignment>
     <NonStaticSelfCall occurrences="1"/>
-    <PossiblyInvalidArgument occurrences="11">
-      <code>removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep</code>
-      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
-      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
-      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
-      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
-      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
-      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
-      <code>removeRedundantClassesMinifiesClassAttributes</code>
-      <code>removeRedundantClassesMinifiesClassAttributes</code>
-      <code>removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules</code>
-      <code>removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules</code>
-    </PossiblyInvalidArgument>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code>
       <code>assertInstanceOf</code>

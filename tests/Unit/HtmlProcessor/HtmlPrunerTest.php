@@ -164,9 +164,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string[]}>
      */
     public function provideHtmlAndNonMatchedClasses(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string[]}> */
         return [
             '1 attribute, 1 class, no classes to keep' => [
                 'HTML' => '<p class="foo">hello</p>',
@@ -228,9 +231,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string[], 2:string[]}>
      */
     public function provideHtmlAndSomeMatchedClasses(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string[], 2:string[]}> */
         return [
             '2 attributes, 1 different class each, 1st class to be kept' => [
                 'HTML' => '<p class="foo">hello</p><p class="bar">world</p>',
@@ -262,9 +268,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string[], 2:string[]}>
      */
     public function provideHtmlWithExtraWhitespaceAndSomeMatchedClasses(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string[], 2:string[]}> */
         return [
             '1 attribute, 2 classes with extra whitespace, 1 to be kept' => [
                 'HTML' => '<p class=" foo  bar ">hello</p>',
@@ -304,9 +313,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string[]}>
      */
     public function provideHtmlAndAllMatchedClasses(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string[]}> */
         return [
             '1 attribute, 1 class, that class to be kept' => [
                 'HTML' => '<p class="foo">hello</p>',
@@ -329,9 +341,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string[]}>
      */
     public function provideHtmlWithExtraWhitespaceAndAllMatchedClasses(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string[]}> */
         return [
             '1 attribute, 1 class with extra whitespace, that class to be kept' => [
                 'HTML' => '<p class=" foo ">hello</p>',
@@ -442,9 +457,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string, 2:string[]}>
      */
     public function provideClassesNotInUninlinableRules(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string, 2:string[]}> */
         return [
             'inlinable rule with different class' => [
                 'HTML' => '<p class="foo">hello</p>',
@@ -509,9 +527,12 @@ class HtmlPrunerTest extends TestCase
 
     /**
      * @return (string|string[])[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string, 2:string[]}>
      */
     public function provideClassesInUninlinableRules(): array
     {
+        /** @psalm-var array<string, array{0:string, 1:string, 2:string[]}> */
         return [
             'media rule' => [
                 'HTML' => '<p class="foo">hello</p>',
