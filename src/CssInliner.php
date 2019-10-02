@@ -22,6 +22,14 @@ use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
  * @author Roman Ožana <ozana@omdesign.cz>
  * @author Sander Kruger <s.kruger@invessel.com>
  * @author Zoli Szabó <zoli.szabo+github@gmail.com>
+ *
+ * @psalm-type cssRule = array{
+ *  media:string,
+ *  selector:string,
+ *  hasUnmatchablePseudo:bool,
+ *  declarationsBlock:string,
+ *  line:int
+ * }
  */
 class CssInliner extends AbstractHtmlProcessor
 {
@@ -137,6 +145,8 @@ class CssInliner extends AbstractHtmlProcessor
      * `parseCssRules`
      *
      * @var string[][]|null
+     *
+     * @psalm-var array<int, cssRule>|null
      */
     private $matchingUninlinableCssRules = null;
 
@@ -575,6 +585,8 @@ class CssInliner extends AbstractHtmlProcessor
      *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
      *         e.g., "color: red; height: 4px;"),
      *         and "line" (the line number e.g. 42)
+     *
+     * @psalm-return array{inlinable:cssRule[], uninlinable:cssRule[]}
      */
     private function parseCssRules(string $css): array
     {
@@ -607,6 +619,7 @@ class CssInliner extends AbstractHtmlProcessor
                 );
                 $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
 
+                /** @psalm-var cssRule */
                 $parsedCssRule = [
                     'media' => $cssRule['media'],
                     'selector' => \trim($selector),
@@ -630,6 +643,9 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @param string[] $a
      * @param string[] $b
+     *
+     * @psalm-param cssRule $a
+     * @psalm-param cssRule $b
      *
      * @return int
      */
@@ -786,6 +802,8 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param \DOMElement $node
      * @param string[][] $cssRule
+     *
+     * @psalm-param cssRule $cssRule
      *
      * @return void
      */
@@ -956,6 +974,8 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string[][] $cssRules the "uninlinable" array of CSS rules returned by `parseCssRules`
      *
+     * @psalm-param array<int, cssRule> $cssRules
+     *
      * @return void
      */
     private function determineMatchingUninlinableCssRules(array $cssRules)
@@ -971,6 +991,8 @@ class CssInliner extends AbstractHtmlProcessor
      * it will test for a match with its originating element.
      *
      * @param string[] $cssRule
+     *
+     * @psalm-param cssRule $cssRule
      *
      * @return bool
      *

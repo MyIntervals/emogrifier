@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
   <file src="src/CssInliner.php">
-    <InvalidArgument occurrences="1">
-      <code>$cssRule</code>
-    </InvalidArgument>
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
@@ -11,8 +8,8 @@
       <code>$m[0]</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="4">
+      <code>$cssRules['uninlinable']</code>
       <code>$selectorToExclude</code>
-      <code>$cssRules['inlinable']</code>
       <code>$attributeName</code>
       <code>[$this, 'replaceUnmatchableNotComponent']</code>
     </MixedArgumentTypeCoercion>
@@ -40,12 +37,9 @@
       <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
     </MixedReturnStatement>
-    <MixedReturnTypeCoercion occurrences="5">
-      <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
-      <code>array</code>
+    <MixedReturnTypeCoercion occurrences="2">
       <code>$this-&gt;getXPath()-&gt;query('//*[@style]')</code>
       <code>\DOMNodeList</code>
-      <code>$cssRules</code>
     </MixedReturnTypeCoercion>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
