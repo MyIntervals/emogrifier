@@ -60,7 +60,7 @@ abstract class AbstractHtmlProcessor
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public static function fromHtml(string $unprocessedHtml): AbstractHtmlProcessor
+    public static function fromHtml(string $unprocessedHtml): self
     {
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
