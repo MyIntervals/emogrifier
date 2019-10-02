@@ -1096,8 +1096,8 @@ class CssInliner extends AbstractHtmlProcessor
      */
     protected function addStyleElementToDocument(string $css)
     {
-        $styleElement = $this->domDocument->createElement('style', $css);
-        $styleAttribute = $this->domDocument->createAttribute('type');
+        $styleElement = $this->getDomDocument()->createElement('style', $css);
+        $styleAttribute = $this->getDomDocument()->createAttribute('type');
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
@@ -1114,6 +1114,6 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getHeadElement(): \DOMElement
     {
-        return $this->domDocument->getElementsByTagName('head')->item(0);
+        return $this->getDomDocument()->getElementsByTagName('head')->item(0);
     }
 }

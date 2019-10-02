@@ -66,7 +66,7 @@
       <code>array</code>
     </MoreSpecificReturnType>
     <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;domDocument-&gt;getElementsByTagName('head')-&gt;item(0)</code>
+      <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('head')-&gt;item(0)</code>
     </NullableReturnStatement>
     <PossiblyNullArrayOffset occurrences="2">
       <code>$this-&gt;styleAttributesForNodes</code>
@@ -76,10 +76,6 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyNullReference occurrences="2">
-      <code>createElement</code>
-      <code>getElementsByTagName</code>
-    </PossiblyNullReference>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>
