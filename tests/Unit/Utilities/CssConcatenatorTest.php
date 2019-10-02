@@ -63,6 +63,8 @@ class CssConcatenatorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, array<int, string>>>
      */
     public function equivalentSelectorsDataProvider(): array
     {
@@ -114,6 +116,8 @@ class CssConcatenatorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, array<int, string>>>
      */
     public function differentSelectorsDataProvider(): array
     {
