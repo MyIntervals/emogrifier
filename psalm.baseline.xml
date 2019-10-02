@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
   <file src="src/CssInliner.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$node</code>
-    </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="2">
       <code>$this-&gt;matchingUninlinableCssRules === null</code>
       <code>$this-&gt;cssSelectorConverter === null</code>
@@ -57,9 +54,11 @@
       <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
     </MixedReturnStatement>
-    <MixedReturnTypeCoercion occurrences="3">
+    <MixedReturnTypeCoercion occurrences="5">
       <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
       <code>array</code>
+      <code>$this-&gt;getXPath()-&gt;query('//*[@style]')</code>
+      <code>\DOMNodeList</code>
       <code>$cssRules</code>
     </MixedReturnTypeCoercion>
     <MoreSpecificReturnType occurrences="1">
