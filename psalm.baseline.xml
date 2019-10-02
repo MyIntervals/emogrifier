@@ -59,6 +59,9 @@
       <code>removeAttribute</code>
     </UndefinedMethod>
   </file>
+  <file src="tests\Support\Traits\AssertCss.php">
+    <NonStaticSelfCall occurrences="1"/>
+  </file>
   <file src="tests\Unit\CssInlinerTest.php">
     <PossiblyNullArgument occurrences="1">
       <code>$styleElement</code>
@@ -71,10 +74,22 @@
     </PossiblyNullReference>
   </file>
   <file src="tests\Unit\HtmlProcessor\HtmlPrunerTest.php">
-    <PossiblyInvalidArgument occurrences="3">
+    <NonStaticSelfCall occurrences="1"/>
+    <PossiblyInvalidArgument occurrences="14">
       <code>$cssInliner</code>
       <code>$cssInliner</code>
       <code>$cssInliner</code>
+      <code>@dataProvider provideHtmlAndNonMatchedClasses</code>
+      <code>@dataProvider provideHtmlAndSomeMatchedClasses</code>
+      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
+      <code>@dataProvider provideHtmlAndSomeMatchedClasses</code>
+      <code>@dataProvider provideHtmlAndAllMatchedClasses</code>
+      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
+      <code>@dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses</code>
+      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
+      <code>@dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses</code>
+      <code>@dataProvider provideClassesNotInUninlinableRules</code>
+      <code>@dataProvider provideClassesInUninlinableRules</code>
     </PossiblyInvalidArgument>
     <PossiblyUndefinedMethod occurrences="3">
       <code>removeRedundantClassesAfterCssInlined</code>
@@ -83,6 +98,14 @@
     </PossiblyUndefinedMethod>
   </file>
   <file src="tests\Unit\Utilities\CssConcatenatorTest.php">
+    <InvalidArgument occurrences="6">
+      <code>@dataProvider equivalentSelectorsDataProvider</code>
+      <code>@dataProvider differentSelectorsDataProvider</code>
+      <code>@dataProvider differentSelectorsDataProvider</code>
+      <code>@dataProvider equivalentSelectorsDataProvider</code>
+      <code>@dataProvider differentSelectorsDataProvider</code>
+      <code>@dataProvider combinableRulesDataProvider</code>
+    </InvalidArgument>
     <InvalidReturnStatement occurrences="2"/>
     <InvalidReturnType occurrences="2">
       <code>array</code>
