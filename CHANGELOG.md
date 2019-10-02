@@ -39,6 +39,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support `ci:php:lint` on Windows
   ([#740](https://github.com/MyIntervals/emogrifier/issues/740),
   [#780](https://github.com/MyIntervals/emogrifier/pull/780))
+- Check the code with psalm
+  ([#537](https://github.com/MyIntervals/emogrifier/issues/537),
+  [#778](https://github.com/MyIntervals/emogrifier/pull/778))
 
 ## 3.0.0
 
