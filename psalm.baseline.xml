@@ -71,9 +71,6 @@
       <code>$this-&gt;styleAttributesForNodes</code>
       <code>$this-&gt;visitedNodes</code>
     </PossiblyNullArrayOffset>
-    <PossiblyNullIterator occurrences="1">
-      <code>$this-&gt;matchingUninlinableCssRules</code>
-    </PossiblyNullIterator>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
