@@ -136,7 +136,7 @@ class CssInliner extends AbstractHtmlProcessor
      * array of data describing CSS rules which apply to the document but cannot be inlined, in the format returned by
      * `parseCssRules`
      *
-     * @var string[][]
+     * @var string[][]|null
      */
     private $matchingUninlinableCssRules = null;
 

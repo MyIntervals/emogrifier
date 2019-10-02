@@ -71,8 +71,10 @@
       <code>$this-&gt;styleAttributesForNodes</code>
       <code>$this-&gt;visitedNodes</code>
     </PossiblyNullArrayOffset>
-    <PossiblyNullPropertyAssignmentValue occurrences="2">
-      <code>null</code>
+    <PossiblyNullIterator occurrences="1">
+      <code>$this-&gt;matchingUninlinableCssRules</code>
+    </PossiblyNullIterator>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
     <UnusedMethod occurrences="1">
