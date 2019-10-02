@@ -74,6 +74,7 @@
         "ci:php:fixer": "php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "phpmd src text config/phpmd.xml",
         "ci:tests:unit": "phpunit tests/",
+        "ci:tests:sof": "phpunit tests/ --stop-on-failure",
         "ci:tests": [
             "@ci:tests:unit"
         ],
