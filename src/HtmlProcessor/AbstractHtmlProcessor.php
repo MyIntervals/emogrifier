@@ -103,9 +103,19 @@ abstract class AbstractHtmlProcessor
      * Provides access to the internal DOMDocument representation of the HTML in its current state.
      *
      * @return \DOMDocument
+     *
+     * @throws \UnexpectedValueException
      */
     public function getDomDocument(): \DOMDocument
     {
+        if (null === $this->domDocument) {
+            throw new \UnexpectedValueException(
+                self::class .
+                '::setDomDocument() has not yet been called on ' .
+                static::class
+            );
+        }
+
         return $this->domDocument;
     }
 
