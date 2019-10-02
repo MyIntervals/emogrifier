@@ -16,6 +16,7 @@ return \PhpCsFixer\Config::create()
             '@PHP70Migration' => true,
             '@PHP70Migration:risky' => true,
             '@PHPUnit57Migration:risky' => true,
+            '@PHPUnit60Migration:risky' => true,
             '@PSR2' => true,
             'array_syntax' => ['syntax' => 'short'],
             'blank_line_after_opening_tag' => true,
