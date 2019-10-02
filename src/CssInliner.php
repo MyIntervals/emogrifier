@@ -179,7 +179,9 @@ class CssInliner extends AbstractHtmlProcessor
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
-                $nodesMatchingCssSelectors = $this->getXPath()->query($cssSelectorConverter->toXPath($cssRule['selector']));
+                $nodesMatchingCssSelectors = $this->getXPath()->query(
+                    $cssSelectorConverter->toXPath($cssRule['selector'])
+                );
             } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;
@@ -524,7 +526,9 @@ class CssInliner extends AbstractHtmlProcessor
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
-                $matchingNodes = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
+                $matchingNodes = $this->getXPath()->query(
+                    $this->getCssSelectorConverter()->toXPath($selectorToExclude)
+                );
             } catch (SyntaxErrorException $e) {
                 if ($this->debug) {
                     throw $e;
