@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- Use `self` as the return type for `fromHtml`
+  [#784](https://github.com/MyIntervals/emogrifier/pull/784))
 - Make use of PHP 7.0 language features
   [#777](https://github.com/MyIntervals/emogrifier/pull/777))
 

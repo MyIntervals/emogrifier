@@ -45,7 +45,7 @@ abstract class AbstractHtmlProcessor
     /**
      * The constructor.
      *
-     * Please use ::fromHtml instead.
+     * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
     private function __construct()
     {
@@ -60,7 +60,7 @@ abstract class AbstractHtmlProcessor
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public static function fromHtml(string $unprocessedHtml): AbstractHtmlProcessor
+    public static function fromHtml(string $unprocessedHtml): self
     {
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
@@ -79,7 +79,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return static
      */
-    public static function fromDomDocument(\DOMDocument $document): AbstractHtmlProcessor
+    public static function fromDomDocument(\DOMDocument $document): self
     {
         $instance = new static();
         $instance->setDomDocument($document);
