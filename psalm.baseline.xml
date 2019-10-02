@@ -10,10 +10,6 @@
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
-    <InvalidPropertyAssignmentValue occurrences="2">
-      <code>$this-&gt;styleAttributesForNodes</code>
-      <code>$this-&gt;visitedNodes</code>
-    </InvalidPropertyAssignmentValue>
     <LessSpecificReturnStatement occurrences="1">
       <code>$excludedNodes</code>
     </LessSpecificReturnStatement>
@@ -63,10 +59,6 @@
     <NullableReturnStatement occurrences="1">
       <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('head')-&gt;item(0)</code>
     </NullableReturnStatement>
-    <PossiblyNullArrayOffset occurrences="2">
-      <code>$this-&gt;styleAttributesForNodes</code>
-      <code>$this-&gt;visitedNodes</code>
-    </PossiblyNullArrayOffset>
     <UnusedMethod occurrences="1">
       <code>replaceUnmatchableNotComponent</code>
     </UnusedMethod>

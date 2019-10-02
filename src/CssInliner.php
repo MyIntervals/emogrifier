@@ -396,7 +396,7 @@ class CssInliner extends AbstractHtmlProcessor
         // in order to not overwrite existing style attributes in the HTML, we
         // have to save the original HTML styles
         $nodePath = $node->getNodePath();
-        if (!isset($this->styleAttributesForNodes[$nodePath])) {
+        if (\is_string($nodePath) && !isset($this->styleAttributesForNodes[$nodePath])) {
             $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
             $this->visitedNodes[$nodePath] = $node;
         }
