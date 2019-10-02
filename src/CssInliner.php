@@ -450,6 +450,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssFromAllStyleNodes(): string
     {
+        /** @var \DOMNodeList|false */
         $styleNodes = $this->getXPath()->query('//style');
         if ($styleNodes === false) {
             return '';
