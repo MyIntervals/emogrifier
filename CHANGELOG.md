@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Composer script to run tests with `--stop-on-failure`
+  ([#782](https://github.com/MyIntervals/emogrifier/pull/782))
 - Test universal selector with combinators
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
