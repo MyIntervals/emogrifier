@@ -44,11 +44,11 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.15.3",
-        "squizlabs/php_codesniffer": "^3.5.0",
-        "slevomat/coding-standard": "^4.0.0",
+        "jakub-onderka/php-parallel-lint": "^1.0",
         "phpmd/phpmd": "^2.7.0",
         "phpunit/phpunit": "^6.5.14",
-        "jakub-onderka/php-parallel-lint": "^1.0"
+        "slevomat/coding-standard": "^4.0.0",
+        "squizlabs/php_codesniffer": "^3.5.0"
     },
     "autoload": {
         "psr-4": {
@@ -62,6 +62,7 @@
     },
     "prefer-stable": true,
     "config": {
+        "sort-packages": true,
         "preferred-install": {
             "*": "dist"
         }
