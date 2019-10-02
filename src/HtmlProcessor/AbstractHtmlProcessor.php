@@ -152,10 +152,20 @@ abstract class AbstractHtmlProcessor
      * Renders the normalized and processed HTML.
      *
      * @return string
+     *
+     * @throws \UnexpectedValueException
      */
     public function render(): string
     {
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML();
+
+        if (false === $htmlWithPossibleErroneousClosingTags) {
+            throw new \UnexpectedValueException(
+                'Could not save html from ' .
+                self::class .
+                '::getDomDocument()'
+            );
+        }
 
         return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
     }
