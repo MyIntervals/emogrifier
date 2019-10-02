@@ -45,7 +45,7 @@ abstract class AbstractHtmlProcessor
     /**
      * The constructor.
      *
-     * Please use ::fromHtml instead.
+     * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
     private function __construct()
     {
@@ -79,7 +79,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return static
      */
-    public static function fromDomDocument(\DOMDocument $document): AbstractHtmlProcessor
+    public static function fromDomDocument(\DOMDocument $document): self
     {
         $instance = new static();
         $instance->setDomDocument($document);
