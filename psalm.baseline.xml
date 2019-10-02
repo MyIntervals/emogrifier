@@ -214,15 +214,11 @@
     <MixedArgument occurrences="1">
       <code>$classAttributeValue</code>
     </MixedArgument>
-    <MixedAssignment occurrences="2">
+    <MixedAssignment occurrences="1">
       <code>$classAttributeValue</code>
-      <code>$result</code>
     </MixedAssignment>
     <NonStaticSelfCall occurrences="1"/>
-    <PossiblyInvalidArgument occurrences="14">
-      <code>$cssInliner</code>
-      <code>$cssInliner</code>
-      <code>$cssInliner</code>
+    <PossiblyInvalidArgument occurrences="11">
       <code>removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep</code>
       <code>removeRedundantClassesRemovesClassesNotToKeep</code>
       <code>removeRedundantClassesRemovesClassesNotToKeep</code>
@@ -235,11 +231,6 @@
       <code>removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules</code>
       <code>removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules</code>
     </PossiblyInvalidArgument>
-    <PossiblyUndefinedMethod occurrences="3">
-      <code>removeRedundantClassesAfterCssInlined</code>
-      <code>removeRedundantClassesAfterCssInlined</code>
-      <code>removeRedundantClassesAfterCssInlined</code>
-    </PossiblyUndefinedMethod>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code>
       <code>assertInstanceOf</code>
