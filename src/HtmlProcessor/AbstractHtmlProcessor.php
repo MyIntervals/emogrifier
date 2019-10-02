@@ -33,7 +33,7 @@ abstract class AbstractHtmlProcessor
     const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
 
     /**
-     * @var \DOMDocument
+     * @var \DOMDocument|null
      */
     protected $domDocument = null;
 
