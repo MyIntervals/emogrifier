@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
+namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer;

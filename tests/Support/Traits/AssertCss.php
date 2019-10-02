@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Tests\Support\Traits;
+namespace Pelago\Emogrifier\Tests\Support\Traits;
 
 /**
  * Provides assertion methods for use with CSS content where whitespace may vary.

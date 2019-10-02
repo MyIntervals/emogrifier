@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Tests\Unit\Emogrifier\HtmlProcessor;
+namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
-use Pelago\Tests\Unit\Emogrifier\HtmlProcessor\Fixtures\TestingHtmlProcessor;
+use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
 use PHPUnit\Framework\TestCase;
 
 /**

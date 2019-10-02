@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Tests\Unit\Support\Traits;
 
-use Pelago\Tests\Support\Traits\AssertCss;
+use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 

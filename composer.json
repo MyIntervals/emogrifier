@@ -52,12 +52,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Pelago\\": "src/"
+            "Pelago\\Emogrifier\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Pelago\\Tests\\": "tests/"
+            "Pelago\\Emogrifier\\Tests\\": "tests/"
         }
     },
     "prefer-stable": true,
