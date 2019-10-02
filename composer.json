@@ -48,7 +48,8 @@
         "phpmd/phpmd": "^2.7.0",
         "phpunit/phpunit": "^6.5.14",
         "slevomat/coding-standard": "^4.0.0",
-        "squizlabs/php_codesniffer": "^3.5.0"
+        "squizlabs/php_codesniffer": "^3.5.0",
+        "vimeo/psalm": "^3.2"
     },
     "autoload": {
         "psr-4": {
@@ -74,6 +75,7 @@
         "ci:php:sniff": "phpcs config src tests",
         "ci:php:fixer": "php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "phpmd src text config/phpmd.xml",
+        "ci:php:psalm": "psalm --show-info=false",
         "ci:tests:unit": "phpunit tests/",
         "ci:tests:sof": "phpunit tests/ --stop-on-failure",
         "ci:tests": [
@@ -86,7 +88,8 @@
             "@ci:php:lint",
             "@ci:php:sniff",
             "@ci:php:fixer",
-            "@ci:php:md"
+            "@ci:php:md",
+            "@ci:php:psalm"
         ],
         "ci": [
             "@ci:static",
