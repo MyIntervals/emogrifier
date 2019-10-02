@@ -277,6 +277,8 @@ class CssConcatenatorTest extends TestCase
 
     /**
      * @return mixed[][]
+     *
+     * @psalm-return array<string, array{0:array<int, string>, 1:string, 2:array<int, string>, 3:string, 4:string}>
      */
     public function combinableRulesDataProvider(): array
     {
