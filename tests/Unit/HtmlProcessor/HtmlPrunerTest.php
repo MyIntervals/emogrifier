@@ -402,6 +402,8 @@ class HtmlPrunerTest extends TestCase
      *
      * @return (CssInliner|HtmlPruner)[] The `HtmlPruner` subject is the first element, and the `CssInliner` fixture is
      *         the second element.
+     *
+     * @psalm-return array{0:HtmlPruner, 1:CssInliner}
      */
     private function buildSubjectAndCssInlinerWithCssInlined(string $html, string $css): array
     {
