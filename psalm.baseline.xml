@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
-  <file src="src\CssInliner.php">
+  <file src="src/CssInliner.php">
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
     </InvalidArgument>
@@ -35,7 +35,7 @@
       <code>$styleNodes === false</code>
     </TypeDoesNotContainType>
   </file>
-  <file src="src\HtmlProcessor\AbstractHtmlProcessor.php">
+  <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
     <InvalidNullableReturnType occurrences="1">
       <code>\DOMElement</code>
     </InvalidNullableReturnType>
@@ -51,7 +51,7 @@
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
   </file>
-  <file src="src\HtmlProcessor\HtmlPruner.php">
+  <file src="src/HtmlProcessor/HtmlPruner.php">
     <UndefinedMethod occurrences="4">
       <code>getAttribute</code>
       <code>setAttribute</code>
@@ -59,10 +59,10 @@
       <code>removeAttribute</code>
     </UndefinedMethod>
   </file>
-  <file src="tests\Support\Traits\AssertCss.php">
+  <file src="tests/Support/Traits/AssertCss.php">
     <NonStaticSelfCall occurrences="1"/>
   </file>
-  <file src="tests\Unit\CssInlinerTest.php">
+  <file src="tests/Unit/CssInlinerTest.php">
     <PossiblyNullArgument occurrences="1">
       <code>$styleElement</code>
     </PossiblyNullArgument>
@@ -73,7 +73,7 @@
       <code>removeChild</code>
     </PossiblyNullReference>
   </file>
-  <file src="tests\Unit\HtmlProcessor\HtmlPrunerTest.php">
+  <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
     <NonStaticSelfCall occurrences="1"/>
     <PossiblyInvalidArgument occurrences="14">
       <code>$cssInliner</code>
@@ -97,7 +97,7 @@
       <code>removeRedundantClassesAfterCssInlined</code>
     </PossiblyUndefinedMethod>
   </file>
-  <file src="tests\Unit\Utilities\CssConcatenatorTest.php">
+  <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
     <InvalidArgument occurrences="6">
       <code>@dataProvider equivalentSelectorsDataProvider</code>
       <code>@dataProvider differentSelectorsDataProvider</code>
