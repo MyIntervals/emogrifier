@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files>
   <file src="src/CssInliner.php">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$node</code>
+    </ArgumentTypeCoercion>
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
     </InvalidArgument>
@@ -12,13 +15,13 @@
       <code>$this-&gt;visitedNodes</code>
     </InvalidPropertyAssignmentValue>
     <LessSpecificReturnStatement occurrences="1">
-      <code>return $excludedNodes;</code>
+      <code>$excludedNodes</code>
     </LessSpecificReturnStatement>
     <MoreSpecificReturnType occurrences="1">
       <code>array</code>
     </MoreSpecificReturnType>
     <NullableReturnStatement occurrences="1">
-      <code>return $this-&gt;domDocument-&gt;getElementsByTagName('head')-&gt;item(0);</code>
+      <code>$this-&gt;domDocument-&gt;getElementsByTagName('head')-&gt;item(0)</code>
     </NullableReturnStatement>
     <PossiblyNullArrayOffset occurrences="2">
       <code>$this-&gt;styleAttributesForNodes</code>
@@ -28,24 +31,14 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <TypeCoercion occurrences="1">
-      <code>$node</code>
-    </TypeCoercion>
-    <TypeDoesNotContainType occurrences="1">
-      <code>$styleNodes === false</code>
-    </TypeDoesNotContainType>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
     <InvalidNullableReturnType occurrences="1">
       <code>\DOMElement</code>
     </InvalidNullableReturnType>
     <NullableReturnStatement occurrences="1">
-      <code>return $this-&gt;domDocument-&gt;getElementsByTagName('body')-&gt;item(0);</code>
+      <code>$this-&gt;domDocument-&gt;getElementsByTagName('body')-&gt;item(0)</code>
     </NullableReturnStatement>
-    <PossiblyFalseArgument occurrences="2">
-      <code>$htmlWithPossibleErroneousClosingTags</code>
-      <code>$htmlWithPossibleErroneousClosingTags</code>
-    </PossiblyFalseArgument>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
       <code>null</code>
@@ -79,17 +72,17 @@
       <code>$cssInliner</code>
       <code>$cssInliner</code>
       <code>$cssInliner</code>
-      <code>@dataProvider provideHtmlAndNonMatchedClasses</code>
-      <code>@dataProvider provideHtmlAndSomeMatchedClasses</code>
-      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
-      <code>@dataProvider provideHtmlAndSomeMatchedClasses</code>
-      <code>@dataProvider provideHtmlAndAllMatchedClasses</code>
-      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
-      <code>@dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses</code>
-      <code>@dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses</code>
-      <code>@dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses</code>
-      <code>@dataProvider provideClassesNotInUninlinableRules</code>
-      <code>@dataProvider provideClassesInUninlinableRules</code>
+      <code>removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep</code>
+      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
+      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesMinifiesClassAttributes</code>
+      <code>removeRedundantClassesMinifiesClassAttributes</code>
+      <code>removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules</code>
+      <code>removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules</code>
     </PossiblyInvalidArgument>
     <PossiblyUndefinedMethod occurrences="3">
       <code>removeRedundantClassesAfterCssInlined</code>
@@ -99,12 +92,12 @@
   </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
     <InvalidArgument occurrences="6">
-      <code>@dataProvider equivalentSelectorsDataProvider</code>
-      <code>@dataProvider differentSelectorsDataProvider</code>
-      <code>@dataProvider differentSelectorsDataProvider</code>
-      <code>@dataProvider equivalentSelectorsDataProvider</code>
-      <code>@dataProvider differentSelectorsDataProvider</code>
-      <code>@dataProvider combinableRulesDataProvider</code>
+      <code>appendCombinesRulesWithEquivalentSelectors</code>
+      <code>appendCombinesSameRulesWithDifferentSelectors</code>
+      <code>appendNotCombinesDifferentRulesWithDifferentSelectors</code>
+      <code>appendCombinesRulesWithEquivalentSelectorsWithinMediaRule</code>
+      <code>appendCombinesSameRulesWithDifferentSelectorsWithinMediaRule</code>
+      <code>appendNotCombinesNonadjacentRules</code>
     </InvalidArgument>
     <InvalidReturnStatement occurrences="2"/>
     <InvalidReturnType occurrences="2">
