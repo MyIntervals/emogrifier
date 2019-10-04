@@ -126,9 +126,6 @@
     </UndefinedMethod>
   </file>
   <file src="src/Utilities/CssConcatenator.php">
-    <MissingReturnType occurrences="1">
-      <code>append</code>
-    </MissingReturnType>
     <MixedArgument occurrences="5">
       <code>$mediaRule-&gt;ruleBlocks</code>
       <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
@@ -155,11 +152,6 @@
     </MixedPropertyFetch>
   </file>
   <file src="tests/Support/Traits/AssertCss.php">
-    <MissingReturnType occurrences="3">
-      <code>assertContainsCss</code>
-      <code>assertNotContainsCss</code>
-      <code>assertContainsCssCount</code>
-    </MissingReturnType>
     <MixedArgument occurrences="3">
       <code>$matches[1]</code>
       <code>$matches[3]</code>
@@ -173,108 +165,6 @@
       <code>$previousDescription</code>
       <code>$precedingComponentDescription</code>
     </InvalidOperand>
-    <MissingReturnType occurrences="100">
-      <code>fromHtmlReturnsInstanceOfCalledClass</code>
-      <code>isAbstractHtmlProcessor</code>
-      <code>inlineCssProvidesFluentInterface</code>
-      <code>inlineCssKeepsWbrTag</code>
-      <code>inlineCssAppliesCssToMatchingElements</code>
-      <code>inlineCssNotAppliesCssToNonMatchingElements</code>
-      <code>inlineCssAppliesMoreSpecificCssSelectorToMatchingElements</code>
-      <code>inlineCssAppliesLaterEquallySpecificCssSelectorToMatchingElements</code>
-      <code>inlineCssTrimsWhitespaceFromCssDeclarations</code>
-      <code>inlineCssFormatsCssDeclarations</code>
-      <code>inlineCssDropsInvalidCssDeclaration</code>
-      <code>inlineCssKeepsExistingStyleAttributes</code>
-      <code>inlineCssAddsNewCssBeforeExistingStyle</code>
-      <code>inlineCssCanMatchMinifiedCss</code>
-      <code>inlineCssLowercasesAttributeNamesFromStyleAttributes</code>
-      <code>inlineCssLowercasesAttributeNamesFromPassedInCss</code>
-      <code>inlineCssPreservesCaseForAttributeValuesFromPassedInCss</code>
-      <code>inlineCssPreservesCaseForAttributeValuesFromParsedStyleBlock</code>
-      <code>inlineCssRemovesStyleNodes</code>
-      <code>inlineCssInDebugModeForInvalidCssSelectorThrowsException</code>
-      <code>inlineCssNotInDebugModeIgnoresInvalidCssSelectors</code>
-      <code>inlineCssByDefaultIgnoresInvalidCssSelectors</code>
-      <code>inlineCssFiltersUnneededCssThings</code>
-      <code>inlineCssMatchesRuleAfterUnneededCssThing</code>
-      <code>inlineCssKeepsMediaRules</code>
-      <code>inlineCssKeepsRulesCopiedToStyleElementInSpecifiedOrder</code>
-      <code>removeAllowedMediaTypeRemovesStylesForTheGivenMediaType</code>
-      <code>addAllowedMediaTypeKeepsStylesForTheGivenMediaType</code>
-      <code>inlineCssKeepsExistingHeadElementContent</code>
-      <code>inlineCssKeepsExistingStyleElementWithMedia</code>
-      <code>inlineCssKeepsExistingStyleElementWithMediaInHead</code>
-      <code>inlineCssKeepsExistingStyleElementWithMediaOutOfBody</code>
-      <code>inlineCssWithValidMediaQueryContainsInnerCss</code>
-      <code>inlineCssWithValidMinifiedMediaQueryContainsInnerCss</code>
-      <code>inlineCssForHtmlWithValidMediaQueryContainsInnerCss</code>
-      <code>inlineCssWithValidMediaQueryNotContainsInlineCss</code>
-      <code>inlineCssWithInvalidMediaQueryNotContainsInnerCss</code>
-      <code>inlineCssWithInvalidMediaQueryNotContainsInlineCss</code>
-      <code>inlineCssFromHtmlWithInvalidMediaQueryNotContainsInnerCss</code>
-      <code>inlineCssFromHtmlWithInvalidMediaQueryNotContainsInlineCss</code>
-      <code>inlineCssIgnoresEmptyMediaQuery</code>
-      <code>inlineCssIgnoresMediaQueryWithWhitespaceOnly</code>
-      <code>inlineCssKeepsMediaRuleAfterEmptyMediaRule</code>
-      <code>inlineCssNotKeepsUnneededMediaRuleAfterEmptyMediaRule</code>
-      <code>inlineCssKeepsRuleWithPseudoComponentInMatchingSelector</code>
-      <code>inlineCssNotKeepsRuleWithPseudoComponentInNonMatchingSelector</code>
-      <code>inlineCssKeepsRuleInMediaQueryWithPseudoComponentInMatchingSelector</code>
-      <code>inlineCssNotKeepsRuleInMediaQueryWithPseudoComponentInNonMatchingSelector</code>
-      <code>inlineCssKeepsRuleWithPseudoComponentInMultipleMatchingSelectorsFromSingleRule</code>
-      <code>inlineCssKeepsOnlyMatchingSelectorsWithPseudoComponentFromSingleRule</code>
-      <code>inlineCssAppliesCssToMatchingElementsAndKeepsRuleWithPseudoComponentFromSingleRule</code>
-      <code>inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRule</code>
-      <code>inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRuleWithCssAfter</code>
-      <code>inlineCssAppliesCssFromStyleNodes</code>
-      <code>inlineCssWhenDisabledNotAppliesCssFromStyleBlocks</code>
-      <code>inlineCssWhenStyleBlocksParsingDisabledKeepInlineStyles</code>
-      <code>inlineCssWhenDisabledNotAppliesCssFromInlineStyles</code>
-      <code>inlineCssWhenInlineStyleAttributesParsingDisabledKeepStyleBlockStyles</code>
-      <code>inlineCssAppliesCssWithMixedCaseAttributesInStyleBlock</code>
-      <code>inlineCssMergesCssWithMixedCaseAttribute</code>
-      <code>inlineCssMergesCssWithMixedUnits</code>
-      <code>inlineCssKeepsCssMediaQueriesWithCssCommentAfterMediaQuery</code>
-      <code>importantInExternalCssOverwritesInlineCss</code>
-      <code>importantInExternalCssKeepsInlineCssForOtherAttributes</code>
-      <code>importantIsCaseInsensitive</code>
-      <code>secondImportantStyleOverwritesFirstOne</code>
-      <code>secondNonImportantStyleOverwritesFirstOne</code>
-      <code>secondNonImportantStyleNotOverwritesFirstImportantOne</code>
-      <code>inlineCssAppliesLaterShorthandStyleAfterIndividualStyle</code>
-      <code>inlineCssAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle</code>
-      <code>inlineCssAppliesInlineOverridingStyleAfterCssStyleAfterOverriddenCssStyle</code>
-      <code>inlineCssAppliesLaterInlineOverridingStyleAfterEarlierInlineStyle</code>
-      <code>irrelevantMediaQueriesAreRemoved</code>
-      <code>relevantMediaQueriesAreRetained</code>
-      <code>importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss</code>
-      <code>addExcludedSelectorIgnoresMatchingElementsFrom</code>
-      <code>addExcludedSelectorExcludesMatchingElementEventWithWhitespaceAroundSelector</code>
-      <code>addExcludedSelectorKeepsNonMatchingElements</code>
-      <code>addExcludedSelectorCanExcludeSubtree</code>
-      <code>removeExcludedSelectorGetsMatchingElementsToBeInlinedAgain</code>
-      <code>inlineCssInDebugModeForInvalidExcludedSelectorThrowsException</code>
-      <code>inlineCssNotInDebugModeIgnoresInvalidExcludedSelector</code>
-      <code>inlineCssNotInDebugModeIgnoresOnlyInvalidExcludedSelector</code>
-      <code>emptyMediaQueriesAreRemoved</code>
-      <code>multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce</code>
-      <code>multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce</code>
-      <code>multipleMediaQueriesAreAppliedOnlyOnce</code>
-      <code>dataUrisAreConserved</code>
-      <code>inlineCssIgnoresPseudoClassCombinedWithPseudoElement</code>
-      <code>inlineCssKeepsInlineStylePriorityVersusStyleBlockRules</code>
-      <code>inlineCssRemovesImportantRule</code>
-      <code>inlineCssInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException</code>
-      <code>inlineCssNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks</code>
-      <code>inlineCssPreservesValidImportRules</code>
-      <code>inlineCssRemovesInvalidImportRules</code>
-      <code>inlineCssNotCopiesInlinableRuleAfterImportRuleToStyleElement</code>
-      <code>getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled</code>
-      <code>getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors</code>
-      <code>getMatchingUninlinableSelectorsNotReturnsNonMatchingOrInlinableSelector</code>
-      <code>copyUninlinableCssToStyleNodeHasNoSideEffects</code>
-    </MissingReturnType>
     <PossiblyNullArgument occurrences="1">
       <code>$styleElement</code>
     </PossiblyNullArgument>
@@ -294,37 +184,6 @@
       <code>$leftDatasetName</code>
       <code>$rightDatasetName</code>
     </InvalidOperand>
-    <MissingReturnType occurrences="29">
-      <code>fromHtmlReturnsAbstractHtmlProcessor</code>
-      <code>fromHtmlReturnsInstanceOfCalledClass</code>
-      <code>fromDomDocumentReturnsAbstractHtmlProcessor</code>
-      <code>fromDomDocumentReturnsInstanceOfCalledClass</code>
-      <code>renderRendersDocumentProvidedToFromDomDocument</code>
-      <code>reformatsHtml</code>
-      <code>fromHtmlWithEmptyStringThrowsException</code>
-      <code>renderRepairsBrokenHtml</code>
-      <code>addsMissingHtmlTag</code>
-      <code>addsMissingHeadTag</code>
-      <code>addsMissingBodyTag</code>
-      <code>putsMissingBodyElementAroundBodyContent</code>
-      <code>keepsSpecialCharactersInTextNodes</code>
-      <code>addsMissingHtml5DocumentType</code>
-      <code>keepsExistingDocumentType</code>
-      <code>addsMissingContentTypeMetaTag</code>
-      <code>notAddsSecondContentTypeMetaTag</code>
-      <code>convertsXmlSelfClosingTagsToNonXmlSelfClosingTag</code>
-      <code>keepsNonXmlSelfClosingTags</code>
-      <code>notAddsClosingTagForSelfClosingTags</code>
-      <code>renderBodyContentForEmptyBodyReturnsEmptyString</code>
-      <code>renderBodyContentReturnsBodyContent</code>
-      <code>renderBodyContentForBodyWithAttributeReturnsBodyContent</code>
-      <code>renderBodyContentKeepsSpecialCharactersInTextNodes</code>
-      <code>renderBodyContentNotAddsClosingTagForSelfClosingTags</code>
-      <code>getDomDocumentReturnsDomDocument</code>
-      <code>getDomDocumentReturnsDomDocumentProvidedToFromDomDocument</code>
-      <code>getDomDocumentWithNormalizedHtmlRepresentsTheGivenHtml</code>
-      <code>getDomDocumentVoidElementNotHasChildNodes</code>
-    </MissingReturnType>
     <MixedArgument occurrences="2">
       <code>$dataset[0]</code>
       <code>$dataset[0]</code>
@@ -341,15 +200,6 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php">
-    <MissingReturnType occurrences="7">
-      <code>fromHtmlReturnsInstanceOfCalledClass</code>
-      <code>classIsAbstractHtmlProcessor</code>
-      <code>fromDomDocumentReturnsInstanceOfCalledClass</code>
-      <code>renderWithoutConvertCssToVisualAttributesCallNotAddsVisualAttributes</code>
-      <code>convertCssToVisualAttributesUsesFluentInterface</code>
-      <code>convertCssToVisualAttributesMapsSuitableCssToHtml</code>
-      <code>convertCssToVisualAttributesNotMapsUnsuitableCssToHtml</code>
-    </MissingReturnType>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code>
       <code>assertInstanceOf</code>
@@ -357,11 +207,6 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlNormalizerTest.php">
-    <MissingReturnType occurrences="3">
-      <code>fromHtmlReturnsInstanceOfCalledClass</code>
-      <code>classIsAbstractHtmlProcessor</code>
-      <code>fromDomDocumentReturnsInstanceOfCalledClass</code>
-    </MissingReturnType>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code>
       <code>assertInstanceOf</code>
@@ -372,28 +217,6 @@
     <InvalidOperand occurrences="1">
       <code>$expectedCount</code>
     </InvalidOperand>
-    <MissingReturnType occurrences="20">
-      <code>fromHtmlReturnsInstanceOfCalledClass</code>
-      <code>classIsAbstractHtmlProcessor</code>
-      <code>fromDomDocumentReturnsInstanceOfCalledClass</code>
-      <code>removeElementsWithDisplayNoneProvidesFluentInterface</code>
-      <code>removeElementsWithDisplayNoneRemovesElementsWithDisplayNone</code>
-      <code>removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep</code>
-      <code>removeRedundantClassesProvidesFluentInterface</code>
-      <code>removeRedundantClassesPreservesHtmlWithoutClasses</code>
-      <code>removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep</code>
-      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
-      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
-      <code>removeRedundantClassesMinifiesClassAttributes</code>
-      <code>removeRedundantClassesAfterCssInlinedProvidesFluentInterface</code>
-      <code>removeRedundantClassesAfterCssInlinedThrowsExceptionIfInlineCssNotCalled</code>
-      <code>removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules</code>
-      <code>removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules</code>
-      <code>assertContainsNone</code>
-      <code>assertContainsAll</code>
-      <code>assertSubstringCount</code>
-      <code>assertMinified</code>
-    </MissingReturnType>
     <MixedArgument occurrences="1">
       <code>$classAttributeValue</code>
     </MixedArgument>
@@ -429,32 +252,6 @@
       <code>assertInstanceOf</code>
     </RedundantConditionGivenDocblockType>
   </file>
-  <file src="tests/Unit/Support/Traits/AssertCssTest.php">
-    <MissingReturnType occurrences="17">
-      <code>getCssNeedleRegExpEscapesAllSpecialCharacters</code>
-      <code>getCssNeedleRegExpNotEscapesNonSpecialCharacters</code>
-      <code>getCssNeedleRegExpInsertsOptionalWhitespace</code>
-      <code>getCssNeedleRegExpReplacesWhitespaceAtStartWithOptionalWhitespace</code>
-      <code>getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag</code>
-      <code>assertContainsCssPassesTestIfNeedleFound</code>
-      <code>assertContainsCssFailsTestIfNeedleNotFound</code>
-      <code>assertNotContainsCssPassesTestIfNeedleNotFound</code>
-      <code>assertNotContainsCssFailsTestIfNeedleFound</code>
-      <code>assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound</code>
-      <code>assertContainsCssCountFailsTestExpectingZeroIfNeedleFound</code>
-      <code>assertContainsCssCountPassesTestExpectingOneIfNeedleFound</code>
-      <code>assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound</code>
-      <code>assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice</code>
-      <code>assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice</code>
-      <code>assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound</code>
-      <code>assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce</code>
-    </MissingReturnType>
-  </file>
-  <file src="tests/Unit/Utilities/ArrayIntersectorTest.php">
-    <MissingReturnType occurrences="1">
-      <code>computesIntersection</code>
-    </MissingReturnType>
-  </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
     <InvalidArgument occurrences="6">
       <code>appendCombinesRulesWithEquivalentSelectors</code>
@@ -469,20 +266,6 @@
       <code>array</code>
       <code>array</code>
     </InvalidReturnType>
-    <MissingReturnType occurrences="12">
-      <code>getCssInitiallyReturnsEmptyString</code>
-      <code>appendSetsFirstRule</code>
-      <code>appendWithMediaQuerySetsFirstRuleInMediaRule</code>
-      <code>appendCombinesRulesWithEquivalentSelectors</code>
-      <code>appendInsertsSemicolonCombiningRulesWithoutTrailingSemicolon</code>
-      <code>appendCombinesSameRulesWithDifferentSelectors</code>
-      <code>appendNotCombinesDifferentRulesWithDifferentSelectors</code>
-      <code>appendCombinesRulesForSameMediaQueryInMediaRule</code>
-      <code>appendCombinesRulesWithEquivalentSelectorsWithinMediaRule</code>
-      <code>appendCombinesSameRulesWithDifferentSelectorsWithinMediaRule</code>
-      <code>appendNotCombinesRulesForDifferentMediaQueryInMediaRule</code>
-      <code>appendNotCombinesNonadjacentRules</code>
-    </MissingReturnType>
     <MixedArgumentTypeCoercion occurrences="2">
       <code>$rule1Selectors</code>
       <code>$rule2Selectors</code>
