@@ -76,6 +76,9 @@
       <code>null</code>
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
+    <UnusedMethod occurrences="1">
+      <code>replaceUnmatchableNotComponent</code>
+    </UnusedMethod>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
     <InvalidNullableReturnType occurrences="1">
