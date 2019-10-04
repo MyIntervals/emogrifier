@@ -14,6 +14,9 @@
     <InvalidNullableReturnType occurrences="1">
       <code>\DOMElement</code>
     </InvalidNullableReturnType>
+    <InvalidOperand occurrences="1">
+      <code>$matcher</code>
+    </InvalidOperand>
     <InvalidPropertyAssignmentValue occurrences="2">
       <code>$this-&gt;styleAttributesForNodes</code>
       <code>$this-&gt;visitedNodes</code>
@@ -165,6 +168,11 @@
     <NonStaticSelfCall occurrences="1"/>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
+    <InvalidOperand occurrences="3">
+      <code>$description</code>
+      <code>$previousDescription</code>
+      <code>$precedingComponentDescription</code>
+    </InvalidOperand>
     <MissingReturnType occurrences="100">
       <code>fromHtmlReturnsInstanceOfCalledClass</code>
       <code>isAbstractHtmlProcessor</code>
@@ -282,6 +290,10 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
+    <InvalidOperand occurrences="2">
+      <code>$leftDatasetName</code>
+      <code>$rightDatasetName</code>
+    </InvalidOperand>
     <MissingReturnType occurrences="29">
       <code>fromHtmlReturnsAbstractHtmlProcessor</code>
       <code>fromHtmlReturnsInstanceOfCalledClass</code>
@@ -357,6 +369,9 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
+    <InvalidOperand occurrences="1">
+      <code>$expectedCount</code>
+    </InvalidOperand>
     <MissingReturnType occurrences="20">
       <code>fromHtmlReturnsInstanceOfCalledClass</code>
       <code>classIsAbstractHtmlProcessor</code>
