@@ -94,5 +94,10 @@ return \PhpCsFixer\Config::create()
             'trailing_comma_in_multiline_array' => true,
             'unary_operator_spaces' => true,
             'whitespace_after_comma_in_array' => true,
+            'yoda_style' => [
+                'equal' => false,
+                'identical' => false,
+                'less_and_greater' => false,
+            ],
         ]
     );
