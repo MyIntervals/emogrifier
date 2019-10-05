@@ -1099,7 +1099,7 @@ class CssInliner extends AbstractHtmlProcessor
         $css = $cssImportRules;
 
         // avoid including unneeded class dependency if there are no rules
-        if ($this->matchingUninlinableCssRules !== [] && $this->matchingUninlinableCssRules !== null) {
+        if ($this->matchingUninlinableCssRules !== null && $this->matchingUninlinableCssRules !== []) {
             $cssConcatenator = new CssConcatenator();
             foreach ($this->matchingUninlinableCssRules as $cssRule) {
                 $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
