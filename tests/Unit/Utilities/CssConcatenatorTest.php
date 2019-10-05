@@ -292,9 +292,9 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      *
-     * @param array $rule1Selectors
+     * @param string[] $rule1Selectors
      * @param string $rule1DeclarationsBlock
-     * @param array $rule2Selectors
+     * @param string[] $rule2Selectors
      * @param string $rule2DeclarationsBlock
      * @param string $media
      *
