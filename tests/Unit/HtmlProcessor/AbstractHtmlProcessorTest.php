@@ -421,9 +421,8 @@ class AbstractHtmlProcessorTest extends TestCase
      * @param array<string, array<int, string>> $rightDatasets
      *
      * @return array<string, array<int, string>> The new datasets comprise the first dataset from the left-hand side
-     * with each of the datasets
-     * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
-     * from the right-hand side.
+     * with each of the datasets from the right-hand side, and the each of the remaining datasets from the left-hand
+     * side with the first dataset from the right-hand side.
      */
     public static function joinDatasets(array $leftDatasets, array $rightDatasets): array
     {
