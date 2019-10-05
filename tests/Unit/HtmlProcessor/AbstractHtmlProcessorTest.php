@@ -341,6 +341,8 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string}>
      */
     public function xmlSelfClosingTagDataProvider(): array
     {
@@ -367,12 +369,16 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      *
-     * @psalm-return array<int, array{0:string, 1:string}>
+     * @psalm-return array<string, array{0:string, 1:string}>
      */
     public function nonXmlSelfClosingTagDataProvider(): array
     {
-        /** @psalm-var array<int, array{0:string, 1:string}> */
         return \array_map(
+            /**
+             * @psalm-param array{0:string, 1:string} $dataset
+             *
+             * @psalm-return array{0:string, 1:string}
+             */
             static function (array $dataset) {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
                 return $dataset;
@@ -387,14 +393,20 @@ class AbstractHtmlProcessorTest extends TestCase
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
      *         - The name of a self-closing tag contained in the HTML (e.g. "br").
      *
-     * @psalm-return array<int, array{0:string, 1:string}>
+     * @psalm-return array<string, array{0:string, 1:string, 2:string}>
      */
     public function selfClosingTagDataProvider(): array
     {
-        /** @psalm-var array<int, array{0:string, 1:string}> */
         return \array_map(
+            /**
+             * @psalm-param array{0:string, 1:string} $dataset
+             *
+             * @psalm-return array{0:string, 1:string, 2:string}
+             */
             static function (array $dataset) {
                 \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
+
+                /** @psalm-var array{0:string, 1:string, 2:string} */
                 return $dataset;
             },
             $this->xmlSelfClosingTagDataProvider()
