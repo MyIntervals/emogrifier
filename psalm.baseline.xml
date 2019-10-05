@@ -168,7 +168,7 @@
   </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
     <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>null</code>
+      <code>null</code> <!-- retained, to be reviewed with #793  -->
     </PossiblyNullPropertyAssignmentValue>
   </file>
 </files>
