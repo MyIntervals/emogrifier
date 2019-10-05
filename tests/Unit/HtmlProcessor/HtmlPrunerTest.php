@@ -635,7 +635,7 @@ class HtmlPrunerTest extends TestCase
         self::assertSame(
             $expectedCount,
             \substr_count($haystack, $needle),
-            'asserting \'' . $haystack . '\' contains ' . $expectedCount . ' instance(s) of "' . $needle . '"'
+            'asserting \'' . $haystack . '\' contains ' . (string)$expectedCount . ' instance(s) of "' . $needle . '"'
         );
     }
 

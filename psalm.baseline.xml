@@ -219,9 +219,6 @@
   </file>
   <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
-    <InvalidOperand occurrences="1">
-      <code>$expectedCount</code>
-    </InvalidOperand>
     <NonStaticSelfCall occurrences="1"/>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
