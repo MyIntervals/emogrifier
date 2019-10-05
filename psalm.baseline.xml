@@ -159,12 +159,6 @@
     <InvalidOperand occurrences="1">
       <code>$expectedCount</code>
     </InvalidOperand>
-    <MixedArgument occurrences="1">
-      <code>$classAttributeValue</code>
-    </MixedArgument>
-    <MixedAssignment occurrences="1">
-      <code>$classAttributeValue</code>
-    </MixedAssignment>
     <NonStaticSelfCall occurrences="1"/>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code>

@@ -403,6 +403,7 @@ class HtmlPrunerTest extends TestCase
         $subject->removeRedundantClasses($classesToKeep);
 
         \preg_match_all('/class="([^"]*+)"/', $subject->renderBodyContent(), $classAttributeMatches);
+        /** @var string $classAttributeValue */
         foreach ($classAttributeMatches[1] as $classAttributeValue) {
             self::assertMinified($classAttributeValue);
         }
