@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+  <file src="src/CssInliner.php">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$node</code>
+    </ArgumentTypeCoercion>
+    <DocblockTypeContradiction occurrences="2">
+      <code>$this-&gt;matchingUninlinableCssRules === null</code>
+      <code>$this-&gt;cssSelectorConverter === null</code>
+    </DocblockTypeContradiction>
+    <InvalidArgument occurrences="1">
+      <code>$cssRule</code>
+    </InvalidArgument>
+    <InvalidNullableReturnType occurrences="1">
+      <code>\DOMElement</code>
+    </InvalidNullableReturnType>
+    <InvalidOperand occurrences="1">
+      <code>$matcher</code>
+    </InvalidOperand>
+    <InvalidPropertyAssignmentValue occurrences="2">
+      <code>$this-&gt;styleAttributesForNodes</code>
+      <code>$this-&gt;visitedNodes</code>
+    </InvalidPropertyAssignmentValue>
+    <LessSpecificReturnStatement occurrences="1">
+      <code>$excludedNodes</code>
+    </LessSpecificReturnStatement>
+    <MixedArgument occurrences="1">
+      <code>$m[0]</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="4">
+      <code>$selectorToExclude</code>
+      <code>$cssRules['inlinable']</code>
+      <code>$attributeName</code>
+      <code>[$this, 'replaceUnmatchableNotComponent']</code>
+    </MixedArgumentTypeCoercion>
+    <MixedArrayAccess occurrences="4">
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+    </MixedArrayAccess>
+    <MixedArrayAssignment occurrences="4">
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+    </MixedArrayAssignment>
+    <MixedInferredReturnType occurrences="4">
+      <code>array</code>
+      <code>array</code>
+      <code>int</code>
+      <code>string</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="4">
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+    </MixedReturnStatement>
+    <MixedReturnTypeCoercion occurrences="3">
+      <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
+      <code>array</code>
+      <code>$cssRules</code>
+    </MixedReturnTypeCoercion>
+    <MoreSpecificReturnType occurrences="1">
+      <code>array</code>
+    </MoreSpecificReturnType>
+    <NullableReturnStatement occurrences="1">
+      <code>$this-&gt;domDocument-&gt;getElementsByTagName('head')-&gt;item(0)</code>
+    </NullableReturnStatement>
+    <PossiblyNullArrayOffset occurrences="2">
+      <code>$this-&gt;styleAttributesForNodes</code>
+      <code>$this-&gt;visitedNodes</code>
+    </PossiblyNullArrayOffset>
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>null</code>
+      <code>null</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <UnusedMethod occurrences="1">
+      <code>replaceUnmatchableNotComponent</code>
+    </UnusedMethod>
+  </file>
+  <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
+    <InvalidNullableReturnType occurrences="1">
+      <code>\DOMElement</code>
+    </InvalidNullableReturnType>
+    <MixedOperand occurrences="6">
+      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
+      <code>static::DEFAULT_DOCUMENT_TYPE</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
+    </MixedOperand>
+    <NullableReturnStatement occurrences="1">
+      <code>$this-&gt;domDocument-&gt;getElementsByTagName('body')-&gt;item(0)</code>
+    </NullableReturnStatement>
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>null</code>
+      <code>null</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/HtmlProcessor/CssToAttributeConverter.php">
+    <MixedArgument occurrences="3">
+      <code>$mapping['nodes']</code>
+      <code>$mapping['values']</code>
+      <code>$mapping['attribute']</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>$property</code>
+    </MixedArgumentTypeCoercion>
+  </file>
+  <file src="src/HtmlProcessor/HtmlPruner.php">
+    <MixedArgument occurrences="2">
+      <code>$element-&gt;getAttribute('class')</code>
+      <code>$matches[1]</code>
+    </MixedArgument>
+    <MixedArgumentTypeCoercion occurrences="1">
+      <code>\array_keys($classesToKeepAsKeys)</code>
+    </MixedArgumentTypeCoercion>
+    <RedundantCondition occurrences="1">
+      <code>$parentNode !== null</code>
+    </RedundantCondition>
+    <UndefinedMethod occurrences="4">
+      <code>getAttribute</code>
+      <code>setAttribute</code>
+      <code>removeAttribute</code>
+      <code>removeAttribute</code>
+    </UndefinedMethod>
+  </file>
+  <file src="src/Utilities/CssConcatenator.php">
+    <MixedArgument occurrences="5">
+      <code>$mediaRule-&gt;ruleBlocks</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$lastRuleBlock-&gt;declarationsBlock</code>
+      <code>$mediaRule-&gt;ruleBlocks</code>
+      <code>$ruleBlock-&gt;selectorsAsKeys</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="1">
+      <code>$lastRuleBlock</code>
+    </MixedAssignment>
+    <MixedOperand occurrences="3">
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$mediaRule-&gt;media</code>
+      <code>$ruleBlock-&gt;declarationsBlock</code>
+    </MixedOperand>
+    <MixedPropertyAssignment occurrences="1">
+      <code>$lastRuleBlock</code>
+    </MixedPropertyAssignment>
+    <MixedPropertyFetch occurrences="4">
+      <code>$lastRuleBlock-&gt;declarationsBlock</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$lastRuleBlock-&gt;declarationsBlock</code>
+    </MixedPropertyFetch>
+  </file>
+  <file src="tests/Support/Traits/AssertCss.php">
+    <MixedArgument occurrences="3">
+      <code>$matches[1]</code>
+      <code>$matches[3]</code>
+      <code>$matches[0]</code>
+    </MixedArgument>
+    <NonStaticSelfCall occurrences="1"/>
+  </file>
+  <file src="tests/Unit/CssInlinerTest.php">
+    <InvalidOperand occurrences="3">
+      <code>$description</code>
+      <code>$previousDescription</code>
+      <code>$precedingComponentDescription</code>
+    </InvalidOperand>
+    <PossiblyNullArgument occurrences="1">
+      <code>$styleElement</code>
+    </PossiblyNullArgument>
+    <PossiblyNullPropertyFetch occurrences="1">
+      <code>$styleElement-&gt;parentNode</code>
+    </PossiblyNullPropertyFetch>
+    <PossiblyNullReference occurrences="1">
+      <code>removeChild</code>
+    </PossiblyNullReference>
+    <RedundantConditionGivenDocblockType occurrences="2">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
+    <InvalidOperand occurrences="2">
+      <code>$leftDatasetName</code>
+      <code>$rightDatasetName</code>
+    </InvalidOperand>
+    <MixedArgument occurrences="2">
+      <code>$dataset[0]</code>
+      <code>$dataset[0]</code>
+    </MixedArgument>
+    <MixedReturnTypeCoercion occurrences="4">
+      <code>array</code>
+      <code>array</code>
+    </MixedReturnTypeCoercion>
+    <RedundantConditionGivenDocblockType occurrences="4">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php">
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/HtmlNormalizerTest.php">
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
+    <InvalidOperand occurrences="1">
+      <code>$expectedCount</code>
+    </InvalidOperand>
+    <MixedArgument occurrences="1">
+      <code>$classAttributeValue</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="2">
+      <code>$classAttributeValue</code>
+      <code>$result</code>
+    </MixedAssignment>
+    <NonStaticSelfCall occurrences="1"/>
+    <PossiblyInvalidArgument occurrences="14">
+      <code>$cssInliner</code>
+      <code>$cssInliner</code>
+      <code>$cssInliner</code>
+      <code>removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep</code>
+      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
+      <code>removeRedundantClassesRemovesClassesNotToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesNotRemovesClassesToKeep</code>
+      <code>removeRedundantClassesMinifiesClassAttributes</code>
+      <code>removeRedundantClassesMinifiesClassAttributes</code>
+      <code>removeRedundantClassesAfterCssInlinedRemovesClassesNotInUninlinableRules</code>
+      <code>removeRedundantClassesAfterCssInlinedNotRemovesClassesInUninlinableRules</code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod occurrences="3">
+      <code>removeRedundantClassesAfterCssInlined</code>
+      <code>removeRedundantClassesAfterCssInlined</code>
+      <code>removeRedundantClassesAfterCssInlined</code>
+    </PossiblyUndefinedMethod>
+    <RedundantConditionGivenDocblockType occurrences="3">
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code>
+    </RedundantConditionGivenDocblockType>
+  </file>
+  <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
+    <InvalidArgument occurrences="6">
+      <code>appendCombinesRulesWithEquivalentSelectors</code>
+      <code>appendCombinesSameRulesWithDifferentSelectors</code>
+      <code>appendNotCombinesDifferentRulesWithDifferentSelectors</code>
+      <code>appendCombinesRulesWithEquivalentSelectorsWithinMediaRule</code>
+      <code>appendCombinesSameRulesWithDifferentSelectorsWithinMediaRule</code>
+      <code>appendNotCombinesNonadjacentRules</code>
+    </InvalidArgument>
+    <InvalidReturnStatement occurrences="2"/>
+    <InvalidReturnType occurrences="2">
+      <code>array</code>
+      <code>array</code>
+    </InvalidReturnType>
+    <MixedArgumentTypeCoercion occurrences="2">
+      <code>$rule1Selectors</code>
+      <code>$rule2Selectors</code>
+    </MixedArgumentTypeCoercion>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>null</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+</files>
