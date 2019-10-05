@@ -52,6 +52,11 @@ script:
 
 - >
   echo;
+  echo "Running Psalm";
+  composer ci:php:psalm;
+
+- >
+  echo;
   echo "Running PHP_CodeSniffer";
   composer ci:php:sniff;
 
@@ -59,8 +64,3 @@ script:
   echo;
   echo "Running PHP-CS-Fixer";
   composer ci:php:fixer;
-
-- >
-  echo;
-  echo "Running Psalm";
-  composer ci:php:psalm;
