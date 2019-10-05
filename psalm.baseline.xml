@@ -192,10 +192,6 @@
       <code>$dataset[0]</code>
       <code>$dataset[0]</code>
     </MixedArgument>
-    <MixedReturnTypeCoercion occurrences="4">
-      <code>array</code>
-      <code>array</code>
-    </MixedReturnTypeCoercion>
     <RedundantConditionGivenDocblockType occurrences="4">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
