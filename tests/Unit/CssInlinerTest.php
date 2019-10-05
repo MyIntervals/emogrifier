@@ -3215,9 +3215,7 @@ class CssInlinerTest extends TestCase
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
-
         self::assertInstanceOf(\DOMElement::class, $styleElement);
-
         $styleElement->parentNode->removeChild($styleElement);
 
         $copyUninlinableCssToStyleNode->invoke($subject, '');
