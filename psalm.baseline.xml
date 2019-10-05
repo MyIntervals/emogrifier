@@ -117,8 +117,8 @@
       <code>$precedingComponentDescription</code>
     </InvalidOperand>
     <RedundantConditionGivenDocblockType occurrences="2">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
@@ -135,32 +135,32 @@
       <code>array</code>
     </MixedReturnTypeCoercion>
     <RedundantConditionGivenDocblockType occurrences="4">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php">
     <RedundantConditionGivenDocblockType occurrences="3">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlNormalizerTest.php">
     <RedundantConditionGivenDocblockType occurrences="3">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
     <NonStaticSelfCall occurrences="1"/>
     <RedundantConditionGivenDocblockType occurrences="3">
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
-      <code>assertInstanceOf</code>
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
+      <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
