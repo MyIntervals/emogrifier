@@ -122,10 +122,6 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
-    <InvalidOperand occurrences="2">
-      <code>$leftDatasetName</code>
-      <code>$rightDatasetName</code>
-    </InvalidOperand>
     <RedundantConditionGivenDocblockType occurrences="4">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->

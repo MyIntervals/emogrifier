@@ -275,7 +275,7 @@ class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function documentTypeDataProvider(): array
     {
@@ -417,10 +417,10 @@ class AbstractHtmlProcessorTest extends TestCase
      * Concatenates pairs of datasets (in a similar way to SQL `JOIN`) such that each new dataset consists of a 'row'
      * from a left-hand-side dataset joined with a 'row' from a right-hand-side dataset.
      *
-     * @param string[][] $leftDatasets
-     * @param string[][] $rightDatasets
+     * @param array<string, array<int, string>> $leftDatasets
+     * @param array<string, array<int, string>> $rightDatasets
      *
-     * @return string[][] The new datasets comprise the first dataset from the left-hand side with each of the datasets
+     * @return array<string, array<int, string>> The new datasets comprise the first dataset from the left-hand side with each of the datasets
      * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
      * from the right-hand side.
      */
