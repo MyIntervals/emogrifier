@@ -108,7 +108,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
-        if (null === $this->domDocument) {
+        if ($this->domDocument === null) {
             throw new \UnexpectedValueException(
                 self::class .
                 '::setDomDocument() has not yet been called on ' .
@@ -126,7 +126,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getXPath(): \DOMXPath
     {
-        if (null === $this->xPath) {
+        if ($this->xPath === null) {
             throw new \UnexpectedValueException(
                 self::class .
                 '::setDomDocument() has not yet been called on ' .
@@ -159,7 +159,7 @@ abstract class AbstractHtmlProcessor
     {
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML();
 
-        if (false === $htmlWithPossibleErroneousClosingTags) {
+        if ($htmlWithPossibleErroneousClosingTags === false) {
             throw new \UnexpectedValueException(
                 'Could not save html from ' .
                 self::class .
@@ -181,7 +181,7 @@ abstract class AbstractHtmlProcessor
     {
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
 
-        if (false === $htmlWithPossibleErroneousClosingTags) {
+        if ($htmlWithPossibleErroneousClosingTags === false) {
             throw new \UnexpectedValueException(
                 'Failed to save html on ' .
                 self::class .

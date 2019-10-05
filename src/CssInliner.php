@@ -1135,7 +1135,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         $headElement = $this->getHeadElement();
 
-        if (null === $headElement) {
+        if ($headElement === null) {
             throw new \UnexpectedValueException('Could not find <head>');
         }
 
