@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Disable php-cs-fixer Yoda conditions
+  ([#791](https://github.com/MyIntervals/emogrifier/issues/791),
+  [#794](https://github.com/MyIntervals/emogrifier/pull/794))
 - Check the code with psalm
   ([#537](https://github.com/MyIntervals/emogrifier/issues/537),
   [#779](https://github.com/MyIntervals/emogrifier/pull/779))
