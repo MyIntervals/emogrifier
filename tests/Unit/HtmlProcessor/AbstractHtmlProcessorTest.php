@@ -366,9 +366,12 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<int, array{0:string, 1:string}>
      */
     public function nonXmlSelfClosingTagDataProvider(): array
     {
+        /** @psalm-var array<int, array{0:string, 1:string}> */
         return \array_map(
             static function (array $dataset) {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
@@ -383,9 +386,12 @@ class AbstractHtmlProcessorTest extends TestCase
      *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
      *         - The name of a self-closing tag contained in the HTML (e.g. "br").
+     *
+     * @psalm-return array<int, array{0:string, 1:string}>
      */
     public function selfClosingTagDataProvider(): array
     {
+        /** @psalm-var array<int, array{0:string, 1:string}> */
         return \array_map(
             static function (array $dataset) {
                 \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
