@@ -78,28 +78,28 @@
   </file>
   <file src="src/Utilities/CssConcatenator.php">
     <MixedArgument occurrences="5">
-      <code>$mediaRule-&gt;ruleBlocks</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
-      <code>$lastRuleBlock-&gt;declarationsBlock</code>
-      <code>$mediaRule-&gt;ruleBlocks</code>
-      <code>$ruleBlock-&gt;selectorsAsKeys</code>
+      <code>$mediaRule-&gt;ruleBlocks</code> <!-- retained, to be reviewed with #742 -->
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code> <!-- retained, to be reviewed with #742 -->
+      <code>$lastRuleBlock-&gt;declarationsBlock</code> <!-- retained, to be reviewed with #742 -->
+      <code>$mediaRule-&gt;ruleBlocks</code> <!-- retained, to be reviewed with #742 -->
+      <code>$ruleBlock-&gt;selectorsAsKeys</code> <!-- retained, to be reviewed with #742 -->
     </MixedArgument>
     <MixedAssignment occurrences="1">
-      <code>$lastRuleBlock</code>
+      <code>$lastRuleBlock</code> <!-- retained, to be reviewed with #742 -->
     </MixedAssignment>
     <MixedOperand occurrences="3">
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
-      <code>$mediaRule-&gt;media</code>
-      <code>$ruleBlock-&gt;declarationsBlock</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code> <!-- retained, to be reviewed with #742 -->
+      <code>$mediaRule-&gt;media</code> <!-- retained, to be reviewed with #742 -->
+      <code>$ruleBlock-&gt;declarationsBlock</code> <!-- retained, to be reviewed with #742 -->
     </MixedOperand>
     <MixedPropertyAssignment occurrences="1">
-      <code>$lastRuleBlock</code>
+      <code>$lastRuleBlock</code> <!-- retained, to be reviewed with #742 -->
     </MixedPropertyAssignment>
     <MixedPropertyFetch occurrences="4">
-      <code>$lastRuleBlock-&gt;declarationsBlock</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
-      <code>$lastRuleBlock-&gt;declarationsBlock</code>
+      <code>$lastRuleBlock-&gt;declarationsBlock</code> <!-- retained, to be reviewed with #742 -->
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code> <!-- retained, to be reviewed with #742 -->
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code> <!-- retained, to be reviewed with #742 -->
+      <code>$lastRuleBlock-&gt;declarationsBlock</code> <!-- retained, to be reviewed with #742 -->
     </MixedPropertyFetch>
   </file>
   <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
