@@ -103,7 +103,7 @@
     </MixedPropertyFetch>
   </file>
   <file src="tests/Support/Traits/AssertCss.php">
-    <NonStaticSelfCall occurrences="1"/>
+    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <RedundantConditionGivenDocblockType occurrences="2">
@@ -134,7 +134,7 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
-    <NonStaticSelfCall occurrences="1"/>
+    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
