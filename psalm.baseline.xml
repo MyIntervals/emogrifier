@@ -154,13 +154,14 @@
       <code>$lastRuleBlock-&gt;declarationsBlock</code>
     </MixedPropertyFetch>
   </file>
+  <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Support/Traits/AssertCss.php">
     <MixedArgument occurrences="3">
       <code>$matches[1]</code>
       <code>$matches[3]</code>
       <code>$matches[0]</code>
     </MixedArgument>
-    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
+    <NonStaticSelfCall occurrences="1"/>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <InvalidOperand occurrences="3">
@@ -216,6 +217,7 @@
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
+  <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
     <InvalidOperand occurrences="1">
       <code>$expectedCount</code>
@@ -227,7 +229,7 @@
       <code>$classAttributeValue</code>
       <code>$result</code>
     </MixedAssignment>
-    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
+    <NonStaticSelfCall occurrences="1"/>
     <PossiblyInvalidArgument occurrences="14">
       <code>$cssInliner</code>
       <code>$cssInliner</code>
