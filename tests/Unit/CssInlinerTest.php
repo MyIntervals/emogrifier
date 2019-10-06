@@ -1012,12 +1012,12 @@ class CssInlinerTest extends TestCase
      * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
      * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
      *
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function differentCssSelectorSpecificityDataProvider(): array
     {
         /**
-         * @var string[] Selectors targeting `<span id="text">` with increasing specificity
+         * @var array<string, string> Selectors targeting `<span id="text">` with increasing specificity
          */
         $selectors = [
             'universal' => '*',
@@ -2027,11 +2027,11 @@ class CssInlinerTest extends TestCase
     }
 
     /**
-     * @param string[] $precedingSelectorComponents Array of selectors to which each type of pseudo-component is
+     * @param array<string, string> $precedingSelectorComponents Array of selectors to which each type of pseudo-component is
      *                                              appended to create a selector for a CSS rule.
      *                                              Keys are human-readable descriptions.
      *
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents): array
     {

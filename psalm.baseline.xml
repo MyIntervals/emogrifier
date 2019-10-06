@@ -111,11 +111,6 @@
     <NonStaticSelfCall occurrences="1"/>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
-    <InvalidOperand occurrences="3">
-      <code>$description</code>
-      <code>$previousDescription</code>
-      <code>$precedingComponentDescription</code>
-    </InvalidOperand>
     <RedundantConditionGivenDocblockType occurrences="2">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
