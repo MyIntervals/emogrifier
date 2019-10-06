@@ -102,8 +102,9 @@
       <code>$lastRuleBlock-&gt;declarationsBlock</code>
     </MixedPropertyFetch>
   </file>
+  <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Support/Traits/AssertCss.php">
-    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
+    <NonStaticSelfCall occurrences="1"/>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <RedundantConditionGivenDocblockType occurrences="2">
@@ -133,8 +134,9 @@
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
+  <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
-    <NonStaticSelfCall occurrences="1"/> <!-- retained, to be reviewed with #792 -->
+    <NonStaticSelfCall occurrences="1"/>
     <RedundantConditionGivenDocblockType occurrences="3">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
