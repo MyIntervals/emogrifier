@@ -276,6 +276,8 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, string>>
      */
     public function documentTypeDataProvider(): array
     {
@@ -341,6 +343,8 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string}>
      */
     public function xmlSelfClosingTagDataProvider(): array
     {
@@ -366,10 +370,17 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array{0:string, 1:string}>
      */
     public function nonXmlSelfClosingTagDataProvider(): array
     {
         return \array_map(
+            /**
+             * @psalm-param array{0:string, 1:string} $dataset
+             *
+             * @psalm-return array{0:string, 1:string}
+             */
             static function (array $dataset) {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
                 return $dataset;
@@ -383,12 +394,21 @@ class AbstractHtmlProcessorTest extends TestCase
      *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
      *         - The name of a self-closing tag contained in the HTML (e.g. "br").
+     *
+     * @psalm-return array<string, array{0:string, 1:string, 2:string}>
      */
     public function selfClosingTagDataProvider(): array
     {
         return \array_map(
+            /**
+             * @psalm-param array{0:string, 1:string} $dataset
+             *
+             * @psalm-return array{0:string, 1:string, 2:string}
+             */
             static function (array $dataset) {
                 \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
+
+                /** @psalm-var array{0:string, 1:string, 2:string} */
                 return $dataset;
             },
             $this->xmlSelfClosingTagDataProvider()
@@ -401,6 +421,9 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string[][] $leftDatasets
      * @param string[][] $rightDatasets
+     *
+     * @psalm-param array<string, array<int, string>> $leftDatasets
+     * @psalm-param array<string, array<int, string>> $rightDatasets
      *
      * @return string[][] The new datasets comprise the first dataset from the left-hand side with each of the datasets
      * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
