@@ -108,7 +108,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
-        if (null === $this->domDocument) {
+        if ($this->domDocument === null) {
             throw new \UnexpectedValueException(
                 self::class .
                 '::setDomDocument() has not yet been called on ' .
