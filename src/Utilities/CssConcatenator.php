@@ -135,7 +135,8 @@ class CssConcatenator
     }
 
     /**
-     * @param CssConcatenator\RuleBlock $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
+     * @param CssConcatenator\RuleBlock $ruleBlock Object with properties as described for elements of the `ruleBlocks`
+     *                            property of
      *                            elements of `$mediaRules`.
      *
      * @return string CSS for the rule block.
