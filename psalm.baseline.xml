@@ -114,8 +114,7 @@
     </MixedArgumentTypeCoercion>
   </file>
   <file src="src/HtmlProcessor/HtmlPruner.php">
-    <MixedArgument occurrences="2">
-      <code>$element-&gt;getAttribute('class')</code>
+    <MixedArgument occurrences="1">
       <code>$matches[1]</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="1">
@@ -124,12 +123,6 @@
     <RedundantCondition occurrences="1">
       <code>$parentNode !== null</code>
     </RedundantCondition>
-    <UndefinedMethod occurrences="4">
-      <code>getAttribute</code>
-      <code>setAttribute</code>
-      <code>removeAttribute</code>
-      <code>removeAttribute</code>
-    </UndefinedMethod>
   </file>
   <file src="src/Utilities/CssConcatenator.php">
     <MixedArgument occurrences="5">
