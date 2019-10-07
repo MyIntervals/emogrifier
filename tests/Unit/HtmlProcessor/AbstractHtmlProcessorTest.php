@@ -276,6 +276,8 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, string>>
      */
     public function documentTypeDataProvider(): array
     {
@@ -419,6 +421,9 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string[][] $leftDatasets
      * @param string[][] $rightDatasets
+     *
+     * @psalm-param array<string, array<int, string>> $leftDatasets
+     * @psalm-param array<string, array<int, string>> $rightDatasets
      *
      * @return string[][] The new datasets comprise the first dataset from the left-hand side with each of the datasets
      * from the right-hand side, and the each of the remaining datasets from the left-hand side with the first dataset
