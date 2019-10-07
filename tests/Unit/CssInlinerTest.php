@@ -1013,11 +1013,15 @@ class CssInlinerTest extends TestCase
      * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
      *
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, string>>
      */
     public function differentCssSelectorSpecificityDataProvider(): array
     {
         /**
          * @var string[] Selectors targeting `<span id="text">` with increasing specificity
+         *
+         * @psalm-var array<string, string>
          */
         $selectors = [
             'universal' => '*',
@@ -2031,7 +2035,11 @@ class CssInlinerTest extends TestCase
      *                                              appended to create a selector for a CSS rule.
      *                                              Keys are human-readable descriptions.
      *
+     * @psalm-param array<string, string> $precedingSelectorComponents
+     *
      * @return string[][]
+     *
+     * @psalm-return array<string, array<int, string>>
      */
     private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents): array
     {
