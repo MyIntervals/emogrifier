@@ -45,6 +45,7 @@
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^2.15.3",
         "jakub-onderka/php-parallel-lint": "^1.0",
+        "php-coveralls/php-coveralls": "^2.1",
         "phpmd/phpmd": "^2.7.0",
         "phpunit/phpunit": "^6.5.14",
         "psalm/plugin-phpunit": "^0.5.8",
@@ -72,12 +73,16 @@
     "scripts": {
         "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "php:fix": "php-cs-fixer --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "ci:coverage:coveralls": [
+            "phpunit --whitelist=src/ --coverage-clover=./phpunit.clover tests/",
+            "php-coveralls -vvv"
+        ],
         "ci:php:lint": "parallel-lint config src tests",
         "ci:php:sniff": "phpcs config src tests",
         "ci:php:fixer": "php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "phpmd src text config/phpmd.xml",
         "ci:php:psalm": "psalm --show-info=false",
-        "ci:tests:unit": "phpunit tests/",
+        "ci:tests:unit": "phpunit --no-coverage tests/",
         "ci:tests:sof": "phpunit tests/ --stop-on-failure",
         "ci:tests": [
             "@ci:tests:unit"

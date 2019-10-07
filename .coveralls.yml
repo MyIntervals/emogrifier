@@ -1,0 +1,4 @@
+service_name: travis-ci
+coverage_clover:
+  - ./phpunit.clover
+json_path: ./coveralls.json

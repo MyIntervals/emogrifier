@@ -18,9 +18,6 @@ env:
   - DEPENDENCIES="--prefer-lowest"
   - DEPENDENCIES=""
 
-before_install:
-- phpenv config-rm xdebug.ini || echo "xdebug not available"
-
 install:
 - >
   export IGNORE_PLATFORM_REQS="$(composer php:version |grep -q '^7.3' && printf -- --ignore-platform-reqs)";
@@ -64,3 +61,8 @@ script:
   echo;
   echo "Running PHP-CS-Fixer";
   composer ci:php:fixer;
+
+- >
+  echo;
+  echo "Generating & Updating Coverage";
+  composer ci:coverage:coveralls;
