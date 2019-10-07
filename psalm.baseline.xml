@@ -157,9 +157,9 @@
   <!-- NonStaticSelfCall is retained, to be reviewed with #792 -->
   <file src="tests/Support/Traits/AssertCss.php">
     <MixedArgument occurrences="3">
-      <code>$matches[1]</code>
-      <code>$matches[3]</code>
-      <code>$matches[0]</code>
+      <code>$matches[1]</code> <!-- retained, to be reviewed with #793  -->
+      <code>$matches[3]</code> <!-- retained, to be reviewed with #793  -->
+      <code>$matches[0]</code> <!-- retained, to be reviewed with #793  -->
     </MixedArgument>
     <NonStaticSelfCall occurrences="1"/>
   </file>
