@@ -111,9 +111,9 @@ abstract class AbstractHtmlProcessor
         if ($this->domDocument === null) {
             throw new \UnexpectedValueException(
                 (
-                self::class .
-                '::setDomDocument() has not yet been called on ' .
-                static::class
+                    self::class .
+                    '::setDomDocument() has not yet been called on ' .
+                    static::class
                 ),
                 1570472239
             );
