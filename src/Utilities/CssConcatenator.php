@@ -42,16 +42,9 @@ namespace Pelago\Emogrifier\Utilities;
 class CssConcatenator
 {
     /**
-     * Array of media rules in order.  Each element is an object with the following properties:
-     * - string `media` - The media query string, e.g. "@media screen and (max-width:639px)", or an empty string for
-     *   rules not within a media query block;
-     * - \stdClass[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
-     *   properties:
-     *   - mixed[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
-     *     significance);
-     *   - string `declarationsBlock` - The property declarations, e.g. "margin-top: 0.5em; padding: 0".
+     * Array of media rules in order.
      *
-     * @var \stdClass[]
+     * @var CssConcatenator\MediaRule[]
      */
     private $mediaRules = [];
 
@@ -81,7 +74,7 @@ class CssConcatenator
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->declarationsBlock), ';');
                 $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
             } else {
-                $mediaRule->ruleBlocks[] = (object)\compact('selectorsAsKeys', 'declarationsBlock');
+                $mediaRule->ruleBlocks[] = new CssConcatenator\RuleBlock($selectorsAsKeys, $declarationsBlock);
             }
         }
     }
@@ -98,19 +91,16 @@ class CssConcatenator
      * @param string $media The media query for rules to be appended, e.g. "@media screen and (max-width:639px)",
      *                      or an empty string if none.
      *
-     * @return \stdClass Object with properties as described for elements of `$mediaRules`.
+     * @return CssConcatenator\MediaRule Object with properties as described for elements of `$mediaRules`.
      */
-    private function getOrCreateMediaRuleToAppendTo(string $media): \stdClass
+    private function getOrCreateMediaRuleToAppendTo(string $media): CssConcatenator\MediaRule
     {
         $lastMediaRule = \end($this->mediaRules);
         if ($lastMediaRule !== false && $media === $lastMediaRule->media) {
             return $lastMediaRule;
         }
 
-        $newMediaRule = (object)[
-            'media' => $media,
-            'ruleBlocks' => [],
-        ];
+        $newMediaRule = new CssConcatenator\MediaRule($media);
         $this->mediaRules[] = $newMediaRule;
         return $newMediaRule;
     }
@@ -131,11 +121,11 @@ class CssConcatenator
     }
 
     /**
-     * @param \stdClass $mediaRule Object with properties as described for elements of `$mediaRules`.
+     * @param CssConcatenator\MediaRule $mediaRule Object with properties as described for elements of `$mediaRules`.
      *
      * @return string CSS for the media rule.
      */
-    private static function getMediaRuleCss(\stdClass $mediaRule): string
+    private static function getMediaRuleCss(CssConcatenator\MediaRule $mediaRule): string
     {
         $css = \implode('', \array_map([self::class, 'getRuleBlockCss'], $mediaRule->ruleBlocks));
         if ($mediaRule->media !== '') {
@@ -145,12 +135,12 @@ class CssConcatenator
     }
 
     /**
-     * @param \stdClass $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
+     * @param CssConcatenator\RuleBlock $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
      *                            elements of `$mediaRules`.
      *
      * @return string CSS for the rule block.
      */
-    private static function getRuleBlockCss(\stdClass $ruleBlock): string
+    private static function getRuleBlockCss(CssConcatenator\RuleBlock $ruleBlock): string
     {
         $selectors = \array_keys($ruleBlock->selectorsAsKeys);
         return \implode(',', $selectors) . '{' . $ruleBlock->declarationsBlock . '}';
