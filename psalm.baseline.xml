@@ -258,23 +258,6 @@
     </RedundantConditionGivenDocblockType>
   </file>
   <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
-    <InvalidArgument occurrences="6">
-      <code>appendCombinesRulesWithEquivalentSelectors</code>
-      <code>appendCombinesSameRulesWithDifferentSelectors</code>
-      <code>appendNotCombinesDifferentRulesWithDifferentSelectors</code>
-      <code>appendCombinesRulesWithEquivalentSelectorsWithinMediaRule</code>
-      <code>appendCombinesSameRulesWithDifferentSelectorsWithinMediaRule</code>
-      <code>appendNotCombinesNonadjacentRules</code>
-    </InvalidArgument>
-    <InvalidReturnStatement occurrences="2"/>
-    <InvalidReturnType occurrences="2">
-      <code>array</code>
-      <code>array</code>
-    </InvalidReturnType>
-    <MixedArgumentTypeCoercion occurrences="2">
-      <code>$rule1Selectors</code>
-      <code>$rule2Selectors</code>
-    </MixedArgumentTypeCoercion>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code> <!-- retained, to be reviewed with #793  -->
     </PossiblyNullPropertyAssignmentValue>
