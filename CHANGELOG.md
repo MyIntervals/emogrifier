@@ -18,6 +18,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- `CssConcatenator::$mediaRules` was given dedicated classes
+  ([#733](https://github.com/MyIntervals/emogrifier/issues/733),
+  [#804](https://github.com/MyIntervals/emogrifier/pull/804))
 - Clean up the folder structure and autoloading configuration
   ([#529](https://github.com/MyIntervals/emogrifier/issues/529),
   [#785](https://github.com/MyIntervals/emogrifier/pull/785))
