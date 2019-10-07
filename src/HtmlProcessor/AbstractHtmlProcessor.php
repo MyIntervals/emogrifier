@@ -33,7 +33,7 @@ abstract class AbstractHtmlProcessor
     const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
 
     /**
-     * @var \DOMDocument
+     * @var \DOMDocument|null
      */
     protected $domDocument = null;
 
@@ -103,9 +103,22 @@ abstract class AbstractHtmlProcessor
      * Provides access to the internal DOMDocument representation of the HTML in its current state.
      *
      * @return \DOMDocument
+     *
+     * @throws \UnexpectedValueException
      */
     public function getDomDocument(): \DOMDocument
     {
+        if ($this->domDocument === null) {
+            throw new \UnexpectedValueException(
+                (
+                    self::class .
+                    '::setDomDocument() has not yet been called on ' .
+                    static::class
+                ),
+                1570472239
+            );
+        }
+
         return $this->domDocument;
     }
 
@@ -127,7 +140,7 @@ abstract class AbstractHtmlProcessor
      */
     public function render(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML();
+        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML();
 
         return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
     }
@@ -139,7 +152,7 @@ abstract class AbstractHtmlProcessor
      */
     public function renderBodyContent(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->domDocument->saveHTML($this->getBodyElement());
+        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
         return \preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
@@ -166,7 +179,7 @@ abstract class AbstractHtmlProcessor
      */
     private function getBodyElement(): \DOMElement
     {
-        return $this->domDocument->getElementsByTagName('body')->item(0);
+        return $this->getDomDocument()->getElementsByTagName('body')->item(0);
     }
 
     /**
@@ -299,14 +312,14 @@ abstract class AbstractHtmlProcessor
      */
     private function ensureExistenceOfBodyElement()
     {
-        if ($this->domDocument->getElementsByTagName('body')->item(0) !== null) {
+        if ($this->getDomDocument()->getElementsByTagName('body')->item(0) !== null) {
             return;
         }
 
-        $htmlElement = $this->domDocument->getElementsByTagName('html')->item(0);
+        $htmlElement = $this->getDomDocument()->getElementsByTagName('html')->item(0);
         if ($htmlElement === null) {
             throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
         }
-        $htmlElement->appendChild($this->domDocument->createElement('body'));
+        $htmlElement->appendChild($this->getDomDocument()->createElement('body'));
     }
 }
