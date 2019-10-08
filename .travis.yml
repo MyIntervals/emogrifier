@@ -15,8 +15,8 @@ cache:
 
 env:
   matrix:
-  - DEPENDENCIES_PREFERENCE="--prefer-lowest"
-  - DEPENDENCIES_PREFERENCE=""
+  - DEPENDENCIES="--prefer-lowest"
+  - DEPENDENCIES=""
 
 before_install:
 - phpenv config-rm xdebug.ini || echo "xdebug not available"
@@ -26,7 +26,7 @@ install:
   export IGNORE_PLATFORM_REQS="$(composer php:version |grep -q '^7.3' && printf -- --ignore-platform-reqs)";
   echo;
   echo "Updating the dependencies";
-  composer update $IGNORE_PLATFORM_REQS --with-dependencies $DEPENDENCIES_PREFERENCE;
+  composer update $IGNORE_PLATFORM_REQS --with-dependencies $DEPENDENCIES;
   composer show;
 
 script:
