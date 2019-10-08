@@ -14,6 +14,8 @@ use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 /**
  * Test case.
  *
+ * @covers \Pelago\Emogrifier\CssInliner
+ *
  * @author Oliver Klee <github@oliverklee.de>
  * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */

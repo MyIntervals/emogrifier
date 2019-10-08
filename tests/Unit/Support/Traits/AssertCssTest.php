@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test case.
  *
+ * @covers \Pelago\Emogrifier\Tests\Support\Traits\AssertCss
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class AssertCssTest extends TestCase

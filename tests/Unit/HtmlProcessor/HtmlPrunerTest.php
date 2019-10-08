@@ -13,6 +13,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test case.
  *
+ * @covers \Pelago\Emogrifier\HtmlProcessor\HtmlPruner
+ *
  * @author Oliver Klee <github@oliverklee.de>
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
