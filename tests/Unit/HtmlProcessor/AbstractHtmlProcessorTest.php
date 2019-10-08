@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test case.
  *
- * @covers \Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcesso
+ * @covers \Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
