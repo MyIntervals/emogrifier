@@ -11,6 +11,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test case.
  *
+ * @covers \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter
+ *
  * @author Oliver Klee <github@oliverklee.de>
  */
 class CssToAttributeConverterTest extends TestCase

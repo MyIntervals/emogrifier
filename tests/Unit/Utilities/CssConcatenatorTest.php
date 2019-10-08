@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test case.
  *
+ * @covers \Pelago\Emogrifier\Utilities\CssConcatenator
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class CssConcatenatorTest extends TestCase
