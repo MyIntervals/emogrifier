@@ -14,9 +14,18 @@ cache:
   - $HOME/.composer/cache
 
 env:
-  matrix:
   - DEPENDENCIES="--prefer-lowest"
   - DEPENDENCIES=""
+matrix:
+  include:
+    - php: 7.3
+      env: XDEBUG="true"
+
+before_install:
+- if [ "$XDEBUG" != 'true' ];
+  then phpenv config-rm xdebug.ini || echo "xdebug not available";
+  else echo "leaving xdebug at default setting";
+  fi;
 
 install:
 - >
