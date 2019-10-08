@@ -72,6 +72,8 @@ script:
   composer ci:php:fixer;
 
 - >
+  if [ "$XDEBUG" = 'true' ]; then
   echo;
   echo "Generating & Updating Coverage";
   composer ci:coverage:coveralls;
+  fi;
