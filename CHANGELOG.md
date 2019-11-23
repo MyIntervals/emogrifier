@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Upgrade to Symfony 5.0
+  ([#822](https://github.com/MyIntervals/emogrifier/pull/820)
 
 ### Deprecated
 
