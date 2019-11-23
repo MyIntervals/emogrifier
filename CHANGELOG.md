@@ -18,6 +18,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- Upgrade to Symfony 5.0
+  ([#822](https://github.com/MyIntervals/emogrifier/pull/820)
 - Clean up the folder structure and autoloading configuration
   ([#529](https://github.com/MyIntervals/emogrifier/issues/529),
   [#785](https://github.com/MyIntervals/emogrifier/pull/785))
@@ -25,8 +27,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#784](https://github.com/MyIntervals/emogrifier/pull/784))
 - Make use of PHP 7.0 language features
   [#777](https://github.com/MyIntervals/emogrifier/pull/777))
-- Upgrade to Symfony 5.0
-  ([#822](https://github.com/MyIntervals/emogrifier/pull/820)
 
 ### Deprecated
 - Support for PHP 7.0 will be removed in Emogrifier 5.0.
