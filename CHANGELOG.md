@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add support for PHP 7.4
+  ([#821](https://github.com/MyIntervals/emogrifier/pull/821))
 - Disable php-cs-fixer Yoda conditions
   ([#791](https://github.com/MyIntervals/emogrifier/issues/791),
   [#794](https://github.com/MyIntervals/emogrifier/pull/794))
