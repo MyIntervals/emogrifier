@@ -37,7 +37,7 @@
         "source": "https://github.com/MyIntervals/emogrifier"
     },
     "require": {
-        "php": "~7.0.0 || ~7.1.0 || ~7.2.0 || ~7.3.0",
+        "php": "~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4",
         "ext-dom": "*",
         "ext-libxml": "*",
         "symfony/css-selector": "^2.8 || ^3.0 || ^4.0 || ^5.0"
