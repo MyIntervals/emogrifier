@@ -34,6 +34,8 @@ class CssInlinerFactoryTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress RedundantCondition
      */
     public function createsInstanceFromHtmlString()
     {
@@ -43,6 +45,8 @@ class CssInlinerFactoryTest extends TestCase
 
     /**
      * @test
+     *
+     * @psalm-suppress RedundantCondition
      */
     public function createsInstanceFromDomDocument()
     {
