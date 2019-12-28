@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use DOMNode;
+use Masterminds\HTML5;
+
 /**
  * Base class for HTML processor that e.g., can remove, add or modify nodes or attributes.
  *
@@ -36,6 +39,11 @@ abstract class AbstractHtmlProcessor
      * @var \DOMDocument|null
      */
     protected $domDocument = null;
+
+    /**
+     * @var HTML5|null
+     */
+    protected $html5 = null;
 
     /**
      * @var \DOMXPath
@@ -121,6 +129,27 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Provides access to the internal HTML5 instance.
+     *
+     * @return HTML5|null
+     */
+    public function getHtml5(): HTML5
+    {
+        if ($this->domDocument === null) {
+            throw new \UnexpectedValueException(
+                (
+                    self::class .
+                    '::fromHtml() has not yet been called on ' .
+                    static::class
+                ),
+                1570472239
+            );
+        }
+
+        return $this->html5;
+    }
+
+    /**
      * @param \DOMDocument $domDocument
      */
     private function setDomDocument(\DOMDocument $domDocument): void
@@ -136,7 +165,7 @@ abstract class AbstractHtmlProcessor
      */
     public function render(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML();
+        $htmlWithPossibleErroneousClosingTags = $this->saveHTML();
 
         return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
     }
@@ -148,7 +177,7 @@ abstract class AbstractHtmlProcessor
      */
     public function renderBodyContent(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
+        $htmlWithPossibleErroneousClosingTags = $this->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
         return \preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
@@ -198,13 +227,19 @@ abstract class AbstractHtmlProcessor
      */
     private function createRawDomDocument(string $html): void
     {
-        $domDocument = new \DOMDocument();
-        $domDocument->strictErrorChecking = false;
-        $domDocument->formatOutput = true;
-        $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->prepareHtmlForDomConversion($html));
-        \libxml_clear_errors();
-        \libxml_use_internal_errors($libXmlState);
+        $html = $this->prepareHtmlForDomConversion($html);
+        if ($this->isHtml5($html)) {
+            $this->html5 = new HTML5(['disable_html_ns' => true]);
+            $domDocument = $this->html5->parse($html);
+        } else {
+            $domDocument = new \DOMDocument();
+            $domDocument->strictErrorChecking = false;
+            $domDocument->formatOutput = true;
+            $libXmlState = \libxml_use_internal_errors(true);
+            $domDocument->loadHTML($html);
+            \libxml_clear_errors();
+            \libxml_use_internal_errors($libXmlState);
+        }
 
         $this->setDomDocument($domDocument);
     }
@@ -220,7 +255,8 @@ abstract class AbstractHtmlProcessor
     private function prepareHtmlForDomConversion(string $html): string
     {
         $htmlWithSelfClosingSlashes = $this->ensurePhpUnrecognizedSelfClosingTagsAreXml($html);
-        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithSelfClosingSlashes);
+        $htmlWithRootElms = $this->addMissingRootElements($htmlWithSelfClosingSlashes);
+        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithRootElms);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
@@ -333,5 +369,52 @@ abstract class AbstractHtmlProcessor
             throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
         }
         $htmlElement->appendChild($this->getDomDocument()->createElement('body'));
+    }
+
+    /**
+     * masterminds/html5-php has some quirks where it doesn't handle the same as DOMDocument. This fixes those instances:
+     *  - content before html/body
+     *  - missing <head> or <body> elements
+     *
+     * @param  string $html
+     * @return string
+     */
+    private function addMissingRootElements(string $html)
+    {
+        $parser = new HtmlParser;
+        $parser->loadHtml($html);
+
+        return $parser->saveHtml();
+    }
+
+    /**
+     * Check if the document contains a HTML5 DOCTYPE.
+     *
+     * @param  string $html
+     * @return bool
+     */
+    private function isHtml5(string $html)
+    {
+        return strspn($html, " \t\r\n") === stripos($html, '<!doctype html>');
+    }
+
+    /**
+     * Dumps the internal document into a string using HTML formatting.
+     *
+     * @param  DOMNode $dom [optional] parameter to output a subset of the document.
+     * @return string the HTML, or false if an error occurred.
+     */
+    private function saveHTML($dom = null)
+    {
+        if (isset($this->html5)) {
+            if ($dom === null) {
+                $dom = $this->domDocument;
+            }
+
+            return $this->html5->saveHTML($dom);
+        }
+
+        // Fall back to DOMDocument.
+        return $this->getDomDocument()->saveHTML($dom);
     }
 }
