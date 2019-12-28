@@ -173,8 +173,8 @@ final class CssToAttributeConverterTest extends TestCase
             'span.float' => ['<span style="float: right;">Hi</span>'],
             'float: none' => ['<table style="float: none;"></table>'],
             'p.border-spacing' => ['<p style="border-spacing: 5px;">Hi</p>'],
-            'height: auto' => ['<img src="logo.png" alt="" style="height: auto;">'],
-            'width: auto' => ['<img src="logo.png" alt="" style="width: auto;">'],
+            'height: auto' => ['<img src="logo.png" alt style="height: auto;">'],
+            'width: auto' => ['<img src="logo.png" alt style="width: auto;">'],
         ];
     }
 
