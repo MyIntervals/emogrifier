@@ -72,15 +72,6 @@ script:
 - >
   if is_php_73; then
     echo;
-    echo "Running PHP_CodeSniffer";
-    composer ci:php:sniff;
-  else
-    echo "Skipping PHP_CodeSniffer (will only be run on PHP 7.3).";
-  fi;
-
-- >
-  if is_php_73; then
-    echo;
     echo "Running PHP-CS-Fixer";
     composer ci:php:fixer;
   else
