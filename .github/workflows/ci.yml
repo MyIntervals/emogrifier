@@ -1,0 +1,36 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+on:
+  - pull_request
+  - push
+
+name: CI
+
+jobs:
+  php-code-sniffer:
+    name: PHP Code Sniffer
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: "Cache dependencies installed with composer"
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-composer-
+
+      - name: Install Composer dependencies
+        run: composer install --no-progress
+
+      - name: Run PHP Code Sniffer
+        run: composer ci:php:sniff
