@@ -21,23 +21,23 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Move the code sniffing from Travis CI to GitHub actions
-  ([#832](https://github.com/MyIntervals/emogrifier/pull/830)
+  ([#832](https://github.com/MyIntervals/emogrifier/pull/832))
 - Upgrade to Symfony 5.0
-  ([#822](https://github.com/MyIntervals/emogrifier/pull/820)
+  ([#822](https://github.com/MyIntervals/emogrifier/pull/820))
 - Clean up the folder structure and autoloading configuration
   ([#529](https://github.com/MyIntervals/emogrifier/issues/529),
   [#785](https://github.com/MyIntervals/emogrifier/pull/785))
 - Use `self` as the return type for `fromHtml`
-  [#784](https://github.com/MyIntervals/emogrifier/pull/784))
+  ([#784](https://github.com/MyIntervals/emogrifier/pull/784))
 - Make use of PHP 7.0 language features
-  [#777](https://github.com/MyIntervals/emogrifier/pull/777))
+  ([#777](https://github.com/MyIntervals/emogrifier/pull/777))
 
 ### Deprecated
 - Support for PHP 7.0 will be removed in Emogrifier 5.0.
 
 ### Removed
 - Drop the `Emogrifier` class
-  [#774](https://github.com/MyIntervals/emogrifier/pull/774))
+  ([#774](https://github.com/MyIntervals/emogrifier/pull/774))
 - Drop support for PHP 5.6
   ([#773](https://github.com/MyIntervals/emogrifier/pull/773))
 
@@ -97,7 +97,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#380](https://github.com/MyIntervals/emogrifier/issues/380),
   [#724](https://github.com/MyIntervals/emogrifier/pull/724))
 - Check on Travis that PHP-CS-Fixer will not change anything
-  [#727](https://github.com/MyIntervals/emogrifier/pull/727))
+  ([#727](https://github.com/MyIntervals/emogrifier/pull/727))
 - Support `:not(…)` as an entire selector
   ([#469](https://github.com/MyIntervals/emogrifier/issues/469),
   [#725](https://github.com/MyIntervals/emogrifier/pull/725))
