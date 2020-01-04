@@ -54,15 +54,6 @@ script:
 - >
   if is_php_73; then
     echo;
-    echo "Running PHPMD";
-    composer ci:php:md;
-  else
-    echo "Skipping PHPMD (will only be run on PHP 7.3).";
-  fi;
-
-- >
-  if is_php_73; then
-    echo;
     echo "Running Psalm";
     composer ci:php:psalm;
   else
