@@ -41,7 +41,7 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @var HTML5|null
+     * @var HTML5
      */
     protected $html5 = null;
 
@@ -131,7 +131,7 @@ abstract class AbstractHtmlProcessor
     /**
      * Provides access to the internal HTML5 instance.
      *
-     * @return HTML5|null
+     * @return HTML5
      *
      * @throws \UnexpectedValueException
      */
