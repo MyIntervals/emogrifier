@@ -150,7 +150,6 @@ class HtmlParser
 
         // text node
         $this->addTo($this->previousKey ?? 'body', $node, true);
-        return;
     }
 
     /**
