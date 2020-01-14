@@ -131,7 +131,7 @@ class HtmlParser
                         return $this->tree['doctype'];
                     }
 
-                    // Don't overwrite if we've already got a doctype defintion.
+                    // Don't overwrite if we've already got a doctype definition.
                     return true;
 
                 case 'html':
