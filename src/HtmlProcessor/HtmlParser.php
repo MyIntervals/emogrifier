@@ -63,12 +63,12 @@ class HtmlParser
                     $tag .= $html[$i++];
                 }
 
-                if ($i < $len && $html[$i] == '>') {
+                if ($i < $len && (string)$html[$i] == '>') {
                     $tag .= $html[$i++];
 
                     // Copy any whitespace following the tag.
                     // Anything added here needs to be added to the rtrim in the nodeName function.
-                    while ($i < $len && \preg_match('/\s/', $html[$i])) {
+                    while ($i < $len && \preg_match('/\s/', (string)$html[$i])) {
                         $tag .= $html[$i++];
                     }
                 } else {
