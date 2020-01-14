@@ -132,6 +132,7 @@ abstract class AbstractHtmlProcessor
      * Provides access to the internal HTML5 instance.
      *
      * @return HTML5|null
+     *
      * @throws \UnexpectedValueException
      */
     public function getHtml5(): HTML5
@@ -379,6 +380,7 @@ abstract class AbstractHtmlProcessor
      *  - missing <head> or <body> elements
      *
      * @param  string $html
+     *
      * @return string
      */
     private function addMissingRootElements(string $html)
@@ -393,6 +395,7 @@ abstract class AbstractHtmlProcessor
      * Check if the document contains a HTML5 DOCTYPE.
      *
      * @param  string $html
+     *
      * @return bool
      */
     private function isHtml5(string $html)
@@ -404,6 +407,7 @@ abstract class AbstractHtmlProcessor
      * Dumps the internal document into a string using HTML formatting.
      *
      * @param  DOMNode $dom [optional] parameter to output a subset of the document.
+     *
      * @return string the HTML, or false if an error occurred.
      */
     private function saveHTML(DOMNode $dom = null)

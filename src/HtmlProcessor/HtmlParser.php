@@ -26,12 +26,12 @@ class HtmlParser
         'head'    => [
             'start'   => '<head>',
             'end'     => '</head>',
-            'content' => []
+            'content' => [],
         ],
         'body'    => [
             'start'   => '<body>',
             'end'     => '</body>',
-            'content' => []
+            'content' => [],
         ],
     ];
 
@@ -50,20 +50,21 @@ class HtmlParser
     public function loadHtml(string $html)
     {
         $i = 0;
-        while ($i < \strlen($html)) {
+        $len = \strlen($html);
+        while ($i < $len) {
             if ($html[$i] == '<') {
                 // Found a tag, get chars until the end of the tag.
                 $tag = '';
-                while ($i < \strlen($html) && $html[$i] != '>') {
+                while ($i < $len && $html[$i] != '>') {
                     $tag .= $html[$i++];
                 }
 
-                if ($i < \strlen($html) && $html[$i] == '>') {
+                if ($i < $len && $html[$i] == '>') {
                     $tag .= $html[$i++];
 
                     // Copy any whitespace following the tag.
                     // Anything added here needs to be added to the rtrim in the nodeName function.
-                    while ($i < \strlen($html) && \preg_match('/\s/', $html[$i])) {
+                    while ($i < $len && \preg_match('/\s/', $html[$i])) {
                         $tag .= $html[$i++];
                     }
                 } else {
@@ -116,6 +117,7 @@ class HtmlParser
      * Add a node into the tree for the correct parent.
      *
      * @param  string  $node
+     *
      * @return bool
      */
     protected function addToTree(string $node)
@@ -152,7 +154,8 @@ class HtmlParser
      *
      * @param  string  $key
      * @param  string  $node
-     * @param  bool  $setPrevious
+     * @param  bool    $setPrevious
+     *
      * @return bool
      */
     protected function addTo(string $key, string $node, bool $setPrevious = true)
@@ -179,6 +182,7 @@ class HtmlParser
      * Get the name of a node without </>
      *
      * @param  string  $node
+     *
      * @return string
      */
     protected function nodeName(string $node)
