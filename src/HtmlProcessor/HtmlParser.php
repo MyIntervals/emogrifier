@@ -46,25 +46,29 @@ class HtmlParser
      * Parse a HTML document.
      *
      * @param  string  $html
+     *
+     * @return void
+     *
+     * @psalm-suppress MixedOperand
      */
     public function loadHtml(string $html)
     {
         $i = 0;
         $len = \strlen($html);
         while ($i < $len) {
-            if ((string)$html[$i] == '<') {
+            if ($html[$i] == '<') {
                 // Found a tag, get chars until the end of the tag.
                 $tag = '';
-                while ($i < $len && (string)$html[$i] != '>') {
+                while ($i < $len && $html[$i] != '>') {
                     $tag .= $html[$i++];
                 }
 
-                if ($i < $len && (string)$html[$i] == '>') {
+                if ($i < $len && $html[$i] == '>') {
                     $tag .= $html[$i++];
 
                     // Copy any whitespace following the tag.
                     // Anything added here needs to be added to the rtrim in the nodeName function.
-                    while ($i < $len && \preg_match('/\s/', (string)$html[$i])) {
+                    while ($i < $len && \preg_match('/\s/', $html[$i])) {
                         $tag .= $html[$i++];
                     }
                 } else {
@@ -83,6 +87,10 @@ class HtmlParser
      * Format the document in a structured way (ensures root elements exists and moves scripts/css into <body>).
      *
      * @return string
+     *
+     * @psalm-suppress MixedArrayAccess
+     * @psalm-suppress MixedAssignment
+     * @psalm-suppress MixedOperand
      */
     public function saveHtml()
     {
@@ -90,27 +98,27 @@ class HtmlParser
         $buffer = '';
 
         // Add <!DOCTYPE> - this is optional.
-        $buffer .= (string)$this->tree['doctype'];
+        $buffer .= $this->tree['doctype'];
 
         // Add <html>
-        $buffer .= (string)$this->tree['html']['start'];
+        $buffer .= $this->tree['html']['start'];
 
         // Add head
-        $buffer .= (string)$this->tree['head']['start'];
-        foreach ((array)$this->tree['head']['content'] as $node) {
-            $buffer .= (string)$node;
+        $buffer .= $this->tree['head']['start'];
+        foreach ($this->tree['head']['content'] as $node) {
+            $buffer .= $node;
         }
-        $buffer .= (string)$this->tree['head']['end'];
+        $buffer .= $this->tree['head']['end'];
 
         // Add body
         $buffer .= $this->tree['body']['start'];
-        foreach ((array)$this->tree['body']['content'] as $node) {
-            $buffer .= (string)$node;
+        foreach ($this->tree['body']['content'] as $node) {
+            $buffer .= $node;
         }
-        $buffer .= (string)$this->tree['body']['end'];
+        $buffer .= $this->tree['body']['end'];
 
         // Close </html> tag
-        return $buffer . (string)$this->tree['html']['end'];
+        return $buffer . $this->tree['html']['end'];
     }
 
     /**
@@ -136,14 +144,17 @@ class HtmlParser
 
                 case 'html':
                     $this->addTo('html', $node, false);
+
                     return;
 
                 case 'head':
                     $this->addTo('head', $node, true);
+
                     return;
 
                 default:
                     $this->addTo($this->previousKey ?? 'body', $node, true);
+
                     return;
             }
         }
@@ -160,6 +171,8 @@ class HtmlParser
      * @param  bool    $setPrevious
      *
      * @return void
+     *
+     * @psalm-suppress MixedArrayAssignment
      */
     protected function addTo(string $key, string $node, bool $setPrevious)
     {
