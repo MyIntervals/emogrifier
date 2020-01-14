@@ -138,15 +138,15 @@ class HtmlParser
                     return $this->addTo('html', $node, false);
 
                 case 'head':
-                    return $this->addTo('head', $node);
+                    return $this->addTo('head', $node, true);
 
                 default:
-                    return $this->addTo($this->previousKey ?? 'body', $node);
+                    return $this->addTo($this->previousKey ?? 'body', $node, true);
             }
         }
 
         // text node
-        return $this->addTo($this->previousKey ?? 'body', $node);
+        return $this->addTo($this->previousKey ?? 'body', $node, true);
     }
 
     /**
@@ -158,7 +158,7 @@ class HtmlParser
      *
      * @return bool
      */
-    protected function addTo(string $key, string $node, bool $setPrevious = true)
+    protected function addTo(string $key, string $node, bool $setPrevious)
     {
         $previousKey = $key;
 
