@@ -131,7 +131,7 @@ abstract class AbstractHtmlProcessor
     /**
      * Provides access to the internal HTML5 instance.
      *
-     * @return HTML5|null
+     * @return HTML5
      *
      * @throws \UnexpectedValueException
      */
