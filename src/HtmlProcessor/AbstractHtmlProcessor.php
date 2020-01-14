@@ -41,7 +41,7 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @var HTML5
+     * @var HTML5|null
      */
     protected $html5 = null;
 
@@ -137,7 +137,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getHtml5(): HTML5
     {
-        if ($this->domDocument === null) {
+        if ($this->domDocument === null || $this->html5 === null) {
             throw new \UnexpectedValueException(
                 (
                     self::class .
