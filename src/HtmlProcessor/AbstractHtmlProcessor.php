@@ -132,6 +132,7 @@ abstract class AbstractHtmlProcessor
      * Provides access to the internal HTML5 instance.
      *
      * @return HTML5|null
+     * @throws \UnexpectedValueException
      */
     public function getHtml5(): HTML5
     {
@@ -372,7 +373,8 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * masterminds/html5-php has some quirks where it doesn't handle the same as DOMDocument. This fixes those instances:
+     * masterminds/html5-php has some quirks where it doesn't handle the same as DOMDocument.
+     * This fixes those instances:
      *  - content before html/body
      *  - missing <head> or <body> elements
      *
@@ -381,7 +383,7 @@ abstract class AbstractHtmlProcessor
      */
     private function addMissingRootElements(string $html)
     {
-        $parser = new HtmlParser;
+        $parser = new HtmlParser();
         $parser->loadHtml($html);
 
         return $parser->saveHtml();
@@ -395,7 +397,7 @@ abstract class AbstractHtmlProcessor
      */
     private function isHtml5(string $html)
     {
-        return strspn($html, " \t\r\n") === stripos($html, '<!doctype html>');
+        return \strspn($html, " \t\r\n") === \stripos($html, '<!doctype html>');
     }
 
     /**
@@ -404,7 +406,7 @@ abstract class AbstractHtmlProcessor
      * @param  DOMNode $dom [optional] parameter to output a subset of the document.
      * @return string the HTML, or false if an error occurred.
      */
-    private function saveHTML($dom = null)
+    private function saveHTML(DOMNode $dom = null)
     {
         if (isset($this->html5)) {
             if ($dom === null) {

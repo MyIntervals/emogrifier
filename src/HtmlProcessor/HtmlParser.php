@@ -19,18 +19,18 @@ class HtmlParser
     protected $tree = [
         'doctype' => '',
         'html'    => [
-            'start'   => "<html>",
-            'end'     => "</html>", // can't have attributes on closing html tags
+            'start'   => '<html>',
+            'end'     => '</html>',
             'content' => [],
         ],
         'head'    => [
-            'start'   => "<head>", // can't have attributes on head tag
-            'end'     => "</head>", // can't have attributes on closing head tag
+            'start'   => '<head>',
+            'end'     => '</head>',
             'content' => []
         ],
         'body'    => [
-            'start'   => "<body>",
-            'end'     => "</body>", // can't have attributes on closing body tag
+            'start'   => '<body>',
+            'end'     => '</body>',
             'content' => []
         ],
     ];
@@ -47,28 +47,28 @@ class HtmlParser
      *
      * @param  string  $html
      */
-    public function loadHtml($html)
+    public function loadHtml(string $html)
     {
         $i = 0;
-        while ($i < strlen($html)) {
-            if ($html[$i] == "<") {
+        while ($i < \strlen($html)) {
+            if ($html[$i] == '<') {
                 // Found a tag, get chars until the end of the tag.
-                $tag = "";
-                while ($i < strlen($html) && $html[$i] != ">") {
+                $tag = '';
+                while ($i < \strlen($html) && $html[$i] != '>') {
                     $tag .= $html[$i++];
                 }
 
-                if ($i < strlen($html) && $html[$i] == ">") {
+                if ($i < \strlen($html) && $html[$i] == '>') {
                     $tag .= $html[$i++];
 
                     // Copy any whitespace following the tag.
                     // Anything added here needs to be added to the rtrim in the nodeName function.
-                    while ($i < strlen($html) && preg_match('/\s/', $html[$i])) {
+                    while ($i < \strlen($html) && \preg_match('/\s/', $html[$i])) {
                         $tag .= $html[$i++];
                     }
                 } else {
                     // Missing closing tag?
-                    $tag .= ">";
+                    $tag .= '>';
                 }
 
                 $this->addToTree($tag);
@@ -118,22 +118,24 @@ class HtmlParser
      * @param  string  $node
      * @return bool
      */
-    protected function addToTree($node)
+    protected function addToTree(string $node)
     {
-        if ($node[0] == "<") {
-            switch (strtolower($this->nodeName($node))) {
-                case "!doctype":
+        if ($node[0] == '<') {
+            switch (\strtolower($this->nodeName($node))) {
+                case '!doctype':
                     if (empty($this->tree['doctype'])) {
-                        return $this->tree['doctype'] = $node;
+                        $this->tree['doctype'] = $node;
+
+                        return $this->tree['doctype'];
                     }
 
                     // Don't overwrite if we've already got a doctype defintion.
                     return true;
 
-                case "html":
+                case 'html':
                     return $this->addTo('html', $node, false);
 
-                case "head":
+                case 'head':
                     return $this->addTo('head', $node);
 
                 default:
@@ -153,13 +155,13 @@ class HtmlParser
      * @param  bool  $setPrevious
      * @return bool
      */
-    protected function addTo($key, $node, $setPrevious = true)
+    protected function addTo(string $key, string $node, bool $setPrevious = true)
     {
         $previousKey = $key;
 
-        if (stripos($node, "<$key") !== false) {
+        if (\stripos($node, '<' . $key) !== false) {
             $this->tree[$key]['start'] = $node;
-        } elseif (stristr($node, "/$key>")) {
+        } elseif (\stristr($node, '/' . $key . '>')) {
             $this->tree[$key]['end'] = $node;
             $previousKey = null;
         } else {
@@ -179,10 +181,10 @@ class HtmlParser
      * @param  string  $node
      * @return string
      */
-    protected function nodeName($node)
+    protected function nodeName(string $node)
     {
-        $name = preg_replace('/>\s*/', '', ltrim($node, "</"));
+        $name = \preg_replace('/>\s*/', '', \ltrim($node, '</'));
 
-        return explode(" ", $name)[0];
+        return \explode(' ', $name)[0];
     }
 }
