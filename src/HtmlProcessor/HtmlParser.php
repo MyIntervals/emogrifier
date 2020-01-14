@@ -52,19 +52,19 @@ class HtmlParser
         $i = 0;
         $len = \strlen($html);
         while ($i < $len) {
-            if ($html[$i] == '<') {
+            if ((string)$html[$i] == '<') {
                 // Found a tag, get chars until the end of the tag.
                 $tag = '';
-                while ($i < $len && $html[$i] != '>') {
+                while ($i < $len && (string)$html[$i] != '>') {
                     $tag .= $html[$i++];
                 }
 
-                if ($i < $len && $html[$i] == '>') {
+                if ($i < $len && (string)$html[$i] == '>') {
                     $tag .= $html[$i++];
 
                     // Copy any whitespace following the tag.
                     // Anything added here needs to be added to the rtrim in the nodeName function.
-                    while ($i < $len && \preg_match('/\s/', $html[$i])) {
+                    while ($i < $len && \preg_match('/\s/', (string)$html[$i])) {
                         $tag .= $html[$i++];
                     }
                 } else {
@@ -90,35 +90,35 @@ class HtmlParser
         $buffer = '';
 
         // Add <!DOCTYPE> - this is optional.
-        $buffer .= $this->tree['doctype'];
+        $buffer .= (string)$this->tree['doctype'];
 
         // Add <html>
-        $buffer .= $this->tree['html']['start'];
+        $buffer .= (string)$this->tree['html']['start'];
 
         // Add head
-        $buffer .= $this->tree['head']['start'];
-        foreach ($this->tree['head']['content'] as $node) {
-            $buffer .= $node;
+        $buffer .= (string)$this->tree['head']['start'];
+        foreach ((array)$this->tree['head']['content'] as $node) {
+            $buffer .= (string)$node;
         }
-        $buffer .= $this->tree['head']['end'];
+        $buffer .= (string)$this->tree['head']['end'];
 
         // Add body
         $buffer .= $this->tree['body']['start'];
-        foreach ($this->tree['body']['content'] as $node) {
-            $buffer .= $node;
+        foreach ((array)$this->tree['body']['content'] as $node) {
+            $buffer .= (string)$node;
         }
-        $buffer .= $this->tree['body']['end'];
+        $buffer .= (string)$this->tree['body']['end'];
 
         // Close </html> tag
-        return $buffer . $this->tree['html']['end'];
+        return $buffer . (string)$this->tree['html']['end'];
     }
 
     /**
      * Add a node into the tree for the correct parent.
      *
-     * @param  string  $node
+     * @param string  $node
      *
-     * @return bool
+     * @return void
      */
     protected function addToTree(string $node)
     {
@@ -128,25 +128,29 @@ class HtmlParser
                     if (empty($this->tree['doctype'])) {
                         $this->tree['doctype'] = $node;
 
-                        return $this->tree['doctype'];
+                        return;
                     }
 
                     // Don't overwrite if we've already got a doctype definition.
-                    return true;
+                    return;
 
                 case 'html':
-                    return $this->addTo('html', $node, false);
+                    $this->addTo('html', $node, false);
+                    return;
 
                 case 'head':
-                    return $this->addTo('head', $node, true);
+                    $this->addTo('head', $node, true);
+                    return;
 
                 default:
-                    return $this->addTo($this->previousKey ?? 'body', $node, true);
+                    $this->addTo($this->previousKey ?? 'body', $node, true);
+                    return;
             }
         }
 
         // text node
-        return $this->addTo($this->previousKey ?? 'body', $node, true);
+        $this->addTo($this->previousKey ?? 'body', $node, true);
+        return;
     }
 
     /**
@@ -156,7 +160,7 @@ class HtmlParser
      * @param  string  $node
      * @param  bool    $setPrevious
      *
-     * @return bool
+     * @return void
      */
     protected function addTo(string $key, string $node, bool $setPrevious)
     {
@@ -174,8 +178,6 @@ class HtmlParser
         if ($setPrevious) {
             $this->previousKey = $previousKey;
         }
-
-        return true;
     }
 
     /**
