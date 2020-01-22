@@ -21,7 +21,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v1
 
-      - name: "Cache dependencies installed with composer"
+      - name: Install PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
           path: ~/.composer/cache
