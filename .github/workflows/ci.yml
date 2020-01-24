@@ -16,6 +16,7 @@ jobs:
       matrix:
         command:
           - php:sniff
+          - php:md
         php-version:
           - 7.3
 
