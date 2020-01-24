@@ -7,13 +7,15 @@ on:
 name: CI
 
 jobs:
-  php-code-sniffer:
-    name: PHP Code Sniffer
+  static-analysis:
+    name: Static Analysis
 
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
+        command:
+          - php:sniff
         php-version:
           - 7.3
 
@@ -37,5 +39,5 @@ jobs:
       - name: Install Composer dependencies
         run: composer install --no-progress
 
-      - name: Run PHP Code Sniffer
-        run: composer ci:php:sniff
+      - name: Run Command
+        run: composer ci:${{ matrix.command }}
