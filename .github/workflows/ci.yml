@@ -15,8 +15,10 @@ jobs:
     strategy:
       matrix:
         command:
-          - php:sniff
+          - php:fixer
           - php:md
+          - php:psalm
+          - php:sniff
         php-version:
           - 7.3
 

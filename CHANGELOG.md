@@ -22,7 +22,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Changed
 - Move the code quality checks from Travis CI to GitHub actions
   ([#832](https://github.com/MyIntervals/emogrifier/pull/832),
-  [#834](https://github.com/MyIntervals/emogrifier/pull/834))
+  [#834](https://github.com/MyIntervals/emogrifier/pull/834),
+  [#838](https://github.com/MyIntervals/emogrifier/pull/838))
 - Upgrade to Symfony 5.0
   ([#822](https://github.com/MyIntervals/emogrifier/pull/820))
 - Clean up the folder structure and autoloading configuration
