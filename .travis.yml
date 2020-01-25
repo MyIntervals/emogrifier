@@ -32,11 +32,6 @@ install:
 
 script:
 - >
-  is_php_73() {
-    composer php:version | grep -q '^7\.3';
-  };
-
-- >
   echo;
   echo "Validating the composer.json";
   composer validate --no-check-all --no-check-lock --strict;
@@ -50,21 +45,3 @@ script:
   echo;
   echo "Running the unit tests";
   composer ci:tests:unit;
-
-- >
-  if is_php_73; then
-    echo;
-    echo "Running Psalm";
-    composer ci:php:psalm;
-  else
-    echo "Skipping Psalm (will only be run on PHP 7.3).";
-  fi;
-
-- >
-  if is_php_73; then
-    echo;
-    echo "Running PHP-CS-Fixer";
-    composer ci:php:fixer;
-  else
-    echo "Skipping PHP-CS-Fixer (will only be run on PHP 7.3).";
-  fi;
