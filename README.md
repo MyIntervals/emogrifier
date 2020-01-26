@@ -1,6 +1,7 @@
 # Emogrifier
 
 [![Build Status](https://travis-ci.org/MyIntervals/emogrifier.svg?branch=master)](https://travis-ci.org/MyIntervals/emogrifier)
+[![Build Status](https://github.com/MyIntervals/emogrifier/workflows/CI/badge.svg?branch=master)](https://github.com/MyIntervals/emogrifier/actions/)
 [![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.svg)](https://packagist.org/packages/pelago/emogrifier)
