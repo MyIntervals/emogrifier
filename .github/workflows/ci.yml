@@ -7,10 +7,34 @@ on:
 name: CI
 
 jobs:
+  composer-validate:
+    name: Composer Validate
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.3
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Composer Validate
+        run: composer validate --no-check-all --no-check-lock --strict
+
   static-analysis:
     name: Static Analysis
 
     runs-on: ubuntu-latest
+
+    needs: composer-validate
 
     strategy:
       matrix:

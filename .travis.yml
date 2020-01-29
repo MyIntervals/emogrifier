@@ -33,11 +33,6 @@ install:
 script:
 - >
   echo;
-  echo "Validating the composer.json";
-  composer validate --no-check-all --no-check-lock --strict;
-
-- >
-  echo;
   echo "Linting all PHP files";
   composer ci:php:lint;
 
