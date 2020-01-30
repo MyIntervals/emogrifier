@@ -33,10 +33,5 @@ install:
 script:
 - >
   echo;
-  echo "Linting all PHP files";
-  composer ci:php:lint;
-
-- >
-  echo;
   echo "Running the unit tests";
   composer ci:tests:unit;

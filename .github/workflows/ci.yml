@@ -7,6 +7,35 @@ on:
 name: CI
 
 jobs:
+  php-lint:
+    name: PHP Lint
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.0
+          - 7.1
+          - 7.2
+          - 7.3
+          - 7.4
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: PHP Lint
+        # Note: Unlike the "ci:php:lint" Composer script, we do not use the
+        # "parallel-lint" tool here. This allows us to lint the files without
+        # depending on any Composer packages.
+        run: find config src tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
+
   composer-validate:
     name: Composer Validate
 
@@ -34,7 +63,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
-    needs: composer-validate
+    needs: [php-lint, composer-validate]
 
     strategy:
       matrix:
