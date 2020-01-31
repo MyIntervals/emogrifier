@@ -20,6 +20,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- Switch the parallel linting to a maintained fork
+  ([#842](https://github.com/MyIntervals/emogrifier/pull/842))
 - Move continuous integration from Travis CI to GitHub actions
   ([#832](https://github.com/MyIntervals/emogrifier/pull/832),
   [#834](https://github.com/MyIntervals/emogrifier/pull/834),
