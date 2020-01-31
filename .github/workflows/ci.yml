@@ -68,10 +68,10 @@ jobs:
     strategy:
       matrix:
         command:
-          - php:fixer
-          - php:md
-          - php:psalm
-          - php:sniff
+          - fixer
+          - md
+          - psalm
+          - sniff
         php-version:
           - 7.3
 
@@ -96,4 +96,4 @@ jobs:
         run: composer install --no-progress
 
       - name: Run Command
-        run: composer ci:${{ matrix.command }}
+        run: composer ci:php:${{ matrix.command }}
