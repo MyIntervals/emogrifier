@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 
+use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
 use PHPUnit\Framework\TestCase;
@@ -656,5 +657,27 @@ class AbstractHtmlProcessorTest extends TestCase
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
+    }
+
+    /**
+     * @test
+     */
+    public function htmlWithoutHeadOrBodyElementsAndStylesCopiedToStyleBlocksIsProperlyInlined()
+    {
+        $testHTML = '    
+    <header>
+        Test
+    </header>
+    <h1 class="">
+        Newsletter Example
+    </h1>
+';
+
+        $subject = CssInliner::fromHtml($testHTML);
+        $subject->setDebug(false);
+        $css = 'h1 {color:red;} h1:hover {color:green;}';
+        $subject->inlineCss($css);
+
+        $this->addToAssertionCount(1);
     }
 }

@@ -194,6 +194,7 @@ abstract class AbstractHtmlProcessor
     private function createUnifiedDomDocument(string $html)
     {
         $this->createRawDomDocument($html);
+        $this->ensureExistenceOfHeadElement();
         $this->ensureExistenceOfBodyElement();
     }
 
@@ -301,6 +302,26 @@ abstract class AbstractHtmlProcessor
             '$0/',
             $html
         );
+    }
+
+    /**
+     * Checks that $this->domDocument has a HEAD element and adds it if it is missing.
+     *
+     * @return void
+     *
+     * @throws \UnexpectedValueException
+     */
+    private function ensureExistenceOfHeadElement()
+    {
+        if ($this->getDomDocument()->getElementsByTagName('head')->item(0) !== null) {
+            return;
+        }
+
+        $htmlElement = $this->getDomDocument()->getElementsByTagName('html')->item(0);
+        if ($htmlElement === null) {
+            throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
+        }
+        $htmlElement->appendChild($this->getDomDocument()->createElement('head'));
     }
 
     /**
