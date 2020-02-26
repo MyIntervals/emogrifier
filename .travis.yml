@@ -3,35 +3,11 @@ sudo: false
 language: php
 
 php:
-- "7.0"
-- "7.1"
-- "7.2"
 - "7.3"
-- "7.4"
-
-cache:
-  directories:
-  - vendor
-  - $HOME/.composer/cache
-
-env:
-  matrix:
-  - DEPENDENCIES="--prefer-lowest"
-  - DEPENDENCIES=""
 
 before_install:
 - phpenv config-rm xdebug.ini || echo "xdebug not available"
 
-install:
-- >
-  export IGNORE_PLATFORM_REQS="$(composer php:version | grep -q '^7\.[34]' && printf -- --ignore-platform-reqs)";
-  echo;
-  echo "Updating the dependencies";
-  composer update $IGNORE_PLATFORM_REQS --with-dependencies $DEPENDENCIES;
-  composer show;
-
 script:
 - >
-  echo;
-  echo "Running the unit tests";
-  composer ci:tests:unit;
+  echo "Nothing to do here anymore.";

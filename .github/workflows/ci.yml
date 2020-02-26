@@ -97,3 +97,51 @@ jobs:
 
       - name: Run Command
         run: composer ci:php:${{ matrix.command }}
+
+  unit-tests:
+    name: Unit tests
+
+    runs-on: ubuntu-latest
+
+    needs: [php-lint, composer-validate]
+
+    strategy:
+      matrix:
+        php-version:
+          - 7.0
+          - 7.1
+          - 7.2
+          - 7.3
+          - 7.4
+        dependencies:
+          - lowest
+          - highest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v1
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v1
+        with:
+          php-version: ${{ matrix.php-version }}
+          ini-values: xdebug.max_nesting_level=500
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v1
+        with:
+          path: ~/.composer/cache
+          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+
+      - name: Install Composer dependencies
+        run: |
+          if [[ "${{ matrix.dependencies }}" == 'lowest' ]]; then
+            DEPENDENCIES='--prefer-lowest';
+          fi;
+          composer update --no-progress "${DEPENDENCIES}";
+          composer show;
+
+      - name: Run Tests
+        run: composer ci:tests:unit
