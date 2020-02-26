@@ -239,7 +239,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property)
     {
         // only parse values in px and %, but not values like "auto"
-        if (!\preg_match('/^(\\d+)(\.(\\d+))?(px|%)$/', $value)) {
+        if (!\preg_match('/^(\\d+)(\\.(\\d+))?(px|%)$/', $value)) {
             return;
         }
 
