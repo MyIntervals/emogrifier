@@ -103,8 +103,10 @@ class CssToAttributeConverterTest extends TestCase
             'background => bgcolor' => ['<p style="background: red top;">Bonjour</p>', 'bgcolor="red"'],
             'width with px' => ['<p style="width: 100px;">Hi</p>', 'width="100"'],
             'width with %' => ['<p style="width: 50%;">Hi</p>', 'width="50%"'],
+            'width with decimal %' => ['<p style="width: 50.5%;">Hi</p>', 'width="50.5%"'],
             'height with px' => ['<p style="height: 100px;">Hi</p>', 'height="100"'],
             'height with %' => ['<p style="height: 50%;">Hi</p>', 'height="50%"'],
+            'height with decimal %' => ['<p style="height: 50.5%;">Hi</p>', 'height="50.5%"'],
             'img.margin: 0 auto (horizontal centering) => align=center' => [
                 '<img style="margin: 0 auto;">',
                 'align="center"',
