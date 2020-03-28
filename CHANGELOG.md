@@ -29,7 +29,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#839](https://github.com/MyIntervals/emogrifier/pull/839),
   [#840](https://github.com/MyIntervals/emogrifier/pull/840),
   [#841](https://github.com/MyIntervals/emogrifier/pull/841),
-  [#843](https://github.com/MyIntervals/emogrifier/pull/843))
+  [#843](https://github.com/MyIntervals/emogrifier/pull/843),
+  [#846](https://github.com/MyIntervals/emogrifier/pull/846))
 - Upgrade to Symfony 5.0
   ([#822](https://github.com/MyIntervals/emogrifier/pull/820))
 - Clean up the folder structure and autoloading configuration
