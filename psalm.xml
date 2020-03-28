@@ -10,7 +10,6 @@
     errorBaseline="./psalm.baseline.xml"
 >
     <projectFiles>
-        <directory name="config" />
         <directory name="src" />
         <directory name="tests" />
         <ignoreFiles>
