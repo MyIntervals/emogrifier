@@ -139,6 +139,8 @@ jobs:
         run: |
           if [[ "${{ matrix.dependencies }}" == 'lowest' ]]; then
             DEPENDENCIES='--prefer-lowest';
+          else
+            DEPENDENCIES='';
           fi;
           composer update --no-progress "${DEPENDENCIES}";
           composer show;
