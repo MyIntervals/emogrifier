@@ -44,7 +44,6 @@
     },
     "require-dev": {
         "grogy/php-parallel-lint": "^1.1.0",
-        "phpmd/phpmd": "^2.7.0",
         "phpunit/phpunit": "^6.5.14",
         "psalm/plugin-phpunit": "^0.5.8",
         "slevomat/coding-standard": "^4.0.0",
@@ -74,7 +73,7 @@
         "ci:php:lint": "parallel-lint config src tests",
         "ci:php:sniff": "phpcs config src tests",
         "ci:php:fixer": "./tools/php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
-        "ci:php:md": "phpmd src text config/phpmd.xml",
+        "ci:php:md": "./tools/phpmd src text config/phpmd.xml",
         "ci:php:psalm": "psalm --show-info=false",
         "ci:tests:unit": "phpunit tests/",
         "ci:tests:sof": "phpunit tests/ --stop-on-failure",
