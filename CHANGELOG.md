@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Move more development tools to Phive
+  ([#894](https://github.com/MyIntervals/emogrifier/pull/894))
 
 ### Changed
 - Upgrade to PHPUnit 7.5
