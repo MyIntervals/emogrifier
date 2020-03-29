@@ -268,11 +268,15 @@ abstract class AbstractHtmlProcessor
 
         // We are trying to insert the meta tag to the right spot in the DOM.
         // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
-        $hasHeadTag = \stripos($html, '<head') !== false;
+        $hasHeadTag = \preg_match('/<head[\\s>]/i', $html);
         $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = \preg_replace('/<head(.*?)>/i', '<head$1>' . static::CONTENT_TYPE_META_TAG, $html);
+            $reworkedHtml = \preg_replace(
+                '/<head(?=[\\s>])([^>]*+)>/i',
+                '<head$1>' . static::CONTENT_TYPE_META_TAG,
+                $html
+            );
         } elseif ($hasHtmlTag) {
             $reworkedHtml = \preg_replace(
                 '/<html(.*?)>/i',
