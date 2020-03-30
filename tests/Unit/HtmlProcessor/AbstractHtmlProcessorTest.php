@@ -175,7 +175,6 @@ class AbstractHtmlProcessorTest extends TestCase
             'doctype only' => ['<!DOCTYPE html>'],
             'body content only' => ['<p>Hello</p>'],
             'BODY element' => ['<body></body>'],
-            // #844
             'HEADER element' => ['<header></header>'],
             'META element (implicit HEAD)' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];

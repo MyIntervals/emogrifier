@@ -2253,8 +2253,6 @@ class CssInlinerTest extends TestCase
     }
 
     /**
-     * #844
-     *
      * @test
      */
     public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelectorForHtmlWithHeader()
