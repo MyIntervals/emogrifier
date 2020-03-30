@@ -2253,6 +2253,18 @@ class CssInlinerTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelectorForHtmlWithHeader()
+    {
+        $subject = $this->buildDebugSubject('<html><header><a>foo</a></header></html>');
+
+        $subject->inlineCss('a:hover { color: green; }');
+
+        self::assertContainsCss('<style type="text/css">a:hover { color: green; }</style>', $subject->render());
+    }
+
+    /**
      * @return string[][]
      */
     public function mediaTypesDataProvider(): array

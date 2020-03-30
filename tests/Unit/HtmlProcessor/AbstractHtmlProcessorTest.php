@@ -175,6 +175,8 @@ class AbstractHtmlProcessorTest extends TestCase
             'doctype only' => ['<!DOCTYPE html>'],
             'body content only' => ['<p>Hello</p>'],
             'BODY element' => ['<body></body>'],
+            'HEADER element' => ['<header></header>'],
+            'META element (implicit HEAD)' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -185,13 +187,57 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
-    public function addsMissingHeadTag(string $html)
+    public function addsMissingHeadTagOnlyOnce(string $html)
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
-        self::assertContains('<head>', $result);
+        $headTagCount = \substr_count($result, '<head>');
+        self::assertSame(1, $headTagCount);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function contentWithHeadTagDataProvider(): array
+    {
+        return [
+            'HEAD element' => ['<head></head>'],
+            'HEAD element, capitalized' => ['<HEAD></HEAD>'],
+            '(invalid) void HEAD element' => ['<head/>'],
+            'HEAD element with attribute' => ['<head lang="en"></head>'],
+            'HEAD element and HEADER element' => ['<head></head><header></header>'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider contentWithHeadTagDataProvider
+     */
+    public function notAddsSecondHeadTag(string $html)
+    {
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        $headTagCount = \preg_match_all('%<head[\\s/>]%', $result);
+        self::assertSame(1, $headTagCount);
+    }
+
+    /**
+     * @test
+     */
+    public function preservesHeadAttributes()
+    {
+        $subject = TestingHtmlProcessor::fromHtml('<head lang="en"></head>');
+
+        $result = $subject->render();
+
+        self::assertContains('<head lang="en">', $result);
     }
 
     /**
@@ -319,22 +365,51 @@ class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider contentWithoutHeadTagDataProvider
+     * @dataProvider contentWithHeadTagDataProvider
      */
-    public function addsMissingContentTypeMetaTag()
+    public function addsMissingContentTypeMetaTagOnlyOnce(string $html)
     {
-        $subject = TestingHtmlProcessor::fromHtml('<p>Hello</p>');
+        $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
-        self::assertContains('<meta http-equiv="Content-Type" content="text/html; charset=utf-8">', $result);
+        $numberOfContentTypeMetaTags = \substr_count(
+            $result,
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+        );
+        self::assertSame(1, $numberOfContentTypeMetaTags);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function htmlAroundContentTypeDataProvider(): array
+    {
+        return [
+            'HTML and HEAD element' => ['<html><head>', '</head></html>'],
+            'HTML and HEAD element, HTML end tag omitted' => ['<html><head>', '</head>'],
+            'HEAD element only' => ['<head>', '</head>'],
+            'HEAD element with attribute' => ['<head lang="en">', '</head>'],
+            'HTML, HEAD, and BODY with HEADER elements'
+                => ['<html><head>', '</head><body><header></header></body></html>'],
+        ];
     }
 
     /**
      * @test
+     *
+     * @param string $htmlBefore
+     * @param string $htmlAfter
+     *
+     * @dataProvider htmlAroundContentTypeDataProvider
      */
-    public function notAddsSecondContentTypeMetaTag()
+    public function notAddsSecondContentTypeMetaTag(string $htmlBefore, string $htmlAfter)
     {
-        $html = '<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>';
+        $html = $htmlBefore . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $htmlAfter;
         $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();

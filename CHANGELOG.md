@@ -57,6 +57,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#773](https://github.com/MyIntervals/emogrifier/pull/773))
 
 ### Fixed
+- Add missing `<head>` element when there's a `<header>` element
+  ([#844](https://github.com/MyIntervals/emogrifier/pull/844),
+  [#853](https://github.com/MyIntervals/emogrifier/pull/853))
 - Fix mapping width/height when decimal is used
   ([#845](https://github.com/MyIntervals/emogrifier/pull/845))
 - Actually use the specified PHP version on GitHub actions
