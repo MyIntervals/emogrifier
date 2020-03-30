@@ -211,21 +211,25 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Disables the parsing of inline styles.
      *
-     * @return void
+     * @return self fluent interface
      */
     public function disableInlineStyleAttributesParsing()
     {
         $this->isInlineStyleAttributesParsingEnabled = false;
+
+        return $this;
     }
 
     /**
      * Disables the parsing of <style> blocks.
      *
-     * @return void
+     * @return self fluent interface
      */
     public function disableStyleBlocksParsing()
     {
         $this->isStyleBlocksParsingEnabled = false;
+
+        return $this;
     }
 
     /**
@@ -233,11 +237,13 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $mediaName the media type name, e.g., "braille"
      *
-     * @return void
+     * @return self fluent interface
      */
     public function addAllowedMediaType(string $mediaName)
     {
         $this->allowedMediaTypes[$mediaName] = true;
+
+        return $this;
     }
 
     /**
@@ -245,13 +251,15 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $mediaName the tag name, e.g., "braille"
      *
-     * @return void
+     * @return self fluent interface
      */
     public function removeAllowedMediaType(string $mediaName)
     {
         if (isset($this->allowedMediaTypes[$mediaName])) {
             unset($this->allowedMediaTypes[$mediaName]);
         }
+
+        return $this;
     }
 
     /**
@@ -261,11 +269,13 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $selector the selector to exclude, e.g., ".editor"
      *
-     * @return void
+     * @return self fluent interface
      */
     public function addExcludedSelector(string $selector)
     {
         $this->excludedSelectors[$selector] = true;
+
+        return $this;
     }
 
     /**
@@ -273,13 +283,15 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $selector the selector to no longer exclude, e.g., ".editor"
      *
-     * @return void
+     * @return self fluent interface
      */
     public function removeExcludedSelector(string $selector)
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
         }
+
+        return $this;
     }
 
     /**
@@ -287,11 +299,13 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param bool $debug set to true to enable debug mode
      *
-     * @return void
+     * @return self fluent interface
      */
     public function setDebug(bool $debug)
     {
         $this->debug = $debug;
+
+        return $this;
     }
 
     /**

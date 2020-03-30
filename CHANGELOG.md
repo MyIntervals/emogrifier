@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Configuration setting methods now all return `$this` to allow chaining
+  ([#824](https://github.com/MyIntervals/emogrifier/pull/824),
+  [#854](https://github.com/MyIntervals/emogrifier/pull/854))
 - Add support for PHP 7.4
   ([#821](https://github.com/MyIntervals/emogrifier/pull/821))
 - Disable php-cs-fixer Yoda conditions
