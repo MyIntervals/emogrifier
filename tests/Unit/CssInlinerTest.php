@@ -603,7 +603,12 @@ class CssInlinerTest extends TestCase
                 'div:last-of-type { %1$s }',
                 '<div class="div-3" style="%1$s">',
             ],
-            // broken: only-of-type (https://github.com/symfony/symfony/issues/33773)
+            // broken: only-of-type without preceding type
+            'type & :only-of-type => only child' => ['span:only-of-type { %1$s }', '<span style="%1$s">'],
+            'type & :only-of-type => only of that type' => [
+                'div:only-of-type { %1$s }',
+                '<div class="div-3" style="%1$s">',
+            ],
             // broken: nth-of-type without preceding type
             'type & :nth-of-type(even) => 2nd of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
@@ -903,6 +908,7 @@ class CssInlinerTest extends TestCase
             'type & :first-of-type => not last of many' => ['p:first-of-type { %1$s }', '<p class="p-7">'],
             'type & :last-of-type => not 1st of many' => ['p:last-of-type { %1$s }', '<p class="p-1">'],
             'type & :last-of-type => not 2nd last of many' => ['p:last-of-type { %1$s }', '<p class="p-6">'],
+            'type & :only-of-type => not one of many' => ['p:only-of-type { %1$s }', '<p class="p-1">'],
             'type & :nth-of-type(even) => not 1st of many of type' => [
                 'p:nth-of-type(even) { %1$s }',
                 '<p class="p-1">',
@@ -2151,7 +2157,6 @@ class CssInlinerTest extends TestCase
         ];
         $datasetsWithUnsupportedStaticPseudoClasses = [
             ':any-link' => ['a:any-link { color: green; }'],
-            ':only-of-type' => ['a:only-of-type { color: green; }'],
             ':optional' => ['input:optional { color: green; }'],
             ':required' => ['input:required { color: green; }'],
         ];

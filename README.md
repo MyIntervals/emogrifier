@@ -320,6 +320,8 @@ Emogrifier currently supports the following
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
      (with a type)
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
+   * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
+     (with a type)
 
 The following selectors are not implemented yet:
 
@@ -337,7 +339,6 @@ The following selectors are not implemented yet:
      will nonetheless be preserved and copied to a `<style>` element in the 
      HTML – including (but not necessarily limited to) the following:
      * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
-     * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
      * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
      * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
      

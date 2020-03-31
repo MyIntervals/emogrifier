@@ -40,7 +40,7 @@
         "php": "~7.0 || ~7.1 || ~7.2 || ~7.3 || ~7.4",
         "ext-dom": "*",
         "ext-libxml": "*",
-        "symfony/css-selector": "^3.4 || ^4.3 || ^5.0"
+        "symfony/css-selector": "^3.4.32 || ^4.3.5 || ^5.0"
     },
     "require-dev": {
         "grogy/php-parallel-lint": "^1.1.0",
