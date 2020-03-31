@@ -165,7 +165,11 @@
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
     </RedundantConditionGivenDocblockType>
   </file>
+  <!-- NonStaticSelfCall, to be reviewed with #792 -->
   <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
+    <NonStaticSelfCall occurrences="1">
+      <code>self::assertSame($normalizedExpected, $normalizedActual, $message)</code>
+    </NonStaticSelfCall>
     <RedundantConditionGivenDocblockType occurrences="4">
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->
       <code>assertInstanceOf</code> <!-- retained as per discussion in #537 -->

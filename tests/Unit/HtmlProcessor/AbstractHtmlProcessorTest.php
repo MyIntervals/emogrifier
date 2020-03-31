@@ -79,7 +79,20 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function reformatsHtml()
+    public function renderPreservesBodyContentProvidedToFromHtml()
+    {
+        $innerHtml = '<p>Hello world!</p>';
+        $subject = TestingHtmlProcessor::fromHtml('<html>' . $innerHtml . '</html>');
+
+        $html = $subject->render();
+
+        self::assertContains($innerHtml, $html);
+    }
+
+    /**
+     * @test
+     */
+    public function renderPreservesOuterHtmlProvidedToFromHtml()
     {
         $rawHtml = '<!DOCTYPE HTML>' .
             '<html>' .
@@ -93,8 +106,9 @@ class AbstractHtmlProcessorTest extends TestCase
             "</html>\n";
 
         $subject = TestingHtmlProcessor::fromHtml($rawHtml);
+        $html = $subject->render();
 
-        self::assertSame($formattedHtml, $subject->render());
+        self::assertEqualsHtml($formattedHtml, $html);
     }
 
     /**
@@ -706,7 +720,7 @@ class AbstractHtmlProcessorTest extends TestCase
 
         $domDocument = $subject->getDomDocument();
 
-        self::assertSame($html, $domDocument->saveHTML());
+        self::assertEqualsHtml($html, $domDocument->saveHTML());
     }
 
     /**
@@ -731,5 +745,43 @@ class AbstractHtmlProcessorTest extends TestCase
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
+    }
+
+    /**
+     * Asserts that two HTML strings are equal, allowing for whitespace differences in the HTML element itself (but not
+     * its descendants) and after its closing tag.
+     *
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    private static function assertEqualsHtml(string $expected, string $actual, string $message = '')
+    {
+        $normalizedExpected = self::normalizeHtml($expected);
+        $normalizedActual = self::normalizeHtml($actual);
+
+        self::assertSame($normalizedExpected, $normalizedActual, $message);
+    }
+
+    /**
+     * Normalizes whitespace in the HTML element itself (but not its descendants) and after its closing tag, with a
+     * single newline inserted or replacing whitespace at positions where whitespace may occur but is superfluous.
+     *
+     * @param string $html
+     *
+     * @return string
+     */
+    private static function normalizeHtml(string $html)
+    {
+        return \preg_replace(
+            [
+                '%(<html(?=[\\s>])[^>]*+>)\\s*+(<head[\\s>])%',
+                '%(</head>)\\s*+(<body[\\s>])%',
+                '%(</body>)\\s*+(</html>)%',
+                '%(</html>)\\s*+($)%',
+            ],
+            "$1\n$2",
+            $html
+        );
     }
 }
