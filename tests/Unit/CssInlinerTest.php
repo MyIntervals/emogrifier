@@ -90,6 +90,18 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function setDebugProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->setDebug(false);
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
     public function inlineCssProvidesFluentInterface()
     {
         $subject = CssInliner::fromHtml('<html><p>Hello world!</p></html>');
@@ -1690,6 +1702,18 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function removeAllowedMediaTypeProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->removeAllowedMediaType('screen');
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
     public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()
     {
         $css = '@media screen { html { some-property: value; } }';
@@ -1699,6 +1723,18 @@ class CssInlinerTest extends TestCase
 
         $subject->inlineCss($css);
         self::assertNotContains('@media', $subject->render());
+    }
+
+    /**
+     * @test
+     */
+    public function addAllowedMediaTypeProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->addAllowedMediaType('braille');
+
+        self::assertSame($subject, $result);
     }
 
     /**
@@ -2337,6 +2373,18 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function disableStyleBlocksParsingProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->disableStyleBlocksParsing();
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
     public function inlineCssWhenDisabledNotAppliesCssFromStyleBlocks()
     {
         $styleAttributeValue = 'color: #ccc;';
@@ -2365,6 +2413,18 @@ class CssInlinerTest extends TestCase
         $subject->inlineCss();
 
         self::assertContains('<p style="' . $styleAttributeValue . '">', $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
+     */
+    public function disableInlineStyleAttributesParsingProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->disableInlineStyleAttributesParsing();
+
+        self::assertSame($subject, $result);
     }
 
     /**
@@ -2643,6 +2703,18 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function addExcludedSelectorProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->addExcludedSelector('p.x');
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
     public function addExcludedSelectorIgnoresMatchingElementsFrom()
     {
         $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
@@ -2692,6 +2764,18 @@ class CssInlinerTest extends TestCase
         $subject->inlineCss('p { margin: 0; } em { font-style: italic; } strong { font-weight: bold; }');
 
         self::assertContains($htmlSubtree, $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
+     */
+    public function removeExcludedSelectorProvidesFluentInterface()
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->removeExcludedSelector('p.x');
+
+        self::assertSame($subject, $result);
     }
 
     /**
