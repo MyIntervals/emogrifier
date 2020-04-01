@@ -771,7 +771,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @return string
      */
-    private static function normalizeHtml(string $html)
+    private static function normalizeHtmlElement(string $html): string
     {
         return \preg_replace(
             [
