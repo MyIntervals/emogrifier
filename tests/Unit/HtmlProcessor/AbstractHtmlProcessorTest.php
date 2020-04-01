@@ -757,8 +757,8 @@ class AbstractHtmlProcessorTest extends TestCase
      */
     private static function assertEqualsHtml(string $expected, string $actual, string $message = '')
     {
-        $normalizedExpected = self::normalizeHtml($expected);
-        $normalizedActual = self::normalizeHtml($actual);
+        $normalizedExpected = self::normalizeHtmlElement($expected);
+        $normalizedActual = self::normalizeHtmlElement($actual);
 
         self::assertSame($normalizedExpected, $normalizedActual, $message);
     }
