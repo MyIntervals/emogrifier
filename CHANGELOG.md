@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `:only-of-type` (with a type)
+  ([#849](https://github.com/MyIntervals/emogrifier/issues/849),
+  [#856](https://github.com/MyIntervals/emogrifier/pull/856))
 - Configuration setting methods now all return `$this` to allow chaining
   ([#824](https://github.com/MyIntervals/emogrifier/pull/824),
   [#854](https://github.com/MyIntervals/emogrifier/pull/854))
