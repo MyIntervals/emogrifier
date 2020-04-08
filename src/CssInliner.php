@@ -212,7 +212,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function disableInlineStyleAttributesParsing()
+    public function disableInlineStyleAttributesParsing(): self
     {
         $this->isInlineStyleAttributesParsingEnabled = false;
 
@@ -224,7 +224,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function disableStyleBlocksParsing()
+    public function disableStyleBlocksParsing(): self
     {
         $this->isStyleBlocksParsingEnabled = false;
 
@@ -238,7 +238,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function addAllowedMediaType(string $mediaName)
+    public function addAllowedMediaType(string $mediaName): self
     {
         $this->allowedMediaTypes[$mediaName] = true;
 
@@ -252,7 +252,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function removeAllowedMediaType(string $mediaName)
+    public function removeAllowedMediaType(string $mediaName): self
     {
         if (isset($this->allowedMediaTypes[$mediaName])) {
             unset($this->allowedMediaTypes[$mediaName]);
@@ -270,7 +270,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function addExcludedSelector(string $selector)
+    public function addExcludedSelector(string $selector): self
     {
         $this->excludedSelectors[$selector] = true;
 
@@ -284,7 +284,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function removeExcludedSelector(string $selector)
+    public function removeExcludedSelector(string $selector): self
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
@@ -300,7 +300,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      */
-    public function setDebug(bool $debug)
+    public function setDebug(bool $debug): self
     {
         $this->debug = $debug;
 
