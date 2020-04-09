@@ -28,6 +28,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- Upgrade to V2 of the PHP setup GitHub action
+  ([#861](https://github.com/MyIntervals/emogrifier/pull/861))
 - Move the development tools to Phive
   ([#850](https://github.com/MyIntervals/emogrifier/pull/850),
   [#851](https://github.com/MyIntervals/emogrifier/pull/851))
