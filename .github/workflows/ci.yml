@@ -26,7 +26,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
 
@@ -51,7 +51,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
 
@@ -80,7 +80,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
 
@@ -122,7 +122,7 @@ jobs:
         uses: actions/checkout@v1
 
       - name: Install PHP
-        uses: shivammathur/setup-php@v1
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
           ini-values: xdebug.max_nesting_level=500
