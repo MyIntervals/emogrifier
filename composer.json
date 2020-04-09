@@ -70,13 +70,13 @@
     "scripts": {
         "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "php:fix": "./tools/php-cs-fixer --config=config/php-cs-fixer.php fix config/ src/ tests/",
-        "ci:php:lint": "parallel-lint config src tests",
-        "ci:php:sniff": "phpcs config src tests",
+        "ci:php:lint": "vendor/bin/parallel-lint config src tests",
+        "ci:php:sniff": "vendor/bin/phpcs config src tests",
         "ci:php:fixer": "./tools/php-cs-fixer --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "./tools/phpmd src text config/phpmd.xml",
-        "ci:php:psalm": "psalm --show-info=false",
-        "ci:tests:unit": "phpunit tests/",
-        "ci:tests:sof": "phpunit tests/ --stop-on-failure",
+        "ci:php:psalm": "vendor/bin/psalm --show-info=false",
+        "ci:tests:unit": "vendor/bin/phpunit tests/",
+        "ci:tests:sof": "vendor/bin/phpunit tests/ --stop-on-failure",
         "ci:tests": [
             "@ci:tests:unit"
         ],

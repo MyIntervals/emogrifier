@@ -65,6 +65,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#773](https://github.com/MyIntervals/emogrifier/pull/773))
 
 ### Fixed
+- Make sure to use the Composer-installed development tools
+  ([#862](https://github.com/MyIntervals/emogrifier/pull/862))
 - Add missing `<head>` element when there's a `<header>` element
   ([#844](https://github.com/MyIntervals/emogrifier/pull/844),
   [#853](https://github.com/MyIntervals/emogrifier/pull/853))
