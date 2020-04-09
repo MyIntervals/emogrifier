@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Check for missing return type hint annotations in the code sniffs
+  ([#860](https://github.com/MyIntervals/emogrifier/pull/860))
 - Support `:only-of-type` (with a type)
   ([#849](https://github.com/MyIntervals/emogrifier/issues/849),
   [#856](https://github.com/MyIntervals/emogrifier/pull/856))
