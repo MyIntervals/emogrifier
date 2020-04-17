@@ -2,9 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier;
+namespace Pelago\Emogrifier\Factories;
 
 use DOMDocument;
+use Pelago\Emogrifier\CssInliner;
 
 /**
  * This class provides a factory for CssInliner that can be passed as a dependency
@@ -22,6 +23,8 @@ class CssInlinerFactory
      * @return CssInliner
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function createFromHtml(string $unprocessedHtml): CssInliner
     {
@@ -29,11 +32,13 @@ class CssInlinerFactory
     }
 
     /**
-     * Creates a new instance of CssInliner from a DomDocument
+     * Creates a new instance of CssInliner from a DOM document
      *
-     * @param DOMDocument $document
+     * @param \DOMDocument $document a DOM document returned by getDomDocument() of another instance
      *
      * @return CssInliner
+     *
+     * @SuppressWarnings(PHPMD.StaticAccess)
      */
     public function createFromDomDocument(DOMDocument $document): CssInliner
     {
