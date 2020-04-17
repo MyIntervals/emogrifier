@@ -7,7 +7,7 @@
     <!-- The commented-out rules will be enabled once the code does not generate any warnings anymore. -->
 
     <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
-    <!--<rule ref="rulesets/cleancode.xml/StaticAccess"/>-->
+    <rule ref="rulesets/cleancode.xml/StaticAccess"/>
 
     <rule ref="rulesets/codesize.xml/CyclomaticComplexity"/>
     <rule ref="rulesets/codesize.xml/NPathComplexity"/>
