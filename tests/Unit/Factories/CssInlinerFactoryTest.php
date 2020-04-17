@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Pelago\Emogrifer\Tests\Unit\Factories;
 
 use DOMDocument;
+use Pelago\Emogrifer\Tests\Unit\CssInlinerTest;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\Factories\CssInlinerFactory;
 use PHPUnit\Framework\TestCase;
-use Pelago\Emogrifer\Tests\Unit\CssInlinerTest;
 
 /**
  * Test case.
