@@ -28,6 +28,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#776](https://github.com/MyIntervals/emogrifier/pull/776))
 
 ### Changed
+- Normalize DOCTYPE declaration according to polyglot markup recommendation
+  ([#866](https://github.com/MyIntervals/emogrifier/pull/866))
 - Upgrade to V2 of the PHP setup GitHub action
   ([#861](https://github.com/MyIntervals/emogrifier/pull/861))
 - Move the development tools to Phive

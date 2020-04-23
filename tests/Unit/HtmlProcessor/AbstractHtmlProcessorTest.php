@@ -99,7 +99,7 @@ class AbstractHtmlProcessorTest extends TestCase
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
             '<body></body>' .
             '</html>';
-        $formattedHtml = "<!DOCTYPE HTML>\n" .
+        $formattedHtml = "<!DOCTYPE html>\n" .
             "<html>\n" .
             '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
             "<body></body>\n" .
@@ -375,6 +375,49 @@ class AbstractHtmlProcessorTest extends TestCase
         $result = $subject->render();
 
         self::assertContains($documentType, $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function normalizedDocumentTypeDataProvider(): array
+    {
+        return [
+            'HTML5, uppercase' => ['<!DOCTYPE HTML>', '<!DOCTYPE html>'],
+            'HTML5, lowercase' => ['<!doctype html>', '<!DOCTYPE html>'],
+            'HTML5, mixed case' => ['<!DocType Html>', '<!DOCTYPE html>'],
+            'HTML5, extra whitespace' => ['<!DOCTYPE  html  >', '<!DOCTYPE html>'],
+            'HTML 4 transitional, uppercase' => [
+                '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
+                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
+                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+            ],
+            'HTML 4 transitional, lowercase' => [
+                '<!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
+                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
+                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $documentType
+     * @param string $normalizedDocumentType
+     *
+     * @dataProvider normalizedDocumentTypeDataProvider
+     */
+    public function normalizesDocumentType(string $documentType, string $normalizedDocumentType)
+    {
+        $html = $documentType . '<html></html>';
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        self::assertContains($normalizedDocumentType, $result);
     }
 
     /**
