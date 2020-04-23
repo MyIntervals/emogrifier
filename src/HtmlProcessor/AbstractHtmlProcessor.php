@@ -234,7 +234,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Makes sure that the passed HTML has a document type.
+     * Makes sure that the passed HTML has a document type, with lowercase "html".
      *
      * @param string $html
      *
@@ -244,10 +244,28 @@ abstract class AbstractHtmlProcessor
     {
         $hasDocumentType = \stripos($html, '<!DOCTYPE') !== false;
         if ($hasDocumentType) {
-            return $html;
+            return $this->normalizeDocumentType($html);
         }
 
         return static::DEFAULT_DOCUMENT_TYPE . $html;
+    }
+
+    /**
+     * Makes sure the document type in the passed HTML has lowercase "html".
+     *
+     * @param string $html
+     *
+     * @return string HTML with normalized document type
+     */
+    private function normalizeDocumentType(string $html): string
+    {
+        // Limit to replacing the first occurrence: as an optimization; and in case an example exists as unescaped text.
+        return \preg_replace(
+            '/<!DOCTYPE\\s++html(?=[\\s>])/i',
+            '<!DOCTYPE html',
+            $html,
+            1
+        );
     }
 
     /**
