@@ -257,8 +257,7 @@ abstract class AbstractHtmlProcessor
     private function prepareHtmlForDomConversion(string $html): string
     {
         $htmlWithSelfClosingSlashes = $this->ensurePhpUnrecognizedSelfClosingTagsAreXml($html);
-        $htmlWithRootElms = $this->addMissingRootElements($htmlWithSelfClosingSlashes);
-        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithRootElms);
+        $htmlWithDocumentType = $this->ensureDocumentType($htmlWithSelfClosingSlashes);
 
         return $this->addContentTypeMetaTag($htmlWithDocumentType);
     }
@@ -374,31 +373,13 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * masterminds/html5-php has some quirks where it doesn't handle the same as DOMDocument.
-     * This fixes those instances:
-     *  - content before html/body
-     *  - missing <head> or <body> elements
-     *
-     * @param  string $html
-     *
-     * @return string
-     */
-    private function addMissingRootElements(string $html)
-    {
-        $parser = new HtmlParser();
-        $parser->loadHtml($html);
-
-        return $parser->saveHtml();
-    }
-
-    /**
      * Check if the document contains a HTML5 DOCTYPE.
      *
      * @param  string $html
      *
      * @return bool
      */
-    private function isHtml5(string $html)
+    private function isHtml5(string $html): bool
     {
         return \strspn($html, " \t\r\n") === \stripos($html, '<!doctype html>');
     }
@@ -410,7 +391,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return string the HTML, or false if an error occurred.
      */
-    private function saveHTML(DOMNode $dom = null)
+    private function saveHTML(DOMNode $dom = null): string
     {
         if (isset($this->html5)) {
             if ($dom === null) {
