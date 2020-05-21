@@ -103,10 +103,8 @@ final class CssToAttributeConverterTest extends TestCase
             'background => bgcolor' => ['<p style="background: red top;">Bonjour</p>', 'bgcolor="red"'],
             'width with px' => ['<p style="width: 100px;">Hi</p>', 'width="100"'],
             'width with %' => ['<p style="width: 50%;">Hi</p>', 'width="50%"'],
-            'width with decimal %' => ['<p style="width: 50.5%;">Hi</p>', 'width="50.5%"'],
             'height with px' => ['<p style="height: 100px;">Hi</p>', 'height="100"'],
             'height with %' => ['<p style="height: 50%;">Hi</p>', 'height="50%"'],
-            'height with decimal %' => ['<p style="height: 50.5%;">Hi</p>', 'height="50.5%"'],
             'img.margin: 0 auto (horizontal centering) => align=center' => [
                 '<img style="margin: 0 auto;">',
                 'align="center"',
@@ -173,8 +171,8 @@ final class CssToAttributeConverterTest extends TestCase
             'span.float' => ['<span style="float: right;">Hi</span>'],
             'float: none' => ['<table style="float: none;"></table>'],
             'p.border-spacing' => ['<p style="border-spacing: 5px;">Hi</p>'],
-            'height: auto' => ['<img src="logo.png" alt style="height: auto;">'],
-            'width: auto' => ['<img src="logo.png" alt style="width: auto;">'],
+            'height: auto' => ['<img src="logo.png" alt="" style="height: auto;">'],
+            'width: auto' => ['<img src="logo.png" alt="" style="width: auto;">'],
         ];
     }
 
