@@ -129,29 +129,6 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Provides access to the internal HTML5 instance.
-     *
-     * @return HTML5
-     *
-     * @throws \UnexpectedValueException
-     */
-    public function getHtml5(): HTML5
-    {
-        if ($this->domDocument === null || $this->html5 === null) {
-            throw new \UnexpectedValueException(
-                (
-                    self::class .
-                    '::fromHtml() has not yet been called on ' .
-                    static::class
-                ),
-                1570472239
-            );
-        }
-
-        return $this->html5;
-    }
-
-    /**
      * @param \DOMDocument $domDocument
      */
     private function setDomDocument(\DOMDocument $domDocument): void
