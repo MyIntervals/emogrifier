@@ -153,6 +153,241 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
+    public function provideHtmlWithOptionalTagsOmitted(): array
+    {
+        return [
+            'LI end tag ommission with LI element following' => [
+                '<ul><li> One <li> Two </li></ul>',
+                '<ul><li> One </li><li> Two </li></ul>',
+            ],
+            'LI end tag ommission at end of list' => [
+                '<ul><li> One </li><li> Two </ul>',
+                '<ul><li> One </li><li> Two </li></ul>',
+            ],
+            // broken: DT end tag ommission with DT element following
+            'DT end tag ommission with DD element following' => [
+                '<dl><dt> One </dt><dt> Two <dd> Buckle My Shoe </dd></dl>',
+                '<dl><dt> One </dt><dt> Two </dt><dd> Buckle My Shoe </dd></dl>',
+            ],
+            // broken: DD end tag ommission with DD element following
+            'DD end tag ommission with DT element following' => [
+                '<dl><dt> One </dt><dd> A </dd><dd> B <dt> Two </dt><dd> C </dd></dl>',
+                '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dd></dl>',
+            ],
+            'DD end tag ommission at end of list' => [
+                '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dl>',
+                '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dd></dl>',
+            ],
+            // broken: RT end tag ommission with RT element following
+            // broken: RT end tag ommission with RP element following
+            'RT end tag ommission at end of annotation' => [
+                '<ruby> 攻殻 <rt> こうかく </rt> 機動隊 <rt> きどうたい </ruby>',
+                '<ruby> 攻殻 <rt> こうかく </rt> 機動隊 <rt> きどうたい </rt></ruby>',
+            ],
+            // broken: RP end tag ommission with RT element following
+            // broken: RP end tag ommission with RP element following
+            'RP end tag ommission at end of annotation' => [
+                '<ruby> 明日 <rp> ( </rp><rt> Ashita </rt><rp> ) </ruby>',
+                '<ruby> 明日 <rp> ( </rp><rt> Ashita </rt><rp> ) </rp></ruby>',
+            ],
+            // broken: OPTGROUP end tag ommission with OPTGROUP element following
+            'OPTGROUP end tag ommission at end of list' => [
+                '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
+                    . '<optgroup><option> A </option><option> B </option></select>',
+                '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
+                    . '<optgroup><option> A </option><option> B </option></optgroup></select>',
+            ],
+            'OPTION end tag ommission with OPTION element following' => [
+                '<select><option> 1 <option> 2 </option></select>',
+                '<select><option> 1 </option><option> 2 </option></select>',
+            ],
+            // broken: OPTION end tag ommission with OPTGROUP element following
+            'OPTION end tag ommission at end of list' => [
+                '<select><option> 1 </option><option> 2 </select>',
+                '<select><option> 1 </option><option> 2 </option></select>',
+            ],
+            // broken: COLGROUP start tag omission
+            'COLGROUP end tag omission' => [
+                '<table><colgroup><col><tr><td></td></tr></table>',
+                '<table><colgroup><col></colgroup><tr><td></td></tr></table>',
+            ],
+            'CAPTION end tag omission' => [
+                '<table><caption> Caption <tr><td></td></tr></table>',
+                '<table><caption> Caption </caption><tr><td></td></tr></table>',
+            ],
+            'THEAD end tag omission with TBODY element following' => [
+                '<table><thead><tr><td></td></tr><tbody><tr><td></td></tr></tbody></table>',
+                '<table><thead><tr><td></td></tr></thead><tbody><tr><td></td></tr></tbody></table>',
+            ],
+            'THEAD end tag omission with TFOOT element following' => [
+                '<table><thead><tr><td></td></tr><tfoot><tr><td></td></tr></tfoot></table>',
+                '<table><thead><tr><td></td></tr></thead><tfoot><tr><td></td></tr></tfoot></table>',
+            ],
+            // broken: TBODY start tag omission
+            'TBODY end tag omission with TBODY element following' => [
+                '<table><tbody><tr><td></td></tr><tbody><tr><td></td></tr></tbody></table>',
+                '<table><tbody><tr><td></td></tr></tbody><tbody><tr><td></td></tr></tbody></table>',
+            ],
+            'TBODY end tag omission with TFOOT element following' => [
+                '<table><tbody><tr><td></td></tr><tfoot><tr><td></td></tr></tfoot></table>',
+                '<table><tbody><tr><td></td></tr></tbody><tfoot><tr><td></td></tr></tfoot></table>',
+            ],
+            'TR end tag omission with TR element following' => [
+                '<table><tr><td></td><tr><td></td></tr></table>',
+                '<table><tr><td></td></tr><tr><td></td></tr></table>',
+            ],
+            'TD end tag omission with TD element following' => [
+                '<table><tr><td><td></td></tr></table>',
+                '<table><tr><td></td><td></td></tr></table>',
+            ],
+            'TD end tag omission with TH element following' => [
+                '<table><tr><td><th></th></tr></table>',
+                '<table><tr><td></td><th></th></tr></table>',
+            ],
+            'TH end tag omission with TD element following' => [
+                '<table><tr><th><td></td></tr></table>',
+                '<table><tr><th></th><td></td></tr></table>',
+            ],
+            'TH end tag omission with TH element following' => [
+                '<table><tr><th><th></th></tr></table>',
+                '<table><tr><th></th><th></th></tr></table>',
+            ],
+            'P end tag omission with HR element following' => [
+                '<p> Hello <hr>',
+                '<p> Hello </p><hr>',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
+     *
+     * @param string $htmlWithOptionalTagsOmitted
+     * @param string $equivalentHtml
+     *
+     * @dataProvider provideHtmlWithOptionalTagsOmitted
+     */
+    public function insertsOptionallyOmittedTags(string $htmlWithOptionalTagsOmitted, string $equivalentHtml)
+    {
+        $subject = TestingHtmlProcessor::fromHtml('<body>' . $htmlWithOptionalTagsOmitted . '</body>');
+
+        $result = $subject->render();
+
+        self::assertContainsHtml('<body>' . $equivalentHtml . '</body>', $result);
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function providePSiblingTagName(): array
+    {
+        return [
+            ['address'],
+            // broken: article
+            // broken: aside
+            ['blockquote'],
+            // broken: details
+            ['div'],
+            ['dl'],
+            ['fieldset'],
+            // broken: figcaption
+            // broken: figure
+            // broken: footer
+            ['form'],
+            ['h1'],
+            ['h2'],
+            ['h3'],
+            ['h4'],
+            ['h5'],
+            ['h6'],
+            // broken: header
+            // broken: hgroup
+            // broken: main
+            ['menu'],
+            // broken: nav
+            ['ol'],
+            ['p'],
+            ['pre'],
+            // broken: section
+            ['table'],
+            ['ul'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
+     *
+     * @param string $siblingTagName
+     *
+     * @dataProvider providePSiblingTagName
+     */
+    public function insertsOptionallyOmittedClosingPTagBeforeSibling(string $siblingTagName)
+    {
+        $subject = TestingHtmlProcessor::fromHtml(
+            '<body><p> Hello <' . $siblingTagName . '></' . $siblingTagName . '></body>'
+        );
+
+        $result = $subject->render();
+
+        self::assertContainsHtml(
+            '<body><p> Hello </p><' . $siblingTagName . '></' . $siblingTagName . '></body>',
+            $result
+        );
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function providePParentTagName(): array
+    {
+        return [
+            ['address'],
+            ['article'],
+            ['aside'],
+            ['blockquote'],
+            ['div'],
+            ['fieldset'],
+            ['figure'],
+            ['footer'],
+            ['form'],
+            ['header'],
+            ['main'],
+            ['nav'],
+            ['section'],
+            ['template'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
+     *
+     * @param string $parentTagName
+     *
+     * @dataProvider providePParentTagName
+     */
+    public function insertsOptionallyOmittedClosingPTagAtEndOfParent(string $parentTagName)
+    {
+        $subject = TestingHtmlProcessor::fromHtml(
+            '<body><' . $parentTagName . '><p> Hello </' . $parentTagName . '><p> World </p></body>'
+        );
+
+        $result = $subject->render();
+
+        self::assertContainsHtml(
+            '<body><' . $parentTagName . '><p> Hello </p></' . $parentTagName . '><p> World </p></body>',
+            $result
+        );
+    }
+
+    /**
+     * @return string[][]
+     */
     public function contentWithoutHtmlTagDataProvider(): array
     {
         return [
@@ -789,6 +1024,28 @@ class AbstractHtmlProcessorTest extends TestCase
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
+    }
+
+    /**
+     * Asserts that an HTML haystack contains an HTML needle, allowing for additional newlines in the haystack that may
+     * have been inserted by the `formatOutput` option of `DOMDocument`.
+     *
+     * @param string $needle
+     * @param string $haystack
+     * @param string $message
+     */
+    private static function assertContainsHtml(string $needle, string $haystack, string $message = '')
+    {
+        $needleMatcher = \preg_quote($needle, '%');
+        $needleMatcherWithNewlines = \preg_replace(
+            '%\\\\<(?:body|ul|dl|optgroup|table|tr|hr'
+                . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
+                . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
+            '$0\\n?+',
+            $needleMatcher
+        );
+
+        self::assertRegExp('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
     }
 
     /**
