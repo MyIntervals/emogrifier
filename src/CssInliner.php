@@ -547,14 +547,16 @@ class CssInliner extends AbstractHtmlProcessor
 
         while (
             \preg_match(
-                '/(@font-face\\s[^}]++}\\s*+)/i',
+                '/(@font-face[^}]++}\\s*+)/i',
                 $possiblyModifiedCss,
                 $matches
             )
         ) {
             list($fullMatch, $atRuleAndFollowingWhitespace) = $matches;
 
-            $fontFaces .= $atRuleAndFollowingWhitespace;
+            if (stripos($fullMatch, 'font-family') !== false && stripos($fullMatch, 'src') !== false) {
+                $fontFaces .= $atRuleAndFollowingWhitespace;
+            }
 
             $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
         }
