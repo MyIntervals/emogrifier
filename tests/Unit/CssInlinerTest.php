@@ -3229,12 +3229,14 @@ class CssInlinerTest extends TestCase
             ],
             '2 @font-faces' => [
                 'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }' . "\n" . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }'
+                    . "\n" . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             '2 @font-faces, minified' => [
                 'before' => '',
-                '@font-face' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
+                '@font-face' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
+                    . '@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
                 'after' => '',
             ],
             '@font-face followed by matching inlinable rule' => [
