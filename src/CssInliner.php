@@ -554,7 +554,7 @@ class CssInliner extends AbstractHtmlProcessor
         ) {
             list($fullMatch, $atRuleAndFollowingWhitespace) = $matches;
 
-            if (stripos($fullMatch, 'font-family') !== false && stripos($fullMatch, 'src') !== false) {
+            if (\stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false) {
                 $fontFaces .= $atRuleAndFollowingWhitespace;
             }
 
