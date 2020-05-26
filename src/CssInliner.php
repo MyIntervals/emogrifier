@@ -172,13 +172,13 @@ class CssInliner extends AbstractHtmlProcessor
         $cssWithoutComments = $this->removeCssComments($combinedCss);
         list($cssWithoutCommentsCharsetOrImport, $cssImportRules)
             = $this->extractImportAndCharsetRules($cssWithoutComments);
-        list($cssWithoutCommentsCharsetOrImportAndFontFaces, $cssFontFaces)
-            = $this->extractFontFaces($cssWithoutCommentsCharsetOrImport);
+        list($cssWithoutCommentsCharsetImportOrFontFace, $cssFontFaces)
+            = $this->extractFontFaceRules($cssWithoutCommentsCharsetOrImport);
 
         $uninlinableCss = $cssImportRules . $cssFontFaces;
 
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetOrImportAndFontFaces);
+        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetImportOrFontFace);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
@@ -540,7 +540,7 @@ class CssInliner extends AbstractHtmlProcessor
      * it in the original CSS (so that either unminified or minified formatting is preserved); if there were no
      * `@font-face` rules, it will be an empty string.
      */
-    private function extractFontFaces(string $css): array
+    private function extractFontFaceRules(string $css): array
     {
         $possiblyModifiedCss = $css;
         $fontFaces = '';
