@@ -172,9 +172,13 @@ class CssInliner extends AbstractHtmlProcessor
         $cssWithoutComments = $this->removeCssComments($combinedCss);
         list($cssWithoutCommentsCharsetOrImport, $cssImportRules)
             = $this->extractImportAndCharsetRules($cssWithoutComments);
+        list($cssWithoutCommentsCharsetImportOrFontFace, $cssFontFaces)
+            = $this->extractFontFaceRules($cssWithoutCommentsCharsetOrImport);
+
+        $uninlinableCss = $cssImportRules . $cssFontFaces;
 
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetOrImport);
+        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetImportOrFontFace);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
@@ -202,7 +206,7 @@ class CssInliner extends AbstractHtmlProcessor
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
-        $this->copyUninlinableCssToStyleNode($cssImportRules);
+        $this->copyUninlinableCssToStyleNode($uninlinableCss);
 
         return $this;
     }
@@ -523,6 +527,41 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         return [$possiblyModifiedCss, $importRules];
+    }
+
+    /**
+     * Extracts `@font-face` rules from the supplied CSS.  Note that `@font-face` rules can be placed anywhere in your
+     * CSS and are not case sensitive.
+     *
+     * @param string $css CSS with comments, import and charset removed
+     *
+     * @return string[] The first element is the CSS with the valid `@font-face` rules removed.  The second
+     * element contains a concatenation of the valid `@font-face` rules, each followed by whatever whitespace followed
+     * it in the original CSS (so that either unminified or minified formatting is preserved); if there were no
+     * `@font-face` rules, it will be an empty string.
+     */
+    private function extractFontFaceRules(string $css): array
+    {
+        $possiblyModifiedCss = $css;
+        $fontFaces = '';
+
+        while (
+            \preg_match(
+                '/(@font-face[^}]++}\\s*+)/i',
+                $possiblyModifiedCss,
+                $matches
+            )
+        ) {
+            list($fullMatch, $atRuleAndFollowingWhitespace) = $matches;
+
+            if (\stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false) {
+                $fontFaces .= $atRuleAndFollowingWhitespace;
+            }
+
+            $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
+        }
+
+        return [$possiblyModifiedCss, $fontFaces];
     }
 
     /**
@@ -1070,16 +1109,16 @@ class CssInliner extends AbstractHtmlProcessor
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
      *
-     * @param string $cssImportRules This may contain any `@import` rules that should precede the CSS placed in the
-     *        `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>` element will be
-     *        created containing just `$cssImportRules`.  `$cssImportRules` may be an empty string; if it is, and there
-     *        are no unlinlinable CSS rules, an empty `<style>` element will not be created.
+     * @param string $uninlinableCss This may contain any `@import` or `@font-face` rules that should precede the CSS
+     *        placed in the `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>`
+     *        element will be created containing just `$uninlinableCss`.  `$uninlinableCss` may be an empty string;
+     *        if it is, and there are no unlinlinable CSS rules, an empty `<style>` element will not be created.
      *
      * @return void
      */
-    private function copyUninlinableCssToStyleNode(string $cssImportRules)
+    private function copyUninlinableCssToStyleNode(string $uninlinableCss)
     {
-        $css = $cssImportRules;
+        $css = $uninlinableCss;
 
         // avoid including unneeded class dependency if there are no rules
         if ($this->matchingUninlinableCssRules !== []) {

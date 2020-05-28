@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Extract and inject `@font-face` rules into head
+  ([#870](https://github.com/MyIntervals/emogrifier/pull/870))
 - Test tag omission in conformant supplied HTML
   ([#868](https://github.com/MyIntervals/emogrifier/pull/868))
 - Check for missing return type hint annotations in the code sniffs

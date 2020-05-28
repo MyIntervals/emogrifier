@@ -3207,6 +3207,121 @@ class CssInlinerTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideValidFontFaceRules(): array
+    {
+        return [
+            'single @font-face' => [
+                'before' => '',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            'uppercase @FONT-FACE' => [
+                'before' => '',
+                '@font-face' => '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            'mixed case @FoNt-FaCe' => [
+                'before' => '',
+                '@font-face' => '@FoNt-FaCe { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            '2 @font-faces' => [
+                'before' => '',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }'
+                    . "\n" . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            '2 @font-faces, minified' => [
+                'before' => '',
+                '@font-face' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
+                    . '@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
+                'after' => '',
+            ],
+            '@font-face followed by matching inlinable rule' => [
+                'before' => '',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => "\n" . 'p { color: green; }',
+            ],
+            '@font-face followed by matching uninlinable rule' => [
+                'before' => '',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => "\n" . 'p:hover { color: green; }',
+            ],
+            '@font-face followed by matching @media rule' => [
+                'before' => '',
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
+            ],
+            '@font-face preceded by matching inlinable rule' => [
+                'before' => "p { color: green; }\n",
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            '@font-face preceded by matching uninlinable rule' => [
+                'before' => "p:hover { color: green; }\n",
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+            '@font-face preceded by matching @media rule' => [
+                'before' => "@media (max-width: 640px) { p { color: green; } }\n",
+                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'after' => '',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssBefore
+     * @param string $cssFontFaces
+     * @param string $cssAfter
+     *
+     * @dataProvider provideValidFontFaceRules
+     */
+    public function inlineCssPreservesValidFontFaceRules(string $cssBefore, string $cssFontFaces, string $cssAfter)
+    {
+        $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
+
+        $subject->inlineCss($cssBefore . $cssFontFaces . $cssAfter);
+
+        self::assertContains($cssFontFaces, $subject->render());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function provideInvalidFontFaceRules(): array
+    {
+        return [
+            '@font-face without font-family descriptor' => [
+                '@font-face { src: url("/foo-sans.woff2") format("woff2"); }',
+            ],
+            '@font-face without src descriptor' => [
+                '@font-face { font-family: "Foo Sans"; }',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideInvalidFontFaceRules
+     */
+    public function inlineCssRemovesInvalidFontFaceRules(string $css)
+    {
+        $subject = $this->buildDebugSubject('<html></html>');
+
+        $subject->inlineCss($css);
+
+        self::assertNotContains('@font-face', $subject->render());
+    }
+
+    /**
      * @test
      */
     public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled()
