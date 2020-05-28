@@ -3255,17 +3255,17 @@ class CssInlinerTest extends TestCase
                 'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
             ],
             '@font-face preceded by matching inlinable rule' => [
-                'before' => 'p { color: green; }' . "\n",
+                'before' => "p { color: green; }\n",
                 '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             '@font-face preceded by matching uninlinable rule' => [
-                'before' => 'p:hover { color: green; }' . "\n",
+                'before' => "p:hover { color: green; }\n",
                 '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             '@font-face preceded by matching @media rule' => [
-                'before' => '@media (max-width: 640px) { p { color: green; } }' . "\n",
+                'before' => "@media (max-width: 640px) { p { color: green; } }\n",
                 '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
