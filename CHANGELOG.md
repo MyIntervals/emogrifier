@@ -6,6 +6,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+- Support for PHP 7.1 will be removed in Emogrifier 6.0.
+
+### Removed
+
+### Fixed
+
+## 4.0.0
+
+### Added
 - Extract and inject `@font-face` rules into head
   ([#870](https://github.com/MyIntervals/emogrifier/pull/870))
 - Test tag omission in conformant supplied HTML
