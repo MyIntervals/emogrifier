@@ -308,33 +308,35 @@ Emogrifier currently supports the following
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
      (with a type, e.g. `p:first-of-type` but not `*:first-of-type` which will
-     behave as `*:first-child`)
+     currently be treated as `*:not(*)`)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     (with a type)
+     (with a type &ndash; without a type, it will be treated as `:not(*)`)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
    * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
    * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     (with a type)
+     (with a type &ndash; without a type, it will be treated as `:not(*)`)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
-     (with a type)
+     (with a type &ndash; without a type, it will be applied as if `:nth-child`)
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
    * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     (with a type)
+     (with a type &ndash; without a type, it will be applied as if `:only-child`)
 
 The following selectors are not implemented yet:
 
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
  * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
-     without a type (will behave as `:first-child`)
+     without a type (declarations discarded)
    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     without a type (will behave as `:last-child`)
+     without a type (declarations discarded)
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     without a type (will behave as `:nth-last-child()`)
+     without a type (declarations discarded)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
      without a type (will behave as `:nth-child()`)
+   * [only-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
+     without a type (will behave as `:only-child()`)
    * any pseudo-classes not listed above as supported – rules involving them
      will nonetheless be preserved and copied to a `<style>` element in the 
      HTML – including (but not necessarily limited to) the following:

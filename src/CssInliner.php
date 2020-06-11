@@ -7,7 +7,7 @@ namespace Pelago\Emogrifier;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Utilities\CssConcatenator;
 use Symfony\Component\CssSelector\CssSelectorConverter;
-use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
+use Symfony\Component\CssSelector\Exception\ParseException;
 
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
@@ -153,7 +153,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return self fluent interface
      *
-     * @throws SyntaxErrorException
+     * @throws ParseException
      */
     public function inlineCss(string $css = ''): self
     {
@@ -183,7 +183,7 @@ class CssInliner extends AbstractHtmlProcessor
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
                 $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
-            } catch (SyntaxErrorException $e) {
+            } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
@@ -569,7 +569,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return \DOMElement[]
      *
-     * @throws SyntaxErrorException
+     * @throws ParseException
      */
     private function getNodesToExclude(): array
     {
@@ -577,7 +577,7 @@ class CssInliner extends AbstractHtmlProcessor
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
                 $matchingNodes = $this->xPath->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
-            } catch (SyntaxErrorException $e) {
+            } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
@@ -1018,7 +1018,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return bool
      *
-     * @throws SyntaxErrorException
+     * @throws ParseException
      */
     private function existsMatchForSelectorInCssRule(array $cssRule): bool
     {
@@ -1038,13 +1038,13 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return bool
      *
-     * @throws SyntaxErrorException
+     * @throws ParseException
      */
     private function existsMatchForCssSelector(string $cssSelector): bool
     {
         try {
             $nodesMatchingSelector = $this->xPath->query($this->getCssSelectorConverter()->toXPath($cssSelector));
-        } catch (SyntaxErrorException $e) {
+        } catch (ParseException $e) {
             if ($this->debug) {
                 throw $e;
             }

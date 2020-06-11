@@ -73,6 +73,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#773](https://github.com/MyIntervals/emogrifier/pull/773))
 
 ### Fixed
+- Allow `:last-of-type` etc. without type, without causing exception
+  ([#875](https://github.com/MyIntervals/emogrifier/pull/875))
 - Make sure to use the Composer-installed development tools
   ([#862](https://github.com/MyIntervals/emogrifier/pull/862),
   [#865](https://github.com/MyIntervals/emogrifier/pull/865))
