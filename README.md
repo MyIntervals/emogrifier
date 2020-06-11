@@ -321,7 +321,8 @@ Emogrifier currently supports the following
      (with a type &ndash; without a type, it will be applied as if `:nth-child`)
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
    * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     (with a type &ndash; without a type, it will be applied as if `:only-child`)
+     (with a type &ndash; without a type, it will be applied as if `:only-child`
+     or `:not(*)`, depending on version constraints for `symfony/css-selector`)
 
 The following selectors are not implemented yet:
 
@@ -336,7 +337,7 @@ The following selectors are not implemented yet:
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
      without a type (will behave as `:nth-child()`)
    * [only-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     without a type (will behave as `:only-child()`)
+     without a type (will behave as `:only-child()` or `:not(*)`)
    * any pseudo-classes not listed above as supported – rules involving them
      will nonetheless be preserved and copied to a `<style>` element in the 
      HTML – including (but not necessarily limited to) the following:

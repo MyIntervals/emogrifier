@@ -3125,11 +3125,49 @@ class CssInlinerTest extends TestCase
     /**
      * @return string[][]
      */
+    public function provideCssRulesWithPossiblyIncorrectlyImplementedSelectorCombination(): array
+    {
+        return [
+            ':only-of-type without type' => [':only-of-type { color: red; }'],
+        ];
+    }
+
+    /**
+     * This test enstablishes the current expected/observed behaviour with currently supported versions of
+     * `symfony/css-selector` for static pseudo-classes which are only partially supported.
+     *
+     * The handling of these selectors should be revisited - rules with unsupported combinations should be copied to a
+     * <style> element so that they can at least be applied correctly by fully-supporting email clients.  It is also
+     * possible that (before then) future changes to Symfony may break this test, in which case the documentation would
+     * need updating and the tests adjusting.
+     *
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideCssRulesWithPossiblyIncorrectlyImplementedSelectorCombination
+     */
+    public function inlineCssNotInDebugModeMayDiscardRulesWithPossiblyIncorrectlyImplementedSelectorCombination(
+        string $css
+    ) {
+        $subject = CssInliner::fromHtml('<html><p>Hello</p><p>World</p></html>');
+        $subject->setDebug(false);
+
+        $subject->inlineCss($css);
+
+        $result = $subject->render();
+        self::assertNotContainsCss($css, $result);
+        // The declaration may or may not be haphazardly applied depending on `symofony/css-selector` version.
+        // Nothing more can be asserted that would always be true for the full range of versions supported.
+    }
+
+    /**
+     * @return string[][]
+     */
     public function provideCssRulesWithIncorrectlyImplementedSelectorCombination(): array
     {
         return [
             ':nth-of-type without type' => [':nth-of-type(2n) { color: red; }'],
-            ':only-of-type without type' => [':only-of-type { color: red; }'],
         ];
     }
 
