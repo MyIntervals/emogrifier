@@ -17,6 +17,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Add `.0` version suffixes to PHP version requirements
+  ([#881](https://github.com/MyIntervals/emogrifier/pull/881))
 
 ## 4.0.0
 
