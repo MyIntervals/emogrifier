@@ -6,6 +6,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+- Support for PHP 7.1 will be removed in Emogrifier 6.0.
+
+### Removed
+
+### Fixed
+
+## 4.0.0
+
+### Added
 - Extract and inject `@font-face` rules into head
   ([#870](https://github.com/MyIntervals/emogrifier/pull/870))
 - Test tag omission in conformant supplied HTML
@@ -18,8 +31,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Configuration setting methods now all return `$this` to allow chaining
   ([#824](https://github.com/MyIntervals/emogrifier/pull/824),
   [#854](https://github.com/MyIntervals/emogrifier/pull/854))
-- Add support for PHP 7.4
-  ([#821](https://github.com/MyIntervals/emogrifier/pull/821))
 - Disable php-cs-fixer Yoda conditions
   ([#791](https://github.com/MyIntervals/emogrifier/issues/791),
   [#794](https://github.com/MyIntervals/emogrifier/pull/794))
@@ -51,8 +62,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#843](https://github.com/MyIntervals/emogrifier/pull/843),
   [#846](https://github.com/MyIntervals/emogrifier/pull/846),
   [#849](https://github.com/MyIntervals/emogrifier/pull/849))
-- Upgrade to Symfony 5.0
-  ([#822](https://github.com/MyIntervals/emogrifier/pull/820))
 - Clean up the folder structure and autoloading configuration
   ([#529](https://github.com/MyIntervals/emogrifier/issues/529),
   [#785](https://github.com/MyIntervals/emogrifier/pull/785))
@@ -88,6 +97,17 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support `ci:php:lint` on Windows
   ([#740](https://github.com/MyIntervals/emogrifier/issues/740),
   [#780](https://github.com/MyIntervals/emogrifier/pull/780))
+
+## 3.1.0
+
+### Added
+- Add support for PHP 7.4
+  ([#821](https://github.com/MyIntervals/emogrifier/pull/821),
+  [#829](https://github.com/MyIntervals/emogrifier/pull/829))
+
+### Changed
+- Upgrade to Symfony 5.0
+  ([#820](https://github.com/MyIntervals/emogrifier/pull/820))
 
 ## 3.0.0
 
