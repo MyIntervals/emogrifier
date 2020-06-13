@@ -90,7 +90,7 @@ final class HtmlPrunerTest extends TestCase
 
         $subject->removeElementsWithDisplayNone();
 
-        self::assertNotContains('<div', $subject->renderBodyContent());
+        self::assertStringNotContainsString('<div', $subject->renderBodyContent());
     }
 
     /**
@@ -121,7 +121,7 @@ final class HtmlPrunerTest extends TestCase
 
         $subject->removeElementsWithDisplayNone();
 
-        self::assertContains('<div', $subject->renderBodyContent());
+        self::assertStringContainsString('<div', $subject->renderBodyContent());
     }
 
     /**
@@ -162,7 +162,7 @@ final class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        self::assertContains($html, $subject->renderBodyContent());
+        self::assertStringContainsString($html, $subject->renderBodyContent());
     }
 
     /**
@@ -229,7 +229,7 @@ final class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        self::assertNotContains('class', $subject->renderBodyContent());
+        self::assertStringNotContainsString('class', $subject->renderBodyContent());
     }
 
     /**
@@ -603,7 +603,7 @@ final class HtmlPrunerTest extends TestCase
     private static function assertContainsNone(array $needles, string $haystack): void
     {
         foreach ($needles as $needle) {
-            self::assertNotContains($needle, $haystack);
+            self::assertStringNotContainsString($needle, $haystack);
         }
     }
 
@@ -618,7 +618,7 @@ final class HtmlPrunerTest extends TestCase
     private static function assertContainsAll(array $needles, string $haystack): void
     {
         foreach ($needles as $needle) {
-            self::assertContains($needle, $haystack);
+            self::assertStringContainsString($needle, $haystack);
         }
     }
 

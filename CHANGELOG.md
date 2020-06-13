@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Upgrade to PHPUnit 7.5
+  ([#888](https://github.com/MyIntervals/emogrifier/pull/888))
 - Enforce constant visibility
   ([#892](https://github.com/MyIntervals/emogrifier/pull/892))
 - Rename the PHPCS configuration file

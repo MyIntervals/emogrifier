@@ -73,7 +73,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $html = $subject->render();
 
-        self::assertContains($innerHtml, $html);
+        self::assertStringContainsString($innerHtml, $html);
     }
 
     /**
@@ -86,7 +86,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $html = $subject->render();
 
-        self::assertContains($innerHtml, $html);
+        self::assertStringContainsString($innerHtml, $html);
     }
 
     /**
@@ -147,7 +147,7 @@ final class AbstractHtmlProcessorTest extends TestCase
         $subject = TestingHtmlProcessor::fromHtml($input);
         $result = $subject->render();
 
-        self::assertContains($expectedHtml, $result);
+        self::assertStringContainsString($expectedHtml, $result);
     }
 
     /**
@@ -412,7 +412,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<html>', $result);
+        self::assertStringContainsString('<html>', $result);
     }
 
     /**
@@ -486,7 +486,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<head lang="en">', $result);
+        self::assertStringContainsString('<head lang="en">', $result);
     }
 
     /**
@@ -514,7 +514,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<body>', $result);
+        self::assertStringContainsString('<body>', $result);
     }
 
     /**
@@ -526,7 +526,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<body><p>Hello</p></body>', $result);
+        self::assertStringContainsString('<body><p>Hello</p></body>', $result);
     }
 
     /**
@@ -556,7 +556,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains($codeNotToBeChanged, $result);
+        self::assertStringContainsString($codeNotToBeChanged, $result);
     }
 
     /**
@@ -568,7 +568,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<!DOCTYPE html>', $result);
+        self::assertStringContainsString('<!DOCTYPE html>', $result);
     }
 
     /**
@@ -610,7 +610,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains($documentType, $result);
+        self::assertStringContainsString($documentType, $result);
     }
 
     /**
@@ -653,7 +653,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains($normalizedDocumentType, $result);
+        self::assertStringContainsString($normalizedDocumentType, $result);
     }
 
     /**
@@ -846,7 +846,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertStringContainsString('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -865,7 +865,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertContains('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
+        self::assertStringContainsString('<body>' . $htmlWithNonXmlSelfClosingTags . '</body>', $result);
     }
 
     /**
@@ -884,7 +884,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        self::assertNotContains('</' . $tagName, $result);
+        self::assertStringNotContainsString('</' . $tagName, $result);
     }
 
     /**
@@ -941,7 +941,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->renderBodyContent();
 
-        self::assertContains($codeNotToBeChanged, $result);
+        self::assertStringContainsString($codeNotToBeChanged, $result);
     }
 
     /**
@@ -962,7 +962,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->renderBodyContent();
 
-        self::assertNotContains('</' . $tagName, $result);
+        self::assertStringNotContainsString('</' . $tagName, $result);
     }
 
     /**

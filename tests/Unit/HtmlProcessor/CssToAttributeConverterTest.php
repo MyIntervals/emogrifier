@@ -57,7 +57,7 @@ final class CssToAttributeConverterTest extends TestCase
         $html = '<html style="text-align: right;"></html>';
         $subject = CssToAttributeConverter::fromHtml($html);
 
-        self::assertContains('<html style="text-align: right;">', $subject->render());
+        self::assertStringContainsString('<html style="text-align: right;">', $subject->render());
     }
 
     /**
@@ -153,7 +153,7 @@ final class CssToAttributeConverterTest extends TestCase
         $subject->convertCssToVisualAttributes();
         $html = $subject->renderBodyContent();
 
-        self::assertContains($attributes, $html);
+        self::assertStringContainsString($attributes, $html);
     }
 
     /**
@@ -192,6 +192,6 @@ final class CssToAttributeConverterTest extends TestCase
         $subject->convertCssToVisualAttributes();
         $html = $subject->renderBodyContent();
 
-        self::assertContains($body, $html);
+        self::assertStringContainsString($body, $html);
     }
 }
