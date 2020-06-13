@@ -22,7 +22,7 @@ class AssertCssTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegExpEscapesAllSpecialCharacters()
+    public function getCssNeedleRegExpEscapesAllSpecialCharacters(): void
     {
         $needle = '.\\+*?[^]$(){}=!<>|:-/';
 
@@ -39,7 +39,7 @@ class AssertCssTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegExpNotEscapesNonSpecialCharacters()
+    public function getCssNeedleRegExpNotEscapesNonSpecialCharacters(): void
     {
         $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
             . "\r\n\t `¬\"£%&_;'@~,";
@@ -79,8 +79,10 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespace(string $contentToInsertAround, string $otherContent)
-    {
+    public function getCssNeedleRegExpInsertsOptionalWhitespace(
+        string $contentToInsertAround,
+        string $otherContent
+    ): void {
         $result = self::getCssNeedleRegExp($otherContent . $contentToInsertAround . $otherContent);
 
         $quotedOtherContent = \preg_quote($otherContent, '/');
@@ -93,7 +95,7 @@ class AssertCssTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegExpReplacesWhitespaceAtStartWithOptionalWhitespace()
+    public function getCssNeedleRegExpReplacesWhitespaceAtStartWithOptionalWhitespace(): void
     {
         $result = self::getCssNeedleRegExp(' a');
 
@@ -121,7 +123,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider styleTagDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag(string $needle)
+    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag(string $needle): void
     {
         $result = self::getCssNeedleRegExp($needle);
 
@@ -175,7 +177,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssPassesTestIfNeedleFound(string $needle, string $haystack)
+    public function assertContainsCssPassesTestIfNeedleFound(string $needle, string $haystack): void
     {
         self::assertContainsCss($needle, $haystack);
     }
@@ -188,7 +190,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssFailsTestIfNeedleNotFound(string $needle, string $haystack)
+    public function assertContainsCssFailsTestIfNeedleNotFound(string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
@@ -203,7 +205,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertNotContainsCssPassesTestIfNeedleNotFound(string $needle, string $haystack)
+    public function assertNotContainsCssPassesTestIfNeedleNotFound(string $needle, string $haystack): void
     {
         self::assertNotContainsCss($needle, $haystack);
     }
@@ -216,7 +218,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertNotContainsCssFailsTestIfNeedleFound(string $needle, string $haystack)
+    public function assertNotContainsCssFailsTestIfNeedleFound(string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
@@ -231,8 +233,10 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound(string $needle, string $haystack)
-    {
+    public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound(
+        string $needle,
+        string $haystack
+    ): void {
         self::assertContainsCssCount(0, $needle, $haystack);
     }
 
@@ -244,7 +248,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound(string $needle, string $haystack)
+    public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound(string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
@@ -259,7 +263,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound(string $needle, string $haystack)
+    public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound(string $needle, string $haystack): void
     {
         self::assertContainsCssCount(1, $needle, $haystack);
     }
@@ -272,7 +276,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound(string $needle, string $haystack)
+    public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound(string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
@@ -287,8 +291,10 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice(string $needle, string $haystack)
-    {
+    public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice(
+        string $needle,
+        string $haystack
+    ): void {
         $this->expectException(ExpectationFailedException::class);
 
         self::assertContainsCssCount(1, $needle, $haystack . $haystack);
@@ -302,8 +308,10 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice(string $needle, string $haystack)
-    {
+    public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice(
+        string $needle,
+        string $haystack
+    ): void {
         self::assertContainsCssCount(2, $needle, $haystack . $haystack);
     }
 
@@ -315,7 +323,7 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleNotFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound(string $needle, string $haystack)
+    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound(string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
@@ -330,8 +338,10 @@ class AssertCssTest extends TestCase
      *
      * @dataProvider needleFoundDataProvider
      */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce(string $needle, string $haystack)
-    {
+    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce(
+        string $needle,
+        string $haystack
+    ): void {
         $this->expectException(ExpectationFailedException::class);
 
         self::assertContainsCssCount(2, $needle, $haystack);

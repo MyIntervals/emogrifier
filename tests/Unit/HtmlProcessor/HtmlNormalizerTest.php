@@ -20,7 +20,7 @@ class HtmlNormalizerTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsInstanceOfCalledClass()
+    public function fromHtmlReturnsInstanceOfCalledClass(): void
     {
         $subject = HtmlNormalizer::fromHtml('<html></html>');
 
@@ -30,7 +30,7 @@ class HtmlNormalizerTest extends TestCase
     /**
      * @test
      */
-    public function classIsAbstractHtmlProcessor()
+    public function classIsAbstractHtmlProcessor(): void
     {
         $subject = HtmlNormalizer::fromHtml('<html></html>');
 
@@ -40,7 +40,7 @@ class HtmlNormalizerTest extends TestCase
     /**
      * @test
      */
-    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    public function fromDomDocumentReturnsInstanceOfCalledClass(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');

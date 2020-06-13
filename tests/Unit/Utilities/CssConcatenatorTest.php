@@ -24,7 +24,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @return void
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->subject = new CssConcatenator();
     }
@@ -32,7 +32,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function getCssInitiallyReturnsEmptyString()
+    public function getCssInitiallyReturnsEmptyString(): void
     {
         $result = $this->subject->getCss();
 
@@ -42,7 +42,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function appendSetsFirstRule()
+    public function appendSetsFirstRule(): void
     {
         $this->subject->append(['p'], 'color: green;');
 
@@ -54,7 +54,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function appendWithMediaQuerySetsFirstRuleInMediaRule()
+    public function appendWithMediaQuerySetsFirstRuleInMediaRule(): void
     {
         $this->subject->append(['p'], 'color: green;', '@media screen');
 
@@ -91,7 +91,7 @@ class CssConcatenatorTest extends TestCase
      *
      * @dataProvider equivalentSelectorsDataProvider
      */
-    public function appendCombinesRulesWithEquivalentSelectors(array $selectors1, array $selectors2)
+    public function appendCombinesRulesWithEquivalentSelectors(array $selectors1, array $selectors2): void
     {
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'font-size: 16px;');
@@ -106,7 +106,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function appendInsertsSemicolonCombiningRulesWithoutTrailingSemicolon()
+    public function appendInsertsSemicolonCombiningRulesWithoutTrailingSemicolon(): void
     {
         $this->subject->append(['p'], 'color: green');
         $this->subject->append(['p'], 'font-size: 16px');
@@ -175,7 +175,7 @@ class CssConcatenatorTest extends TestCase
         array $selectors1,
         array $selectors2,
         array $combinedSelectors
-    ) {
+    ): void {
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'color: green;');
 
@@ -194,7 +194,7 @@ class CssConcatenatorTest extends TestCase
      *
      * @dataProvider differentSelectorsDataProvider
      */
-    public function appendNotCombinesDifferentRulesWithDifferentSelectors(array $selectors1, array $selectors2)
+    public function appendNotCombinesDifferentRulesWithDifferentSelectors(array $selectors1, array $selectors2): void
     {
         $this->subject->append($selectors1, 'color: green;');
         $this->subject->append($selectors2, 'font-size: 16px;');
@@ -210,7 +210,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function appendCombinesRulesForSameMediaQueryInMediaRule()
+    public function appendCombinesRulesForSameMediaQueryInMediaRule(): void
     {
         $this->subject->append(['p'], 'color: green;', '@media screen');
         $this->subject->append(['ul'], 'font-size: 16px;', '@media screen');
@@ -228,8 +228,10 @@ class CssConcatenatorTest extends TestCase
      *
      * @dataProvider equivalentSelectorsDataProvider
      */
-    public function appendCombinesRulesWithEquivalentSelectorsWithinMediaRule(array $selectors1, array $selectors2)
-    {
+    public function appendCombinesRulesWithEquivalentSelectorsWithinMediaRule(
+        array $selectors1,
+        array $selectors2
+    ): void {
         $this->subject->append($selectors1, 'color: green;', '@media screen');
         $this->subject->append($selectors2, 'font-size: 16px;', '@media screen');
 
@@ -253,7 +255,7 @@ class CssConcatenatorTest extends TestCase
         array $selectors1,
         array $selectors2,
         array $combinedSelectors
-    ) {
+    ): void {
         $this->subject->append($selectors1, 'color: green;', '@media screen');
         $this->subject->append($selectors2, 'color: green;', '@media screen');
 
@@ -267,7 +269,7 @@ class CssConcatenatorTest extends TestCase
     /**
      * @test
      */
-    public function appendNotCombinesRulesForDifferentMediaQueryInMediaRule()
+    public function appendNotCombinesRulesForDifferentMediaQueryInMediaRule(): void
     {
         $this->subject->append(['p'], 'color: green;', '@media screen');
         $this->subject->append(['p'], 'color: green;', '@media print');
@@ -308,7 +310,7 @@ class CssConcatenatorTest extends TestCase
         array $rule2Selectors,
         string $rule2DeclarationsBlock,
         string $media
-    ) {
+    ): void {
         $this->subject->append($rule1Selectors, $rule1DeclarationsBlock, $media);
         $this->subject->append(['.intervening'], '-intervening-property: 0;');
         $this->subject->append($rule2Selectors, $rule2DeclarationsBlock, $media);
