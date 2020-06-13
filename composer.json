@@ -43,7 +43,7 @@
         "symfony/css-selector": "^3.4.32 || ^4.3.5 || ^5.0"
     },
     "require-dev": {
-        "grogy/php-parallel-lint": "^1.1.0",
+        "php-parallel-lint/php-parallel-lint": "^1.2.0",
         "phpunit/phpunit": "^6.5.14",
         "psalm/plugin-phpunit": "^0.5.8",
         "slevomat/coding-standard": "^4.0.0",
