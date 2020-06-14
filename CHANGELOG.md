@@ -10,6 +10,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#894](https://github.com/MyIntervals/emogrifier/pull/894))
 
 ### Changed
+- Update the development tools
+  ([#898](https://github.com/MyIntervals/emogrifier/pull/898))
 - Upgrade to PHPUnit 7.5
   ([#888](https://github.com/MyIntervals/emogrifier/pull/888))
 - Enforce constant visibility
