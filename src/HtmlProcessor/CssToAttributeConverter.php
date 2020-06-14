@@ -124,8 +124,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
      * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
      */
     private function mapCssToHtmlAttributes(array $styles, \DOMElement $node): void
     {
@@ -144,8 +142,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * @param string $property the name of the CSS property to map
      * @param string $value the value of the style rule to map
      * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
      */
     private function mapCssToHtmlAttribute(string $property, string $value, \DOMElement $node): void
     {
@@ -186,8 +182,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * @param string $property the name of the CSS property to map
      * @param string $value the value of the style rule to map
      * @param \DOMElement $node node to apply styles to
-     *
-     * @return void
      */
     private function mapComplexCssProperty(string $property, string $value, \DOMElement $node): void
     {
@@ -213,8 +207,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * @param \DOMElement $node node to apply styles to
      * @param string $value the value of the style rule to map
-     *
-     * @return void
      */
     private function mapBackgroundProperty(\DOMElement $node, string $value): void
     {
@@ -233,8 +225,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * @param \DOMElement $node node to apply styles to
      * @param string $value the value of the style rule to map
      * @param string $property the name of the CSS property to map
-     *
-     * @return void
      */
     private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property): void
     {
@@ -250,8 +240,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * @param \DOMElement $node node to apply styles to
      * @param string $value the value of the style rule to map
-     *
-     * @return void
      */
     private function mapMarginProperty(\DOMElement $node, string $value): void
     {
@@ -268,8 +256,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * @param \DOMElement $node node to apply styles to
      * @param string $value the value of the style rule to map
-     *
-     * @return void
      */
     private function mapBorderProperty(\DOMElement $node, string $value): void
     {
