@@ -44,10 +44,10 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
-        "phpunit/phpunit": "^6.5.14",
+        "phpunit/phpunit": "^7.5.20",
         "slevomat/coding-standard": "^4.0.0",
         "squizlabs/php_codesniffer": "^3.5.1",
-        "vimeo/psalm": "^3.2.12"
+        "vimeo/psalm": "~3.2.12"
     },
     "autoload": {
         "psr-4": {
