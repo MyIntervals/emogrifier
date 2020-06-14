@@ -19,7 +19,7 @@ use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
  * @author Oliver Klee <github@oliverklee.de>
  * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
-class CssInlinerTest extends TestCase
+final class CssInlinerTest extends TestCase
 {
     use AssertCss;
 

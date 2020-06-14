@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class AbstractHtmlProcessorTest extends TestCase
+final class AbstractHtmlProcessorTest extends TestCase
 {
     /**
      * @test

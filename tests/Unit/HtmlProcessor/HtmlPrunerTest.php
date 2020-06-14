@@ -18,7 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @author Oliver Klee <github@oliverklee.de>
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class HtmlPrunerTest extends TestCase
+final class HtmlPrunerTest extends TestCase
 {
     /**
      * @test
