@@ -26,7 +26,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @var string Common HTML markup with a variety of elements and attributes for testing with
      */
-    const COMMON_TEST_HTML = '
+    private const COMMON_TEST_HTML = '
         <html>
             <body>
                 <p class="p-1"><span>some text</span></p>
