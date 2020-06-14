@@ -464,10 +464,12 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         $css = '';
-        /** @var \DOMNode $styleNode */
         foreach ($styleNodes as $styleNode) {
             $css .= "\n\n" . $styleNode->nodeValue;
-            $styleNode->parentNode->removeChild($styleNode);
+            $parentNode = $styleNode->parentNode;
+            if ($parentNode instanceof \DOMNode) {
+                $parentNode->removeChild($styleNode);
+            }
         }
 
         return $css;
@@ -626,8 +628,6 @@ class CssInliner extends AbstractHtmlProcessor
             'inlinable' => [],
             'uninlinable' => [],
         ];
-        /** @var string[][] $matches */
-        /** @var string[] $cssRule */
         foreach ($matches as $key => $cssRule) {
             $cssDeclaration = \trim($cssRule['declarations']);
             if ($cssDeclaration === '') {
@@ -701,7 +701,7 @@ class CssInliner extends AbstractHtmlProcessor
             }
             $number = 0;
             $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
-            $precedence += ($value * $number);
+            $precedence += ($value * (int)$number);
         }
         $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
 
@@ -712,6 +712,8 @@ class CssInliner extends AbstractHtmlProcessor
      * Parses a string of CSS into the media query, selectors and declarations for each ruleset in order.
      *
      * @param string $css CSS with comments removed
+     *
+     * @psalm-return array<array-key, array<string, string>>
      *
      * @return string[][] Array of string sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
@@ -729,7 +731,7 @@ class CssInliner extends AbstractHtmlProcessor
             // process each part for selectors and definitions
             \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
 
-            /** @var string[][] $matches */
+            /** @var string[] $cssRule */
             foreach ($matches as $cssRule) {
                 $ruleMatches[] = [
                     'media' => $cssPart['media'],
