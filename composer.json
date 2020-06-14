@@ -45,8 +45,7 @@
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
         "slevomat/coding-standard": "^4.0.0",
-        "squizlabs/php_codesniffer": "^3.5.1",
-        "vimeo/psalm": "^3.11.5"
+        "squizlabs/php_codesniffer": "^3.5.1"
     },
     "autoload": {
         "psr-4": {
@@ -72,7 +71,7 @@
         "ci:php:sniff": "\"vendor/bin/phpcs\" config src tests",
         "ci:php:fixer": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
-        "ci:php:psalm": "\"vendor/bin/psalm\" --show-info=false",
+        "ci:php:psalm": "\"./tools/psalm.phar\" --show-info=false",
         "ci:tests:unit": "\"./tools/phpunit.phar\"",
         "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
         "ci:tests": [
