@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Rename the PHPCS configuration file
+  ([#891](https://github.com/MyIntervals/emogrifier/pull/891))
 - Make use of PHP 7.1 language features
   ([#883](https://github.com/MyIntervals/emogrifier/pull/883))
 
