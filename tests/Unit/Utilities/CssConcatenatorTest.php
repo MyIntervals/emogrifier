@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class CssConcatenatorTest extends TestCase
+final class CssConcatenatorTest extends TestCase
 {
     /**
      * @var CssConcatenator

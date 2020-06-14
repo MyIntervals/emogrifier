@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class AssertCssTest extends TestCase
+final class AssertCssTest extends TestCase
 {
     use AssertCss;
 

@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class CssToAttributeConverterTest extends TestCase
+final class CssToAttributeConverterTest extends TestCase
 {
     /**
      * @test

@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class ArrayIntersectorTest extends TestCase
+final class ArrayIntersectorTest extends TestCase
 {
     /**
      * @return (int|string)[][][]

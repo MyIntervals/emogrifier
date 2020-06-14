@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class HtmlNormalizerTest extends TestCase
+final class HtmlNormalizerTest extends TestCase
 {
     /**
      * @test

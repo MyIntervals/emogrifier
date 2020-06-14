@@ -11,6 +11,6 @@ use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
  *
  * @author Oliver Klee <github@oliverklee.de>
  */
-class TestingHtmlProcessor extends AbstractHtmlProcessor
+final class TestingHtmlProcessor extends AbstractHtmlProcessor
 {
 }
