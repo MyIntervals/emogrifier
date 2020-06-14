@@ -84,10 +84,6 @@
     <rule ref="SlevomatCodingStandard.TypeHints.TypeHintDeclaration">
         <!-- Allow PHPDoc with no additional information -->
         <exclude name="SlevomatCodingStandard.TypeHints.TypeHintDeclaration.UselessDocComment"/>
-        <properties>
-            <!-- Void type hint requires PHP 7.1 -->
-            <property name="enableVoidTypeHint" value="false"/>
-        </properties>
     </rule>
     <rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
     <rule ref="Squiz.Functions.GlobalFunction"/>

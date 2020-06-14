@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Make use of PHP 7.1 language features
+  ([#883](https://github.com/MyIntervals/emogrifier/pull/883))
 
 ### Deprecated
 - Support for PHP 7.1 will be removed in Emogrifier 6.0.

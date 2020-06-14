@@ -20,7 +20,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsInstanceOfCalledClass()
+    public function fromHtmlReturnsInstanceOfCalledClass(): void
     {
         $subject = CssToAttributeConverter::fromHtml('<html></html>');
 
@@ -30,7 +30,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function classIsAbstractHtmlProcessor()
+    public function classIsAbstractHtmlProcessor(): void
     {
         $subject = CssToAttributeConverter::fromHtml('<html></html>');
 
@@ -40,7 +40,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    public function fromDomDocumentReturnsInstanceOfCalledClass(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
@@ -52,7 +52,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisualAttributes()
+    public function renderWithoutConvertCssToVisualAttributesCallNotAddsVisualAttributes(): void
     {
         $html = '<html style="text-align: right;"></html>';
         $subject = CssToAttributeConverter::fromHtml($html);
@@ -63,7 +63,7 @@ class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      */
-    public function convertCssToVisualAttributesUsesFluentInterface()
+    public function convertCssToVisualAttributesUsesFluentInterface(): void
     {
         $html = '<html style="text-align: right;"></html>';
         $subject = CssToAttributeConverter::fromHtml($html);
@@ -146,7 +146,7 @@ class CssToAttributeConverterTest extends TestCase
      *
      * @dataProvider matchingCssToHtmlMappingDataProvider
      */
-    public function convertCssToVisualAttributesMapsSuitableCssToHtml(string $body, string $attributes)
+    public function convertCssToVisualAttributesMapsSuitableCssToHtml(string $body, string $attributes): void
     {
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 
@@ -185,7 +185,7 @@ class CssToAttributeConverterTest extends TestCase
      *
      * @dataProvider notMatchingCssToHtmlMappingDataProvider
      */
-    public function convertCssToVisualAttributesNotMapsUnsuitableCssToHtml(string $body)
+    public function convertCssToVisualAttributesNotMapsUnsuitableCssToHtml(string $body): void
     {
         $subject = CssToAttributeConverter::fromHtml('<html><body>' . $body . '</body></html>');
 

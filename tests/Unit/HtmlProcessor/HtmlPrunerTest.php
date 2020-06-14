@@ -23,7 +23,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsInstanceOfCalledClass()
+    public function fromHtmlReturnsInstanceOfCalledClass(): void
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
@@ -33,7 +33,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function classIsAbstractHtmlProcessor()
+    public function classIsAbstractHtmlProcessor(): void
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
@@ -43,7 +43,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    public function fromDomDocumentReturnsInstanceOfCalledClass(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
@@ -55,7 +55,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function removeElementsWithDisplayNoneProvidesFluentInterface()
+    public function removeElementsWithDisplayNoneProvidesFluentInterface(): void
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
@@ -84,7 +84,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider displayNoneDataProvider
      */
-    public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone(string $displayNone)
+    public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone(string $displayNone): void
     {
         $subject = HtmlPruner::fromHtml('<html><body><div style="' . $displayNone . '"></div></body></html>');
 
@@ -112,8 +112,9 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider provideEmogrifierKeepClassAttribute
      */
-    public function removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep(string $classAttributeValue)
-    {
+    public function removeElementsWithDisplayNoneNotRemovesElementsWithClassEmogrifierKeep(
+        string $classAttributeValue
+    ): void {
         $subject = HtmlPruner::fromHtml(
             '<html><body><div class="' . $classAttributeValue . '" style="display: none;"></div></body></html>'
         );
@@ -126,7 +127,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function removeRedundantClassesProvidesFluentInterface()
+    public function removeRedundantClassesProvidesFluentInterface(): void
     {
         $subject = HtmlPruner::fromHtml('<html></html>');
 
@@ -154,7 +155,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @dataProvider provideClassesToKeep
      */
-    public function removeRedundantClassesPreservesHtmlWithoutClasses(array $classesToKeep)
+    public function removeRedundantClassesPreservesHtmlWithoutClasses(array $classesToKeep): void
     {
         $html = '<p style="color: green;">hello</p>';
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
@@ -223,7 +224,7 @@ class HtmlPrunerTest extends TestCase
     public function removeRedundantClassesRemovesClassAttributesContainingNoClassesToKeep(
         string $html,
         array $classesToKeep
-    ) {
+    ): void {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
         $subject->removeRedundantClasses($classesToKeep);
@@ -304,7 +305,7 @@ class HtmlPrunerTest extends TestCase
         string $html,
         array $classesToKeep,
         array $classesExpectedToBeRemoved
-    ) {
+    ): void {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
         $subject->removeRedundantClasses($classesToKeep);
@@ -376,7 +377,7 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
-    public function removeRedundantClassesNotRemovesClassesToKeep(string $html, array $classesToKeep)
+    public function removeRedundantClassesNotRemovesClassesToKeep(string $html, array $classesToKeep): void
     {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
@@ -398,7 +399,7 @@ class HtmlPrunerTest extends TestCase
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
      */
-    public function removeRedundantClassesMinifiesClassAttributes(string $html, array $classesToKeep)
+    public function removeRedundantClassesMinifiesClassAttributes(string $html, array $classesToKeep): void
     {
         $subject = HtmlPruner::fromHtml('<html>' . $html . '</html>');
 
@@ -436,9 +437,9 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function removeRedundantClassesAfterCssInlinedProvidesFluentInterface()
+    public function removeRedundantClassesAfterCssInlinedProvidesFluentInterface(): void
     {
-        list($subject, $cssInliner) = $this->buildSubjectAndCssInlinerWithCssInlined('<html></html>', '');
+        [$subject, $cssInliner] = $this->buildSubjectAndCssInlinerWithCssInlined('<html></html>', '');
 
         $result = $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
@@ -448,7 +449,7 @@ class HtmlPrunerTest extends TestCase
     /**
      * @test
      */
-    public function removeRedundantClassesAfterCssInlinedThrowsExceptionIfInlineCssNotCalled()
+    public function removeRedundantClassesAfterCssInlinedThrowsExceptionIfInlineCssNotCalled(): void
     {
         $this->expectException(\BadMethodCallException::class);
 
@@ -518,9 +519,8 @@ class HtmlPrunerTest extends TestCase
         string $html,
         string $css,
         array $classesExpectedToBeRemoved = []
-    ) {
-        list($subject, $cssInliner)
-            = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
+    ): void {
+        [$subject, $cssInliner] = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
@@ -583,9 +583,8 @@ class HtmlPrunerTest extends TestCase
         string $html,
         string $css,
         array $classesToBeKept = []
-    ) {
-        list($subject, $cssInliner)
-            = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
+    ): void {
+        [$subject, $cssInliner] = $this->buildSubjectAndCssInlinerWithCssInlined('<html>' . $html . '</html>', $css);
 
         $subject->removeRedundantClassesAfterCssInlined($cssInliner);
 
@@ -601,7 +600,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws AssertionFailedError
      */
-    private static function assertContainsNone(array $needles, string $haystack)
+    private static function assertContainsNone(array $needles, string $haystack): void
     {
         foreach ($needles as $needle) {
             self::assertNotContains($needle, $haystack);
@@ -616,7 +615,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws AssertionFailedError
      */
-    private static function assertContainsAll(array $needles, string $haystack)
+    private static function assertContainsAll(array $needles, string $haystack): void
     {
         foreach ($needles as $needle) {
             self::assertContains($needle, $haystack);
@@ -632,7 +631,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws AssertionFailedError
      */
-    private static function assertSubstringCount(int $expectedCount, string $haystack, string $needle)
+    private static function assertSubstringCount(int $expectedCount, string $haystack, string $needle): void
     {
         self::assertSame(
             $expectedCount,
@@ -648,7 +647,7 @@ class HtmlPrunerTest extends TestCase
      *
      * @throws AssertionFailedError
      */
-    private static function assertMinified(string $string)
+    private static function assertMinified(string $string): void
     {
         self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string);
     }

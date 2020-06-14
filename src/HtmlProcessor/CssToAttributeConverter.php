@@ -127,7 +127,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapCssToHtmlAttributes(array $styles, \DOMElement $node)
+    private function mapCssToHtmlAttributes(array $styles, \DOMElement $node): void
     {
         foreach ($styles as $property => $value) {
             // Strip !important indicator
@@ -147,7 +147,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapCssToHtmlAttribute(string $property, string $value, \DOMElement $node)
+    private function mapCssToHtmlAttribute(string $property, string $value, \DOMElement $node): void
     {
         if (!$this->mapSimpleCssProperty($property, $value, $node)) {
             $this->mapComplexCssProperty($property, $value, $node);
@@ -189,7 +189,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapComplexCssProperty(string $property, string $value, \DOMElement $node)
+    private function mapComplexCssProperty(string $property, string $value, \DOMElement $node): void
     {
         switch ($property) {
             case 'background':
@@ -216,7 +216,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapBackgroundProperty(\DOMElement $node, string $value)
+    private function mapBackgroundProperty(\DOMElement $node, string $value): void
     {
         // parse out the color, if any
         $styles = \explode(' ', $value, 2);
@@ -236,7 +236,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property)
+    private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property): void
     {
         // only parse values in px and %, but not values like "auto"
         if (!\preg_match('/^(\\d+)(\\.(\\d+))?(px|%)$/', $value)) {
@@ -253,7 +253,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapMarginProperty(\DOMElement $node, string $value)
+    private function mapMarginProperty(\DOMElement $node, string $value): void
     {
         if (!$this->isTableOrImageNode($node)) {
             return;
@@ -271,7 +271,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function mapBorderProperty(\DOMElement $node, string $value)
+    private function mapBorderProperty(\DOMElement $node, string $value): void
     {
         if (!$this->isTableOrImageNode($node)) {
             return;

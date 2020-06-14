@@ -142,7 +142,7 @@ class ArrayIntersectorTest extends TestCase
      *
      * @dataProvider arraysDataProvider
      */
-    public function computesIntersection(array $array1, array $array2)
+    public function computesIntersection(array $array1, array $array2): void
     {
         $expectedResult = \array_intersect($array1, $array2);
 

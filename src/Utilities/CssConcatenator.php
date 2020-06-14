@@ -63,7 +63,7 @@ class CssConcatenator
      * @param string $media The media query for the rule, e.g. "@media screen and (max-width:639px)",
      *                      or an empty string if none.
      */
-    public function append(array $selectors, string $declarationsBlock, string $media = '')
+    public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
         $selectorsAsKeys = \array_flip($selectors);
 

@@ -28,22 +28,22 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var int
      */
-    const CACHE_KEY_CSS = 0;
+    private const CACHE_KEY_CSS = 0;
 
     /**
      * @var int
      */
-    const CACHE_KEY_SELECTOR = 1;
+    private const CACHE_KEY_SELECTOR = 1;
 
     /**
      * @var int
      */
-    const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 2;
+    private const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 2;
 
     /**
      * @var int
      */
-    const CACHE_KEY_COMBINED_STYLES = 3;
+    private const CACHE_KEY_COMBINED_STYLES = 3;
 
     /**
      * Regular expression component matching a static pseudo class in a selector, without the preceding ":",
@@ -53,7 +53,8 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @var string
      */
-    const PSEUDO_CLASS_MATCHER = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)';
+    private const PSEUDO_CLASS_MATCHER
+        = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)';
 
     /**
      * @var bool[]
@@ -170,9 +171,9 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         $cssWithoutComments = $this->removeCssComments($combinedCss);
-        list($cssWithoutCommentsCharsetOrImport, $cssImportRules)
+        [$cssWithoutCommentsCharsetOrImport, $cssImportRules]
             = $this->extractImportAndCharsetRules($cssWithoutComments);
-        list($cssWithoutCommentsCharsetImportOrFontFace, $cssFontFaces)
+        [$cssWithoutCommentsCharsetImportOrFontFace, $cssFontFaces]
             = $this->extractFontFaceRules($cssWithoutCommentsCharsetOrImport);
 
         $uninlinableCss = $cssImportRules . $cssFontFaces;
@@ -335,7 +336,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function clearAllCaches()
+    private function clearAllCaches(): void
     {
         $this->caches = [
             self::CACHE_KEY_CSS => [],
@@ -350,7 +351,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function purgeVisitedNodes()
+    private function purgeVisitedNodes(): void
     {
         $this->visitedNodes = [];
         $this->styleAttributesForNodes = [];
@@ -364,7 +365,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function normalizeStyleAttributesOfAllNodes()
+    private function normalizeStyleAttributesOfAllNodes(): void
     {
         /** @var \DOMElement $node */
         foreach ($this->getAllNodesWithStyleAttribute() as $node) {
@@ -396,7 +397,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function normalizeStyleAttributes(\DOMElement $node)
+    private function normalizeStyleAttributes(\DOMElement $node): void
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
@@ -517,7 +518,7 @@ class CssInliner extends AbstractHtmlProcessor
                 $matches
             )
         ) {
-            list($fullMatch, $atRuleAndFollowingWhitespace, $atRuleName) = $matches;
+            [$fullMatch, $atRuleAndFollowingWhitespace, $atRuleName] = $matches;
 
             if (\strtolower($atRuleName) === 'import') {
                 $importRules .= $atRuleAndFollowingWhitespace;
@@ -552,7 +553,7 @@ class CssInliner extends AbstractHtmlProcessor
                 $matches
             )
         ) {
-            list($fullMatch, $atRuleAndFollowingWhitespace) = $matches;
+            [$fullMatch, $atRuleAndFollowingWhitespace] = $matches;
 
             if (\stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false) {
                 $fontFaces .= $atRuleAndFollowingWhitespace;
@@ -833,7 +834,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule)
+    private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule): void
     {
         /** @var string $declarationsBlock */
         $declarationsBlock = $cssRule['declarationsBlock'];
@@ -920,7 +921,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function fillStyleAttributesWithMergedStyles()
+    private function fillStyleAttributesWithMergedStyles(): void
     {
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
@@ -941,7 +942,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function removeImportantAnnotationFromAllInlineStyles()
+    private function removeImportantAnnotationFromAllInlineStyles(): void
     {
         foreach ($this->getAllNodesWithStyleAttribute() as $node) {
             $this->removeImportantAnnotationFromNodeInlineStyle($node);
@@ -960,7 +961,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node)
+    private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
         $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
         $regularStyleDeclarations = [];
@@ -1002,7 +1003,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function determineMatchingUninlinableCssRules(array $cssRules)
+    private function determineMatchingUninlinableCssRules(array $cssRules): void
     {
         $this->matchingUninlinableCssRules = \array_filter($cssRules, [$this, 'existsMatchForSelectorInCssRule']);
     }
@@ -1092,7 +1093,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function replaceUnmatchableNotComponent(array $matches): string
     {
-        list($notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets) = $matches;
+        [$notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets] = $matches;
 
         $hasUnmatchablePseudo = \preg_match(
             '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
@@ -1116,7 +1117,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function copyUninlinableCssToStyleNode(string $uninlinableCss)
+    private function copyUninlinableCssToStyleNode(string $uninlinableCss): void
     {
         $css = $uninlinableCss;
 
@@ -1146,7 +1147,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    protected function addStyleElementToDocument(string $css)
+    protected function addStyleElementToDocument(string $css): void
     {
         $styleElement = $this->domDocument->createElement('style', $css);
         $styleAttribute = $this->domDocument->createAttribute('type');

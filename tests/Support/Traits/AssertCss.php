@@ -55,7 +55,7 @@ trait AssertCss
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertContainsCss(string $needle, string $haystack)
+    private static function assertContainsCss(string $needle, string $haystack): void
     {
         self::assertRegExp(
             self::getCssNeedleRegExp($needle),
@@ -71,7 +71,7 @@ trait AssertCss
      * @param string $needle
      * @param string $haystack
      */
-    private static function assertNotContainsCss(string $needle, string $haystack)
+    private static function assertNotContainsCss(string $needle, string $haystack): void
     {
         self::assertNotRegExp(
             self::getCssNeedleRegExp($needle),
@@ -92,7 +92,7 @@ trait AssertCss
         int $expectedCount,
         string $needle,
         string $haystack
-    ) {
+    ): void {
         self::assertSame(
             $expectedCount,
             \preg_match_all(self::getCssNeedleRegExp($needle), $haystack),

@@ -70,7 +70,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsInstanceOfCalledClass()
+    public function fromHtmlReturnsInstanceOfCalledClass(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -80,7 +80,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function isAbstractHtmlProcessor()
+    public function isAbstractHtmlProcessor(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -90,7 +90,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function setDebugProvidesFluentInterface()
+    public function setDebugProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -102,7 +102,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssProvidesFluentInterface()
+    public function inlineCssProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html><p>Hello world!</p></html>');
 
@@ -130,7 +130,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider wbrTagDataProvider
      */
-    public function inlineCssKeepsWbrTag(string $html)
+    public function inlineCssKeepsWbrTag(string $html): void
     {
         $subject = $this->buildDebugSubject($html);
 
@@ -702,7 +702,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider matchedCssDataProvider
      */
-    public function inlineCssAppliesCssToMatchingElements(string $css, string $expectedHtml)
+    public function inlineCssAppliesCssToMatchingElements(string $css, string $expectedHtml): void
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
@@ -1009,7 +1009,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider nonMatchedCssDataProvider
      */
-    public function inlineCssNotAppliesCssToNonMatchingElements(string $css, string $expectedHtml)
+    public function inlineCssNotAppliesCssToNonMatchingElements(string $css, string $expectedHtml): void
     {
         $cssDeclaration1 = 'color: red;';
         $cssDeclaration2 = 'text-align: left;';
@@ -1112,7 +1112,7 @@ class CssInlinerTest extends TestCase
         string $matchedTagPart,
         string $lessSpecificSelector,
         string $moreSpecificSelector
-    ) {
+    ): void {
         $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
@@ -1194,7 +1194,7 @@ class CssInlinerTest extends TestCase
         string $matchedTagPart,
         string $selector1,
         string $selector2
-    ) {
+    ): void {
         $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
@@ -1237,7 +1237,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider cssDeclarationWhitespaceDroppingDataProvider
      */
-    public function inlineCssTrimsWhitespaceFromCssDeclarations(string $cssDeclaration)
+    public function inlineCssTrimsWhitespaceFromCssDeclarations(string $cssDeclaration): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
 
@@ -1289,8 +1289,10 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider formattedCssDeclarationDataProvider
      */
-    public function inlineCssFormatsCssDeclarations(string $cssDeclarationBlock, string $expectedStyleAttributeContent)
-    {
+    public function inlineCssFormatsCssDeclarations(
+        string $cssDeclarationBlock,
+        string $expectedStyleAttributeContent
+    ): void {
         $subject = $this->buildDebugSubject('<html></html>');
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
@@ -1318,7 +1320,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider invalidDeclarationDataProvider
      */
-    public function inlineCssDropsInvalidCssDeclaration(string $cssDeclarationBlock)
+    public function inlineCssDropsInvalidCssDeclaration(string $cssDeclarationBlock): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
 
@@ -1330,7 +1332,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsExistingStyleAttributes()
+    public function inlineCssKeepsExistingStyleAttributes(): void
     {
         $styleAttribute = 'style="color: #ccc;"';
         $subject = $this->buildDebugSubject('<html ' . $styleAttribute . '></html>');
@@ -1343,7 +1345,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAddsNewCssBeforeExistingStyle()
+    public function inlineCssAddsNewCssBeforeExistingStyle(): void
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject('<html style="' . $styleAttributeValue . '"></html>');
@@ -1358,7 +1360,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssCanMatchMinifiedCss()
+    public function inlineCssCanMatchMinifiedCss(): void
     {
         $subject = $this->buildDebugSubject('<html><p></p></html>');
 
@@ -1370,7 +1372,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssLowercasesAttributeNamesFromStyleAttributes()
+    public function inlineCssLowercasesAttributeNamesFromStyleAttributes(): void
     {
         $subject = $this->buildDebugSubject('<html style="COLOR:#ccc;"></html>');
 
@@ -1382,7 +1384,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssLowercasesAttributeNamesFromPassedInCss()
+    public function inlineCssLowercasesAttributeNamesFromPassedInCss(): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
 
@@ -1394,7 +1396,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssPreservesCaseForAttributeValuesFromPassedInCss()
+    public function inlineCssPreservesCaseForAttributeValuesFromPassedInCss(): void
     {
         $cssDeclaration = "content: 'Hello World';";
         $subject = $this->buildDebugSubject('<html><body><p>target</p></body></html>');
@@ -1407,7 +1409,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssPreservesCaseForAttributeValuesFromParsedStyleBlock()
+    public function inlineCssPreservesCaseForAttributeValuesFromParsedStyleBlock(): void
     {
         $cssDeclaration = "content: 'Hello World';";
         $subject = $this->buildDebugSubject(
@@ -1422,7 +1424,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssRemovesStyleNodes()
+    public function inlineCssRemovesStyleNodes(): void
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css"></style></html>');
 
@@ -1434,7 +1436,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssInDebugModeForInvalidCssSelectorThrowsException()
+    public function inlineCssInDebugModeForInvalidCssSelectorThrowsException(): void
     {
         $this->expectException(SyntaxErrorException::class);
 
@@ -1449,7 +1451,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotInDebugModeIgnoresInvalidCssSelectors()
+    public function inlineCssNotInDebugModeIgnoresInvalidCssSelectors(): void
     {
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
@@ -1467,7 +1469,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssByDefaultIgnoresInvalidCssSelectors()
+    public function inlineCssByDefaultIgnoresInvalidCssSelectors(): void
     {
         $html = '<html><style type="text/css">' .
             'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
@@ -1536,7 +1538,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider unneededCssThingsDataProvider
      */
-    public function inlineCssFiltersUnneededCssThings(string $unneededCss, string $markerNotExpectedInHtml)
+    public function inlineCssFiltersUnneededCssThings(string $unneededCss, string $markerNotExpectedInHtml): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
@@ -1552,7 +1554,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider unneededCssThingsDataProvider
      */
-    public function inlineCssMatchesRuleAfterUnneededCssThing(string $unneededCss)
+    public function inlineCssMatchesRuleAfterUnneededCssThing(string $unneededCss): void
     {
         $subject = $this->buildDebugSubject('<html><body></body></html>');
 
@@ -1601,7 +1603,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider mediaRulesDataProvider
      */
-    public function inlineCssKeepsMediaRules(string $css)
+    public function inlineCssKeepsMediaRules(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
@@ -1697,7 +1699,7 @@ class CssInlinerTest extends TestCase
         string $cssBefore,
         string $cssBetween,
         string $cssAfter
-    ) {
+    ): void {
         $subject = $this->buildDebugSubject('<html><p><a>foo</a></p></html>');
 
         $subject->inlineCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
@@ -1708,7 +1710,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function removeAllowedMediaTypeProvidesFluentInterface()
+    public function removeAllowedMediaTypeProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -1720,7 +1722,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType()
+    public function removeAllowedMediaTypeRemovesStylesForTheGivenMediaType(): void
     {
         $css = '@media screen { html { some-property: value; } }';
         $subject = $this->buildDebugSubject('<html></html>');
@@ -1734,7 +1736,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addAllowedMediaTypeProvidesFluentInterface()
+    public function addAllowedMediaTypeProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -1746,7 +1748,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addAllowedMediaTypeKeepsStylesForTheGivenMediaType()
+    public function addAllowedMediaTypeKeepsStylesForTheGivenMediaType(): void
     {
         $css = '@media braille { html { some-property: value; } }';
         $subject = $this->buildDebugSubject('<html></html>');
@@ -1760,7 +1762,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsExistingHeadElementContent()
+    public function inlineCssKeepsExistingHeadElementContent(): void
     {
         $subject = $this->buildDebugSubject('<html><head><!-- original content --></head></html>');
 
@@ -1772,7 +1774,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsExistingStyleElementWithMedia()
+    public function inlineCssKeepsExistingStyleElementWithMedia(): void
     {
         $html = '<!DOCTYPE html><html><head><!-- original content --></head><body></body></html>';
         $subject = $this->buildDebugSubject($html);
@@ -1785,7 +1787,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsExistingStyleElementWithMediaInHead()
+    public function inlineCssKeepsExistingStyleElementWithMediaInHead(): void
     {
         $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
         $html = '<html><head>' . $style . '</head><body></body></html>';
@@ -1799,7 +1801,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsExistingStyleElementWithMediaOutOfBody()
+    public function inlineCssKeepsExistingStyleElementWithMediaOutOfBody(): void
     {
         $style = '<style type="text/css">@media all { html {  color: red; } }</style>';
         $html = '<html><head>' . $style . '</head><body></body></html>';
@@ -1856,7 +1858,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider validMediaPreserveDataProvider
      */
-    public function inlineCssWithValidMediaQueryContainsInnerCss(string $css)
+    public function inlineCssWithValidMediaQueryContainsInnerCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1><p></p></html>');
 
@@ -1872,7 +1874,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider validMediaPreserveDataProvider
      */
-    public function inlineCssWithValidMinifiedMediaQueryContainsInnerCss(string $css)
+    public function inlineCssWithValidMinifiedMediaQueryContainsInnerCss(string $css): void
     {
         // Minify CSS by removing unnecessary whitespace.
         $css = \preg_replace('/\\s*{\\s*/', '{', $css);
@@ -1892,7 +1894,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider validMediaPreserveDataProvider
      */
-    public function inlineCssForHtmlWithValidMediaQueryContainsInnerCss(string $css)
+    public function inlineCssForHtmlWithValidMediaQueryContainsInnerCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1><p></p></html>');
 
@@ -1908,7 +1910,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider validMediaPreserveDataProvider
      */
-    public function inlineCssWithValidMediaQueryNotContainsInlineCss(string $css)
+    public function inlineCssWithValidMediaQueryNotContainsInlineCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -1942,7 +1944,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function inlineCssWithInvalidMediaQueryNotContainsInnerCss(string $css)
+    public function inlineCssWithInvalidMediaQueryNotContainsInnerCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -1958,7 +1960,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function inlineCssWithInvalidMediaQueryNotContainsInlineCss(string $css)
+    public function inlineCssWithInvalidMediaQueryNotContainsInlineCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -1974,7 +1976,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function inlineCssFromHtmlWithInvalidMediaQueryNotContainsInnerCss(string $css)
+    public function inlineCssFromHtmlWithInvalidMediaQueryNotContainsInnerCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
@@ -1990,7 +1992,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
-    public function inlineCssFromHtmlWithInvalidMediaQueryNotContainsInlineCss(string $css)
+    public function inlineCssFromHtmlWithInvalidMediaQueryNotContainsInlineCss(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><style type="text/css">' . $css . '</style><h1></h1></html>');
 
@@ -2002,7 +2004,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssIgnoresEmptyMediaQuery()
+    public function inlineCssIgnoresEmptyMediaQuery(): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -2016,7 +2018,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssIgnoresMediaQueryWithWhitespaceOnly()
+    public function inlineCssIgnoresMediaQueryWithWhitespaceOnly(): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -2045,7 +2047,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider mediaTypeDataProvider
      */
-    public function inlineCssKeepsMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType)
+    public function inlineCssKeepsMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -2061,7 +2063,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider mediaTypeDataProvider
      */
-    public function inlineCssNotKeepsUnneededMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType)
+    public function inlineCssNotKeepsUnneededMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType): void
     {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
@@ -2175,7 +2177,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider matchingSelectorWithPseudoComponentCssRuleDataProvider
      */
-    public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelector(string $css)
+    public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelector(string $css): void
     {
         $subject = $this->buildDebugSubject(
             '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>'
@@ -2219,7 +2221,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider nonMatchingSelectorWithPseudoComponentCssRuleDataProvider
      */
-    public function inlineCssNotKeepsRuleWithPseudoComponentInNonMatchingSelector(string $css)
+    public function inlineCssNotKeepsRuleWithPseudoComponentInNonMatchingSelector(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><p><a id="a" class="a" href="#">foo</a></p></html>');
 
@@ -2231,7 +2233,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsRuleInMediaQueryWithPseudoComponentInMatchingSelector()
+    public function inlineCssKeepsRuleInMediaQueryWithPseudoComponentInMatchingSelector(): void
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
         $css = '@media screen { a:hover { color: green; } }';
@@ -2244,7 +2246,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotKeepsRuleInMediaQueryWithPseudoComponentInNonMatchingSelector()
+    public function inlineCssNotKeepsRuleInMediaQueryWithPseudoComponentInNonMatchingSelector(): void
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
         $css = '@media screen { b:hover { color: green; } }';
@@ -2257,7 +2259,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsRuleWithPseudoComponentInMultipleMatchingSelectorsFromSingleRule()
+    public function inlineCssKeepsRuleWithPseudoComponentInMultipleMatchingSelectorsFromSingleRule(): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p><a>bar</a></html>');
         $css = 'p:hover, a:hover { color: green; }';
@@ -2270,7 +2272,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsOnlyMatchingSelectorsWithPseudoComponentFromSingleRule()
+    public function inlineCssKeepsOnlyMatchingSelectorsWithPseudoComponentFromSingleRule(): void
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a></html>');
 
@@ -2282,7 +2284,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesCssToMatchingElementsAndKeepsRuleWithPseudoComponentFromSingleRule()
+    public function inlineCssAppliesCssToMatchingElementsAndKeepsRuleWithPseudoComponentFromSingleRule(): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p><a>bar</a></html>');
 
@@ -2296,7 +2298,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelectorForHtmlWithHeader()
+    public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelectorForHtmlWithHeader(): void
     {
         $subject = $this->buildDebugSubject('<html><header><a>foo</a></header></html>');
 
@@ -2326,8 +2328,10 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider mediaTypesDataProvider
      */
-    public function inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRule(string $emptyRuleMediaType, string $mediaType)
-    {
+    public function inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRule(
+        string $emptyRuleMediaType,
+        string $mediaType
+    ): void {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
         $subject->inlineCss(
@@ -2349,7 +2353,7 @@ class CssInlinerTest extends TestCase
     public function inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRuleWithCssAfter(
         string $emptyRuleMediaType,
         string $mediaType
-    ) {
+    ): void {
         $subject = $this->buildDebugSubject('<html><h1></h1></html>');
 
         $subject->inlineCss(
@@ -2363,7 +2367,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesCssFromStyleNodes()
+    public function inlineCssAppliesCssFromStyleNodes(): void
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
@@ -2378,7 +2382,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function disableStyleBlocksParsingProvidesFluentInterface()
+    public function disableStyleBlocksParsingProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -2390,7 +2394,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssWhenDisabledNotAppliesCssFromStyleBlocks()
+    public function inlineCssWhenDisabledNotAppliesCssFromStyleBlocks(): void
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
@@ -2406,7 +2410,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssWhenStyleBlocksParsingDisabledKeepInlineStyles()
+    public function inlineCssWhenStyleBlocksParsingDisabledKeepInlineStyles(): void
     {
         $styleAttributeValue = 'text-align: center;';
         $subject = $this->buildDebugSubject(
@@ -2423,7 +2427,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function disableInlineStyleAttributesParsingProvidesFluentInterface()
+    public function disableInlineStyleAttributesParsingProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -2435,7 +2439,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssWhenDisabledNotAppliesCssFromInlineStyles()
+    public function inlineCssWhenDisabledNotAppliesCssFromInlineStyles(): void
     {
         $subject = $this->buildDebugSubject('<html style="color: #ccc;"></html>');
         $subject->disableInlineStyleAttributesParsing();
@@ -2448,7 +2452,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssWhenInlineStyleAttributesParsingDisabledKeepStyleBlockStyles()
+    public function inlineCssWhenInlineStyleAttributesParsingDisabledKeepStyleBlockStyles(): void
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
@@ -2467,7 +2471,7 @@ class CssInlinerTest extends TestCase
      *
      * @test
      */
-    public function inlineCssAppliesCssWithMixedCaseAttributesInStyleBlock()
+    public function inlineCssAppliesCssWithMixedCaseAttributesInStyleBlock(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>' .
@@ -2485,7 +2489,7 @@ class CssInlinerTest extends TestCase
      *
      * @test
      */
-    public function inlineCssMergesCssWithMixedCaseAttribute()
+    public function inlineCssMergesCssWithMixedCaseAttribute(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>' .
@@ -2503,7 +2507,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssMergesCssWithMixedUnits()
+    public function inlineCssMergesCssWithMixedUnits(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head>' .
@@ -2519,7 +2523,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsCssMediaQueriesWithCssCommentAfterMediaQuery()
+    public function inlineCssKeepsCssMediaQueriesWithCssCommentAfterMediaQuery(): void
     {
         $subject = $this->buildDebugSubject('<html><body></body></html>');
 
@@ -2549,7 +2553,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function importantInExternalCssOverwritesInlineCss()
+    public function importantInExternalCssOverwritesInlineCss(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
 
@@ -2561,7 +2565,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function importantInExternalCssKeepsInlineCssForOtherAttributes()
+    public function importantInExternalCssKeepsInlineCssForOtherAttributes(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; text-align: center;');
 
@@ -2573,7 +2577,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function importantIsCaseInsensitive()
+    public function importantIsCaseInsensitive(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
 
@@ -2585,7 +2589,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function secondImportantStyleOverwritesFirstOne()
+    public function secondImportantStyleOverwritesFirstOne(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml();
 
@@ -2597,7 +2601,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function secondNonImportantStyleOverwritesFirstOne()
+    public function secondNonImportantStyleOverwritesFirstOne(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml();
 
@@ -2609,7 +2613,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function secondNonImportantStyleNotOverwritesFirstImportantOne()
+    public function secondNonImportantStyleNotOverwritesFirstImportantOne(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml();
 
@@ -2621,7 +2625,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesLaterShorthandStyleAfterIndividualStyle()
+    public function inlineCssAppliesLaterShorthandStyleAfterIndividualStyle(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml();
 
@@ -2633,7 +2637,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle()
+    public function inlineCssAppliesLaterOverridingStyleAfterStyleAfterOverriddenStyle(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml();
 
@@ -2645,7 +2649,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesInlineOverridingStyleAfterCssStyleAfterOverriddenCssStyle()
+    public function inlineCssAppliesInlineOverridingStyleAfterCssStyleAfterOverriddenCssStyle(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin-top: 3px;');
 
@@ -2657,7 +2661,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssAppliesLaterInlineOverridingStyleAfterEarlierInlineStyle()
+    public function inlineCssAppliesLaterInlineOverridingStyleAfterEarlierInlineStyle(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; margin-top: 3px;');
 
@@ -2669,7 +2673,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function irrelevantMediaQueriesAreRemoved()
+    public function irrelevantMediaQueriesAreRemoved(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $uselessQuery = '@media all and (max-width: 500px) { em { color:red; } }';
@@ -2682,7 +2686,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function relevantMediaQueriesAreRetained()
+    public function relevantMediaQueriesAreRetained(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $usefulQuery = '@media all and (max-width: 500px) { p { color:red; } }';
@@ -2695,7 +2699,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss()
+    public function importantStyleRuleFromInlineCssOverwritesImportantStyleRuleFromExternalCss(): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px !important; text-align: center;');
 
@@ -2708,7 +2712,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addExcludedSelectorProvidesFluentInterface()
+    public function addExcludedSelectorProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -2720,7 +2724,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addExcludedSelectorIgnoresMatchingElementsFrom()
+    public function addExcludedSelectorIgnoresMatchingElementsFrom(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
 
@@ -2733,7 +2737,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addExcludedSelectorExcludesMatchingElementEventWithWhitespaceAroundSelector()
+    public function addExcludedSelectorExcludesMatchingElementEventWithWhitespaceAroundSelector(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
 
@@ -2746,7 +2750,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addExcludedSelectorKeepsNonMatchingElements()
+    public function addExcludedSelectorKeepsNonMatchingElements(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
 
@@ -2759,7 +2763,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function addExcludedSelectorCanExcludeSubtree()
+    public function addExcludedSelectorCanExcludeSubtree(): void
     {
         $htmlSubtree = '<div class="message-preview"><p><em>Message</em> <strong>preview.</strong></p></div>';
         $subject = $this->buildDebugSubject('<html><body>' . $htmlSubtree . '<p>Another paragraph.</p></body></html>');
@@ -2774,7 +2778,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function removeExcludedSelectorProvidesFluentInterface()
+    public function removeExcludedSelectorProvidesFluentInterface(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
 
@@ -2786,7 +2790,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function removeExcludedSelectorGetsMatchingElementsToBeInlinedAgain()
+    public function removeExcludedSelectorGetsMatchingElementsToBeInlinedAgain(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
         $subject->addExcludedSelector('p.x');
@@ -2800,7 +2804,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssInDebugModeForInvalidExcludedSelectorThrowsException()
+    public function inlineCssInDebugModeForInvalidExcludedSelectorThrowsException(): void
     {
         $this->expectException(SyntaxErrorException::class);
 
@@ -2814,7 +2818,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotInDebugModeIgnoresInvalidExcludedSelector()
+    public function inlineCssNotInDebugModeIgnoresInvalidExcludedSelector(): void
     {
         $subject = CssInliner::fromHtml('<html><p class="x"></p></html>');
         $subject->setDebug(false);
@@ -2828,7 +2832,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotInDebugModeIgnoresOnlyInvalidExcludedSelector()
+    public function inlineCssNotInDebugModeIgnoresOnlyInvalidExcludedSelector(): void
     {
         $subject = CssInliner::fromHtml('<html><p class="x"></p><p class="y"></p><p class="z"></p></html>');
         $subject->setDebug(false);
@@ -2847,7 +2851,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function emptyMediaQueriesAreRemoved()
+    public function emptyMediaQueriesAreRemoved(): void
     {
         $subject = $this->buildDebugSubject('<html><body><p></p></body></html>');
         $emptyQuery = '@media all and (max-width: 500px) { }';
@@ -2860,7 +2864,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce()
+    public function multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><body>' .
@@ -2881,7 +2885,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce()
+    public function multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><body>' .
@@ -2902,7 +2906,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function multipleMediaQueriesAreAppliedOnlyOnce()
+    public function multipleMediaQueriesAreAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><body>' .
@@ -2944,7 +2948,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider dataUriMediaTypeDataProvider
      */
-    public function dataUrisAreConserved(string $dataUriMediaType)
+    public function dataUrisAreConserved(string $dataUriMediaType): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
         $styleRule = 'background-image: url(data:image/png' . $dataUriMediaType .
@@ -2963,7 +2967,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssIgnoresPseudoClassCombinedWithPseudoElement()
+    public function inlineCssIgnoresPseudoClassCombinedWithPseudoElement(): void
     {
         $subject = $this->buildDebugSubject('<html><body><div></div></body></html>');
 
@@ -2975,7 +2979,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssKeepsInlineStylePriorityVersusStyleBlockRules()
+    public function inlineCssKeepsInlineStylePriorityVersusStyleBlockRules(): void
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>p {padding:10px};</style></head><body><p style="padding-left:20px;"></p></body></html>'
@@ -3046,7 +3050,7 @@ class CssInlinerTest extends TestCase
     public function inlineCssRemovesImportantRule(
         string $originalStyleAttributeContent,
         string $expectedStyleAttributeContent
-    ) {
+    ): void {
         $subject = $this->buildDebugSubject(
             '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
         );
@@ -3059,7 +3063,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException()
+    public function inlineCssInDebugModeForInvalidSelectorsInMediaQueryBlocksThrowsException(): void
     {
         $this->expectException(SyntaxErrorException::class);
 
@@ -3072,7 +3076,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks()
+    public function inlineCssNotInDebugModeKeepsInvalidOrUnrecognizedSelectorsInMediaQueryBlocks(): void
     {
         $subject = CssInliner::fromHtml('<html></html>');
         $subject->setDebug(false);
@@ -3110,7 +3114,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideCssRulesWithUnsupportedSelectorCombination
      */
-    public function inlineCssNotInDebugModeDiscardsRulesWithUnsupportedSelectorCombination(string $css)
+    public function inlineCssNotInDebugModeDiscardsRulesWithUnsupportedSelectorCombination(string $css): void
     {
         $subject = CssInliner::fromHtml('<html><p>Hello</p><p>World</p></html>');
         $subject->setDebug(false);
@@ -3149,7 +3153,7 @@ class CssInlinerTest extends TestCase
      */
     public function inlineCssNotInDebugModeMayDiscardRulesWithPossiblyIncorrectlyImplementedSelectorCombination(
         string $css
-    ) {
+    ): void {
         $subject = CssInliner::fromHtml('<html><p>Hello</p><p>World</p></html>');
         $subject->setDebug(false);
 
@@ -3186,7 +3190,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideCssRulesWithIncorrectlyImplementedSelectorCombination
      */
-    public function inlineCssAppliesRulesWithIncorrectlyImplementedSelectorCombination(string $css)
+    public function inlineCssAppliesRulesWithIncorrectlyImplementedSelectorCombination(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><p>Hello</p><p>World</p></html>');
 
@@ -3261,7 +3265,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideValidImportRules
      */
-    public function inlineCssPreservesValidImportRules(string $cssBefore, string $cssImports, string $cssAfter)
+    public function inlineCssPreservesValidImportRules(string $cssBefore, string $cssImports, string $cssAfter): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
@@ -3298,7 +3302,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideInvalidImportRules
      */
-    public function inlineCssRemovesInvalidImportRules(string $css)
+    public function inlineCssRemovesInvalidImportRules(string $css): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
@@ -3310,7 +3314,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssNotCopiesInlinableRuleAfterImportRuleToStyleElement()
+    public function inlineCssNotCopiesInlinableRuleAfterImportRuleToStyleElement(): void
     {
         $cssImport = '@import "foo.css";';
         $cssAfter = 'p { color: red; }';
@@ -3396,8 +3400,11 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideValidFontFaceRules
      */
-    public function inlineCssPreservesValidFontFaceRules(string $cssBefore, string $cssFontFaces, string $cssAfter)
-    {
+    public function inlineCssPreservesValidFontFaceRules(
+        string $cssBefore,
+        string $cssFontFaces,
+        string $cssAfter
+    ): void {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
         $subject->inlineCss($cssBefore . $cssFontFaces . $cssAfter);
@@ -3427,7 +3434,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider provideInvalidFontFaceRules
      */
-    public function inlineCssRemovesInvalidFontFaceRules(string $css)
+    public function inlineCssRemovesInvalidFontFaceRules(string $css): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
 
@@ -3439,7 +3446,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled()
+    public function getMatchingUninlinableSelectorsThrowsExceptionIfInlineCssNotCalled(): void
     {
         $this->expectException(\BadMethodCallException::class);
 
@@ -3466,7 +3473,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider matchingUninlinableSelectorsDataProvider
      */
-    public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors)
+    public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors): void
     {
         $css = \implode(' ', \array_map(
             static function ($selector) {
@@ -3503,7 +3510,7 @@ class CssInlinerTest extends TestCase
      *
      * @dataProvider nonMatchingOrInlinableSelectorDataProvider
      */
-    public function getMatchingUninlinableSelectorsNotReturnsNonMatchingOrInlinableSelector(string $selector)
+    public function getMatchingUninlinableSelectorsNotReturnsNonMatchingOrInlinableSelector(string $selector): void
     {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
         $subject->inlineCss($selector . ' { color: red; }');
@@ -3516,7 +3523,7 @@ class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function copyUninlinableCssToStyleNodeHasNoSideEffects()
+    public function copyUninlinableCssToStyleNodeHasNoSideEffects(): void
     {
         $subject = $this->buildDebugSubject('<html><a>foo</a><p>bar</p></html>');
         // CSS: `a:hover { color: green; } p:hover { color: blue; }`

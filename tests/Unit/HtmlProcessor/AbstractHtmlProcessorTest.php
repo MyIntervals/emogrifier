@@ -20,7 +20,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsAbstractHtmlProcessor()
+    public function fromHtmlReturnsAbstractHtmlProcessor(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
@@ -30,7 +30,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlReturnsInstanceOfCalledClass()
+    public function fromHtmlReturnsInstanceOfCalledClass(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
@@ -40,7 +40,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function fromDomDocumentReturnsAbstractHtmlProcessor()
+    public function fromDomDocumentReturnsAbstractHtmlProcessor(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
@@ -52,7 +52,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function fromDomDocumentReturnsInstanceOfCalledClass()
+    public function fromDomDocumentReturnsInstanceOfCalledClass(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
@@ -64,7 +64,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function renderRendersDocumentProvidedToFromDomDocument()
+    public function renderRendersDocumentProvidedToFromDomDocument(): void
     {
         $innerHtml = '<p>Hello world!</p>';
         $document = new \DOMDocument();
@@ -79,7 +79,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function renderPreservesBodyContentProvidedToFromHtml()
+    public function renderPreservesBodyContentProvidedToFromHtml(): void
     {
         $innerHtml = '<p>Hello world!</p>';
         $subject = TestingHtmlProcessor::fromHtml('<html>' . $innerHtml . '</html>');
@@ -92,7 +92,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function renderPreservesOuterHtmlProvidedToFromHtml()
+    public function renderPreservesOuterHtmlProvidedToFromHtml(): void
     {
         $rawHtml = '<!DOCTYPE HTML>' .
             '<html>' .
@@ -114,7 +114,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function fromHtmlWithEmptyStringThrowsException()
+    public function fromHtmlWithEmptyStringThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
@@ -142,7 +142,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider invalidHtmlDataProvider
      */
-    public function renderRepairsBrokenHtml(string $input, string $expectedHtml)
+    public function renderRepairsBrokenHtml(string $input, string $expectedHtml): void
     {
         $subject = TestingHtmlProcessor::fromHtml($input);
         $result = $subject->render();
@@ -269,7 +269,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider provideHtmlWithOptionalTagsOmitted
      */
-    public function insertsOptionallyOmittedTags(string $htmlWithOptionalTagsOmitted, string $equivalentHtml)
+    public function insertsOptionallyOmittedTags(string $htmlWithOptionalTagsOmitted, string $equivalentHtml): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<body>' . $htmlWithOptionalTagsOmitted . '</body>');
 
@@ -325,7 +325,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider providePSiblingTagName
      */
-    public function insertsOptionallyOmittedClosingPTagBeforeSibling(string $siblingTagName)
+    public function insertsOptionallyOmittedClosingPTagBeforeSibling(string $siblingTagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
             '<body><p> Hello <' . $siblingTagName . '></' . $siblingTagName . '></body>'
@@ -371,7 +371,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider providePParentTagName
      */
-    public function insertsOptionallyOmittedClosingPTagAtEndOfParent(string $parentTagName)
+    public function insertsOptionallyOmittedClosingPTagAtEndOfParent(string $parentTagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
             '<body><' . $parentTagName . '><p> Hello </' . $parentTagName . '><p> World </p></body>'
@@ -406,7 +406,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutHtmlTagDataProvider
      */
-    public function addsMissingHtmlTag(string $html)
+    public function addsMissingHtmlTag(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -436,7 +436,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutHeadTagDataProvider
      */
-    public function addsMissingHeadTagOnlyOnce(string $html)
+    public function addsMissingHeadTagOnlyOnce(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -467,7 +467,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithHeadTagDataProvider
      */
-    public function notAddsSecondHeadTag(string $html)
+    public function notAddsSecondHeadTag(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -480,7 +480,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function preservesHeadAttributes()
+    public function preservesHeadAttributes(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<head lang="en"></head>');
 
@@ -508,7 +508,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
-    public function addsMissingBodyTag(string $html)
+    public function addsMissingBodyTag(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -520,7 +520,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function putsMissingBodyElementAroundBodyContent()
+    public function putsMissingBodyElementAroundBodyContent(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<p>Hello</p>');
 
@@ -549,7 +549,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function keepsSpecialCharactersInTextNodes(string $codeNotToBeChanged)
+    public function keepsSpecialCharactersInTextNodes(string $codeNotToBeChanged): void
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -562,7 +562,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function addsMissingHtml5DocumentType()
+    public function addsMissingHtml5DocumentType(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
@@ -603,7 +603,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider documentTypeDataProvider
      */
-    public function keepsExistingDocumentType(string $documentType)
+    public function keepsExistingDocumentType(string $documentType): void
     {
         $html = $documentType . '<html></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -646,7 +646,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider normalizedDocumentTypeDataProvider
      */
-    public function normalizesDocumentType(string $documentType, string $normalizedDocumentType)
+    public function normalizesDocumentType(string $documentType, string $normalizedDocumentType): void
     {
         $html = $documentType . '<html></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -664,7 +664,7 @@ class AbstractHtmlProcessorTest extends TestCase
      * @dataProvider contentWithoutHeadTagDataProvider
      * @dataProvider contentWithHeadTagDataProvider
      */
-    public function addsMissingContentTypeMetaTagOnlyOnce(string $html)
+    public function addsMissingContentTypeMetaTagOnlyOnce(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
@@ -700,7 +700,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider htmlAroundContentTypeDataProvider
      */
-    public function notAddsSecondContentTypeMetaTag(string $htmlBefore, string $htmlAfter)
+    public function notAddsSecondContentTypeMetaTag(string $htmlBefore, string $htmlAfter): void
     {
         $html = $htmlBefore . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $htmlAfter;
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -839,7 +839,7 @@ class AbstractHtmlProcessorTest extends TestCase
         string $documentType,
         string $htmlWithNonXmlSelfClosingTags,
         string $htmlWithXmlSelfClosingTags
-    ) {
+    ): void {
         $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
         );
@@ -857,7 +857,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
-    public function keepsNonXmlSelfClosingTags(string $documentType, string $htmlWithNonXmlSelfClosingTags)
+    public function keepsNonXmlSelfClosingTags(string $documentType, string $htmlWithNonXmlSelfClosingTags): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
             $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
@@ -876,7 +876,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
-    public function notAddsClosingTagForSelfClosingTags(string $htmlWithNonXmlSelfClosingTags, string $tagName)
+    public function notAddsClosingTagForSelfClosingTags(string $htmlWithNonXmlSelfClosingTags, string $tagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
@@ -890,7 +890,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function renderBodyContentForEmptyBodyReturnsEmptyString()
+    public function renderBodyContentForEmptyBodyReturnsEmptyString(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<html><body></body></html>');
 
@@ -902,7 +902,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function renderBodyContentReturnsBodyContent()
+    public function renderBodyContentReturnsBodyContent(): void
     {
         $bodyContent = '<p>Hello world</p>';
         $subject = TestingHtmlProcessor::fromHtml('<html><body>' . $bodyContent . '</body></html>');
@@ -917,7 +917,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @test
      */
-    public function renderBodyContentForBodyWithAttributeReturnsBodyContent()
+    public function renderBodyContentForBodyWithAttributeReturnsBodyContent(): void
     {
         $bodyContent = '<div>simple</div>';
         $subject = TestingHtmlProcessor::fromHtml('<html><body class="foo">' . $bodyContent . '</body></html>');
@@ -934,7 +934,7 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider specialCharactersDataProvider
      */
-    public function renderBodyContentKeepsSpecialCharactersInTextNodes(string $codeNotToBeChanged)
+    public function renderBodyContentKeepsSpecialCharactersInTextNodes(string $codeNotToBeChanged): void
     {
         $html = '<html><p>' . $codeNotToBeChanged . '</p></html>';
         $subject = TestingHtmlProcessor::fromHtml($html);
@@ -955,7 +955,7 @@ class AbstractHtmlProcessorTest extends TestCase
     public function renderBodyContentNotAddsClosingTagForSelfClosingTags(
         string $htmlWithNonXmlSelfClosingTags,
         string $tagName
-    ) {
+    ): void {
         $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
         );
@@ -968,7 +968,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function getDomDocumentReturnsDomDocument()
+    public function getDomDocumentReturnsDomDocument(): void
     {
         $subject = TestingHtmlProcessor::fromHtml('<html></html>');
 
@@ -978,7 +978,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function getDomDocumentReturnsDomDocumentProvidedToFromDomDocument()
+    public function getDomDocumentReturnsDomDocumentProvidedToFromDomDocument(): void
     {
         $document = new \DOMDocument();
         $document->loadHTML('<html></html>');
@@ -990,7 +990,7 @@ class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
-    public function getDomDocumentWithNormalizedHtmlRepresentsTheGivenHtml()
+    public function getDomDocumentWithNormalizedHtmlRepresentsTheGivenHtml(): void
     {
         $html = "<!DOCTYPE html>\n<html>\n<head>" .
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' .
@@ -1010,8 +1010,10 @@ class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
-    public function getDomDocumentVoidElementNotHasChildNodes(string $htmlWithNonXmlSelfClosingTags, string $tagName)
-    {
+    public function getDomDocumentVoidElementNotHasChildNodes(
+        string $htmlWithNonXmlSelfClosingTags,
+        string $tagName
+    ): void {
         // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
         $subject = TestingHtmlProcessor::fromHtml(
             '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
@@ -1034,7 +1036,7 @@ class AbstractHtmlProcessorTest extends TestCase
      * @param string $haystack
      * @param string $message
      */
-    private static function assertContainsHtml(string $needle, string $haystack, string $message = '')
+    private static function assertContainsHtml(string $needle, string $haystack, string $message = ''): void
     {
         $needleMatcher = \preg_quote($needle, '%');
         $needleMatcherWithNewlines = \preg_replace(
@@ -1056,7 +1058,7 @@ class AbstractHtmlProcessorTest extends TestCase
      * @param string $actual
      * @param string $message
      */
-    private static function assertEqualsHtml(string $expected, string $actual, string $message = '')
+    private static function assertEqualsHtml(string $expected, string $actual, string $message = ''): void
     {
         $normalizedExpected = self::normalizeHtmlElement($expected);
         $normalizedActual = self::normalizeHtmlElement($actual);

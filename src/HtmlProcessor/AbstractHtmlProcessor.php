@@ -16,12 +16,12 @@ abstract class AbstractHtmlProcessor
     /**
      * @var string
      */
-    const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
+    protected const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
 
     /**
      * @var string
      */
-    const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
+    protected const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
     /**
      * @var string Regular expression part to match tag names that PHP's DOMDocument implementation is not aware are
@@ -30,7 +30,7 @@ abstract class AbstractHtmlProcessor
      *
      * @see https://bugs.php.net/bug.php?id=73175
      */
-    const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
+    protected const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
 
     /**
      * @var \DOMDocument|null
@@ -94,7 +94,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function setHtml(string $html)
+    private function setHtml(string $html): void
     {
         $this->createUnifiedDomDocument($html);
     }
@@ -127,7 +127,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function setDomDocument(\DOMDocument $domDocument)
+    private function setDomDocument(\DOMDocument $domDocument): void
     {
         $this->domDocument = $domDocument;
         $this->xPath = new \DOMXPath($this->domDocument);
@@ -191,7 +191,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function createUnifiedDomDocument(string $html)
+    private function createUnifiedDomDocument(string $html): void
     {
         $this->createRawDomDocument($html);
         $this->ensureExistenceOfBodyElement();
@@ -204,7 +204,7 @@ abstract class AbstractHtmlProcessor
      *
      * @return void
      */
-    private function createRawDomDocument(string $html)
+    private function createRawDomDocument(string $html): void
     {
         $domDocument = new \DOMDocument();
         $domDocument->strictErrorChecking = false;
@@ -332,7 +332,7 @@ abstract class AbstractHtmlProcessor
      *
      * @throws \UnexpectedValueException
      */
-    private function ensureExistenceOfBodyElement()
+    private function ensureExistenceOfBodyElement(): void
     {
         if ($this->getDomDocument()->getElementsByTagName('body')->item(0) !== null) {
             return;

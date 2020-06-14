@@ -23,7 +23,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @var string
      */
-    const DISPLAY_NONE_MATCHER
+    private const DISPLAY_NONE_MATCHER
         = '//*[@style and contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")'
         . ' and not(@class and contains(concat(" ", normalize-space(@class), " "), " -emogrifier-keep "))]';
 
@@ -86,7 +86,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep)
+    private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep): void
     {
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
@@ -109,7 +109,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @return void
      */
-    private function removeClassAttributeFromElements(\DOMNodeList $elements)
+    private function removeClassAttributeFromElements(\DOMNodeList $elements): void
     {
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
