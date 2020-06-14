@@ -15,7 +15,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Enforce constant visibility
   ([#892](https://github.com/MyIntervals/emogrifier/pull/892))
 - Rename the PHPCS configuration file
-  ([#891](https://github.com/MyIntervals/emogrifier/pull/891))
+  ([#891](https://github.com/MyIntervals/emogrifier/pull/891),
+  [#896](https://github.com/MyIntervals/emogrifier/pull/896))
 - Make use of PHP 7.1 language features
   ([#883](https://github.com/MyIntervals/emogrifier/pull/883))
 
