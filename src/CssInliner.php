@@ -173,13 +173,13 @@ class CssInliner extends AbstractHtmlProcessor
         $cssWithoutComments = $this->removeCssComments($combinedCss);
         [$cssWithoutCommentsCharsetOrImport, $cssImportRules]
             = $this->extractImportAndCharsetRules($cssWithoutComments);
-        [$cssWithoutCommentsCharsetImportOrFontFace, $cssFontFaces]
-            = $this->extractFontFaceRules($cssWithoutCommentsCharsetOrImport);
+        [$cssWithoutCommentsOrUninlinableAtRules, $cssAtRules]
+            = $this->extractUninlinableCssAtRules($cssWithoutCommentsCharsetOrImport);
 
-        $uninlinableCss = $cssImportRules . $cssFontFaces;
+        $uninlinableCss = $cssImportRules . $cssAtRules;
 
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->parseCssRules($cssWithoutCommentsCharsetImportOrFontFace);
+        $cssRules = $this->parseCssRules($cssWithoutCommentsOrUninlinableAtRules);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
@@ -525,38 +525,44 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Extracts `@font-face` rules from the supplied CSS.  Note that `@font-face` rules can be placed anywhere in your
-     * CSS and are not case sensitive.
+     * Extracts uninlinable at-rules from the supplied CSS.  Currently, any at-rule apart from `@media` is considered
+     * uninlinable.  Apart from `@charset` and `@import`, which should already have been removed, these rules can be
+     * placed anywhere in the CSS and are not case sensitive.  `@font-face` rules will be checked for validity, though
+     * other at-rules will be assumed to be valid.
      *
      * @param string $css CSS with comments, import and charset removed
      *
-     * @return string[] The first element is the CSS with the valid `@font-face` rules removed.  The second
-     * element contains a concatenation of the valid `@font-face` rules, each followed by whatever whitespace followed
-     * it in the original CSS (so that either unminified or minified formatting is preserved); if there were no
-     * `@font-face` rules, it will be an empty string.
+     * @return string[] The first element is the CSS with the at-rules removed.  The second element contains a
+     * concatenation of the valid at-rules, each followed by whatever whitespace followed it in the original CSS (so
+     * that either unminified or minified formatting is preserved); if there were no at-rules, it will be an empty
+     * string.
      */
-    private function extractFontFaceRules(string $css): array
+    private function extractUninlinableCssAtRules(string $css): array
     {
         $possiblyModifiedCss = $css;
-        $fontFaces = '';
+        $atRules = '';
 
+        // `(\{[^\{\}]*+(?:(?2)[^\{\}]*+)*+\})` matches possibly nested `{...}` as 2nd capturing group, via `(?2)`
         while (
             \preg_match(
-                '/(@font-face[^}]++}\\s*+)/i',
+                '/(@(?!media\\b)[\\w\\-]++)[^\\{]*+(\\{[^\\{\\}]*+(?:(?2)[^\\{\\}]*+)*+\\})\\s*+/i',
                 $possiblyModifiedCss,
                 $matches
             )
         ) {
-            [$fullMatch, $atRuleAndFollowingWhitespace] = $matches;
+            [$fullMatch, $atRuleName] = $matches;
 
-            if (\stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false) {
-                $fontFaces .= $atRuleAndFollowingWhitespace;
+            if (
+                \strcasecmp($atRuleName, '@font-face') !== 0
+                || \stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false
+            ) {
+                $atRules .= $fullMatch;
             }
 
             $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
         }
 
-        return [$possiblyModifiedCss, $fontFaces];
+        return [$possiblyModifiedCss, $atRules];
     }
 
     /**

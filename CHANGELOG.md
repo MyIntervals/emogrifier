@@ -33,6 +33,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Preserve all uninlinable (or otherwise unprocessed) at-rules
+  ([#899](https://github.com/MyIntervals/emogrifier/pull/899))
 - Allow Windows CLI to run development tools installed through Phive
   ([#900](https://github.com/MyIntervals/emogrifier/pull/900))
 - Switch to a maintained package for parallel PHP linting
