@@ -22,7 +22,7 @@ final class CssConcatenatorTest extends TestCase
     private $subject = null;
 
     /**
-     * @return void
+     * Setup.
      */
     protected function setUp(): void
     {

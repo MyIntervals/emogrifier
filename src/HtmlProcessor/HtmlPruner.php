@@ -83,8 +83,6 @@ class HtmlPruner extends AbstractHtmlProcessor
      *
      * @param \DOMNodeList $elements
      * @param string[] $classesToKeep
-     *
-     * @return void
      */
     private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep): void
     {
@@ -106,8 +104,6 @@ class HtmlPruner extends AbstractHtmlProcessor
      * Removes the `class` attribute from each element in `$elements`.
      *
      * @param \DOMNodeList $elements
-     *
-     * @return void
      */
     private function removeClassAttributeFromElements(\DOMNodeList $elements): void
     {

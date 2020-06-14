@@ -91,8 +91,6 @@ abstract class AbstractHtmlProcessor
      * Sets the HTML to process.
      *
      * @param string $html the HTML to process, must be UTF-8-encoded
-     *
-     * @return void
      */
     private function setHtml(string $html): void
     {
@@ -124,8 +122,6 @@ abstract class AbstractHtmlProcessor
 
     /**
      * @param \DOMDocument $domDocument
-     *
-     * @return void
      */
     private function setDomDocument(\DOMDocument $domDocument): void
     {
@@ -188,8 +184,6 @@ abstract class AbstractHtmlProcessor
      * The DOM document will always have a BODY element and a document type.
      *
      * @param string $html
-     *
-     * @return void
      */
     private function createUnifiedDomDocument(string $html): void
     {
@@ -201,8 +195,6 @@ abstract class AbstractHtmlProcessor
      * Creates a DOMDocument instance from the given HTML and stores it in $this->domDocument.
      *
      * @param string $html
-     *
-     * @return void
      */
     private function createRawDomDocument(string $html): void
     {
@@ -327,8 +319,6 @@ abstract class AbstractHtmlProcessor
 
     /**
      * Checks that $this->domDocument has a BODY element and adds it if it is missing.
-     *
-     * @return void
      *
      * @throws \UnexpectedValueException
      */

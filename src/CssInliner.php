@@ -333,8 +333,6 @@ class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Clears all caches.
-     *
-     * @return void
      */
     private function clearAllCaches(): void
     {
@@ -348,8 +346,6 @@ class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Purges the visited nodes.
-     *
-     * @return void
      */
     private function purgeVisitedNodes(): void
     {
@@ -362,8 +358,6 @@ class CssInliner extends AbstractHtmlProcessor
      * This changes 'DISPLAY: none' to 'display: none'.
      * We wouldn't have to do this if DOMXPath supported XPath 2.0.
      * Also stores a reference of nodes with existing inline styles so we don't overwrite them.
-     *
-     * @return void
      */
     private function normalizeStyleAttributesOfAllNodes(): void
     {
@@ -394,8 +388,6 @@ class CssInliner extends AbstractHtmlProcessor
      * Normalizes the value of the "style" attribute and saves it.
      *
      * @param \DOMElement $node
-     *
-     * @return void
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
@@ -831,8 +823,6 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param \DOMElement $node
      * @param string[][] $cssRule
-     *
-     * @return void
      */
     private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule): void
     {
@@ -918,8 +908,6 @@ class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Merges styles from styles attributes and style nodes and applies them to the attribute nodes
-     *
-     * @return void
      */
     private function fillStyleAttributesWithMergedStyles(): void
     {
@@ -939,8 +927,6 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Searches for all nodes with a style attribute and removes the "!important" annotations out of
      * the inline style declarations, eventually by rearranging declarations.
-     *
-     * @return void
      */
     private function removeImportantAnnotationFromAllInlineStyles(): void
     {
@@ -958,8 +944,6 @@ class CssInliner extends AbstractHtmlProcessor
      * to "font-size: 13px; font: 12px serif;" in order to remain correct.
      *
      * @param \DOMElement $node
-     *
-     * @return void
      */
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
@@ -1000,8 +984,6 @@ class CssInliner extends AbstractHtmlProcessor
      * `$this->matchingUninlinableCssRules`.
      *
      * @param string[][] $cssRules the "uninlinable" array of CSS rules returned by `parseCssRules`
-     *
-     * @return void
      */
     private function determineMatchingUninlinableCssRules(array $cssRules): void
     {
@@ -1114,8 +1096,6 @@ class CssInliner extends AbstractHtmlProcessor
      *        placed in the `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>`
      *        element will be created containing just `$uninlinableCss`.  `$uninlinableCss` may be an empty string;
      *        if it is, and there are no unlinlinable CSS rules, an empty `<style>` element will not be created.
-     *
-     * @return void
      */
     private function copyUninlinableCssToStyleNode(string $uninlinableCss): void
     {
@@ -1144,8 +1124,6 @@ class CssInliner extends AbstractHtmlProcessor
      * @see https://github.com/MyIntervals/emogrifier/issues/103
      *
      * @param string $css
-     *
-     * @return void
      */
     protected function addStyleElementToDocument(string $css): void
     {
