@@ -1094,7 +1094,7 @@ class CssInliner extends AbstractHtmlProcessor
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim(\preg_replace_callback(
-            '/(\\s?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
+            '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
             [$this, 'replaceUnmatchableNotComponent'],
             ' ' . $selector
         ));
@@ -1112,16 +1112,16 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string[] $matches array of elements matched by the regular expression
      *
      * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
-     *         whitespace followed by "*", or an empty string if there was no preceding whitespace
+     *         combinator followed by "*", or an empty string if there was no preceding combinator
      */
     private function replaceUnmatchableNotComponent(array $matches): string
     {
-        [$notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets] = $matches;
+        [$notComponentWithAnyPrecedingCombinator, $anyPrecedingCombinator, $notArgumentInBrackets] = $matches;
 
         if ($this->hasUnsupportedPseudoClass($notArgumentInBrackets)) {
-            return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
+            return $anyPrecedingCombinator !== '' ? $anyPrecedingCombinator . '*' : '';
         }
-        return $notComponentWithAnyPrecedingWhitespace;
+        return $notComponentWithAnyPrecedingCombinator;
     }
 
     /**
@@ -1136,7 +1136,7 @@ class CssInliner extends AbstractHtmlProcessor
     private function removeSelectorComponents(string $matcher, string $selector): string
     {
         return \preg_replace(
-            ['/(\\s|^)' . $matcher . '/i', '/' . $matcher . '/i'],
+            ['/([\\s>+~]|^)' . $matcher . '/i', '/' . $matcher . '/i'],
             ['$1*', ''],
             $selector
         );
