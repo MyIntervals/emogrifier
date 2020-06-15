@@ -670,11 +670,7 @@ class CssInliner extends AbstractHtmlProcessor
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
                 $hasPseudoElement = \strpos($selector, '::') !== false;
-                $hasUnsupportedPseudoClass = (bool)\preg_match(
-                    '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
-                    $selector
-                );
-                $hasUnmatchablePseudo = $hasPseudoElement || $hasUnsupportedPseudoClass;
+                $hasUnmatchablePseudo = $hasPseudoElement || $this->hasUnsupportedPseudoClass($selector);
 
                 $parsedCssRule = [
                     'media' => $cssRule['media'],
@@ -694,6 +690,19 @@ class CssInliner extends AbstractHtmlProcessor
         $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
         return $cssRules;
+    }
+
+    /**
+     * @param string $selector
+     *
+     * @return bool
+     */
+    private function hasUnsupportedPseudoClass(string $selector): bool
+    {
+        return (bool)\preg_match(
+            '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
+            $selector
+        );
     }
 
     /**
@@ -1111,12 +1120,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         [$notComponentWithAnyPrecedingWhitespace, $anyPrecedingWhitespace, $notArgumentInBrackets] = $matches;
 
-        $hasUnmatchablePseudo = \preg_match(
-            '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-:]/i',
-            $notArgumentInBrackets
-        );
-
-        if ($hasUnmatchablePseudo) {
+        if ($this->hasUnsupportedPseudoClass($notArgumentInBrackets)) {
             return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
         }
         return $notComponentWithAnyPrecedingWhitespace;
