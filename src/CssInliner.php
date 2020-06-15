@@ -46,6 +46,18 @@ class CssInliner extends AbstractHtmlProcessor
     private const CACHE_KEY_COMBINED_STYLES = 3;
 
     /**
+     * This regular expression pattern will match any uninlinable at-rule with nested statements, along with any
+     * whitespace immediately following.  Currently, any at-rule apart from `@media` is considered uninlinable.  The
+     * first capturing group matches the at sign and identifier (e.g. `@font-face`).  The second capturing group matches
+     * the nested statements along with their enclosing curly brackets (i.e. `{...}`), and via `(?2)` will match deeper
+     * nested blocks recursively.
+     *
+     * @var string
+     */
+    private const UNINLINABLE_AT_RULE_MATCHER
+        = '/(@(?!media\\b)[\\w\\-]++)[^\\{]*+(\\{[^\\{\\}]*+(?:(?2)[^\\{\\}]*+)*+\\})\\s*+/i';
+
+    /**
      * Regular expression component matching a static pseudo class in a selector, without the preceding ":",
      * for which the applicable elements can be determined (by converting the selector to an XPath expression).
      * (Contains alternation without a group and is intended to be placed within a capturing, non-capturing or lookahead
@@ -525,10 +537,10 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Extracts uninlinable at-rules from the supplied CSS.  Currently, any at-rule apart from `@media` is considered
-     * uninlinable.  Apart from `@charset` and `@import`, which should already have been removed, these rules can be
-     * placed anywhere in the CSS and are not case sensitive.  `@font-face` rules will be checked for validity, though
-     * other at-rules will be assumed to be valid.
+     * Extracts uninlinable at-rules with nested statements (i.e. a block enclosed in curly brackets) from the supplied
+     * CSS.  Currently, any such at-rule apart from `@media` is considered uninlinable.  These rules can be placed
+     * anywhere in the CSS and are not case sensitive.  `@font-face` rules will be checked for validity, though other
+     * at-rules will be assumed to be valid.
      *
      * @param string $css CSS with comments, import and charset removed
      *
@@ -542,20 +554,16 @@ class CssInliner extends AbstractHtmlProcessor
         $possiblyModifiedCss = $css;
         $atRules = '';
 
-        // `(\{[^\{\}]*+(?:(?2)[^\{\}]*+)*+\})` matches possibly nested `{...}` as 2nd capturing group, via `(?2)`
         while (
             \preg_match(
-                '/(@(?!media\\b)[\\w\\-]++)[^\\{]*+(\\{[^\\{\\}]*+(?:(?2)[^\\{\\}]*+)*+\\})\\s*+/i',
+                self::UNINLINABLE_AT_RULE_MATCHER,
                 $possiblyModifiedCss,
                 $matches
             )
         ) {
             [$fullMatch, $atRuleName] = $matches;
 
-            if (
-                \strcasecmp($atRuleName, '@font-face') !== 0
-                || \stripos($fullMatch, 'font-family') !== false && \stripos($fullMatch, 'src') !== false
-            ) {
+            if ($this->isValidAtRule($atRuleName, $fullMatch)) {
                 $atRules .= $fullMatch;
             }
 
@@ -563,6 +571,24 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         return [$possiblyModifiedCss, $atRules];
+    }
+
+    /**
+     * Tests if an at-rule is valid.  Currently only `@font-face` rules are checked for validity; others are assumed to
+     * be valid.
+     *
+     * @param string $atIdentifier name of the at-rule with the preceding at sign
+     * @param string $rule full content of the rule, including the at-identifier
+     *
+     * @return bool
+     */
+    private function isValidAtRule(string $atIdentifier, string $rule): bool
+    {
+        if (\strcasecmp($atIdentifier, '@font-face') === 0) {
+            return \stripos($rule, 'font-family') !== false && \stripos($rule, 'src') !== false;
+        }
+
+        return true;
     }
 
     /**

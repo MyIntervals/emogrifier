@@ -55,7 +55,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @var string[]
      *
-     * selectoin of at-rules which have no special handling by `CssInliner` but should be passed through and placed in a
+     * selection of at-rules which have no special handling by `CssInliner` but should be passed through and placed in a
      * `<style>` element unmodified, for testing that and testing around
      */
     private const BLACK_BOX_AT_RULES = [
