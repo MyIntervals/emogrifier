@@ -1099,10 +1099,8 @@ class CssInliner extends AbstractHtmlProcessor
             ' ' . $selector
         ));
 
-        $pseudoComponentMatcher = ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+';
-        return \preg_replace(
-            ['/(\\s|^)' . $pseudoComponentMatcher . '/i', '/' . $pseudoComponentMatcher . '/i'],
-            ['$1*', ''],
+        return $this->removeSelectorComponents(
+            ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+',
             $selectorWithoutNots
         );
     }
@@ -1124,6 +1122,24 @@ class CssInliner extends AbstractHtmlProcessor
             return $anyPrecedingWhitespace !== '' ? $anyPrecedingWhitespace . '*' : '';
         }
         return $notComponentWithAnyPrecedingWhitespace;
+    }
+
+    /**
+     * Removes components from a CSS selector, replacing them with "*" if necessary.
+     *
+     * @param string $matcher regular expression part to match the components to remove
+     * @param string $selector
+     *
+     * @return string selector which will match the relevant DOM elements if the removed components are assumed to apply
+     * (or in the case of pseudo-elements will match their originating element)
+     */
+    private function removeSelectorComponents(string $matcher, string $selector): string
+    {
+        return \preg_replace(
+            ['/(\\s|^)' . $matcher . '/i', '/' . $matcher . '/i'],
+            ['$1*', ''],
+            $selector
+        );
     }
 
     /**
