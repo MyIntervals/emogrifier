@@ -33,6 +33,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Support combinator followed by dynamic pseudo-class in minified CSS
+  ([#903](https://github.com/MyIntervals/emogrifier/pull/903))
 - Preserve all uninlinable (or otherwise unprocessed) at-rules
   ([#899](https://github.com/MyIntervals/emogrifier/pull/899))
 - Allow Windows CLI to run development tools installed through Phive

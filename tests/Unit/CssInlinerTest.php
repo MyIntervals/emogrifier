@@ -2259,6 +2259,12 @@ final class CssInlinerTest extends TestCase
                 'static pseudo-class &' => 'a:first-child',
                 'ancestor &' => 'p ',
                 'ancestor & type &' => 'p a',
+                'parent &' => 'p > ',
+                'adjacent sibling &' => 'a + ',
+                'general sibling &' => 'a ~ ',
+                'minified parent &' => 'p>',
+                'minified adjacent sibling &' => 'a+',
+                'minified general sibling &' => 'a~',
             ]
         );
         $datasetsWithCombinedPseudoSelectors = [
@@ -2314,6 +2320,12 @@ final class CssInlinerTest extends TestCase
                 'static pseudo-class &' => 'a:not(.a)',
                 'ancestor &' => 'ul ',
                 'ancestor & type &' => 'p b',
+                'parent &' => 'ul > ',
+                'adjacent sibling &' => 'p + ',
+                'general sibling &' => 'p ~ ',
+                'minified parent &' => 'ul>',
+                'minified adjacent sibling &' => 'p+',
+                'minified general sibling &' => 'p~',
             ]
         );
         $datasetsWithCombinedPseudoSelectors = [
