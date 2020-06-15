@@ -39,7 +39,6 @@ class HtmlPruner extends AbstractHtmlProcessor
             return $this;
         }
 
-        /** @var \DOMNode $element */
         foreach ($elementsWithStyleDisplayNone as $element) {
             $parentNode = $element->parentNode;
             if ($parentNode !== null) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files>
+<files psalm-version="3.11.5@3c60609c218d4d4b3b257728b8089094e5c6c6c2">
   <file src="src/CssInliner.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$node</code>
@@ -11,27 +11,18 @@
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
     </InvalidArgument>
-    <InvalidNullableReturnType occurrences="1">
-      <code>\DOMElement</code>
-    </InvalidNullableReturnType>
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
-    <InvalidPropertyAssignmentValue occurrences="2">
-      <code>$this-&gt;styleAttributesForNodes</code>
-      <code>$this-&gt;visitedNodes</code>
-    </InvalidPropertyAssignmentValue>
     <LessSpecificReturnStatement occurrences="1">
       <code>$excludedNodes</code>
     </LessSpecificReturnStatement>
     <MixedArgument occurrences="1">
       <code>$m[0]</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="4">
+    <MixedArgumentTypeCoercion occurrences="3">
       <code>$selectorToExclude</code>
-      <code>$cssRules['inlinable']</code>
       <code>$attributeName</code>
-      <code>[$this, 'replaceUnmatchableNotComponent']</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="4">
       <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
@@ -46,8 +37,6 @@
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
     </MixedArrayAssignment>
     <MixedInferredReturnType occurrences="4">
-      <code>array</code>
-      <code>array</code>
       <code>int</code>
       <code>string</code>
     </MixedInferredReturnType>
@@ -59,15 +48,9 @@
     </MixedReturnStatement>
     <MixedReturnTypeCoercion occurrences="3">
       <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
-      <code>array</code>
       <code>$cssRules</code>
     </MixedReturnTypeCoercion>
-    <MoreSpecificReturnType occurrences="1">
-      <code>array</code>
-    </MoreSpecificReturnType>
-    <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;domDocument-&gt;getElementsByTagName('head')-&gt;item(0)</code>
-    </NullableReturnStatement>
+    <MoreSpecificReturnType occurrences="1"/>
     <PossiblyNullArrayOffset occurrences="2">
       <code>$this-&gt;styleAttributesForNodes</code>
       <code>$this-&gt;visitedNodes</code>
@@ -80,14 +63,8 @@
       <code>createElement</code>
       <code>getElementsByTagName</code>
     </PossiblyNullReference>
-    <UnusedMethod occurrences="1">
-      <code>replaceUnmatchableNotComponent</code>
-    </UnusedMethod>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
-    <InvalidNullableReturnType occurrences="1">
-      <code>\DOMElement</code>
-    </InvalidNullableReturnType>
     <MixedOperand occurrences="6">
       <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
       <code>static::DEFAULT_DOCUMENT_TYPE</code>
@@ -96,9 +73,6 @@
       <code>static::CONTENT_TYPE_META_TAG</code>
       <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
     </MixedOperand>
-    <NullableReturnStatement occurrences="1">
-      <code>$this-&gt;getDomDocument()-&gt;getElementsByTagName('body')-&gt;item(0)</code>
-    </NullableReturnStatement>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
@@ -120,9 +94,6 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>\array_keys($classesToKeepAsKeys)</code>
     </MixedArgumentTypeCoercion>
-    <RedundantCondition occurrences="1">
-      <code>$parentNode !== null</code>
-    </RedundantCondition>
   </file>
   <file src="src/Utilities/CssConcatenator.php">
     <MixedArgument occurrences="5">
