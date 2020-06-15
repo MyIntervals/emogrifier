@@ -53,6 +53,100 @@ final class CssInlinerTest extends TestCase
     ';
 
     /**
+     * @var string[]
+     *
+     * selection of at-rules which have no special handling by `CssInliner` but should be passed through and placed in a
+     * `<style>` element unmodified, for testing that and testing around
+     */
+    private const BLACK_BOX_AT_RULES = [
+        '@font-face' => '
+            @font-face {
+              font-family: "Foo Sans";
+              src: url("/foo-sans.woff2") format("woff2");
+            }
+        ',
+        '@-webkit-keyframes' => '
+            @-webkit-keyframes bounceIn {
+              from, 20%, 40%, 60%, 80%, to {
+                -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+                animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+              }
+              0% {
+                opacity: 0;
+                -webkit-transform: scale3d(.3, .3, .3);
+                transform: scale3d(.3, .3, .3);
+              }
+              20% {
+                -webkit-transform: scale3d(1.1, 1.1, 1.1);
+                transform: scale3d(1.1, 1.1, 1.1);
+              }
+              40% {
+                -webkit-transform: scale3d(.9, .9, .9);
+                transform: scale3d(.9, .9, .9);
+              }
+              60% {
+                opacity: 1;
+                -webkit-transform: scale3d(1.03, 1.03, 1.03);
+                transform: scale3d(1.03, 1.03, 1.03);
+              }
+              80% {
+                -webkit-transform: scale3d(.97, .97, .97);
+                transform: scale3d(.97, .97, .97);
+              }
+              to {
+                opacity: 1;
+                -webkit-transform: scale3d(1, 1, 1);
+                transform: scale3d(1, 1, 1);
+              }
+            }
+        ',
+        '@keyframes' => '
+            @keyframes bounceIn {
+              from, 20%, 40%, 60%, 80%, to {
+                animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+              }
+              0% {
+                opacity: 0;
+                transform: scale3d(.3, .3, .3);
+              }
+              20% {
+                transform: scale3d(1.1, 1.1, 1.1);
+              }
+              40% {
+                transform: scale3d(.9, .9, .9);
+              }
+              60% {
+                opacity: 1;
+                transform: scale3d(1.03, 1.03, 1.03);
+              }
+              80% {
+                transform: scale3d(.97, .97, .97);
+              }
+              to {
+                opacity: 1;
+                transform: scale3d(1, 1, 1);
+              }
+            }
+        ',
+        '@supports' => '
+            @supports (display: grid) {
+              .main {
+                display: grid;
+              }
+            }
+        ',
+        // This can be used for rules to specifically target the Gecko engine (i.e., for email, Thunderbird).
+        // The `@document` non-vendor-specific counterpart appears to have no value for emails, which do not have a URL.
+        '@-moz-document' => '
+            @-moz-document url-prefix() {
+              body {
+                font-size: 15px;
+              }
+            }
+        ',
+    ];
+
+    /**
      * Builds a subject with the given HTML and debug mode enabled.
      *
      * @param string $html
@@ -3355,64 +3449,71 @@ final class CssInlinerTest extends TestCase
     /**
      * @return string[][]
      */
-    public function provideValidFontFaceRules(): array
+    public function provideValidAtRulesWithSurroundingCss(): array
     {
-        return [
-            'single @font-face' => [
-                'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
+        $datasets = [];
+
+        foreach (self::BLACK_BOX_AT_RULES as $name => $rule) {
+            $datasets += [
+                'single ' . $name => [
+                    'before' => '',
+                    'at-rules' => $rule,
+                    'after' => '',
+                ],
+                $name . ' followed by matching inlinable rule' => [
+                    'before' => '',
+                    'at-rules' => $rule,
+                    'after' => "\n" . 'p { color: green; }',
+                ],
+                $name . ' followed by matching uninlinable rule' => [
+                    'before' => '',
+                    'at-rules' => $rule,
+                    'after' => "\n" . 'p:hover { color: green; }',
+                ],
+                $name . ' followed by matching @media rule' => [
+                    'before' => '',
+                    'at-rules' => $rule,
+                    'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
+                ],
+                $name . ' preceded by matching inlinable rule' => [
+                    'before' => "p { color: green; }\n",
+                    'at-rules' => $rule,
+                    'after' => '',
+                ],
+                $name . ' preceded by matching uninlinable rule' => [
+                    'before' => "p:hover { color: green; }\n",
+                    'at-rules' => $rule,
+                    'after' => '',
+                ],
+                $name . ' preceded by matching @media rule' => [
+                    'before' => "@media (max-width: 640px) { p { color: green; } }\n",
+                    'at-rules' => $rule,
+                    'after' => '',
+                ],
+            ];
+        }
+
+        return $datasets + [
             'uppercase @FONT-FACE' => [
                 'before' => '',
-                '@font-face' => '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'at-rules' => '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             'mixed case @FoNt-FaCe' => [
                 'before' => '',
-                '@font-face' => '@FoNt-FaCe { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
+                'at-rules' => '@FoNt-FaCe { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             '2 @font-faces' => [
                 'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }'
+                'at-rules' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }'
                     . "\n" . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
             '2 @font-faces, minified' => [
                 'before' => '',
-                '@font-face' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
+                'at-rules' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
                     . '@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
-                'after' => '',
-            ],
-            '@font-face followed by matching inlinable rule' => [
-                'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => "\n" . 'p { color: green; }',
-            ],
-            '@font-face followed by matching uninlinable rule' => [
-                'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => "\n" . 'p:hover { color: green; }',
-            ],
-            '@font-face followed by matching @media rule' => [
-                'before' => '',
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
-            ],
-            '@font-face preceded by matching inlinable rule' => [
-                'before' => "p { color: green; }\n",
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
-            '@font-face preceded by matching uninlinable rule' => [
-                'before' => "p:hover { color: green; }\n",
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
-            '@font-face preceded by matching @media rule' => [
-                'before' => "@media (max-width: 640px) { p { color: green; } }\n",
-                '@font-face' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 'after' => '',
             ],
         ];
@@ -3422,21 +3523,67 @@ final class CssInlinerTest extends TestCase
      * @test
      *
      * @param string $cssBefore
-     * @param string $cssFontFaces
+     * @param string $atRules
      * @param string $cssAfter
      *
-     * @dataProvider provideValidFontFaceRules
+     * @dataProvider provideValidAtRulesWithSurroundingCss
      */
-    public function inlineCssPreservesValidFontFaceRules(
+    public function inlineCssPreservesValidAtRules(
         string $cssBefore,
-        string $cssFontFaces,
+        string $atRules,
         string $cssAfter
     ): void {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
 
-        $subject->inlineCss($cssBefore . $cssFontFaces . $cssAfter);
+        $subject->inlineCss($cssBefore . $atRules . $cssAfter);
 
-        self::assertStringContainsString($cssFontFaces, $subject->render());
+        self::assertStringContainsString(\ltrim($atRules), $subject->render());
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function provideValidAtRules(): array
+    {
+        return \array_map(
+            function (string $rule): array {
+                return [$rule];
+            },
+            self::BLACK_BOX_AT_RULES
+        );
+    }
+
+    /**
+     * @test
+     *
+     * @param string $atRule
+     *
+     * @dataProvider provideValidAtRules
+     */
+    public function inlineCssMatchesRuleAfterAtRule(string $atRule): void
+    {
+        $subject = $this->buildDebugSubject('<html><body></body></html>');
+
+        $subject->inlineCss($atRule . ' body { color: green; }');
+
+        self::assertStringContainsString('<body style="color: green;">', $subject->render());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $atRule
+     *
+     * @dataProvider provideValidAtRules
+     */
+    public function inlineCssKeepsUninlinableRulePositionAfterAtRule(string $atRule): void
+    {
+        $subject = $this->buildDebugSubject('<html><p>Hello world!</p></html>');
+        $css = $atRule . ' p:hover { color: green; }';
+
+        $subject->inlineCss($css);
+
+        self::assertContainsCss($css, $subject->render());
     }
 
     /**
