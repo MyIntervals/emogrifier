@@ -67,14 +67,14 @@
     },
     "scripts": {
         "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "php:fix": "\"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "php:fix": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "ci:php:lint": "\"vendor/bin/parallel-lint\" config src tests",
         "ci:php:sniff": "\"vendor/bin/phpcs\" config src tests",
-        "ci:php:fixer": "\"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
-        "ci:php:md": "\"./tools/phpmd\" src text config/phpmd.xml",
+        "ci:php:fixer": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
+        "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
         "ci:php:psalm": "\"vendor/bin/psalm\" --show-info=false",
-        "ci:tests:unit": "\"./tools/phpunit\"",
-        "ci:tests:sof": "\"./tools/phpunit\" --stop-on-failure",
+        "ci:tests:unit": "\"./tools/phpunit.phar\"",
+        "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
         "ci:tests": [
             "@ci:tests:unit"
         ],
