@@ -32,6 +32,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Allow Windows CLI to run development tools installed through Phive
+  ([#900](https://github.com/MyIntervals/emogrifier/pull/900))
 - Switch to a maintained package for parallel PHP linting
   ([#884](https://github.com/MyIntervals/emogrifier/pull/884))
 - Add `.0` version suffixes to PHP version requirements

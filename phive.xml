@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="php-cs-fixer" version="^2.16" installed="2.16.3" location="./tools/php-cs-fixer" copy="true"/>
-  <phar name="phpmd" version="^2.8" installed="2.8.2" location="./tools/phpmd" copy="true"/>
-  <phar name="phpunit" version="^7.5" installed="7.5.20" location="./tools/phpunit" copy="true"/>
+  <phar name="php-cs-fixer" version="^2.16" installed="2.16.3" location="./tools/php-cs-fixer.phar" copy="true"/>
+  <phar name="phpmd" version="^2.8" installed="2.8.2" location="./tools/phpmd.phar" copy="true"/>
+  <phar name="phpunit" version="^7.5" installed="7.5.20" location="./tools/phpunit.phar" copy="true"/>
 </phive>
