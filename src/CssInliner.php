@@ -69,6 +69,21 @@ class CssInliner extends AbstractHtmlProcessor
         = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)';
 
     /**
+     * This regular expression componenet matches an `...of-type` pseudo class name, without the preceding ":".  These
+     * pseudo-classes can currently online be inlined if they have an associated type in the selector expression.
+     *
+     * @var string
+     */
+    private const OF_TYPE_PSEUDO_CLASS_MATCHER = '(?:first|last|nth(?:-last)?+|only)-of-type';
+
+    /**
+     * regular expression component to match a selector combinator
+     *
+     * @var string
+     */
+    private const COMBINATOR_MATCHER = '(?:\\s++|\\s*+[>+~]\\s*+)(?=[[:alpha:]_\\-.#*:\\[])';
+
+    /**
      * @var bool[]
      */
     private $excludedSelectors = [];
@@ -693,16 +708,50 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
+     * Tests if a selector contains a pseudo-class which would mean it cannot be converted to an XPath expression for
+     * inlining CSS declarations.
+     *
+     * Any pseudo class that does not match {@see PSEUDO_CLASS_MATCHER} cannot be converted.  Additionally, `...of-type`
+     * pseudo-classes cannot be converted if they are not associated with a type selector.
+     *
      * @param string $selector
      *
      * @return bool
      */
     private function hasUnsupportedPseudoClass(string $selector): bool
     {
-        return (bool)\preg_match(
-            '/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i',
-            $selector
-        );
+        if (\preg_match('/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i', $selector)) {
+            return true;
+        }
+
+        if (!\preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selector)) {
+            return false;
+        }
+
+        foreach (\preg_split('/' . self::COMBINATOR_MATCHER . '/', $selector) as $selectorPart) {
+            if ($this->selectorPartHasUnsupportedOfTypePseudoClass($selectorPart)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Tests if part of a selector contains an `...of-type` pseudo-class such that it cannot be converted to an XPath
+     * expression.
+     *
+     * @param string $selectorPart part of a selector which has been split up at combinators
+     *
+     * @return bool `true` if the selector part does not have a type but does have an `...of-type` pseudo-class
+     */
+    private function selectorPartHasUnsupportedOfTypePseudoClass(string $selectorPart): bool
+    {
+        if (\preg_match('/^[\\w\\-]/', $selectorPart)) {
+            return false;
+        }
+
+        return (bool)\preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selectorPart);
     }
 
     /**
@@ -1099,10 +1148,28 @@ class CssInliner extends AbstractHtmlProcessor
             ' ' . $selector
         ));
 
-        return $this->removeSelectorComponents(
+        $selectorWithoutUnmatchablePseudoComponents = $this->removeSelectorComponents(
             ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+',
             $selectorWithoutNots
         );
+
+        if (
+            !\preg_match(
+                '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
+                $selectorWithoutUnmatchablePseudoComponents
+            )
+        ) {
+            return $selectorWithoutUnmatchablePseudoComponents;
+        }
+        return \implode('', \array_map(
+            [$this, 'removeUnsupportedOfTypePseudoClasses'],
+            \preg_split(
+                '/(' . self::COMBINATOR_MATCHER . ')/',
+                $selectorWithoutUnmatchablePseudoComponents,
+                -1,
+                PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+            )
+        ));
     }
 
     /**
@@ -1139,6 +1206,27 @@ class CssInliner extends AbstractHtmlProcessor
             ['/([\\s>+~]|^)' . $matcher . '/i', '/' . $matcher . '/i'],
             ['$1*', ''],
             $selector
+        );
+    }
+
+    /**
+     * Removes any `...-of-type` pseudo-classes from part of a CSS selector, if it does not have a type, replacing them
+     * with "*" if necessary.
+     *
+     * @param string $selectorPart part of a selector which has been split up at combinators
+     *
+     * @return string selector part which will match the relevant DOM elements if the pseudo-classes are assumed to
+     * apply
+     */
+    private function removeUnsupportedOfTypePseudoClasses(string $selectorPart): string
+    {
+        if (!$this->selectorPartHasUnsupportedOfTypePseudoClass($selectorPart)) {
+            return $selectorPart;
+        }
+
+        return $this->removeSelectorComponents(
+            ':(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')(?:\\([^\\)]*+\\))?+',
+            $selectorPart
         );
     }
 

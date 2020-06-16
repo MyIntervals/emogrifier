@@ -307,43 +307,41 @@ Emogrifier currently supports the following
    * [empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)
    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
-     (with a type, e.g. `p:first-of-type` but not `*:first-of-type` which will
-     currently be treated as `*:not(*)`)
+     (with a type, e.g. `p:first-of-type` but not `*:first-of-type`)
    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     (with a type &ndash; without a type, it will be treated as `:not(*)`)
+     (with a type)
    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
    * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
    * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     (with a type &ndash; without a type, it will be treated as `:not(*)`)
+     (with a type)
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
-     (with a type &ndash; without a type, it will be applied as if `:nth-child`)
+     (with a type)
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
    * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     (with a type &ndash; without a type, it will be applied as if `:only-child`
-     or `:not(*)`, depending on version constraints for `symfony/css-selector`)
+     (with a type)
 
 The following selectors are not implemented yet:
 
  * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
- * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+ * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
+   not listed above as supported – rules involving them will nonetheless be
+   preserved and copied to a `<style>` element in the HTML – including (but not
+   necessarily limited to) the following:
+   * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
-     without a type (declarations discarded)
+     without a type
    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     without a type (declarations discarded)
+     without a type
    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     without a type (declarations discarded)
+     without a type
    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
-     without a type (will behave as `:nth-child()`)
+     without a type
    * [only-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     without a type (will behave as `:only-child()` or `:not(*)`)
-   * any pseudo-classes not listed above as supported – rules involving them
-     will nonetheless be preserved and copied to a `<style>` element in the 
-     HTML – including (but not necessarily limited to) the following:
-     * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
-     * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
-     * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
+     without a type
+   * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
+   * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
      
 Rules involving the following selectors cannot be applied as inline styles.
 They will, however, be preserved and copied to a `<style>` element in the HTML:

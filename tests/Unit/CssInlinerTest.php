@@ -2279,6 +2279,42 @@ final class CssInlinerTest extends TestCase
             ':any-link' => ['a:any-link { color: green; }'],
             ':optional' => ['input:optional { color: green; }'],
             ':required' => ['input:required { color: green; }'],
+            ':first-of-type without type' => [':first-of-type { color: green; }'],
+            ':first-of-type without type with universal' => ['*:first-of-type { color: green; }'],
+            ':first-of-type without type with class' => ['.a:first-of-type { color: green; }'],
+            ':first-of-type without type with class after' => [':first-of-type.a { color: green; }'],
+            ':first-of-type without type with ID' => ['#a:first-of-type { color: green; }'],
+            ':first-of-type without type with attribute' => ['[href]:first-of-type { color: green; }'],
+            ':first-of-type without type & descendant' => [':first-of-type a { color: green; }'],
+            ':first-of-type without type & child' => [':first-of-type > a { color: green; }'],
+            ':first-of-type without type & adjacent sibling' => [':first-of-type + input { color: green; }'],
+            ':first-of-type without type & general sibling' => [':first-of-type ~ input { color: green; }'],
+            'minified :first-of-type without type & child' => [':first-of-type>a { color: green; }'],
+            'minified :first-of-type without type & adjacent sibling' => [':first-of-type+input { color: green; }'],
+            'minified :first-of-type without type & general sibling' => [':first-of-type~input { color: green; }'],
+            ':last-of-type without type' => [':last-of-type { color: green; }'],
+            'ancestor & :last-of-type without type' => ['p :last-of-type { color: green; }'],
+            'parent & :last-of-type without type' => ['p > :last-of-type { color: green; }'],
+            'parent & :last-of-type without type with universal' => ['p > *:last-of-type { color: green; }'],
+            'parent & :last-of-type without type with class' => ['p > .a:last-of-type { color: green; }'],
+            'parent & :last-of-type without type with ID' => ['p > #a:last-of-type { color: green; }'],
+            'parent & :last-of-type without type with attribute' => ['p > [href]:last-of-type { color: green; }'],
+            'adjacent sibling & :last-of-type without type' => ['a + :last-of-type { color: green; }'],
+            'general sibling & :last-of-type without type' => ['a ~ :last-of-type { color: green; }'],
+            'minified parent & :last-of-type without type' => ['p>:last-of-type { color: green; }'],
+            'minified parent & :last-of-type without type with universal' => ['p>*:last-of-type { color: green; }'],
+            'minified parent & :last-of-type without type with class' => ['p>.a:last-of-type { color: green; }'],
+            'minified parent & :last-of-type without type with ID' => ['p>#a:last-of-type { color: green; }'],
+            'minified parent & :last-of-type without type with attribute' => [
+                'p>[href]:last-of-type { color: green; }',
+            ],
+            'minified adjacent sibling & :last-of-type without type' => ['a+:last-of-type { color: green; }'],
+            'minified general sibling & :last-of-type without type' => ['a~:last-of-type { color: green; }'],
+            ':nth-of-type without type' => [':nth-of-type(2n+1) { color: green; }'],
+            ':nth-of-type without type with class after' => [':nth-of-type(2n+1).a { color: green; }'],
+            ':nth-of-type without type with attribute after' => [':nth-of-type(2n+1)[href] { color: green; }'],
+            ':nth-last-of-type without type' => [':nth-last-of-type(2n+1) { color: green; }'],
+            ':only-of-type without type' => [':only-of-type { color: green; }'],
         ];
 
         return \array_merge(
@@ -2334,8 +2370,47 @@ final class CssInlinerTest extends TestCase
             'pseudo-element & pseudo-class' => ['b::after:hover { content: "bar"; }'],
             'two pseudo-classes' => ['input:focus:hover { color: green; }'],
         ];
+        $datasetsWithUnsupportedStaticPseudoClasses = [
+            ':first-of-type without type with class' => ['.b:first-of-type { color: red; }'],
+            ':first-of-type without type with class after' => [':first-of-type.b { color: red; }'],
+            ':first-of-type without type with univerasl and class after' => ['*:first-of-type.b { color: red; }'],
+            ':first-of-type without type with ID' => ['#b:first-of-type { color: red; }'],
+            ':first-of-type without type with attribute' => ['[href="b"]:first-of-type { color: red; }'],
+            ':first-of-type without type & descendant' => [':first-of-type ul { color: red; }'],
+            ':first-of-type without type & child' => [':first-of-type > ul { color: red; }'],
+            ':first-of-type without type & adjacent sibling' => [':first-of-type + p { color: red; }'],
+            ':first-of-type without type & general sibling' => [':first-of-type ~ p { color: red; }'],
+            'minified :first-of-type without type & child' => [':first-of-type>ul { color: red; }'],
+            'minified :first-of-type without type & adjacent sibling' => [':first-of-type+p { color: red; }'],
+            'minified :first-of-type without type & general sibling' => [':first-of-type~p { color: red; }'],
+            ':last-of-type without type with class' => ['.b:last-of-type { color: red; }'],
+            'ancestor & :last-of-type without type' => ['a :last-of-type { color: red; }'],
+            'parent & :last-of-type without type' => ['a > :last-of-type { color: red; }'],
+            'parent & :last-of-type without type with universal' => ['a > *:last-of-type { color: red; }'],
+            'parent & :last-of-type without type with class' => ['a > .a:last-of-type { color: red; }'],
+            'parent & :last-of-type without type with ID' => ['a > #a:last-of-type { color: red; }'],
+            'parent & :last-of-type without type with attribute' => ['a > [href]:last-of-type { color: red; }'],
+            'adjacent sibling & :last-of-type without type' => ['a + :last-of-type { color: red; }'],
+            'general sibling & :last-of-type without type' => ['a ~ :last-of-type { color: red; }'],
+            'minified parent & :last-of-type without type' => ['a>:last-of-type { color: red; }'],
+            'minified parent & :last-of-type without type with universal' => ['a>*:last-of-type { color: red; }'],
+            'minified parent & :last-of-type without type with class' => ['a>.a:last-of-type { color: red; }'],
+            'minified parent & :last-of-type without type with ID' => ['a>#a:last-of-type { color: red; }'],
+            'minified parent & :last-of-type without type with attribute' => ['a>[href]:last-of-type { color: red; }'],
+            'minified adjacent sibling & :last-of-type without type' => ['a+:last-of-type { color: red; }'],
+            'minified general sibling & :last-of-type without type' => ['a~:last-of-type { color: red; }'],
+            ':nth-of-type without type with class' => ['.b:nth-of-type(2n+1) { color: red; }'],
+            ':nth-of-type without type with class after' => [':nth-of-type(2n+1).b { color: red; }'],
+            ':nth-of-type without type with attribute after' => [':nth-of-type(2n+1)[href="b"] { color: red; }'],
+            ':nth-last-of-type without type with class' => ['.b:nth-last-of-type(2n+1) { color: red; }'],
+            ':only-of-type without type with class' => ['.b:only-of-type { color: red; }'],
+        ];
 
-        return \array_merge($datasetsWithSelectorPseudoComponents, $datasetsWithCombinedPseudoSelectors);
+        return \array_merge(
+            $datasetsWithSelectorPseudoComponents,
+            $datasetsWithCombinedPseudoSelectors,
+            $datasetsWithUnsupportedStaticPseudoClasses
+        );
     }
 
     /**
@@ -3218,121 +3293,6 @@ final class CssInlinerTest extends TestCase
         $subject->inlineCss($css);
 
         self::assertContainsCss($css, $subject->render());
-    }
-
-    /**
-     * @return string[][]
-     */
-    public function provideCssRulesWithUnsupportedSelectorCombination(): array
-    {
-        return [
-            ':first-of-type without type' => [':first-of-type { color: red; }'],
-            ':last-of-type without type' => [':last-of-type { color: red; }'],
-            ':nth-last-of-type without type' => [':nth-last-of-type(2n) { color: red; }'],
-        ];
-    }
-
-    /**
-     * This test enstablishes the current expected/observed behaviour with currently supported versions of
-     * `symfony/css-selector` for static pseudo-classes which are only partially supported.
-     *
-     * The handling of these selectors should be revisited - rules with unsupported combinations should be copied to a
-     * <style> element so that they can at least be applied correctly by fully-supporting email clients.  It is also
-     * possible that (before then) future changes to Symfony may break this test, in which case the documentation would
-     * need updating and the tests adjusting.
-     *
-     * @test
-     *
-     * @param string $css
-     *
-     * @dataProvider provideCssRulesWithUnsupportedSelectorCombination
-     */
-    public function inlineCssNotInDebugModeDiscardsRulesWithUnsupportedSelectorCombination(string $css): void
-    {
-        $subject = CssInliner::fromHtml('<html><p>Hello</p><p>World</p></html>');
-        $subject->setDebug(false);
-
-        $subject->inlineCss($css);
-
-        $result = $subject->render();
-        self::assertNotContainsCss($css, $result);
-        self::assertStringNotContainsString('color: red', $result);
-    }
-
-    /**
-     * @return string[][]
-     */
-    public function provideCssRulesWithPossiblyIncorrectlyImplementedSelectorCombination(): array
-    {
-        return [
-            ':only-of-type without type' => [':only-of-type { color: red; }'],
-        ];
-    }
-
-    /**
-     * This test enstablishes the current expected/observed behaviour with currently supported versions of
-     * `symfony/css-selector` for static pseudo-classes which are only partially supported.
-     *
-     * The handling of these selectors should be revisited - rules with unsupported combinations should be copied to a
-     * <style> element so that they can at least be applied correctly by fully-supporting email clients.  It is also
-     * possible that (before then) future changes to Symfony may break this test, in which case the documentation would
-     * need updating and the tests adjusting.
-     *
-     * @test
-     *
-     * @param string $css
-     *
-     * @dataProvider provideCssRulesWithPossiblyIncorrectlyImplementedSelectorCombination
-     */
-    public function inlineCssNotInDebugModeMayDiscardRulesWithPossiblyIncorrectlyImplementedSelectorCombination(
-        string $css
-    ): void {
-        $subject = CssInliner::fromHtml('<html><p>Hello</p><p>World</p></html>');
-        $subject->setDebug(false);
-
-        $subject->inlineCss($css);
-
-        $result = $subject->render();
-        self::assertNotContainsCss($css, $result);
-        // The declaration may or may not be haphazardly applied depending on `symofony/css-selector` version.
-        // Nothing more can be asserted that would always be true for the full range of versions supported.
-    }
-
-    /**
-     * @return string[][]
-     */
-    public function provideCssRulesWithIncorrectlyImplementedSelectorCombination(): array
-    {
-        return [
-            ':nth-of-type without type' => [':nth-of-type(2n) { color: red; }'],
-        ];
-    }
-
-    /**
-     * This test enstablishes the current expected/observed behaviour with currently supported versions of
-     * `symfony/css-selector` for static pseudo-classes which are only partially supported.
-     *
-     * The handling of these selectors should be revisited - rules with unsupported combinations should be copied to a
-     * <style> element so that they can at least be applied correctly by fully-supporting email clients.  It is also
-     * possible that (before then) future changes to Symfony may break this test, in which case the documentation would
-     * need updating and the tests adjusting.
-     *
-     * @test
-     *
-     * @param string $css
-     *
-     * @dataProvider provideCssRulesWithIncorrectlyImplementedSelectorCombination
-     */
-    public function inlineCssAppliesRulesWithIncorrectlyImplementedSelectorCombination(string $css): void
-    {
-        $subject = $this->buildDebugSubject('<html><p>Hello</p><p>World</p></html>');
-
-        $subject->inlineCss($css);
-
-        $result = $subject->render();
-        self::assertNotContainsCss($css, $result);
-        // The declaration will currently be haphazardly applied: in the case of `...of-type`, as if `...child`.
-        self::assertStringContainsString('color: red', $result);
     }
 
     /**
