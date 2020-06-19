@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#907](https://github.com/MyIntervals/emogrifier/pull/907))
 
 ### Changed
+- Automatically add a backslash for global functions
+  ([#909](https://github.com/MyIntervals/emogrifier/pull/909))
 - Update the development tools
   ([#898](https://github.com/MyIntervals/emogrifier/pull/898),
   [#895](https://github.com/MyIntervals/emogrifier/pull/895))
