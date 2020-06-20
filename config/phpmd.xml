@@ -13,11 +13,11 @@
     <rule ref="rulesets/codesize.xml/NPathComplexity"/>
     <rule ref="rulesets/codesize.xml/ExcessiveMethodLength"/>
     <!--<rule ref="rulesets/codesize.xml/ExcessiveClassLength"/>-->
-    <!--<rule ref="rulesets/codesize.xml/ExcessiveParameterList"/>-->
+    <rule ref="rulesets/codesize.xml/ExcessiveParameterList"/>
     <rule ref="rulesets/codesize.xml/ExcessivePublicCount"/>
-    <!--<rule ref="rulesets/codesize.xml/TooManyFields"/>-->
+    <rule ref="rulesets/codesize.xml/TooManyFields"/>
     <!--<rule ref="rulesets/codesize.xml/TooManyMethods"/>-->
-    <!--<rule ref="rulesets/codesize.xml/TooManyPublicMethods"/>-->
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods"/>
     <!--<rule ref="rulesets/codesize.xml/ExcessiveClassComplexity"/>-->
 
     <rule ref="rulesets/controversial.xml/Superglobals"/>
@@ -45,5 +45,5 @@
     <rule ref="rulesets/unusedcode.xml/UnusedPrivateField"/>
     <rule ref="rulesets/unusedcode.xml/UnusedLocalVariable"/>
     <!--<rule ref="rulesets/unusedcode.xml/UnusedPrivateMethod"/>-->
-    <!--<rule ref="rulesets/unusedcode.xml/UnusedFormalParameter"/>-->
+    <rule ref="rulesets/unusedcode.xml/UnusedFormalParameter"/>
 </ruleset>
