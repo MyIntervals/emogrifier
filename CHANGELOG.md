@@ -7,7 +7,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Move more development tools to Phive
-  ([#894](https://github.com/MyIntervals/emogrifier/pull/894))
+  ([#894](https://github.com/MyIntervals/emogrifier/pull/894),
+  [#907](https://github.com/MyIntervals/emogrifier/pull/907))
 
 ### Changed
 - Update the development tools
