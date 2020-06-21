@@ -27,10 +27,9 @@ abstract class CssConstraint extends Constraint
         |(^\\s++)                       # whitespace at the very start, captured in group 2
         |(>)\\s*+                       # `>` (e.g. closing a `<style>` element opening tag) with optional whitespace
                                         # following, captured in group 3
-        |(?:(?!\\s*+[{},]|^\\s)[^>])++  # Anything else is captured in group 4.  There is a reason for this, which is
-                                        # currently forgotten.  It has something to do with the way alternation works,
-                                        # in terms of matching the longest pattern, or, if equal, the first, and that
-                                        # the implementation in PHP does not quite behave as described on the tin.
+        |(?:(?!\\s*+[{},]|^\\s)[^>])++  # Anything else is matched, though not captured.  This is required so that any
+                                        # characters in the input string that happen to have a special meaning in a
+                                        # regular expression can be escaped.
     /x';
 
     /**
@@ -50,20 +49,28 @@ abstract class CssConstraint extends Constraint
     {
         $needleMatcher = \preg_replace_callback(
             self::CSS_REGEX_PATTERN,
-            static function (array $matches): string {
-                switch (true) {
-                    case isset($matches[1]) && $matches[1] !== '':
-                        return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
-                    case isset($matches[2]) && $matches[2] !== '':
-                        return '\\s*+';
-                    case isset($matches[3]) && $matches[3] !== '':
-                        return \preg_quote($matches[3], '/') . '\\s*+';
-                    default:
-                        return \preg_quote($matches[0], '/');
-                }
-            },
+            [self::class, 'getCssNeedleRegularExpressionReplacement'],
             $needle
         );
         return '/' . $needleMatcher . '/';
+    }
+
+    /**
+     * @param string[] $matches array of matches for {@see CSS_REGEX_PATTERN}
+     *
+     * @return string replacement string, which may be `$matches[0]` if no alteration is needed
+     */
+    private static function getCssNeedleRegularExpressionReplacement(array $matches): string
+    {
+        switch (true) {
+            case isset($matches[1]) && $matches[1] !== '':
+                return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
+            case isset($matches[2]) && $matches[2] !== '':
+                return '\\s*+';
+            case isset($matches[3]) && $matches[3] !== '':
+                return \preg_quote($matches[3], '/') . '\\s*+';
+            default:
+                return \preg_quote($matches[0], '/');
+        }
     }
 }

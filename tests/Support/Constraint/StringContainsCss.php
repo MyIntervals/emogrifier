@@ -30,7 +30,7 @@ class StringContainsCss extends CssConstraint
     }
 
     /**
-     * @inheritdoc
+     * @return string a string representation of the constraint
      */
     public function toString(): string
     {
@@ -38,9 +38,11 @@ class StringContainsCss extends CssConstraint
     }
 
     /**
-     * @inheritdoc
+     * Evaluates the constraint for the parameter `$other`.
      *
-     * @param mixed $other
+     * @param mixed $other value or object to evaluate
+     *
+     * @return bool `true` if the constraint is met, `false` otherwise
      */
     protected function matches($other): bool
     {
