@@ -22,7 +22,7 @@ abstract class CssConstraint extends Constraint
      *
      * @var string
      */
-    private const CSS_REGEX_PATTERN = '/
+    private const CSS_REGULAR_EXPRESSIOM_PATTERN = '/
         \\s*+([{},])\\s*+               # `{`, `}` or `,` captured in group 1, with possible whitespace either side
         |(^\\s++)                       # whitespace at the very start, captured in group 2
         |(>)\\s*+                       # `>` (e.g. closing a `<style>` element opening tag) with optional whitespace
@@ -48,7 +48,7 @@ abstract class CssConstraint extends Constraint
     protected static function getCssNeedleRegularExpressionPattern(string $needle): string
     {
         $needleMatcher = \preg_replace_callback(
-            self::CSS_REGEX_PATTERN,
+            self::CSS_REGULAR_EXPRESSIOM_PATTERN,
             [self::class, 'getCssNeedleRegularExpressionReplacement'],
             $needle
         );
