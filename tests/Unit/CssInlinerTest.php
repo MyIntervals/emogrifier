@@ -2785,7 +2785,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p { margin: 1px !ImPorTant; }');
 
-        self::assertStringContainsString('<p style="margin: 1px !ImPorTant;">', $subject->renderBodyContent());
+        self::assertStringContainsString('<p style="margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**

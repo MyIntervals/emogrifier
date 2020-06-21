@@ -1044,7 +1044,7 @@ class CssInliner extends AbstractHtmlProcessor
         $importantStyleDeclarations = [];
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
-                $importantStyleDeclarations[$property] = \trim(\str_replace('!important', '', $value));
+                $importantStyleDeclarations[$property] = \trim(\str_ireplace('!important', '', $value));
             } else {
                 $regularStyleDeclarations[$property] = $value;
             }

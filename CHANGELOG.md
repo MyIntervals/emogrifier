@@ -36,6 +36,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Remove uppercase or mixed case `!important` from `style` attributes
+  ([#911](https://github.com/MyIntervals/emogrifier/pull/911))
 - Copy rules using `:...of-type` without a type to the `<style>` element
   ([#904](https://github.com/MyIntervals/emogrifier/pull/904))
 - Support combinator followed by dynamic pseudo-class in minified CSS
