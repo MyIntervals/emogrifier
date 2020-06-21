@@ -4,13 +4,35 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
+use PHPUnit\Framework\Constraint\Constraint;
+
 /**
  * Provides a method for use in constraints making assertions about CSS content where whitespace may vary.
  *
+ * Due to {@link https://bugs.php.net/bug.php?id=75060 PHP 'bug' #75060}, traits cannot have constants, so, as a
+ * workaround, this is currently implemented as a base class (but ideally would be a `trait`).
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-trait CssConstraint
+abstract class CssConstraint extends Constraint
 {
+    /**
+     * This regular expression pattern will match various parts of a string of CSS, and uses capturing groups to clarify
+     * what, actually, has been matched.
+     *
+     * @var string
+     */
+    private const CSS_REGEX_PATTERN = '/
+        \\s*+([{},])\\s*+               # `{`, `}` or `,` captured in group 1, with possible whitespace either side
+        |(^\\s++)                       # whitespace at the very start, captured in group 2
+        |(>)\\s*+                       # `>` (e.g. closing a `<style>` element opening tag) with optional whitespace
+                                        # following, captured in group 3
+        |(?:(?!\\s*+[{},]|^\\s)[^>])++  # Anything else is captured in group 4.  There is a reason for this, which is
+                                        # currently forgotten.  It has something to do with the way alternation works,
+                                        # in terms of matching the longest pattern, or, if equal, the first, and that
+                                        # the implementation in PHP does not quite behave as described on the tin.
+    /x';
+
     /**
      * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
      * element added to the document, due to the way that certain parts are `trim`med.  Notably, whitespace either side
@@ -24,25 +46,21 @@ trait CssConstraint
      *
      * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
      */
-    private static function getCssNeedleRegExp(string $needle): string
+    protected static function getCssNeedleRegularExpressionPattern(string $needle): string
     {
         $needleMatcher = \preg_replace_callback(
-            '/\\s*+([{},])\\s*+|(^\\s++)|(>)\\s*+|(?:(?!\\s*+[{},]|^\\s)[^>])++/',
+            self::CSS_REGEX_PATTERN,
             static function (array $matches): string {
-                if (isset($matches[1]) && $matches[1] !== '') {
-                    // matched possibly some whitespace, followed by "{", "}" or ",", then possibly more whitespace
-                    return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
+                switch (true) {
+                    case isset($matches[1]) && $matches[1] !== '':
+                        return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
+                    case isset($matches[2]) && $matches[2] !== '':
+                        return '\\s*+';
+                    case isset($matches[3]) && $matches[3] !== '':
+                        return \preg_quote($matches[3], '/') . '\\s*+';
+                    default:
+                        return \preg_quote($matches[0], '/');
                 }
-                if (isset($matches[2]) && $matches[2] !== '') {
-                    // matched whitespace at start
-                    return '\\s*+';
-                }
-                if (isset($matches[3]) && $matches[3] !== '') {
-                    // matched ">" (e.g. end of <style> tag) followed by possibly some whitespace
-                    return \preg_quote($matches[3], '/') . '\\s*+';
-                }
-                // matched any other sequence which could not overlap with the above
-                return \preg_quote($matches[0], '/');
             },
             $needle
         );

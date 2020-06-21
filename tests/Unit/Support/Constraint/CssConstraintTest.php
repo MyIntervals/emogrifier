@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\Support\Constraint;
 
-use Pelago\Emogrifier\Tests\Support\Constraint\CssConstraint;
+use Pelago\Emogrifier\Tests\Unit\Support\Constraint\Fixtures\TestingCssConstraint;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -16,16 +16,14 @@ use PHPUnit\Framework\TestCase;
  */
 final class CssConstraintTest extends TestCase
 {
-    use CssConstraint;
-
     /**
      * @test
      */
-    public function getCssNeedleRegExpEscapesAllSpecialCharacters(): void
+    public function getCssNeedleRegularExpressionPatternEscapesAllSpecialCharacters(): void
     {
         $needle = '.\\+*?[^]$(){}=!<>|:-/';
 
-        $result = self::getCssNeedleRegExp($needle);
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
         $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
 
@@ -38,12 +36,12 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegExpNotEscapesNonSpecialCharacters(): void
+    public function getCssNeedleRegularExpressionPatternNotEscapesNonSpecialCharacters(): void
     {
         $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
             . "\r\n\t `¬\"£%&_;'@~,";
 
-        $result = self::getCssNeedleRegExp($needle);
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
         $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
 
@@ -78,11 +76,13 @@ final class CssConstraintTest extends TestCase
      *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespace(
+    public function getCssNeedleRegularExpressionPatternInsertsOptionalWhitespace(
         string $contentToInsertAround,
         string $otherContent
     ): void {
-        $result = self::getCssNeedleRegExp($otherContent . $contentToInsertAround . $otherContent);
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting(
+            $otherContent . $contentToInsertAround . $otherContent
+        );
 
         $quotedOtherContent = \preg_quote($otherContent, '/');
         $expectedResult = '/' . $quotedOtherContent . '\\s*+' . \preg_quote($contentToInsertAround, '/') . '\\s*+'
@@ -94,9 +94,9 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegExpReplacesWhitespaceAtStartWithOptionalWhitespace(): void
+    public function getCssNeedleRegularExpressionPatternReplacesWhitespaceAtStartWithOptionalWhitespace(): void
     {
-        $result = self::getCssNeedleRegExp(' a');
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting(' a');
 
         self::assertSame('/\\s*+a/', $result);
     }
@@ -122,9 +122,9 @@ final class CssConstraintTest extends TestCase
      *
      * @dataProvider styleTagDataProvider
      */
-    public function getCssNeedleRegExpInsertsOptionalWhitespaceAfterStyleTag(string $needle): void
+    public function getCssNeedleRegularExpressionPatternInsertsOptionalWhitespaceAfterStyleTag(string $needle): void
     {
-        $result = self::getCssNeedleRegExp($needle);
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
         self::assertSame('/\\<style\\>\\s*+a/', $result);
     }

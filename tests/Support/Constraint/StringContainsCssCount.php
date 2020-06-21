@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
-use PHPUnit\Framework\Constraint\Constraint;
-
 /**
  * This constraint asserts that the string it is evaluated for contains some specific CSS a specific number of times,
  * allowing for cosmetic whitespace differences.
@@ -14,10 +12,8 @@ use PHPUnit\Framework\Constraint\Constraint;
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class StringContainsCssCount extends Constraint
+class StringContainsCssCount extends CssConstraint
 {
-    use CssConstraint;
-
     /**
      * @var int
      */
@@ -55,6 +51,6 @@ class StringContainsCssCount extends Constraint
      */
     protected function matches($other): bool
     {
-        return \preg_match_all(self::getCssNeedleRegExp($this->css), $other) === $this->count;
+        return \preg_match_all(self::getCssNeedleRegularExpressionPattern($this->css), $other) === $this->count;
     }
 }
