@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Use `sabberworm/php-css-parser` to parse the CSS
+  ([#912](https://github.com/MyIntervals/emogrifier/pull/912))
 - Switch the default branch from `master` to `main`
   ([#951](https://github.com/MyIntervals/emogrifier/pull/951))
 

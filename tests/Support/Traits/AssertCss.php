@@ -62,4 +62,14 @@ trait AssertCss
 
         self::assertThat($haystack, $constraint, $message);
     }
+
+    /**
+     * @param string $needle
+     *
+     * @return StringContainsCss
+     */
+    private static function stringContainsCss(string $needle): StringContainsCss
+    {
+        return new StringContainsCss($needle);
+    }
 }
