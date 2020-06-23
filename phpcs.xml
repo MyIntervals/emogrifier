@@ -56,7 +56,11 @@
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
     </rule>
-    <rule ref="Squiz.Commenting.FunctionCommentThrowTag"/>
+    <rule ref="Squiz.Commenting.FunctionCommentThrowTag">
+        <!-- If we want to document exceptions thrown by called methods for a method that also throws its own
+             exceptions, this sniff simply does not work. -->
+        <exclude name="Squiz.Commenting.FunctionCommentThrowTag.WrongNumber"/>
+    </rule>
     <rule ref="Squiz.Commenting.PostStatementComment"/>
 
     <!-- Control structures -->

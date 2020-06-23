@@ -2753,39 +2753,97 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @test
+     * @return string[][]
      */
-    public function importantInExternalCssOverwritesInlineCss(): void
+    public function provideImportantDeclarationMarker(): array
     {
-        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
+        return [
+            'lower case' => [' !important'],
+            'mixed case' => [' !ImPorTant'],
+            'upper case' => [' !IMPORTANT'],
+            'with space within' => [' ! important'],
+            'without space preceding' => ['!important'],
+        ];
+    }
 
-        $subject->inlineCss('p { margin: 1px !important; }');
+    /**
+     * @test
+     *
+     * @param string $importantMarker
+     *
+     * @dataProvider provideImportantDeclarationMarker
+     */
+    public function inlineCssRemovesImportantFromStyleAttribute(string $importantMarker): void
+    {
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 1px' . $importantMarker . ';');
+
+        $subject->inlineCss();
 
         self::assertStringContainsString('<p style="margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
      * @test
+     *
+     * @param string $importantMarker
+     *
+     * @dataProvider provideImportantDeclarationMarker
      */
-    public function importantInExternalCssKeepsInlineCssForOtherAttributes(): void
+    public function inlineCssRemovesImportantFromInlinedStyleAttribute(string $importantMarker): void
     {
-        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; text-align: center;');
+        $subject = $this->buildSubjectWithBoilerplateHtml();
 
-        $subject->inlineCss('p { margin: 1px !important; }');
+        $subject->inlineCss('p { margin: 1px' . $importantMarker . '; }');
 
-        self::assertStringContainsString('<p style="text-align: center; margin: 1px;">', $subject->renderBodyContent());
+        self::assertStringContainsString('<p style="margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
      * @test
+     *
+     * @param string $importantMarker
+     *
+     * @dataProvider provideImportantDeclarationMarker
      */
-    public function importantIsCaseInsensitive(): void
+    public function importantInExternalCssOverwritesInlineCss(string $importantMarker): void
     {
         $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px;');
 
-        $subject->inlineCss('p { margin: 1px !ImPorTant; }');
+        $subject->inlineCss('p { margin: 1px' . $importantMarker . '; }');
 
-        self::assertStringContainsString('<p style="margin: 1px !ImPorTant;">', $subject->renderBodyContent());
+        self::assertStringContainsString('<p style="margin: 1px;">', $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $importantMarker
+     *
+     * @dataProvider provideImportantDeclarationMarker
+     */
+    public function importantInExternalCssNotOverwritesImportantInInlineCss(string $importantMarker): void
+    {
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px' . $importantMarker . ';');
+
+        $subject->inlineCss('p { margin: 1px' . $importantMarker . '; }');
+
+        self::assertStringContainsString('<p style="margin: 2px;">', $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $importantMarker
+     *
+     * @dataProvider provideImportantDeclarationMarker
+     */
+    public function importantInExternalCssKeepsInlineCssForOtherAttributes(string $importantMarker): void
+    {
+        $subject = $this->buildSubjectWithBoilerplateHtml('margin: 2px; text-align: center;');
+
+        $subject->inlineCss('p { margin: 1px' . $importantMarker . '; }');
+
+        self::assertStringContainsString('<p style="text-align: center; margin: 1px;">', $subject->renderBodyContent());
     }
 
     /**
