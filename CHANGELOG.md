@@ -17,6 +17,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   [#907](https://github.com/MyIntervals/emogrifier/pull/907))
 
 ### Changed
+- Use `sabberworm/php-css-parser` to parse the CSS
+  ([#912](https://github.com/MyIntervals/emogrifier/pull/912))
 - Automatically add a backslash for global functions
   ([#909](https://github.com/MyIntervals/emogrifier/pull/909))
 - Update the development tools

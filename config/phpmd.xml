@@ -32,7 +32,11 @@
     <rule ref="rulesets/design.xml/GotoStatement"/>
     <rule ref="rulesets/design.xml/NumberOfChildren"/>
     <rule ref="rulesets/design.xml/DepthOfInheritance"/>
-    <rule ref="rulesets/design.xml/CouplingBetweenObjects"/>
+    <rule ref="rulesets/design.xml/CouplingBetweenObjects">
+        <properties>
+            <property name="maximum" value="20"/>
+        </properties>
+    </rule>
     <rule ref="rulesets/design.xml/DevelopmentCodeFragment"/>
 
     <!--<rule ref="rulesets/naming.xml/ShortVariable"/>-->

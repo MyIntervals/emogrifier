@@ -6,6 +6,15 @@ namespace Pelago\Emogrifier;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Utilities\CssConcatenator;
+use Sabberworm\CSS\CSSList\AtRuleBlockList as CssAtRuleBlockList;
+use Sabberworm\CSS\CSSList\Document as CssDocument;
+use Sabberworm\CSS\Parser as CssParser;
+use Sabberworm\CSS\Property\AtRule as CssAtRule;
+use Sabberworm\CSS\Property\Charset as CssCharset;
+use Sabberworm\CSS\Property\Import as CssImport;
+use Sabberworm\CSS\Renderable as CssRenderable;
+use Sabberworm\CSS\RuleSet\DeclarationBlock as CssDeclarationBlock;
+use Sabberworm\CSS\RuleSet\RuleSet as CssRuleSet;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 
@@ -109,6 +118,14 @@ class CssInliner extends AbstractHtmlProcessor
     private $cssSelectorConverter = null;
 
     /**
+     * `@import` rules must precede all other types of rules, except `@charset` rules.  This property is used while
+     * rendering uninlinable at-rules to enforce that.
+     *
+     * @var bool
+     */
+    private $isImportRuleAllowed = true;
+
+    /**
      * the visited nodes with the XPath paths as array keys
      *
      * @var \DOMElement[]
@@ -163,7 +180,7 @@ class CssInliner extends AbstractHtmlProcessor
      * array of data describing CSS rules which apply to the document but cannot be inlined, in the format returned by
      * `parseCssRules`
      *
-     * @var string[][]
+     * @var (string|bool|int)[][]
      */
     private $matchingUninlinableCssRules = null;
 
@@ -198,20 +215,19 @@ class CssInliner extends AbstractHtmlProcessor
             $combinedCss .= $this->getCssFromAllStyleNodes();
         }
 
-        $cssWithoutComments = $this->removeCssComments($combinedCss);
-        [$cssWithoutCommentsCharsetOrImport, $cssImportRules]
-            = $this->extractImportAndCharsetRules($cssWithoutComments);
-        [$cssWithoutCommentsOrUninlinableAtRules, $cssAtRules]
-            = $this->extractUninlinableCssAtRules($cssWithoutCommentsCharsetOrImport);
-
-        $uninlinableCss = $cssImportRules . $cssAtRules;
+        $cssParser = new CssParser($combinedCss);
+        /** @psalm-var CssDocument $cssDocument */
+        $cssDocument = $cssParser->parse();
 
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->parseCssRules($cssWithoutCommentsOrUninlinableAtRules);
+        /** @psalm-var (string|bool|int)[][][] $cssRules */
+        $cssRules = $this->collateCssRules($cssDocument);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
-                $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
+                /** @psalm-var string $selector */
+                $selector = $cssRule['selector'];
+                $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($selector));
             } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
@@ -235,7 +251,7 @@ class CssInliner extends AbstractHtmlProcessor
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
-        $this->copyUninlinableCssToStyleNode($uninlinableCss);
+        $this->copyUninlinableCssToStyleNode($cssDocument);
 
         return $this;
     }
@@ -504,110 +520,6 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Removes comments from the supplied CSS.
-     *
-     * @param string $css
-     *
-     * @return string CSS with the comments removed
-     */
-    private function removeCssComments(string $css): string
-    {
-        return \preg_replace('%/\\*[^*]*+(?:\\*(?!/)[^*]*+)*+\\*/%', '', $css);
-    }
-
-    /**
-     * Extracts `@import` and `@charset` rules from the supplied CSS.  These rules must not be preceded by any other
-     * rules, or they will be ignored.  (From the CSS 2.1 specification: "CSS 2.1 user agents must ignore any '@import'
-     * rule that occurs inside a block or after any non-ignored statement other than an @charset or an @import rule."
-     * Note also that `@charset` is case sensitive whereas `@import` is not.)
-     *
-     * @param string $css CSS with comments removed
-     *
-     * @return string[] The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second
-     *         element contains a concatenation of the valid `@import` rules, each followed by whatever whitespace
-     *         followed it in the original CSS (so that either unminified or minified formatting is preserved); if there
-     *         were no `@import` rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
-     */
-    private function extractImportAndCharsetRules(string $css): array
-    {
-        $possiblyModifiedCss = $css;
-        $importRules = '';
-
-        while (
-            \preg_match(
-                '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/',
-                $possiblyModifiedCss,
-                $matches
-            )
-        ) {
-            [$fullMatch, $atRuleAndFollowingWhitespace, $atRuleName] = $matches;
-
-            if (\strtolower($atRuleName) === 'import') {
-                $importRules .= $atRuleAndFollowingWhitespace;
-            }
-
-            $possiblyModifiedCss = \substr($possiblyModifiedCss, \strlen($fullMatch));
-        }
-
-        return [$possiblyModifiedCss, $importRules];
-    }
-
-    /**
-     * Extracts uninlinable at-rules with nested statements (i.e. a block enclosed in curly brackets) from the supplied
-     * CSS.  Currently, any such at-rule apart from `@media` is considered uninlinable.  These rules can be placed
-     * anywhere in the CSS and are not case sensitive.  `@font-face` rules will be checked for validity, though other
-     * at-rules will be assumed to be valid.
-     *
-     * @param string $css CSS with comments, import and charset removed
-     *
-     * @return string[] The first element is the CSS with the at-rules removed.  The second element contains a
-     *                  concatenation of the valid at-rules, each followed by whatever whitespace followed it in the
-     *                  original CSS (so that either unminified or minified formatting is preserved); if there were no
-     *                  at-rules, it will be an empty string.
-     */
-    private function extractUninlinableCssAtRules(string $css): array
-    {
-        $possiblyModifiedCss = $css;
-        $atRules = '';
-
-        while (
-            \preg_match(
-                self::UNINLINABLE_AT_RULE_MATCHER,
-                $possiblyModifiedCss,
-                $matches
-            )
-        ) {
-            [$fullMatch, $atRuleName] = $matches;
-
-            if ($this->isValidAtRule($atRuleName, $fullMatch)) {
-                $atRules .= $fullMatch;
-            }
-
-            $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
-        }
-
-        return [$possiblyModifiedCss, $atRules];
-    }
-
-    /**
-     * Tests if an at-rule is valid.  Currently only `@font-face` rules are checked for validity; others are assumed to
-     * be valid.
-     *
-     * @param string $atIdentifier name of the at-rule with the preceding at sign
-     * @param string $rule full content of the rule, including the at-identifier
-     *
-     * @return bool
-     */
-    private function isValidAtRule(string $atIdentifier, string $rule): bool
-    {
-        if (\strcasecmp($atIdentifier, '@font-face') === 0) {
-            return \stripos($rule, 'font-family') !== false && \stripos($rule, 'src') !== false;
-        }
-
-        return true;
-    }
-
-    /**
      * Find the nodes that are not to be emogrified.
      *
      * @return \DOMElement[]
@@ -647,30 +559,43 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Extracts and parses the individual rules from a CSS string.
+     * Collates the individual rules from a `CssDocument` containing parsed CSS.
      *
-     * @param string $css a string of raw CSS code with comments removed
+     * @param CssDocument $cssDocument
      *
-     * @return string[][][] A 2-entry array with the key "inlinable" containing rules which can be inlined as `style`
-     *         attributes and the key "uninlinable" containing rules which cannot.  Each value is an array of string
-     *         sub-arrays with the keys
-     *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
-     *         or an empty string if not from a `@media` rule),
-     *         "selector" (the CSS selector, e.g., "*" or "header h1"),
-     *         "hasUnmatchablePseudo" (true if that selector contains pseudo-elements or dynamic pseudo-classes
-     *         such that the declarations cannot be applied inline),
-     *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
-     *         e.g., "color: red; height: 4px;"),
-     *         and "line" (the line number e.g. 42)
+     * @psalm-return array {
+     *   inlinable: list<array {
+     *     declarationsBlock: non-empty-string,
+     *     hasUnmatchablePseudo: bool,
+     *     line: int,
+     *     media: string,
+     *     selector: string
+     *   } >,
+     *   uninlinable: list<array {
+     *     declarationsBlock: non-empty-string,
+     *     hasUnmatchablePseudo: bool,
+     *     line: int,
+     *     media: string,
+     *     selector: string
+     *   } >
+     * }
+     *
+     * @return (string|bool|int)[][][] {
+     * This 2-entry array has the key "inlinable" containing rules which can be inlined as `style` attributes and the
+     * key "uninlinable" containing rules which cannot.  Each value is an array of sub-arrays with the following keys:
+     * @type string $media the media query string, e.g. "@media screen and (max-width: 480px)", or an empty string if
+     *       not from a `@media` rule)
+     * @type string $selector the CSS selector, e.g., "*" or "header h1"
+     * @type bool $hasUnmatchablePseudo `true` if that selector contains pseudo-elements or dynamic pseudo-classes
+     *       such that the declarations cannot be applied inline
+     * @type string $declarationsBlock the semicolon-separated CSS declarations for that selector, e.g.,
+     *       "color: red; height: 4px;"
+     * @type int $line the line number, e.g. 42
+     * }
      */
-    private function parseCssRules(string $css): array
+    private function collateCssRules(CssDocument $cssDocument): array
     {
-        $cssKey = \md5($css);
-        if (isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
-            return $this->caches[self::CACHE_KEY_CSS][$cssKey];
-        }
-
-        $matches = $this->getCssRuleMatches($css);
+        $matches = $this->getCssRuleMatches($cssDocument);
 
         $cssRules = [
             'inlinable' => [],
@@ -702,8 +627,6 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         \usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence']);
-
-        $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
         return $cssRules;
     }
@@ -800,9 +723,10 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Parses a string of CSS into the media query, selectors and declarations for each ruleset in order.
+     * Collates the media query, selectors and declarations for individual rules from a `CssDocument` containing parsed
+     * CSS, in order.
      *
-     * @param string $css CSS with comments removed
+     * @param CssDocument $cssDocument
      *
      * @return array<array-key, array<string, string>> Array of string sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
@@ -811,100 +735,49 @@ class CssInliner extends AbstractHtmlProcessor
      *         "declarations" (the semicolon-separated CSS declarations for that/those selector(s),
      *         e.g., "color: red; height: 4px;"),
      */
-    private function getCssRuleMatches(string $css): array
+    private function getCssRuleMatches(CssDocument $cssDocument): array
     {
-        $splitCss = $this->splitCssAndMediaQuery($css);
-
         $ruleMatches = [];
-        foreach ($splitCss as $cssPart) {
-            // process each part for selectors and definitions
-            \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
-
-            /** @var string[] $cssRule */
-            foreach ($matches as $cssRule) {
-                $ruleMatches[] = [
-                    'media' => $cssPart['media'],
-                    'selectors' => $cssRule[1],
-                    'declarations' => $cssRule[2],
-                ];
-            }
-        }
-
-        return $ruleMatches;
-    }
-
-    /**
-     * Splits input CSS code into an array of parts for different media queries, in order.
-     * Each part is an array where:
-     *
-     * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
-     * - key "media" will contain "@media " followed by the media query list, for all allowed media queries,
-     *   or an empty string for CSS not within a media query
-     *
-     * Example:
-     *
-     * The CSS code
-     *
-     *   "@import "file.css"; h1 { color:red; } @media { h1 {}} @media tv { h1 {}}"
-     *
-     * will be parsed into the following array:
-     *
-     *   0 => [
-     *     "css" => "h1 { color:red; }",
-     *     "media" => ""
-     *   ],
-     *   1 => [
-     *     "css" => " h1 {}",
-     *     "media" => "@media "
-     *   ]
-     *
-     * @param string $css
-     *
-     * @return string[][]
-     */
-    private function splitCssAndMediaQuery(string $css): array
-    {
-        $mediaTypesExpression = '';
-        if (!empty($this->allowedMediaTypes)) {
-            $mediaTypesExpression = '|' . \implode('|', \array_keys($this->allowedMediaTypes));
-        }
-
-        $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
-
-        $cssSplitForAllowedMediaTypes = \preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
-            . ')#misU',
-            $css,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE
-        );
-
-        // filter the CSS outside/between allowed @media rules
-        $cssCleaningMatchers = [
-            'import/charset directives' => '/\\s*+@(?:import|charset)\\s[^;]++;/i',
-            'remaining media enclosures' => '/\\s*+@media\\s' . $mediaRuleBodyMatcher . '/isU',
-        ];
-
-        $splitCss = [];
-        foreach ($cssSplitForAllowedMediaTypes as $index => $cssPart) {
-            $isMediaRule = $index % 2 !== 0;
-            if ($isMediaRule) {
-                \preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
-                $splitCss[] = [
-                    'css' => $matches[2],
-                    'media' => $matches[1],
-                ];
-            } else {
-                $cleanedCss = \trim(\preg_replace($cssCleaningMatchers, '', $cssPart));
-                if ($cleanedCss !== '') {
-                    $splitCss[] = [
-                        'css' => $cleanedCss,
-                        'media' => '',
-                    ];
+        /** @psalm-var CssRenderable $rule */
+        foreach ($cssDocument->getContents() as $rule) {
+            if ($rule instanceof CssAtRuleBlockList && $rule->atRuleName() === 'media') {
+                /** @psalm-var string $mediaQueryList */
+                $mediaQueryList = $rule->atRuleArgs();
+                [$mediaType] = \explode('(', $mediaQueryList, 2);
+                if (\trim($mediaType) !== '') {
+                    $mediaTypesExpression = \implode('|', \array_keys($this->allowedMediaTypes));
+                    if (!\preg_match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesExpression . ')/i', $mediaType)) {
+                        continue;
+                    }
                 }
+                $media = '@media ' . $mediaQueryList;
+                /** @psalm-var CssRenderable $nestedRule */
+                foreach ($rule->getContents() as $nestedRule) {
+                    if ($nestedRule instanceof CssDeclarationBlock) {
+                        $ruleMatches[] = [
+                            'media' => $media,
+                            'rule' => $nestedRule,
+                        ];
+                    }
+                }
+            } elseif ($rule instanceof CssDeclarationBlock) {
+                $ruleMatches[] = [
+                    'media' => '',
+                    'rule' => $rule,
+                ];
             }
         }
-        return $splitCss;
+
+        return \array_map(
+            function (array $ruleMatch): array {
+                return [
+                    'media' => $ruleMatch['media'],
+                    'selectors' => \implode(',', $ruleMatch['rule']->getSelectors()),
+                    'declarations' => \implode('', $ruleMatch['rule']->getRules()),
+                ];
+            },
+            $ruleMatches
+        );
     }
 
     /**
@@ -1078,7 +951,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Determines which of `$cssRules` actually apply to `$this->domDocument`, and sets them in
      * `$this->matchingUninlinableCssRules`.
      *
-     * @param string[][] $cssRules the "uninlinable" array of CSS rules returned by `parseCssRules`
+     * @param (string|bool|int)[][] $cssRules the "uninlinable" array of CSS rules returned by `collateCssRules`
      */
     private function determineMatchingUninlinableCssRules(array $cssRules): void
     {
@@ -1092,7 +965,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
      * it will test for a match with its originating element.
      *
-     * @param string[] $cssRule
+     * @param (string|bool|int)[] $cssRule
      *
      * @return bool
      *
@@ -1100,6 +973,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function existsMatchForSelectorInCssRule(array $cssRule): bool
     {
+        /** @psalm-var string $selector */
         $selector = $cssRule['selector'];
         if ($cssRule['hasUnmatchablePseudo']) {
             $selector = $this->removeUnmatchablePseudoComponents($selector);
@@ -1237,20 +1111,29 @@ class CssInliner extends AbstractHtmlProcessor
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
      *
-     * @param string $uninlinableCss This may contain any `@import` or `@font-face` rules that should precede the CSS
-     *        placed in the `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>`
-     *        element will be created containing just `$uninlinableCss`.  `$uninlinableCss` may be an empty string;
-     *        if it is, and there are no unlinlinable CSS rules, an empty `<style>` element will not be created.
+     * @param CssDocument $cssDocument This may contain any `@import`, `@font-face`, or other at-rules that should
+     *        precede the CSS placed in the `<style>` element.  If there are no unlinlinable CSS rules to copy there, a
+     *        `<style>` element will be created containing only the applicable at-rules from `$cssDocument`.  If there
+     *        are none, and there are also no unlinlinable CSS rules, an empty `<style>` element will not be created.
      */
-    private function copyUninlinableCssToStyleNode(string $uninlinableCss): void
+    private function copyUninlinableCssToStyleNode(CssDocument $cssDocument): void
     {
-        $css = $uninlinableCss;
+        $css = $this->renderUnprocessableAtRules($cssDocument);
 
         // avoid including unneeded class dependency if there are no rules
         if ($this->matchingUninlinableCssRules !== []) {
             $cssConcatenator = new CssConcatenator();
             foreach ($this->matchingUninlinableCssRules as $cssRule) {
-                $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
+                // This is a fucking load of crap to satisfy both Psalm and PHPMD.
+                // These tools are just encouraging bad and sub-optimal programming, not good programming.
+                // They do not help at all.
+                /** @psalm-var string $selector */
+                $selector = $cssRule['selector'];
+                /** @psalm-var string $declarationsBlock */
+                $declarationsBlock = $cssRule['declarationsBlock'];
+                /** @psalm-var string $media */
+                $media = $cssRule['media'];
+                $cssConcatenator->append([$selector], $declarationsBlock, $media);
             }
             $css .= $cssConcatenator->getCss();
         }
@@ -1258,6 +1141,74 @@ class CssInliner extends AbstractHtmlProcessor
         // avoid adding empty style element
         if ($css !== '') {
             $this->addStyleElementToDocument($css);
+        }
+    }
+
+    /**
+     * Renders at-rules from the supplied parsed CSS that are valid and have no special alternative processing.
+     *
+     * @param CssDocument $cssDocument
+     *
+     * @return string
+     */
+    private function renderUnprocessableAtRules(CssDocument $cssDocument): string
+    {
+        $this->isImportRuleAllowed = true;
+        /** @psalm-var CssRenderable[] $cssContents */
+        $cssContents = $cssDocument->getContents();
+        $atRules = \array_filter($cssContents, [$this, 'isValidAtRuleToPassThrough']);
+
+        if ($atRules === []) {
+            return '';
+        }
+
+        $atRulesDocument = new CssDocument();
+        $atRulesDocument->setContents($atRules);
+
+        /** @psalm-var string $renderedRules */
+        $renderedRules = $atRulesDocument->render();
+        return $renderedRules;
+    }
+
+    /**
+     * Tests if a CSS rule is an at-rule that should be passed though and copied to a `<style>` element unmodified:
+     * - `@charset` rules are discarded - only UTF-8 is supported - `false` is returned;
+     * - `@import` rules are passed through only if they satisfy the specification ("user agents must ignore any
+     *   '@import' rule that occurs inside a block or after any non-ignored statement other than an '@charset' or an
+     *   '@import' rule");
+     * - `@media` rules are processed separately to see if their nested rules apply - `false` is returned;
+     * - `@font-face` rules are checked for validity - they must contain both a `src` and `font-family` property;
+     * - other at-rules are assumed to be valid and treated as a black box - `true` is returned.
+     *
+     * @param CssRenderable $rule
+     *
+     * @return bool
+     */
+    private function isValidAtRuleToPassThrough(CssRenderable $rule): bool
+    {
+        if ($rule instanceof CssCharset) {
+            return false;
+        }
+
+        if ($rule instanceof CssImport) {
+            return $this->isImportRuleAllowed;
+        }
+
+        $this->isImportRuleAllowed = false;
+
+        if (!$rule instanceof CssAtRule) {
+            return false;
+        }
+
+        switch ($rule->atRuleName()) {
+            case 'media':
+                return false;
+            case 'font-face':
+                return $rule instanceof CssRuleSet
+                    && $rule->getRules('font-family') !== []
+                    && $rule->getRules('src') !== [];
+            default:
+                return true;
         }
     }
 
