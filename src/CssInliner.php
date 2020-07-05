@@ -1049,7 +1049,7 @@ class CssInliner extends AbstractHtmlProcessor
         $importantStyleDeclarations = [];
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
-                $importantStyleDeclarations[$property] = $this->pregReplace('/\\s*+!\\s*+important$/i', '', $value);
+                $importantStyleDeclarations[$property] = (string)\preg_replace('/\\s*+!\\s*+important$/i', '', $value);
             } else {
                 $regularStyleDeclarations[$property] = $value;
             }
@@ -1293,61 +1293,5 @@ class CssInliner extends AbstractHtmlProcessor
     private function getHeadElement(): \DOMElement
     {
         return $this->domDocument->getElementsByTagName('head')->item(0);
-    }
-
-    /**
-     * Wraps `preg_replace`.  If an error occurs (which is highly unlikely), either it is logged and the original
-     * `$subject` is returned, or in debug mode an exception is thrown.
-     *
-     * This method does not currently allow `$subject` (and return value) to be an array, because a means of telling
-     * Psalm that a method returns the same type a particular parameter has not been found (though it knows this for
-     * `preg_replace`); nor does it currently support the optional parameters.
-     *
-     * @param string|string[] $pattern
-     * @param string|string[] $replacement
-     * @param string $subject
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    private function pregReplace($pattern, $replacement, string $subject): string
-    {
-        $result = \preg_replace($pattern, $replacement, $subject);
-
-        if ($result === null) {
-            $this->logOrThrowPregLastError();
-            $result = $subject;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Obtains the name of the error constant for `preg_last_error` (based on code posted at
-     * {@see https://www.php.net/manual/en/function.preg-last-error.php#124124}) and puts it into an error message
-     * which is either passed to `trigger_error` (in non-debug mode) or an exception which is thrown (in debug mode).
-     *
-     * @throws \RuntimeException
-     */
-    private function logOrThrowPregLastError(): void
-    {
-        $pcreConstants = \get_defined_constants(true)['pcre'];
-        $pcreErrorConstantNames = \is_array($pcreConstants) ? \array_flip(\array_filter(
-            $pcreConstants,
-            function (string $key): bool {
-                return \substr($key, -6) === '_ERROR';
-            },
-            ARRAY_FILTER_USE_KEY
-        )) : [];
-
-        $pregLastError = \preg_last_error();
-        $message = 'PCRE regex execution error `' . (string)($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
-            . '`';
-
-        if ($this->debug) {
-            throw new \RuntimeException($message, 1592870147);
-        }
-        \trigger_error($message);
     }
 }
