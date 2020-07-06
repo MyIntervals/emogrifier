@@ -358,7 +358,8 @@ abstract class AbstractHtmlProcessor
      */
     private function isHtml5(string $html): bool
     {
-        return \strspn($html, " \t\r\n") === \stripos($html, '<!doctype html>');
+        return \strspn($html, " \t\r\n") === \stripos($html, '<!doctype html>')
+            && class_exists(HTML5::class);
     }
 
     /**
