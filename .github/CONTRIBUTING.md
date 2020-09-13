@@ -81,7 +81,7 @@ code coverage of the fixed bugs and the new features.
 To run the existing PHPUnit tests, run this command:
 
 ```shell
-composer ci:tests:unit
+composer ci:tests
 ```
 
 

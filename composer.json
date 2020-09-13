@@ -77,9 +77,12 @@
         "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
         "ci:php:psalm": "\"./tools/psalm.phar\" --show-info=false",
         "ci:tests:unit": "\"./tools/phpunit.phar\"",
+        "ci:tests:html5:unit": "EMOGRIFIER_HTML5=true \"./tools/phpunit.phar\"",
         "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
+        "ci:tests:html5:sof": "EMOGRIFIER_HTML5=true \"./tools/phpunit.phar\" --stop-on-failure",
         "ci:tests": [
-            "@ci:tests:unit"
+            "@ci:tests:unit",
+            "@ci:tests:html5:unit"
         ],
         "ci:dynamic": [
             "@ci:tests"
