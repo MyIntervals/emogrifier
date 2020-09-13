@@ -155,4 +155,4 @@ jobs:
           fi
 
       - name: Run Tests
-        run: composer ci:tests:unit
+        run: composer ci:tests
