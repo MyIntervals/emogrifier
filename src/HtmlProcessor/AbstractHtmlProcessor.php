@@ -217,7 +217,7 @@ abstract class AbstractHtmlProcessor
      */
     private function createHtml5Document(string $html): void
     {
-        if (! class_exists(HTML5::class)) {
+        if (!\class_exists(HTML5::class)) {
             throw new \RuntimeException("Class " . HTML5::class . "not found. Install the masterminds/html5 library.");
         }
 
@@ -399,6 +399,6 @@ abstract class AbstractHtmlProcessor
      */
     private function isHtml5Env(): bool
     {
-        return (bool) (getenv('EMOGRIFIER_HTML5') ?? false);
+        return (bool)(\getenv('EMOGRIFIER_HTML5') ?? false);
     }
 }
