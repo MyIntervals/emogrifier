@@ -63,19 +63,20 @@ abstract class AbstractHtmlProcessor
      * Builds a new instance from the given HTML.
      *
      * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
+     * @param bool $html5 use masterminds/html5 parser instead of DOMDocument.
      *
      * @return static
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public static function fromHtml(string $unprocessedHtml): self
+    public static function fromHtml(string $unprocessedHtml, bool $html5 = false): self
     {
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
 
         $instance = new static();
-        $instance->setHtml($unprocessedHtml);
+        $instance->setHtml($unprocessedHtml, $html5);
 
         return $instance;
     }
@@ -99,10 +100,11 @@ abstract class AbstractHtmlProcessor
      * Sets the HTML to process.
      *
      * @param string $html the HTML to process, must be UTF-8-encoded
+     * @param bool $html5 use masterminds/html5 parser instead of DOMDocument.
      */
-    private function setHtml(string $html): void
+    private function setHtml(string $html, bool $html5): void
     {
-        $this->createUnifiedDomDocument($html);
+        $this->createUnifiedDomDocument($html, $html5);
     }
 
     /**
@@ -192,11 +194,34 @@ abstract class AbstractHtmlProcessor
      * The DOM document will always have a BODY element and a document type.
      *
      * @param string $html
+     * @param bool $html5
      */
-    private function createUnifiedDomDocument(string $html): void
+    private function createUnifiedDomDocument(string $html, bool $html5): void
     {
-        $this->createRawDomDocument($html);
+        $html = $this->prepareHtmlForDomConversion($html);
+
+        $html5 ? $this->createHtml5Document($html) : $this->createRawDomDocument($html);
+
         $this->ensureExistenceOfBodyElement();
+    }
+
+    /**
+     * Creates a HTML5 document parser instance from the given HTML.
+     *
+     * @param string $html
+     *
+     * @throws \RuntimeException
+     */
+    private function createHtml5Document(string $html): void
+    {
+        if (! class_exists(HTML5::class)) {
+            throw new \RuntimeException("Class " . HTML5::class . "not found. Install the masterminds/html5 library.");
+        }
+
+        $this->html5 = new HTML5(['disable_html_ns' => true]);
+        $domDocument = $this->html5->parse($html);
+
+        $this->setDomDocument($domDocument);
     }
 
     /**
@@ -206,19 +231,13 @@ abstract class AbstractHtmlProcessor
      */
     private function createRawDomDocument(string $html): void
     {
-        $html = $this->prepareHtmlForDomConversion($html);
-        if ($this->isHtml5($html)) {
-            $this->html5 = new HTML5(['disable_html_ns' => true]);
-            $domDocument = $this->html5->parse($html);
-        } else {
-            $domDocument = new \DOMDocument();
-            $domDocument->strictErrorChecking = false;
-            $domDocument->formatOutput = true;
-            $libXmlState = \libxml_use_internal_errors(true);
-            $domDocument->loadHTML($html);
-            \libxml_clear_errors();
-            \libxml_use_internal_errors($libXmlState);
-        }
+        $domDocument = new \DOMDocument();
+        $domDocument->strictErrorChecking = false;
+        $domDocument->formatOutput = true;
+        $libXmlState = \libxml_use_internal_errors(true);
+        $domDocument->loadHTML($html);
+        \libxml_clear_errors();
+        \libxml_use_internal_errors($libXmlState);
 
         $this->setDomDocument($domDocument);
     }
@@ -347,19 +366,6 @@ abstract class AbstractHtmlProcessor
             throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
         }
         $htmlElement->appendChild($this->getDomDocument()->createElement('body'));
-    }
-
-    /**
-     * Check if the document contains a HTML5 DOCTYPE.
-     *
-     * @param  string $html
-     *
-     * @return bool
-     */
-    private function isHtml5(string $html): bool
-    {
-        return \strspn($html, " \t\r\n") === \stripos($html, '<!doctype html>')
-            && class_exists(HTML5::class);
     }
 
     /**
