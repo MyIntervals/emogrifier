@@ -69,7 +69,7 @@ abstract class AbstractHtmlProcessor
      *
      * @throws \InvalidArgumentException if $unprocessedHtml is anything other than a non-empty string
      */
-    public static function fromHtml(string $unprocessedHtml, bool $html5 = false): self
+    public static function fromHtml(string $unprocessedHtml, ?bool $html5 = null): self
     {
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
@@ -102,8 +102,11 @@ abstract class AbstractHtmlProcessor
      * @param string $html the HTML to process, must be UTF-8-encoded
      * @param bool $html5 use masterminds/html5 parser instead of DOMDocument.
      */
-    private function setHtml(string $html, bool $html5): void
+    private function setHtml(string $html, ?bool $html5): void
     {
+        // If html5 is NULL, fallback to the environment flag.
+        $html5 = $html5 ?? $this->isHtml5Env();
+
         $this->createUnifiedDomDocument($html, $html5);
     }
 
@@ -387,5 +390,15 @@ abstract class AbstractHtmlProcessor
 
         // Fall back to DOMDocument.
         return $this->getDomDocument()->saveHTML($dom);
+    }
+
+    /**
+     * Check whether HTML5 environment is enabled.
+     *
+     * @return bool
+     */
+    private function isHtml5Env(): bool
+    {
+        return (bool) (getenv('EMOGRIFIER_HTML5') ?? false);
     }
 }
