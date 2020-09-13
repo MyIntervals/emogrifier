@@ -399,6 +399,11 @@ abstract class AbstractHtmlProcessor
      */
     private function isHtml5Env(): bool
     {
-        return (bool)(\getenv('EMOGRIFIER_HTML5') ?? false);
+        $env = \getenv('EMOGRIFIER_HTML5');
+        if (is_bool($env)) {
+            return $env;
+        }
+
+        return false;
     }
 }
