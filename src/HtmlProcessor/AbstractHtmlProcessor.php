@@ -218,7 +218,7 @@ abstract class AbstractHtmlProcessor
     private function createHtml5Document(string $html): void
     {
         if (!\class_exists(HTML5::class)) {
-            throw new \RuntimeException("Class " . HTML5::class . "not found. Install the masterminds/html5 library.");
+            throw new \RuntimeException('Class ' . HTML5::class . 'not found. Install the masterminds/html5 library.');
         }
 
         $this->html5 = new HTML5(['disable_html_ns' => true]);
