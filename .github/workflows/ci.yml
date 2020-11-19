@@ -140,6 +140,7 @@ jobs:
           else
             DEPENDENCIES='';
           fi;
+          composer install --no-progress
           composer update --no-progress "${DEPENDENCIES}";
           composer show;
 
