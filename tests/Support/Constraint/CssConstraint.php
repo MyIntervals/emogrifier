@@ -62,15 +62,16 @@ abstract class CssConstraint extends Constraint
      */
     private static function getCssNeedleRegularExpressionReplacement(array $matches): string
     {
-        switch (true) {
-            case isset($matches[1]) && $matches[1] !== '':
-                return '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
-            case isset($matches[2]) && $matches[2] !== '':
-                return '\\s*+';
-            case isset($matches[3]) && $matches[3] !== '':
-                return \preg_quote($matches[3], '/') . '\\s*+';
-            default:
-                return \preg_quote($matches[0], '/');
+        if (($matches[1] ?? '') !== '') {
+            $regularExpressionEquivalent = '\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
+        } elseif (($matches[2] ?? '') !== '') {
+            $regularExpressionEquivalent = '\\s*+';
+        } elseif (($matches[3] ?? '') !== '') {
+            $regularExpressionEquivalent = \preg_quote($matches[3], '/') . '\\s*+';
+        } else {
+            $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }
+
+        return $regularExpressionEquivalent;
     }
 }
