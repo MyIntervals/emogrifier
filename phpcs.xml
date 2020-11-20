@@ -88,7 +88,13 @@
         <exclude name="SlevomatCodingStandard.TypeHints.ParameterTypeHint.UselessAnnotation"/>
     </rule>
     <rule ref="SlevomatCodingStandard.TypeHints.ParameterTypeHintSpacing"/>
-    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
+    <!--
+        The following rule makes only sense if we require PHP >= 7.4.
+        Otherwise, running the code sniffer on PHP 7.4 would suggest changes
+        that are not viable while we still support PHP 7.3
+        (because this rule checks which PHP version it is running on).
+        <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint"/>
+    -->
     <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHintSpacing"/>
     <rule ref="SlevomatCodingStandard.TypeHints.ReturnTypeHint">
         <!-- Allow PHPDoc with no additional information -->
