@@ -804,9 +804,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments removed
      *
-     * @psalm-return array<array-key, array<string, string>>
-     *
-     * @return string[][] Array of string sub-arrays with the keys
+     * @return array<array-key, array<string, string>> Array of string sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from an `@media` rule),
      *         "selectors" (the CSS selector(s), e.g., "*" or "h1, h2"),
