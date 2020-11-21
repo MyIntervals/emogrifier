@@ -46,6 +46,10 @@ class StringContainsCss extends CssConstraint
      */
     protected function matches($other): bool
     {
+        if (!\is_string($other)) {
+            return false;
+        }
+
         return \preg_match(self::getCssNeedleRegularExpressionPattern($this->css), $other) > 0;
     }
 }
