@@ -156,53 +156,53 @@ final class AbstractHtmlProcessorTest extends TestCase
     public function provideHtmlWithOptionalTagsOmitted(): array
     {
         return [
-            'LI end tag ommission with LI element following' => [
+            'LI end tag omission with LI element following' => [
                 '<ul><li> One <li> Two </li></ul>',
                 '<ul><li> One </li><li> Two </li></ul>',
             ],
-            'LI end tag ommission at end of list' => [
+            'LI end tag omission at end of list' => [
                 '<ul><li> One </li><li> Two </ul>',
                 '<ul><li> One </li><li> Two </li></ul>',
             ],
-            // broken: DT end tag ommission with DT element following
-            'DT end tag ommission with DD element following' => [
+            // broken: DT end tag omission with DT element following
+            'DT end tag omission with DD element following' => [
                 '<dl><dt> One </dt><dt> Two <dd> Buckle My Shoe </dd></dl>',
                 '<dl><dt> One </dt><dt> Two </dt><dd> Buckle My Shoe </dd></dl>',
             ],
-            // broken: DD end tag ommission with DD element following
-            'DD end tag ommission with DT element following' => [
+            // broken: DD end tag omission with DD element following
+            'DD end tag omission with DT element following' => [
                 '<dl><dt> One </dt><dd> A </dd><dd> B <dt> Two </dt><dd> C </dd></dl>',
                 '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dd></dl>',
             ],
-            'DD end tag ommission at end of list' => [
+            'DD end tag omission at end of list' => [
                 '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dl>',
                 '<dl><dt> One </dt><dd> A </dd><dd> B </dd><dt> Two </dt><dd> C </dd></dl>',
             ],
-            // broken: RT end tag ommission with RT element following
-            // broken: RT end tag ommission with RP element following
-            'RT end tag ommission at end of annotation' => [
+            // broken: RT end tag omission with RT element following
+            // broken: RT end tag omission with RP element following
+            'RT end tag omission at end of annotation' => [
                 '<ruby> 攻殻 <rt> こうかく </rt> 機動隊 <rt> きどうたい </ruby>',
                 '<ruby> 攻殻 <rt> こうかく </rt> 機動隊 <rt> きどうたい </rt></ruby>',
             ],
-            // broken: RP end tag ommission with RT element following
-            // broken: RP end tag ommission with RP element following
-            'RP end tag ommission at end of annotation' => [
+            // broken: RP end tag omission with RT element following
+            // broken: RP end tag omission with RP element following
+            'RP end tag omission at end of annotation' => [
                 '<ruby> 明日 <rp> ( </rp><rt> Ashita </rt><rp> ) </ruby>',
                 '<ruby> 明日 <rp> ( </rp><rt> Ashita </rt><rp> ) </rp></ruby>',
             ],
-            // broken: OPTGROUP end tag ommission with OPTGROUP element following
-            'OPTGROUP end tag ommission at end of list' => [
+            // broken: OPTGROUP end tag omission with OPTGROUP element following
+            'OPTGROUP end tag omission at end of list' => [
                 '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
                     . '<optgroup><option> A </option><option> B </option></select>',
                 '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
                     . '<optgroup><option> A </option><option> B </option></optgroup></select>',
             ],
-            'OPTION end tag ommission with OPTION element following' => [
+            'OPTION end tag omission with OPTION element following' => [
                 '<select><option> 1 <option> 2 </option></select>',
                 '<select><option> 1 </option><option> 2 </option></select>',
             ],
-            // broken: OPTION end tag ommission with OPTGROUP element following
-            'OPTION end tag ommission at end of list' => [
+            // broken: OPTION end tag omission with OPTGROUP element following
+            'OPTION end tag omission at end of list' => [
                 '<select><option> 1 </option><option> 2 </select>',
                 '<select><option> 1 </option><option> 2 </option></select>',
             ],
