@@ -90,7 +90,8 @@
         "ci": [
             "@ci:static",
             "@ci:dynamic"
-        ]
+        ],
+        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" update phpunit"
     },
     "extra": {
         "branch-alias": {
