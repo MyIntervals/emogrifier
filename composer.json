@@ -91,7 +91,7 @@
             "@ci:static",
             "@ci:dynamic"
         ],
-        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" update phpunit --no-progress"
+        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" --no-progress update phpunit"
     },
     "extra": {
         "branch-alias": {
