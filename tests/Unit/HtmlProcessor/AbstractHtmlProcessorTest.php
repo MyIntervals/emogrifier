@@ -435,12 +435,19 @@ final class AbstractHtmlProcessorTest extends TestCase
             'body content only' => ['<p>Hello</p>'],
             'BODY element' => ['<body></body>'],
             'HEADER element' => ['<header></header>'],
-            'META element (implicit HEAD)' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'http-equiv META element (implicit HEAD)'
+                => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'viewport META element (implicit HEAD)'
+                => ['<meta name="viewport" content="width=device-width, initial-scale=1.0">'],
             'META element with Content-Type as a value' => ['<meta name="description" content="Content-Type">'],
             'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
             'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
             // broken: BODY element containing Content-Type META tag
             // broken: body content only with Content-Type META tag
+            'http-equiv META element within P (not allowed)'
+                => ['<p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></p>'],
+            'viewport META element within P (allowed)'
+                => ['<p><meta name="viewport" content="width=device-width, initial-scale=1.0"></p>'],
         ];
     }
 
@@ -451,7 +458,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @dataProvider provideContentWithoutHeadTag
      */
-    public function addsMissingHeadTagOnlyOnce(string $html): void
+    public function addsMissingHeadTagExactlyOnce(string $html): void
     {
         $subject = TestingHtmlProcessor::fromHtml($html);
 
