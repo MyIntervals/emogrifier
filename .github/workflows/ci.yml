@@ -10,7 +10,7 @@ jobs:
   php-lint:
     name: PHP Lint
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -38,7 +38,7 @@ jobs:
   composer-validate:
     name: Composer Validate
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -60,7 +60,7 @@ jobs:
   static-analysis:
     name: Static Analysis
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     needs: [php-lint, composer-validate]
 
@@ -100,7 +100,7 @@ jobs:
   unit-tests:
     name: Unit tests
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     needs: [php-lint, composer-validate]
 
