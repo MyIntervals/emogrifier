@@ -91,7 +91,7 @@
             "@ci:static",
             "@ci:dynamic"
         ],
-        "phive:update:phpunit": "\"./tools/phive.phar\" update phpunit --trust-gpg-keys --no-progress"
+        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" update phpunit --no-progress"
     },
     "extra": {
         "branch-alias": {
