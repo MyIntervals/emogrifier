@@ -31,8 +31,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed
 - Drop support for Symfony 4.3 and 5.0
-  ([#918](https://github.com/MyIntervals/emogrifier/pull/918),
-  [#936](https://github.com/MyIntervals/emogrifier/pull/936))
+  ([#936](https://github.com/MyIntervals/emogrifier/pull/936))
 - Stop checking `tests/` with Psalm
   ([#885](https://github.com/MyIntervals/emogrifier/pull/885))
 - Drop support for PHP 7.0
