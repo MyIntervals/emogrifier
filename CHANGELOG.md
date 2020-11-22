@@ -38,6 +38,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#880](https://github.com/MyIntervals/emogrifier/pull/880))
 
 ### Fixed
+- Fix a nonsensical code example in the README
+  ([#920](https://github.com/MyIntervals/emogrifier/issues/920),
+  [#935](https://github.com/MyIntervals/emogrifier/pull/935))
 - Remove `!important` from `style` attributes also when uppercase, mixed case or
   having whitespace after `!`
   ([#911](https://github.com/MyIntervals/emogrifier/pull/911))

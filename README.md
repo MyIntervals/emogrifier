@@ -277,7 +277,7 @@ New code using `CssInliner` and family:
 ```php
 $domDocument = CssInliner::fromHtml($html)->inlineCss($css)->getDomDocument();
 
-HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone(),
+HtmlPruner::fromDomDocument($domDocument)->removeElementsWithDisplayNone();
 $html = CssToAttributeConverter::fromDomDocument($domDocument)
   ->convertCssToVisualAttributes()->render();
 ```
