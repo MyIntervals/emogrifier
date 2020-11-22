@@ -524,9 +524,9 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $css CSS with comments removed
      *
      * @return string[] The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second
-     * element contains a concatenation of the valid `@import` rules, each followed by whatever whitespace followed it
-     * in the original CSS (so that either unminified or minified formatting is preserved); if there were no `@import`
-     * rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
+     *         element contains a concatenation of the valid `@import` rules, each followed by whatever whitespace
+     *         followed it in the original CSS (so that either unminified or minified formatting is preserved); if there
+     *         were no `@import` rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
      */
     private function extractImportAndCharsetRules(string $css): array
     {
@@ -561,9 +561,9 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $css CSS with comments, import and charset removed
      *
      * @return string[] The first element is the CSS with the at-rules removed.  The second element contains a
-     * concatenation of the valid at-rules, each followed by whatever whitespace followed it in the original CSS (so
-     * that either unminified or minified formatting is preserved); if there were no at-rules, it will be an empty
-     * string.
+     *                  concatenation of the valid at-rules, each followed by whatever whitespace followed it in the
+     *                  original CSS (so that either unminified or minified formatting is preserved); if there were no
+     *                  at-rules, it will be an empty string.
      */
     private function extractUninlinableCssAtRules(string $css): array
     {
@@ -804,9 +804,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments removed
      *
-     * @psalm-return array<array-key, array<string, string>>
-     *
-     * @return string[][] Array of string sub-arrays with the keys
+     * @return array<array-key, array<string, string>> Array of string sub-arrays with the keys
      *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
      *         or an empty string if not from an `@media` rule),
      *         "selectors" (the CSS selector(s), e.g., "*" or "h1, h2"),
@@ -1203,7 +1201,7 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $selector
      *
      * @return string selector which will match the relevant DOM elements if the removed components are assumed to apply
-     * (or in the case of pseudo-elements will match their originating element)
+     *         (or in the case of pseudo-elements will match their originating element)
      */
     private function removeSelectorComponents(string $matcher, string $selector): string
     {
@@ -1221,7 +1219,7 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $selectorPart part of a selector which has been split up at combinators
      *
      * @return string selector part which will match the relevant DOM elements if the pseudo-classes are assumed to
-     * apply
+     *         apply
      */
     private function removeUnsupportedOfTypePseudoClasses(string $selectorPart): string
     {

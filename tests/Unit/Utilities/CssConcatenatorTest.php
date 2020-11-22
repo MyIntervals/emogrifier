@@ -64,9 +64,7 @@ final class CssConcatenatorTest extends TestCase
     }
 
     /**
-     * @return string[][]
-     *
-     * @psalm-return array<string, array<int, array<int, string>>>
+     * @return array<string, array<int, array<int, string>>>
      */
     public function equivalentSelectorsDataProvider(): array
     {
@@ -117,9 +115,7 @@ final class CssConcatenatorTest extends TestCase
     }
 
     /**
-     * @return string[][]
-     *
-     * @psalm-return array<string, array<int, array<int, string>>>
+     * @return array<string, array<int, array<int, string>>>
      */
     public function differentSelectorsDataProvider(): array
     {
@@ -280,9 +276,7 @@ final class CssConcatenatorTest extends TestCase
     }
 
     /**
-     * @return mixed[][]
-     *
-     * @psalm-return array<string, array{0:array<int, string>, 1:string, 2:array<int, string>, 3:string, 4:string}>
+     * @return array<string, array{0:array<int, string>, 1:string, 2:array<int, string>, 3:string, 4:string}>
      */
     public function combinableRulesDataProvider(): array
     {
