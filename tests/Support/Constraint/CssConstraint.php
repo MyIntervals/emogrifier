@@ -12,6 +12,10 @@ use PHPUnit\Framework\Constraint\Constraint;
  * Due to {@link https://bugs.php.net/bug.php?id=75060 PHP 'bug' #75060}, traits cannot have constants, so, as a
  * workaround, this is currently implemented as a base class (but ideally would be a `trait`).
  *
+ * Since, then, this is a class, and PHPUnit's `Constraint` class may or may not have a constructor (it did prior to
+ * 8.x, but does not since) which must be called if it exists, this class also provides an explicit constructor which
+ * will invoke the parent's constructor if there is one.
+ *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 abstract class CssConstraint extends Constraint
@@ -73,5 +77,15 @@ abstract class CssConstraint extends Constraint
         }
 
         return $regularExpressionEquivalent;
+    }
+
+    /**
+     * Invokes the parent class's constructor if there is one.
+     */
+    public function __construct()
+    {
+        if (\is_callable('parent::__construct')) {
+            parent::__construct();
+        }
     }
 }

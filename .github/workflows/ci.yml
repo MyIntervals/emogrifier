@@ -144,5 +144,11 @@ jobs:
           composer update --no-progress "${DEPENDENCIES}";
           composer show;
 
+      - name: Update PHIVE dependencies
+        run: |
+          if ! composer php:version | grep -q '^7\.[012]'; then
+            composer phive:update:phpunit
+          fi
+
       - name: Run Tests
         run: composer ci:tests:unit
