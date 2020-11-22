@@ -82,7 +82,7 @@ abstract class CssConstraint extends Constraint
     /**
      * Invokes the parent class's constructor if there is one.
      */
-    protected function __construct()
+    public function __construct()
     {
         if (\is_callable('parent::__construct')) {
             parent::__construct();
