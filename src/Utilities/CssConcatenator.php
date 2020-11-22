@@ -61,7 +61,7 @@ class CssConcatenator
      * @param string[] $selectors Array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"].
      * @param string $declarationsBlock The property declarations, e.g. "margin-top: 0.5em; padding: 0".
      * @param string $media The media query for the rule, e.g. "@media screen and (max-width:639px)",
-     *                      or an empty string if none.
+     *        or an empty string if none.
      */
     public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
@@ -96,7 +96,7 @@ class CssConcatenator
 
     /**
      * @param string $media The media query for rules to be appended, e.g. "@media screen and (max-width:639px)",
-     *                      or an empty string if none.
+     *        or an empty string if none.
      *
      * @return \stdClass Object with properties as described for elements of `$mediaRules`.
      */
@@ -119,7 +119,7 @@ class CssConcatenator
      * Tests if two sets of selectors are equivalent (i.e. the same selectors, possibly in a different order).
      *
      * @param mixed[] $selectorsAsKeys1 Array in which the selectors are the keys, and the values are of no
-     *                                  significance.
+     *        significance.
      * @param mixed[] $selectorsAsKeys2 Another such array.
      *
      * @return bool
@@ -146,7 +146,7 @@ class CssConcatenator
 
     /**
      * @param \stdClass $ruleBlock Object with properties as described for elements of the `ruleBlocks` property of
-     *                            elements of `$mediaRules`.
+     *        elements of `$mediaRules`.
      *
      * @return string CSS for the rule block.
      */

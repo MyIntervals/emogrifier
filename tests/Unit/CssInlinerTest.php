@@ -2182,8 +2182,7 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @param array<string, string> $precedingSelectorComponents selectors to which each type of pseudo-component is
-     *                                                           appended to create a selector for a CSS rule.
-     *                                                           Keys are human-readable descriptions.
+     *        appended to create a selector for a CSS rule. Keys are human-readable descriptions.
      *
      * @return array<string, array<int, string>>
      */
