@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="3.11.5@3c60609c218d4d4b3b257728b8089094e5c6c6c2">
+<files psalm-version="4.2.1@ea9cb72143b77e7520c52fa37290bd8d8bc88fd9">
   <file src="src/CssInliner.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$node</code>
     </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="2">
-      <code>$this-&gt;matchingUninlinableCssRules === null</code>
       <code>$this-&gt;cssSelectorConverter === null</code>
+      <code>$this-&gt;matchingUninlinableCssRules === null</code>
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
@@ -21,40 +21,36 @@
       <code>$m[0]</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="3">
-      <code>$selectorToExclude</code>
       <code>$attributeName</code>
+      <code>$selectorToExclude</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="4">
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedArrayAccess>
     <MixedArrayAssignment occurrences="4">
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedArrayAssignment>
     <MixedInferredReturnType occurrences="4">
       <code>int</code>
       <code>string</code>
     </MixedInferredReturnType>
     <MixedReturnStatement occurrences="4">
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
+      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedReturnStatement>
     <MixedReturnTypeCoercion occurrences="3">
-      <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
       <code>$cssRules</code>
+      <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
     </MixedReturnTypeCoercion>
     <MoreSpecificReturnType occurrences="1"/>
-    <PossiblyNullArrayOffset occurrences="2">
-      <code>$this-&gt;styleAttributesForNodes</code>
-      <code>$this-&gt;visitedNodes</code>
-    </PossiblyNullArrayOffset>
     <PossiblyNullPropertyAssignmentValue occurrences="2">
       <code>null</code>
       <code>null</code>
@@ -66,11 +62,11 @@
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
     <MixedOperand occurrences="6">
-      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::CONTENT_TYPE_META_TAG</code>
       <code>static::DEFAULT_DOCUMENT_TYPE</code>
-      <code>static::CONTENT_TYPE_META_TAG</code>
-      <code>static::CONTENT_TYPE_META_TAG</code>
-      <code>static::CONTENT_TYPE_META_TAG</code>
+      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
       <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
     </MixedOperand>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
@@ -79,27 +75,19 @@
   </file>
   <file src="src/HtmlProcessor/CssToAttributeConverter.php">
     <MixedArgument occurrences="3">
+      <code>$mapping['attribute']</code>
       <code>$mapping['nodes']</code>
       <code>$mapping['values']</code>
-      <code>$mapping['attribute']</code>
     </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$property</code>
     </MixedArgumentTypeCoercion>
   </file>
-  <file src="src/HtmlProcessor/HtmlPruner.php">
-    <MixedArgument occurrences="1">
-      <code>$matches[1]</code>
-    </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>\array_keys($classesToKeepAsKeys)</code>
-    </MixedArgumentTypeCoercion>
-  </file>
   <file src="src/Utilities/CssConcatenator.php">
     <MixedArgument occurrences="5">
-      <code>$mediaRule-&gt;ruleBlocks</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
       <code>$lastRuleBlock-&gt;declarationsBlock</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$mediaRule-&gt;ruleBlocks</code>
       <code>$mediaRule-&gt;ruleBlocks</code>
       <code>$ruleBlock-&gt;selectorsAsKeys</code>
     </MixedArgument>
@@ -116,9 +104,9 @@
     </MixedPropertyAssignment>
     <MixedPropertyFetch occurrences="4">
       <code>$lastRuleBlock-&gt;declarationsBlock</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
-      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
       <code>$lastRuleBlock-&gt;declarationsBlock</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
+      <code>$lastRuleBlock-&gt;selectorsAsKeys</code>
     </MixedPropertyFetch>
   </file>
 </files>
