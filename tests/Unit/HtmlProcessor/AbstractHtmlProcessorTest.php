@@ -710,8 +710,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @phpcsSuppress SlevomatCodingStandard.TypeHints.ReturnTypeHint
-     * @array<string, array{0:string, 1:string}>
+     * @return array<string, array{0:string, 1:string}>
      */
     public function xmlSelfClosingTagDataProvider(): array
     {
