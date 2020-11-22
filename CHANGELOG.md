@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add an `.editorconfig` file
+  ([#940](https://github.com/MyIntervals/emogrifier/pull/940))
 - Support PHP 8.0
   ([#926](https://github.com/MyIntervals/emogrifier/pull/926))
 - Run the CI build once a week
