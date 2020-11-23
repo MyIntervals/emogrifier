@@ -25,11 +25,11 @@ final class CssConstraintTest extends TestCase
 
         $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
-        $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
+        $resultWithOtherMatchersRemoved = \str_replace(['(?:\\s*+;)?+', '\\s*+'], '', $result);
 
         self::assertSame(
             '/' . \preg_quote($needle, '/') . '/',
-            $resultWithWhitespaceMatchersRemoved
+            $resultWithOtherMatchersRemoved
         );
     }
 
@@ -59,6 +59,7 @@ final class CssConstraintTest extends TestCase
         return [
             '"{" alone' => ['{', ''],
             '"}" alone' => ['}', ''],
+            '";" alone' => [';', ''],
             '"," alone' => [',', ''],
             '"{" with non-special character' => ['{', 'a'],
             '"{" with two non-special characters' => ['{', 'a0'],
@@ -85,10 +86,10 @@ final class CssConstraintTest extends TestCase
         );
 
         $quotedOtherContent = \preg_quote($otherContent, '/');
-        $expectedResult = '/' . $quotedOtherContent . '\\s*+' . \preg_quote($contentToInsertAround, '/') . '\\s*+'
-            . $quotedOtherContent . '/';
+        $expectedResult = $quotedOtherContent . '\\s*+' . \preg_quote($contentToInsertAround, '/') . '\\s*+'
+            . $quotedOtherContent;
 
-        self::assertSame($expectedResult, $result);
+        self::assertStringContainsString($expectedResult, $result);
     }
 
     /**
