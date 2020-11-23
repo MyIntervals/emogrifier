@@ -145,7 +145,7 @@ jobs:
             DEPENDENCIES='';
           fi;
           composer install --no-progress
-          composer update --no-progress "${DEPENDENCIES}";
+          composer update --with-dependencies --no-progress "${DEPENDENCIES}";
           composer show;
 
       - name: Update PHIVE dependencies
