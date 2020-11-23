@@ -1,6 +1,6 @@
 # Emogrifier
 
-[![Build Status](https://github.com/MyIntervals/emogrifier/workflows/CI/badge.svg?branch=master)](https://github.com/MyIntervals/emogrifier/actions/)
+[![Build Status](https://github.com/MyIntervals/emogrifier/workflows/CI/badge.svg?branch=main)](https://github.com/MyIntervals/emogrifier/actions/)
 [![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Latest Unstable Version](https://poser.pugx.org/pelago/emogrifier/v/unstable.svg)](https://packagist.org/packages/pelago/emogrifier)
@@ -342,10 +342,10 @@ The following selectors are not implemented yet:
      without a type
    * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
    * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
-     
+
 Rules involving the following selectors cannot be applied as inline styles.
 They will, however, be preserved and copied to a `<style>` element in the HTML:
-     
+
  * dynamic [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
    (such as `:hover`)
  * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
@@ -362,7 +362,7 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
   to some of the declarations within them so that they will override CSS styles
   that have been inlined.  For example, with the following CSS, the `font-size`
   declaration in the `@media` rule would not override the font size for `p`
-  elements from the preceding rule after that has been inlined as 
+  elements from the preceding rule after that has been inlined as
   `<p style="font-size: 16px;">` in the HTML, without the `!important` directive
   (even though `!important` would not be necessary if the CSS were not inlined):
   ```css
@@ -373,7 +373,7 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
     p {
       font-size: 14px !important;
     }
-  } 
+  }
   ```
 * Emogrifier cannot inline CSS rules involving selectors with pseudo-elements
   (such as `::after`) or dynamic pseudo-classes (such as `:hover`) – it is
