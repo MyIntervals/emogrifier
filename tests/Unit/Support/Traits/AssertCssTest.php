@@ -26,10 +26,10 @@ final class AssertCssTest extends TestCase
     {
         $cssStrings = [
             'unminified CSS' => 'html, body { color: green; }',
-            'minified CSS' => 'html,body{color: green}',
-            'CSS with extra spaces' => '  html  ,  body  {  color: green  ;  }',
-            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor: green\n;\n}",
-            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor: green\r\n;\r\n}",
+            'minified CSS' => 'html,body{color:green}',
+            'CSS with extra spaces' => '  html  ,  body  {  color  :  green  ;  }  ',
+            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n",
+            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n",
         ];
 
         $datasets = [];
@@ -64,6 +64,18 @@ final class AssertCssTest extends TestCase
             'spurious `;` after rule in at-rule' => [
                 '@media print { body { color: green; } }',
                 '@media print { body { color: green; }; }',
+            ],
+            'invalid space after `:` for pseudo-class' => [
+                'p:first-child { color: green; }',
+                'p: first-child { color: green; }',
+            ],
+            'pseudo-class without descendant combinator does not match with' => [
+                'p:first-child { color: green; }',
+                'p :first-child { color: green; }',
+            ],
+            'pseudo-class with descendant combinator does not match without' => [
+                'p :first-child { color: green; }',
+                'p:first-child { color: green; }',
             ],
         ];
     }
