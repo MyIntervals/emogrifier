@@ -6,13 +6,25 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 5.0.0
+
+### Added
 - Add an `.editorconfig` file
   ([#940](https://github.com/MyIntervals/emogrifier/pull/940))
 - Support PHP 8.0
   ([#926](https://github.com/MyIntervals/emogrifier/pull/926))
 - Run the CI build once a week
   ([#933](https://github.com/MyIntervals/emogrifier/pull/933))
-- Move more development tools to Phive
+- Move more development tools to PHIVE
   ([#894](https://github.com/MyIntervals/emogrifier/pull/894),
   [#907](https://github.com/MyIntervals/emogrifier/pull/907))
 
@@ -56,7 +68,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#903](https://github.com/MyIntervals/emogrifier/pull/903))
 - Preserve all uninlinable (or otherwise unprocessed) at-rules
   ([#899](https://github.com/MyIntervals/emogrifier/pull/899))
-- Allow Windows CLI to run development tools installed through Phive
+- Allow Windows CLI to run development tools installed through PHIVE
   ([#900](https://github.com/MyIntervals/emogrifier/pull/900))
 - Switch to a maintained package for parallel PHP linting
   ([#884](https://github.com/MyIntervals/emogrifier/pull/884))
@@ -94,7 +106,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
   ([#866](https://github.com/MyIntervals/emogrifier/pull/866))
 - Upgrade to V2 of the PHP setup GitHub action
   ([#861](https://github.com/MyIntervals/emogrifier/pull/861))
-- Move the development tools to Phive
+- Move the development tools to PHIVE
   ([#850](https://github.com/MyIntervals/emogrifier/pull/850),
   [#851](https://github.com/MyIntervals/emogrifier/pull/851))
 - Switch the parallel linting to a maintained fork
