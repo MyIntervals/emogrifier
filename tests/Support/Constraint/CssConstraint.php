@@ -26,7 +26,7 @@ abstract class CssConstraint extends Constraint
      *
      * @var string
      */
-    private const CSS_REGULAR_EXPRESSIOM_PATTERN = '/
+    private const CSS_REGULAR_EXPRESSION_PATTERN = '/
         (?<![\\s;}])                    # - `}` as end of declarations rule block, captured in group 1, with possible
             (?:\\s*+;)?+                #   surrounding whitespace and optional preceding `;` (but not if preceded by
             \\s*+(\\})\\s*+             #   another `}` or `;`)
@@ -55,7 +55,7 @@ abstract class CssConstraint extends Constraint
     protected static function getCssNeedleRegularExpressionPattern(string $needle): string
     {
         $needleMatcher = \preg_replace_callback(
-            self::CSS_REGULAR_EXPRESSIOM_PATTERN,
+            self::CSS_REGULAR_EXPRESSION_PATTERN,
             [self::class, 'getCssNeedleRegularExpressionReplacement'],
             $needle
         );
