@@ -26,10 +26,10 @@ final class AssertCssTest extends TestCase
     {
         $cssStrings = [
             'unminified CSS' => 'html, body { color: green; }',
-            'minified CSS' => 'html,body{color: green;}',
-            'CSS with extra spaces' => '  html  ,  body  {  color: green;  }',
-            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor: green;\n}",
-            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor: green;\r\n}",
+            'minified CSS' => 'html,body{color: green}',
+            'CSS with extra spaces' => '  html  ,  body  {  color: green  ;  }',
+            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor: green\n;\n}",
+            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor: green\r\n;\r\n}",
         ];
 
         $datasets = [];
@@ -43,6 +43,7 @@ final class AssertCssTest extends TestCase
                 ];
             }
         }
+
         return $datasets;
     }
 
@@ -55,6 +56,15 @@ final class AssertCssTest extends TestCase
             'CSS part with "{" not in CSS' => ['p {', 'body { color: green; }'],
             'CSS part with "}" not in CSS' => ['color: red; }', 'body { color: green; }'],
             'CSS part with "," not in CSS' => ['html, body', 'body { color: green; }'],
+            'missing `;` after declaration where not optional' => [
+                'body { color: green; font-size: 15px; }',
+                "body { color: green\nfont-size: 15px; }",
+            ],
+            'extra `;` after declaration' => ['body { color: green; }', 'body { color: green;; }'],
+            'spurious `;` after rule in at-rule' => [
+                '@media print { body { color: green; } }',
+                '@media print { body { color: green; }; }',
+            ],
         ];
     }
 
