@@ -27,16 +27,26 @@ abstract class CssConstraint extends Constraint
      * @var string
      */
     private const CSS_REGULAR_EXPRESSION_PATTERN = '/
-        (?<![\\s;}])                    # - `}` as end of declarations rule block, captured in group 1, with possible
-            (?:\\s*+;)?+                #   surrounding whitespace and optional preceding `;` (but not if preceded by
-            \\s*+(\\})\\s*+             #   another `}` or `;`)
-        |\\s*+([{};,])\\s*+             # - `{`, `}`, `;` or `,` captured in group 2, with possible whitespace around
-        |(^\\s++)                       # - whitespace at the very start, captured in group 3
-        |(>)\\s*+                       # - `>` (e.g. closing a `<style>` element opening tag) with optional whitespace
-                                        #   following, captured in group 4
-        |(?:(?!\\s*+[{};,]|^\\s)[^>])++ # - Anything else is matched, though not captured.  This is required so that any
-                                        #   characters in the input string that happen to have a special meaning in a
-                                        #   regular expression can be escaped.
+        (?<![\\s;}])                        # - `}` as end of declarations rule block, captured in group 1, with
+            (?:\\s*+;)?+                    #   possible surrounding whitespace and optional preceding `;` (but not if
+            \\s*+(\\})\\s*+                 #   preceded by another `}` or `;`)
+        |\\s*+(                             # - `{`, `}`, `;`, `,` or `:`, captured in group 2, with possible whitespace
+            [{};,]                          #   around - `:` is only matched if in a declarations block (i.e. not
+            |\\:(?![^\\{\\}]*+\\{)          #   followed later by `{` without a closing `}` first)
+        )\\s*+                              #
+        |(^\\s++)                           # - whitespace at the very start, captured in group 3
+        |(>)\\s*+                           # - `>` (e.g. closing a `<style>` element opening tag) with optional
+                                            #   whitespace following, captured in group 4
+        |(?:                                # - Anything else is matched, though not captured.  This is required so that
+            (?!                             #   any characters in the input string that happen to have a special meaning
+                \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
+                    [{};,]                  #   matching a longer sequence is more optimal (and `.*` would not work).
+                    |\\:(?![^\\{\\}]*+\\{)  #
+                )                           #
+                |^\\s                       #
+            )                               #
+            [^>]                            #
+        )++                                 #
     /x';
 
     /**
