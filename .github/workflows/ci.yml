@@ -31,6 +31,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          coverage: none
 
       - name: PHP Lint
         # Note: Unlike the "ci:php:lint" Composer script, we do not use the
@@ -56,6 +57,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          coverage: none
 
       - name: Composer Validate
         run: composer validate --no-check-all --no-check-lock --strict
@@ -85,6 +87,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          coverage: none
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
@@ -128,6 +131,7 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           ini-values: xdebug.max_nesting_level=500
+          coverage: none
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
