@@ -57,6 +57,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          tools: composer:v2
           coverage: none
 
       - name: Composer Validate
@@ -87,12 +88,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
+          tools: composer:v2
           coverage: none
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
-          path: ~/.composer/cache
+          path: ~/.cache/composer
           key: php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             php${{ matrix.php-version }}-composer-
@@ -131,12 +133,13 @@ jobs:
         with:
           php-version: ${{ matrix.php-version }}
           ini-values: xdebug.max_nesting_level=500
+          tools: composer:v2
           coverage: none
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v1
         with:
-          path: ~/.composer/cache
+          path: ~/.cache/composer
           key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: |
             php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
