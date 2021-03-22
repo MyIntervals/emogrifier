@@ -7,6 +7,7 @@ namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
 use PHPUnit\Framework\TestCase;
+use TRegx\DataProvider\DataProviders;
 
 /**
  * Test case.
@@ -388,7 +389,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithoutHtmlTagDataProvider(): array
+    public function provideContentWithoutHtmlTag(): array
     {
         return [
             'doctype only' => ['<!DOCTYPE html>'],
@@ -396,6 +397,14 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element' => ['<head></head>'],
             'BODY element' => ['<body></body>'],
             'HEAD AND BODY element' => ['<head></head><body></body>'],
+            'META element with Content-Type as a value' => ['<meta name="description" content="Content-Type">'],
+            'HEAD element with Content-Type in comment' => ['<head><!-- Content-Type --></head>'],
+            'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
+            'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
+            'BODY element containing Content-Type META tag'
+                => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            'body content only with Content-Type META tag'
+                => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -404,7 +413,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string $html
      *
-     * @dataProvider contentWithoutHtmlTagDataProvider
+     * @dataProvider provideContentWithoutHtmlTag
      */
     public function addsMissingHtmlTag(string $html): void
     {
@@ -418,14 +427,20 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithoutHeadTagDataProvider(): array
+    public function provideContentWithoutHeadTag(): array
     {
         return [
             'doctype only' => ['<!DOCTYPE html>'],
+            'HTML element' => ['<html></html>'],
             'body content only' => ['<p>Hello</p>'],
             'BODY element' => ['<body></body>'],
             'HEADER element' => ['<header></header>'],
             'META element (implicit HEAD)' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'META element with Content-Type as a value' => ['<meta name="description" content="Content-Type">'],
+            'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
+            'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
+            // broken: BODY element containing Content-Type META tag
+            // broken: body content only with Content-Type META tag
         ];
     }
 
@@ -434,7 +449,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string $html
      *
-     * @dataProvider contentWithoutHeadTagDataProvider
+     * @dataProvider provideContentWithoutHeadTag
      */
     public function addsMissingHeadTagOnlyOnce(string $html): void
     {
@@ -449,7 +464,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function contentWithHeadTagDataProvider(): array
+    public function provideContentWithHeadTag(): array
     {
         return [
             'HEAD element' => ['<head></head>'],
@@ -457,6 +472,14 @@ final class AbstractHtmlProcessorTest extends TestCase
             '(invalid) void HEAD element' => ['<head/>'],
             'HEAD element with attribute' => ['<head lang="en"></head>'],
             'HEAD element and HEADER element' => ['<head></head><header></header>'],
+            'HEAD element with Content-Type in comment' => ['<head><!-- Content-Type --></head>'],
+            'HEAD element with Content-Type as META value' => ['<meta name="description" content="Content-Type">'],
+            'with BODY element with Content-Type in text' => ['<head></head><body>Content-Type</body>'],
+            'with implicit body content with Content-Type in text' => ['<head></head><p>Content-Type</p>'],
+            'with BODY element containing Content-Type META tag'
+                => ['<head></head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            'with implicit body content with Content-Type META tag'
+                => ['<head></head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -465,7 +488,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string $html
      *
-     * @dataProvider contentWithHeadTagDataProvider
+     * @dataProvider provideContentWithHeadTag
      */
     public function notAddsSecondHeadTag(string $html): void
     {
@@ -655,12 +678,32 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideMalformedContentTypeMetaTag(): array
+    {
+        return [
+            'extra character before META' => ['<xmeta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character after META' => ['<metax http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character before HTTP-EQUIV'
+                => ['<meta xhttp-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character after HTTP-EQUIV'
+                => ['<meta http-equivx="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character before CONTENT-TYPE'
+                => ['<meta http-equiv=xContent-Type content="text/html; charset=utf-8">'],
+            'extra character after CONTENT-TYPE'
+                => ['<meta http-equiv=Content-Typex content="text/html; charset=utf-8">'],
+        ];
+    }
+
+    /**
      * @test
      *
      * @param string $html
      *
-     * @dataProvider contentWithoutHeadTagDataProvider
-     * @dataProvider contentWithHeadTagDataProvider
+     * @dataProvider provideContentWithoutHeadTag
+     * @dataProvider provideContentWithHeadTag
+     * @dataProvider provideMalformedContentTypeMetaTag
      */
     public function addsMissingContentTypeMetaTagOnlyOnce(string $html): void
     {
@@ -678,7 +721,33 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function htmlAroundContentTypeDataProvider(): array
+    public function provideContentTypeMetaTag(): array
+    {
+        return [
+            'double-quoted attribute values' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'single-quoted attribute values'
+                => ['<meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'>'],
+            'unquoted attribute values' => ['<meta http-equiv=Content-Type content=text/html;charset=utf-8>'],
+            'reverse order attributes' => ['<meta content="text/html; charset=utf-8" http-equiv="Content-Type">'],
+            'without charset' => ['<meta http-equiv="Content-Type" content="text/html">'],
+            'XHTML' => ['<meta http-equiv="Content-Type" content="application/xhtml+xml; charset=utf-8">'],
+            'tag with self-closing slash' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>'],
+            'tag with extra whitespace' => ['<meta  http-equiv="Content-Type"  content="text/html ;  charset=utf-8" >'],
+            'tag with newlines' => ["<meta\nhttp-equiv='Content-Type'\ncontent='text/html\n;\ncharset=utf-8'\n>"],
+            'uppercase tag name' => ['<META http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'uppercase attribute names' => ['<meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=utf-8">'],
+            'uppercase `Content-Type`' => ['<meta http-equiv="CONTENT-TYPE" content="text/html; charset=utf-8">'],
+            'lowercase `Content-Type`' => ['<meta http-equiv="content-type" content="text/html; charset=utf-8">'],
+            'uppercase MIME type' => ['<meta http-equiv="Content-Type" content="TEXT/HTML; charset=utf-8">'],
+            'uppercase `charset`' => ['<meta http-equiv="Content-Type" content="text/html; CHARSET=utf-8">'],
+            'uppercase `charset` value' => ['<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">'],
+        ];
+    }
+
+    /**
+     * @return string[][]
+     */
+    public function provideHtmlAroundContentType(): array
     {
         return [
             'HTML and HEAD element' => ['<html><head>', '</head></html>'],
@@ -691,21 +760,30 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideContentTypeTagAndSurroundingHtml(): array
+    {
+        return DataProviders::cross($this->provideContentTypeMetaTag(), $this->provideHtmlAroundContentType());
+    }
+
+    /**
      * @test
      *
+     * @param string $contentTypeTag
      * @param string $htmlBefore
      * @param string $htmlAfter
      *
-     * @dataProvider htmlAroundContentTypeDataProvider
+     * @dataProvider provideContentTypeTagAndSurroundingHtml
      */
-    public function notAddsSecondContentTypeMetaTag(string $htmlBefore, string $htmlAfter): void
+    public function notAddsSecondContentTypeMetaTag(string $contentTypeTag, string $htmlBefore, string $htmlAfter): void
     {
-        $html = $htmlBefore . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' . $htmlAfter;
+        $html = $htmlBefore . $contentTypeTag . $htmlAfter;
         $subject = TestingHtmlProcessor::fromHtml($html);
 
         $result = $subject->render();
 
-        $numberOfContentTypeMetaTags = \substr_count($result, 'Content-Type');
+        $numberOfContentTypeMetaTags = \substr_count(\strtolower($result), 'content-type');
         self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 

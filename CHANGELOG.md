@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Allow "Content-Type" in content
+  ([#959](https://github.com/MyIntervals/emogrifier/pull/959))
 
 ## 5.0.0
 
