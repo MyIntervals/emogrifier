@@ -271,8 +271,9 @@ abstract class AbstractHtmlProcessor
      */
     private function addContentTypeMetaTag(string $html): string
     {
-        $hasContentTypeMetaTag
-            = \preg_match('%<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]%i', $html) === 1;
+        $contentTypeMetaTagMatchCount
+            = \preg_match('%<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]%i', $html);
+        $hasContentTypeMetaTag = \is_int($contentTypeMetaTagMatchCount) && $contentTypeMetaTagMatchCount > 0;
         if ($hasContentTypeMetaTag) {
             return $html;
         }

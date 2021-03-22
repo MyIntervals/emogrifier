@@ -678,12 +678,32 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return string[][]
+     */
+    public function provideMalformedContentTypeMetaTag(): array
+    {
+        return [
+            'extra character before META' => ['<xmeta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character after META' => ['<metax http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character before HTTP-EQUIV'
+                => ['<meta xhttp-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character after HTTP-EQUIV'
+                => ['<meta http-equivx="Content-Type" content="text/html; charset=utf-8">'],
+            'extra character before CONTENT-TYPE'
+                => ['<meta http-equiv=xContent-Type content="text/html; charset=utf-8">'],
+            'extra character after CONTENT-TYPE'
+                => ['<meta http-equiv=Content-Typex content="text/html; charset=utf-8">'],
+        ];
+    }
+
+    /**
      * @test
      *
      * @param string $html
      *
      * @dataProvider provideContentWithoutHeadTag
      * @dataProvider provideContentWithHeadTag
+     * @dataProvider provideMalformedContentTypeMetaTag
      */
     public function addsMissingContentTypeMetaTagOnlyOnce(string $html): void
     {
