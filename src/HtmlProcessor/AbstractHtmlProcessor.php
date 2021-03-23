@@ -33,6 +33,15 @@ abstract class AbstractHtmlProcessor
     protected const PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER = '(?:command|embed|keygen|source|track|wbr)';
 
     /**
+     * Regular expression part to match tag names that may appear before the start of the `<body>` element.  A start tag
+     * for any other element would implicitly start the `<body>` element due to tag omission rules.
+     *
+     * @var string
+     */
+    protected const TAGNAME_ALLOWED_BEFORE_BODY_MATCHER
+        = '(?:html|head|base|command|link|meta|noscript|script|style|template|title)';
+
+    /**
      * @var \DOMDocument|null
      */
     protected $domDocument = null;
@@ -271,10 +280,7 @@ abstract class AbstractHtmlProcessor
      */
     private function addContentTypeMetaTag(string $html): string
     {
-        $contentTypeMetaTagMatchCount
-            = \preg_match('%<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]%i', $html);
-        $hasContentTypeMetaTag = \is_int($contentTypeMetaTagMatchCount) && $contentTypeMetaTagMatchCount > 0;
-        if ($hasContentTypeMetaTag) {
+        if ($this->hasContentTypeMetaTagInHead($html)) {
             return $html;
         }
 
@@ -300,6 +306,111 @@ abstract class AbstractHtmlProcessor
         }
 
         return $reworkedHtml;
+    }
+
+    /**
+     * Tests whether the given HTML has a valid `Content-Type` metadata element within the `<head>` element.  Due to tag
+     * omission rules, HTML parsers are expected to end the `<head>` element and start the `<body>` element upon
+     * encountering a start tag for any element which is permitted only within the `<body>`.
+     *
+     * @param string $html
+     *
+     * @return bool
+     */
+    private function hasContentTypeMetaTagInHead(string $html): bool
+    {
+        $contentTypeMetaTagMatchCount = \preg_match(
+            '%<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]%i',
+            $html,
+            $matches,
+            PREG_OFFSET_CAPTURE
+        );
+        if (\is_int($contentTypeMetaTagMatchCount) && $contentTypeMetaTagMatchCount > 0) {
+            /** @psalm-var array<int, array{0:string, 1:int}> $matches */
+            $matchPosition = $matches[0][1];
+            $htmlBefore = \substr($html, 0, $matchPosition);
+            try {
+                $hasContentTypeMetaTagInHead = !$this->hasEndOfHeadElement($htmlBefore);
+            } catch (\RuntimeException $exception) {
+                // If something unexpected occurs, assume the `Content-Type` that was found is valid.
+                \trigger_error($exception->getMessage());
+                $hasContentTypeMetaTagInHead = true;
+            }
+        } else {
+            $hasContentTypeMetaTagInHead = false;
+        }
+
+        return $hasContentTypeMetaTagInHead;
+    }
+
+    /**
+     * Tests whether the `<head>` element ends within the given HTML.  Due to tag omission rules, HTML parsers are
+     * expected to end the `<head>` element and start the `<body>` element upon encountering a start tag for any element
+     * which is permitted only within the `<body>`.
+     *
+     * @param string $html
+     *
+     * @return bool
+     *
+     * @throws \RuntimeException
+     */
+    private function hasEndOfHeadElement(string $html): bool
+    {
+        $headEndTagMatchCount
+            = \preg_match('%<(?!' . static::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html);
+        if (\is_int($headEndTagMatchCount) && $headEndTagMatchCount > 0) {
+            // An exception to the implicit end of the `<head>` is any content within a `<template>` element, as well in
+            // comments.  As an optimization, this is only checked for if a potential `<head>` end tag is found.
+            $htmlWithoutCommentsOrTemplates = $this->removeHtmlTemplateElements($this->removeHtmlComments($html));
+            if ($htmlWithoutCommentsOrTemplates === $html) {
+                $hasEndOfHeadElement = true;
+            } else {
+                $hasEndOfHeadElement = $this->hasEndOfHeadElement($htmlWithoutCommentsOrTemplates);
+            }
+        } else {
+            $hasEndOfHeadElement = false;
+        }
+
+        return $hasEndOfHeadElement;
+    }
+
+    /**
+     * Removes comments from the given HTML, including any unclosed, for which the remainder of the string is removed.
+     *
+     * @param string $html
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    private function removeHtmlComments(string $html): string
+    {
+        $result = \preg_replace('/<!--[^-]*+(?:-(?!->)[^-]*+)*+(?:-->|$)/', '', $html);
+        if (!\is_string($result)) {
+            throw new \RuntimeException('Internal PCRE error', 1616521475);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Removes `<template>` elements from the given HTML, including any without an end tag, for which the remainder of
+     * the string is removed.
+     *
+     * @param string $html
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    private function removeHtmlTemplateElements(string $html): string
+    {
+        $result = \preg_replace('%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i', '', $html);
+        if (!\is_string($result)) {
+            throw new \RuntimeException('Internal PCRE error', 1616519652);
+        }
+
+        return $result;
     }
 
     /**

@@ -16,6 +16,8 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+- Ignore `http-equiv` `Content-Type` in `<body>`
+  ([#961](https://github.com/MyIntervals/emogrifier/pull/961))
 - Allow "Content-Type" in content
   ([#959](https://github.com/MyIntervals/emogrifier/pull/959))
 

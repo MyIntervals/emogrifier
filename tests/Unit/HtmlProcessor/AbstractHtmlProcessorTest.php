@@ -442,12 +442,16 @@ final class AbstractHtmlProcessorTest extends TestCase
             'META element with Content-Type as a value' => ['<meta name="description" content="Content-Type">'],
             'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
             'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
-            // broken: BODY element containing Content-Type META tag
-            // broken: body content only with Content-Type META tag
+            'http-equiv META element within BODY (not allowed)'
+                => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            'http-equiv META element after P (implicit BODY, not allowed)'
+                => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'http-equiv META element within P (not allowed)'
                 => ['<p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></p>'],
             'viewport META element within P (allowed)'
                 => ['<p><meta name="viewport" content="width=device-width, initial-scale=1.0"></p>'],
+            'http-equiv META element within HEADER (not allowed)'
+                => ['<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></header>'],
         ];
     }
 
@@ -480,13 +484,22 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element with attribute' => ['<head lang="en"></head>'],
             'HEAD element and HEADER element' => ['<head></head><header></header>'],
             'HEAD element with Content-Type in comment' => ['<head><!-- Content-Type --></head>'],
-            'HEAD element with Content-Type as META value' => ['<meta name="description" content="Content-Type">'],
+            'HEAD element with Content-Type as META value'
+                => ['<head><meta name="description" content="Content-Type"></head>'],
             'with BODY element with Content-Type in text' => ['<head></head><body>Content-Type</body>'],
             'with implicit body content with Content-Type in text' => ['<head></head><p>Content-Type</p>'],
             'with BODY element containing Content-Type META tag'
                 => ['<head></head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
             'with implicit body content with Content-Type META tag'
                 => ['<head></head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'with end tag omitted and BODY element containing Content-Type META tag'
+                => ['<head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            'with end tag omitted and implicit body content with Content-Type META tag'
+                => ['<head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'with Content-Type META tag after end tag'
+                => ['<head></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            'with Content-Type META tag after uppercase end tag'
+                => ['<HEAD></HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -718,8 +731,16 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
+        $headEndPosition = \stripos($result, '</head>');
+        $resultBeforeHeadEnd = $headEndPosition !== false ? \substr($result, 0, $headEndPosition) : $result;
+        // PHP DOM does not understand `<header>` element so does not know it would implicitly start `<body>`.
+        $headerStartPosition = \stripos($resultBeforeHeadEnd, '<header');
+        if ($headerStartPosition !== false) {
+            $resultBeforeHeadEnd = \substr($resultBeforeHeadEnd, 0, $headerStartPosition);
+        }
+
         $numberOfContentTypeMetaTags = \substr_count(
-            $result,
+            $resultBeforeHeadEnd,
             '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
         );
         self::assertSame(1, $numberOfContentTypeMetaTags);
@@ -763,6 +784,23 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element with attribute' => ['<head lang="en">', '</head>'],
             'HTML, HEAD, and BODY with HEADER elements'
                 => ['<html><head>', '</head><body><header></header></body></html>'],
+            'HEAD element with comment' => ['<head><!--Test-->', '</head>'],
+            'HEAD element with commented-out BODY start tag' => ['<head><!--<body>-->', '</head>'],
+            'HEAD element with BASE element' => ['<head><base href="https://example.com"/>', '</head>'],
+            'HEAD element with COMMAND element' => ['<head><command type="command"/>', '</head>'],
+            'HEAD element with LINK element'
+                => ['<head><link rel="stylesheet" href="https://example.org/css.css"/>', '</head>'],
+            'HEAD element with another META element' => ['<head><meta name="title" content="Test"/>', '</head>'],
+            'HEAD element with NOSCRIPT element'
+                => ['<head><noscript><style>p{color:green}</style></noscript>', '</head>'],
+            'HEAD element with SCRIPT element' => ['<head><script>console.log("Test");</script>', '</head>'],
+            'HEAD element with STYLE element' => ['<head><style>p{color:green}</style>', '</head>'],
+            'HEAD element with TEMPLATE element'
+                => ['<head><template id="test"><p>Test</p></template></title>', '</head>'],
+            'HEAD element with TITLE element' => ['<head><title>Test</title>', '</head>'],
+            'HEAD element with uppercase TEMPLATE element'
+                => ['<head><TEMPLATE id="test"><p>Test</p></TEMPLATE></title>', '</head>'],
+            'HEAD element with uppercase TITLE element' => ['<head><TITLE>Test</TITLE>', '</head>'],
         ];
     }
 
