@@ -42,6 +42,21 @@ abstract class AbstractHtmlProcessor
         = '(?:html|head|base|command|link|meta|noscript|script|style|template|title)';
 
     /**
+     * regular expression pattern to match an HTML comment, including delimiters and modifiers
+     *
+     * @var string
+     */
+    protected const HTML_COMMENT_PATTERN = '/<!--[^-]*+(?:-(?!->)[^-]*+)*+(?:-->|$)/';
+
+    /**
+     * regular expression pattern to match an HTML `<template>` element, including delimiters and modifiers
+     *
+     * @var string
+     */
+    protected const HTML_TEMPLATE_ELEMENT_PATTERN
+        = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';
+
+    /**
      * @var \DOMDocument|null
      */
     protected $domDocument = null;
@@ -319,16 +334,9 @@ abstract class AbstractHtmlProcessor
      */
     private function hasContentTypeMetaTagInHead(string $html): bool
     {
-        $contentTypeMetaTagMatchCount = \preg_match(
-            '%<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]%i',
-            $html,
-            $matches,
-            PREG_OFFSET_CAPTURE
-        );
-        if (\is_int($contentTypeMetaTagMatchCount) && $contentTypeMetaTagMatchCount > 0) {
-            /** @psalm-var array<int, array{0:string, 1:int}> $matches */
-            $matchPosition = $matches[0][1];
-            $htmlBefore = \substr($html, 0, $matchPosition);
+        \preg_match('%^.*?(?=<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>])%is', $html, $matches);
+        if (isset($matches[0])) {
+            $htmlBefore = $matches[0];
             try {
                 $hasContentTypeMetaTagInHead = !$this->hasEndOfHeadElement($htmlBefore);
             } catch (\RuntimeException $exception) {
@@ -362,11 +370,8 @@ abstract class AbstractHtmlProcessor
             // An exception to the implicit end of the `<head>` is any content within a `<template>` element, as well in
             // comments.  As an optimization, this is only checked for if a potential `<head>` end tag is found.
             $htmlWithoutCommentsOrTemplates = $this->removeHtmlTemplateElements($this->removeHtmlComments($html));
-            if ($htmlWithoutCommentsOrTemplates === $html) {
-                $hasEndOfHeadElement = true;
-            } else {
-                $hasEndOfHeadElement = $this->hasEndOfHeadElement($htmlWithoutCommentsOrTemplates);
-            }
+            $hasEndOfHeadElement = $htmlWithoutCommentsOrTemplates === $html
+                || $this->hasEndOfHeadElement($htmlWithoutCommentsOrTemplates);
         } else {
             $hasEndOfHeadElement = false;
         }
@@ -375,7 +380,8 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Removes comments from the given HTML, including any unclosed, for which the remainder of the string is removed.
+     * Removes comments from the given HTML, including any which are unterminated, for which the remainder of the string
+     * is removed.
      *
      * @param string $html
      *
@@ -385,7 +391,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlComments(string $html): string
     {
-        $result = \preg_replace('/<!--[^-]*+(?:-(?!->)[^-]*+)*+(?:-->|$)/', '', $html);
+        $result = \preg_replace(static::HTML_COMMENT_PATTERN, '', $html);
         if (!\is_string($result)) {
             throw new \RuntimeException('Internal PCRE error', 1616521475);
         }
@@ -405,7 +411,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlTemplateElements(string $html): string
     {
-        $result = \preg_replace('%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i', '', $html);
+        $result = \preg_replace(static::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
         if (!\is_string($result)) {
             throw new \RuntimeException('Internal PCRE error', 1616519652);
         }

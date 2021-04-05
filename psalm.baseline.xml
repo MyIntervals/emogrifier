@@ -82,6 +82,10 @@
     </UnnecessaryVarAnnotation>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
+    <MixedArgument occurrences="2">
+      <code>static::HTML_COMMENT_PATTERN</code>
+      <code>static::HTML_TEMPLATE_ELEMENT_PATTERN</code>
+    </MixedArgument>
     <MixedOperand occurrences="7">
       <code>static::CONTENT_TYPE_META_TAG</code>
       <code>static::CONTENT_TYPE_META_TAG</code>
