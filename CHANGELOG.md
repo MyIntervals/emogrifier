@@ -8,12 +8,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
-- Switch the default branch from `master` to `main`
-  ([#951](https://github.com/MyIntervals/emogrifier/pull/951))
 
 ### Deprecated
+- Support for PHP 7.2 will be removed in Emogrifier 7.0.
 
 ### Removed
+
+### Fixed
+
+## 5.0.1
+
+### Changed
+- Switch the default branch from `master` to `main`
+  ([#951](https://github.com/MyIntervals/emogrifier/pull/951))
 
 ### Fixed
 - Ignore `http-equiv` `Content-Type` in `<body>`
