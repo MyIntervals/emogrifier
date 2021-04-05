@@ -82,14 +82,6 @@
     </UnnecessaryVarAnnotation>
   </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
-    <MixedOperand occurrences="6">
-      <code>static::CONTENT_TYPE_META_TAG</code>
-      <code>static::CONTENT_TYPE_META_TAG</code>
-      <code>static::CONTENT_TYPE_META_TAG</code>
-      <code>static::DEFAULT_DOCUMENT_TYPE</code>
-      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
-      <code>static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER</code>
-    </MixedOperand>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
