@@ -365,7 +365,7 @@ abstract class AbstractHtmlProcessor
     private function hasEndOfHeadElement(string $html): bool
     {
         $headEndTagMatchCount
-            = \preg_match('%<(?!' . static::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html);
+            = \preg_match('%<(?!' . self::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html);
         if (\is_int($headEndTagMatchCount) && $headEndTagMatchCount > 0) {
             // An exception to the implicit end of the `<head>` is any content within a `<template>` element, as well in
             // comments.  As an optimization, this is only checked for if a potential `<head>` end tag is found.
@@ -391,7 +391,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlComments(string $html): string
     {
-        $result = \preg_replace(static::HTML_COMMENT_PATTERN, '', $html);
+        $result = \preg_replace(self::HTML_COMMENT_PATTERN, '', $html);
         if (!\is_string($result)) {
             throw new \RuntimeException('Internal PCRE error', 1616521475);
         }
@@ -411,7 +411,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlTemplateElements(string $html): string
     {
-        $result = \preg_replace(static::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
+        $result = \preg_replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
         if (!\is_string($result)) {
             throw new \RuntimeException('Internal PCRE error', 1616519652);
         }
