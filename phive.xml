@@ -4,5 +4,5 @@
   <phar name="php-cs-fixer" version="^2.16.7" installed="2.16.7" location="./tools/php-cs-fixer.phar" copy="true"/>
   <phar name="phpmd" version="^2.9.1" installed="2.9.1" location="./tools/phpmd.phar" copy="true"/>
   <phar name="phpunit" version="^7.5.20 || ^9.4.3" installed="7.5.20" location="./tools/phpunit.phar" copy="true"/>
-  <phar name="psalm" version="^3.11.5" installed="3.11.5" location="./tools/psalm.phar" copy="true"/>
+  <phar name="psalm" version="^4.7.0" installed="4.7.0" location="./tools/psalm.phar" copy="true"/>
 </phive>
