@@ -132,7 +132,7 @@ final class CssConstraintTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<string>>
      */
     public function provideWhitespaceBetweenWords(): array
     {
