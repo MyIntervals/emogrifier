@@ -39,7 +39,7 @@ final class CssConstraintTest extends TestCase
     public function getCssNeedleRegularExpressionPatternNotEscapesNonSpecialCharacters(): void
     {
         $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
-            . "\r\n\t `¬\"£%&_;'@~,";
+            . '`¬"£%&_;\'@~,';
 
         $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
@@ -61,6 +61,7 @@ final class CssConstraintTest extends TestCase
             '"}" alone' => ['}', ''],
             '";" alone' => [';', ''],
             '"," alone' => [',', ''],
+            '":" alone' => [':', ''],
             '"{" with non-special character' => ['{', 'a'],
             '"{" with two non-special characters' => ['{', 'a0'],
             '"{" with special character' => ['{', '.'],
@@ -128,5 +129,33 @@ final class CssConstraintTest extends TestCase
         $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
 
         self::assertSame('/\\<style\\>\\s*+a/', $result);
+    }
+
+    /**
+     * @return array<string, array<string>>
+     */
+    public function provideWhitespaceBetweenWords(): array
+    {
+        return [
+            'one space' => ['a b'],
+            'two spaces' => ['a  b'],
+            'linefeed' => ["a\nb"],
+            'Windows line ending' => ["a\r\nb"],
+            'tab' => ["a\tb"],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $needle
+     *
+     * @dataProvider provideWhitespaceBetweenWords
+     */
+    public function getCssNeedleRegularExpressionPatternReplacesWhitespaceWithVariableWhitespace(string $needle): void
+    {
+        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
+
+        self::assertStringContainsString('a\\s++b', $result);
     }
 }

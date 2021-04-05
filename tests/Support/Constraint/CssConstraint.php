@@ -37,13 +37,14 @@ abstract class CssConstraint extends Constraint
         |(^\\s++)                           # - whitespace at the very start, captured in group 3
         |(>)\\s*+                           # - `>` (e.g. closing a `<style>` element opening tag) with optional
                                             #   whitespace following, captured in group 4
+        |(\\s++)                            # - whitespace, captured in group 5
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
                     [{};,]                  #   matching a longer sequence is more optimal (and `.*` would not work).
                     |\\:(?![^\\{\\}]*+\\{)  #
                 )                           #
-                |^\\s                       #
+                |\\s                        #
             )                               #
             [^>]                            #
         )++                                 #
@@ -52,7 +53,8 @@ abstract class CssConstraint extends Constraint
     /**
      * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
      * element added to the document, due to the way that certain parts are `trim`med.  Notably, whitespace either side
-     * of "{", "}", ";" and ",", or at the beginning of the CSS may be removed.
+     * of "{", "}", ";", "," and (within a declarations block) ":", or at the beginning of the CSS may be removed.
+     * Other whitespace may be varied where equivalent (though not added or removed).
      *
      * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
      * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
@@ -87,6 +89,8 @@ abstract class CssConstraint extends Constraint
             $regularExpressionEquivalent = '\\s*+';
         } elseif (($matches[4] ?? '') !== '') {
             $regularExpressionEquivalent = \preg_quote($matches[4], '/') . '\\s*+';
+        } elseif (($matches[5] ?? '') !== '') {
+            $regularExpressionEquivalent = '\\s++';
         } else {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }

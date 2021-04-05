@@ -25,11 +25,12 @@ final class AssertCssTest extends TestCase
     public function needleFoundDataProvider(): array
     {
         $cssStrings = [
-            'unminified CSS' => 'html, body { color: green; }',
-            'minified CSS' => 'html,body{color:green}',
-            'CSS with extra spaces' => '  html  ,  body  {  color  :  green  ;  }  ',
-            'CSS with linefeeds' => "\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n",
-            'CSS with Windows line endings' => "\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n",
+            'unminified CSS' => '@media screen { html, body { color: green; } }',
+            'minified CSS' => '@media screen{html,body{color:green}}',
+            'CSS with extra spaces' => '  @media  screen  {  html  ,  body  {  color  :  green  ;  }  }  ',
+            'CSS with linefeeds' => "\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n",
+            'CSS with Windows line endings'
+                => "\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n",
         ];
 
         $datasets = [];
@@ -76,6 +77,19 @@ final class AssertCssTest extends TestCase
             'pseudo-class with descendant combinator does not match without' => [
                 'p :first-child { color: green; }',
                 'p:first-child { color: green; }',
+            ],
+            'missing required whitespace after at-rule identifier' => ['@media screen', '@mediascreen'],
+            'missing required whitespace in calc before addition operator' => [
+                'width: calc(1px + 50%);',
+                'width: calc(1px+ 50%);',
+            ],
+            'missing required whitespace in calc before subtraction operator' => [
+                'width: calc(50% - 1px);',
+                'width: calc(50%- 1px);',
+            ],
+            'missing required whitespace in calc after addition operator' => [
+                'width: calc(1px + 50%);',
+                'width: calc(1px +50%);',
             ],
         ];
     }
