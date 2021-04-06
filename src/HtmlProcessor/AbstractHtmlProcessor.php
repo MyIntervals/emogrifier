@@ -187,7 +187,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeSelfClosingTagsClosingTags(string $html): string
     {
-        return \preg_replace('%</' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
+        return \preg_replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
     }
 
     /**
@@ -263,7 +263,7 @@ abstract class AbstractHtmlProcessor
             return $this->normalizeDocumentType($html);
         }
 
-        return static::DEFAULT_DOCUMENT_TYPE . $html;
+        return self::DEFAULT_DOCUMENT_TYPE . $html;
     }
 
     /**
@@ -307,17 +307,17 @@ abstract class AbstractHtmlProcessor
         if ($hasHeadTag) {
             $reworkedHtml = \preg_replace(
                 '/<head(?=[\\s>])([^>]*+)>/i',
-                '<head$1>' . static::CONTENT_TYPE_META_TAG,
+                '<head$1>' . self::CONTENT_TYPE_META_TAG,
                 $html
             );
         } elseif ($hasHtmlTag) {
             $reworkedHtml = \preg_replace(
                 '/<html(.*?)>/i',
-                '<html$1><head>' . static::CONTENT_TYPE_META_TAG . '</head>',
+                '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
                 $html
             );
         } else {
-            $reworkedHtml = static::CONTENT_TYPE_META_TAG . $html;
+            $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
         }
 
         return $reworkedHtml;
@@ -430,7 +430,7 @@ abstract class AbstractHtmlProcessor
     private function ensurePhpUnrecognizedSelfClosingTagsAreXml(string $html): string
     {
         return \preg_replace(
-            '%<' . static::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
+            '%<' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
             '$0/',
             $html
         );
