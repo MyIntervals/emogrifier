@@ -12,7 +12,7 @@ namespace Pelago\Emogrifier\Tests\Support\Constraint;
  *
  * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
-class StringContainsCssCount extends CssConstraint
+final class StringContainsCssCount extends CssConstraint
 {
     /**
      * @var int
