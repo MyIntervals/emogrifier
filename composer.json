@@ -69,15 +69,15 @@
             "@ci:static",
             "@ci:dynamic"
         ],
-        "ci:composer:normalize": "\"./tools/composer-normalize.phar\" --dry-run",
+        "ci:composer:normalize": "\"./tools/composer-normalize\" --dry-run",
         "ci:dynamic": [
             "@ci:tests"
         ],
-        "ci:php:fixer": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
+        "ci:php:fixer": "\"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:lint": "\"vendor/bin/parallel-lint\" config src tests",
-        "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
-        "ci:php:psalm": "\"./tools/psalm.phar\" --show-info=false",
-        "ci:php:sniff": "\"./tools/phpcs.phar\" config src tests",
+        "ci:php:md": "\"./tools/phpmd\" src text config/phpmd.xml",
+        "ci:php:psalm": "\"./tools/psalm\" --show-info=false",
+        "ci:php:sniff": "\"./tools/phpcs\" config src tests",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
@@ -91,9 +91,9 @@
         ],
         "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
         "ci:tests:unit": "\"./tools/phpunit.phar\"",
-        "composer:normalize": "\"./tools/composer-normalize.phar\"",
-        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" --no-progress update phpunit",
-        "php:fix": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "composer:normalize": "\"./tools/composer-normalize\"",
+        "phive:update:phpunit": "echo y | \"./tools/phive\" --no-progress update phpunit",
+        "php:fix": "\"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'"
     },
     "support": {
