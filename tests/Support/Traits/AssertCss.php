@@ -9,8 +9,6 @@ use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCssCount;
 
 /**
  * Provides assertion methods for use with CSS content where whitespace may vary.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 trait AssertCss
 {

@@ -9,11 +9,7 @@ use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\Tests\Support\Traits\AssertCss
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 final class AssertCssTest extends TestCase
 {

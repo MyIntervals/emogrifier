@@ -10,11 +10,7 @@ use PHPUnit\Framework\TestCase;
 use TRegx\DataProvider\DataProviders;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor
- *
- * @author Oliver Klee <github@oliverklee.de>
  */
 final class AbstractHtmlProcessorTest extends TestCase
 {

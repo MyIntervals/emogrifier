@@ -9,11 +9,7 @@ use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter
- *
- * @author Oliver Klee <github@oliverklee.de>
  */
 final class CssToAttributeConverterTest extends TestCase
 {

@@ -9,8 +9,6 @@ namespace Pelago\Emogrifier\Tests\Support\Constraint;
  * allowing for cosmetic whitespace differences.
  *
  * The CSS string and expected number of occurrences are passed in the constructor.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class StringContainsCssCount extends CssConstraint
 {

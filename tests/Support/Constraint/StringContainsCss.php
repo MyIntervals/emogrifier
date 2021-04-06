@@ -9,8 +9,6 @@ namespace Pelago\Emogrifier\Tests\Support\Constraint;
  * whitespace differences.
  *
  * The CSS string passed in the constructor.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class StringContainsCss extends CssConstraint
 {

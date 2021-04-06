@@ -9,9 +9,6 @@ use Pelago\Emogrifier\Utilities\ArrayIntersector;
 
 /**
  * This class can remove things from HTML.
- *
- * @author Oliver Klee <github@oliverklee.de>
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class HtmlPruner extends AbstractHtmlProcessor
 {

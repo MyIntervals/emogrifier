@@ -8,8 +8,6 @@ use Pelago\Emogrifier\Tests\Support\Constraint\CssConstraint;
 
 /**
  * Extends the `CssConstraint` class to provide indirect access to protected method(s) for testing.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 abstract class TestingCssConstraint extends CssConstraint
 {

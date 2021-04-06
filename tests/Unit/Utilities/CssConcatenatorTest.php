@@ -8,11 +8,7 @@ use Pelago\Emogrifier\Utilities\CssConcatenator;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\Utilities\CssConcatenator
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 final class CssConcatenatorTest extends TestCase
 {

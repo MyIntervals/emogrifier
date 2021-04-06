@@ -15,8 +15,6 @@ use PHPUnit\Framework\Constraint\Constraint;
  * Since, then, this is a class, and PHPUnit's `Constraint` class may or may not have a constructor (it did prior to
  * 8.x, but does not since) which must be called if it exists, this class also provides an explicit constructor which
  * will invoke the parent's constructor if there is one.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 abstract class CssConstraint extends Constraint
 {

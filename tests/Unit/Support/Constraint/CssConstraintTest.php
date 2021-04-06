@@ -8,11 +8,7 @@ use Pelago\Emogrifier\Tests\Unit\Support\Constraint\Fixtures\TestingCssConstrain
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\Tests\Support\Constraint\CssConstraint
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 final class CssConstraintTest extends TestCase
 {

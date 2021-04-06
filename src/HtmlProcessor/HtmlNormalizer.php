@@ -10,8 +10,6 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  * - disentangle incorrectly nested tags
  * - add HEAD and BODY elements (if they are missing)
  * - reformat the HTML
- *
- * @author Oliver Klee <github@oliverklee.de>
  */
 class HtmlNormalizer extends AbstractHtmlProcessor
 {

@@ -8,11 +8,7 @@ use Pelago\Emogrifier\Utilities\ArrayIntersector;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\Utilities\ArrayIntersector
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 final class ArrayIntersectorTest extends TestCase
 {
