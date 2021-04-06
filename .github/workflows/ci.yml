@@ -17,7 +17,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.1
           - 7.2
           - 7.3
           - 7.4
@@ -115,7 +114,6 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.1
           - 7.2
           - 7.3
           - 7.4
@@ -157,7 +155,7 @@ jobs:
 
       - name: Update PHIVE dependencies
         run: |
-          if ! composer php:version | grep -q '^7\.[012]'; then
+          if ! composer php:version | grep -q '^7\.2'; then
             composer phive:update:phpunit
           fi
 
