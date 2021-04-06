@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
-  <file src="src/CssInliner.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$node</code>
-    </ArgumentTypeCoercion>
-    <MixedArgumentTypeCoercion occurrences="1">
-      <code>$attributeName</code>
-    </MixedArgumentTypeCoercion>
-    <MixedAssignment occurrences="2">
-      <code>$nodePath</code>
-      <code>$path</code>
-    </MixedAssignment>
-    <MixedOperand occurrences="1">
-      <code>$path</code>
-    </MixedOperand>
-  </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <MixedReturnTypeCoercion occurrences="4">
       <code>string[][]</code>
