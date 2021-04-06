@@ -9,11 +9,7 @@ use Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * @covers \Pelago\Emogrifier\HtmlProcessor\HtmlNormalizer
- *
- * @author Oliver Klee <github@oliverklee.de>
  */
 final class HtmlNormalizerTest extends TestCase
 {

@@ -15,13 +15,6 @@ use Symfony\Component\CssSelector\Exception\ParseException;
  * For Emogrifier 3.0.0, this will be the successor to the \Pelago\Emogrifier class (which then will be deprecated).
  *
  * For more information, please see the README.md file.
- *
- * @author Cameron Brooks
- * @author Jaime Prado
- * @author Oliver Klee <github@oliverklee.de>
- * @author Roman Ožana <ozana@omdesign.cz>
- * @author Sander Kruger <s.kruger@invessel.com>
- * @author Zoli Szabó <zoli.szabo+github@gmail.com>
  */
 class CssInliner extends AbstractHtmlProcessor
 {

@@ -11,8 +11,6 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  * It will only add attributes, but leaves the style attribute untouched.
  *
  * To trigger the conversion, call the convertCssToVisualAttributes method.
- *
- * @author Oliver Klee <github@oliverklee.de>
  */
 class CssToAttributeConverter extends AbstractHtmlProcessor
 {

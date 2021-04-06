@@ -16,8 +16,6 @@ namespace Pelago\Emogrifier\Utilities;
  * This class takes care of the detail.
  *
  * @internal
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 class ArrayIntersector
 {

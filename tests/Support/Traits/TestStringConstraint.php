@@ -8,8 +8,6 @@ use PHPUnit\Framework\Constraint\Constraint;
 
 /**
  * Adds common tests to a test case for a `Constraint` which is expected to only evaluate against strings.
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 trait TestStringConstraint
 {

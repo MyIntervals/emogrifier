@@ -10,14 +10,10 @@ use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Test case.
- *
  * Note that the majority of the functionality is tested indirectly via
  * {@see \Pelago\Emogrifier\Tests\Unit\Support\Traits\AssertCssTest}; those tests are not repeated here.
  *
  * @covers \Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCss
- *
- * @author Jake Hotson <jake.github@qzdesign.co.uk>
  */
 final class StringContainsCssTest extends TestCase
 {
