@@ -1326,7 +1326,7 @@ class CssInliner extends AbstractHtmlProcessor
         $pcreConstants = \get_defined_constants(true)['pcre'];
         $pcreErrorConstantNames = \is_array($pcreConstants) ? \array_flip(\array_filter(
             $pcreConstants,
-            function (string $key): bool {
+            static function (string $key): bool {
                 return \substr($key, -6) === '_ERROR';
             },
             ARRAY_FILTER_USE_KEY

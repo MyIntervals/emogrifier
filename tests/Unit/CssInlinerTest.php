@@ -3562,7 +3562,7 @@ final class CssInlinerTest extends TestCase
     public function provideValidAtRules(): array
     {
         return \array_map(
-            function (string $rule): array {
+            static function (string $rule): array {
                 return [$rule];
             },
             self::BLACK_BOX_AT_RULES
