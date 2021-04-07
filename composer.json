@@ -32,10 +32,6 @@
             "name": "Jaime Prado"
         }
     ],
-    "support": {
-        "issues": "https://github.com/MyIntervals/emogrifier/issues",
-        "source": "https://github.com/MyIntervals/emogrifier"
-    },
     "require": {
         "php": "~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0",
         "ext-dom": "*",
@@ -45,6 +41,17 @@
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
         "rawr/cross-data-providers": "^2.3.0"
+    },
+    "config": {
+        "preferred-install": {
+            "*": "dist"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "6.0.x-dev"
+        }
     },
     "autoload": {
         "psr-4": {
@@ -57,44 +64,40 @@
         }
     },
     "prefer-stable": true,
-    "config": {
-        "sort-packages": true,
-        "preferred-install": {
-            "*": "dist"
-        }
-    },
     "scripts": {
-        "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "php:fix": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
-        "ci:php:lint": "\"vendor/bin/parallel-lint\" config src tests",
-        "ci:php:sniff": "\"./tools/phpcs.phar\" config src tests",
-        "ci:php:fixer": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
-        "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
-        "ci:php:psalm": "\"./tools/psalm.phar\" --show-info=false",
-        "ci:tests:unit": "\"./tools/phpunit.phar\"",
-        "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
-        "ci:tests": [
-            "@ci:tests:unit"
+        "ci": [
+            "@ci:static",
+            "@ci:dynamic"
         ],
+        "ci:composer:normalize": "\"./tools/composer-normalize.phar\" --dry-run",
         "ci:dynamic": [
             "@ci:tests"
         ],
+        "ci:php:fixer": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
+        "ci:php:lint": "\"vendor/bin/parallel-lint\" config src tests",
+        "ci:php:md": "\"./tools/phpmd.phar\" src text config/phpmd.xml",
+        "ci:php:psalm": "\"./tools/psalm.phar\" --show-info=false",
+        "ci:php:sniff": "\"./tools/phpcs.phar\" config src tests",
         "ci:static": [
+            "@ci:composer:normalize",
             "@ci:php:lint",
             "@ci:php:sniff",
             "@ci:php:fixer",
             "@ci:php:md",
             "@ci:php:psalm"
         ],
-        "ci": [
-            "@ci:static",
-            "@ci:dynamic"
+        "ci:tests": [
+            "@ci:tests:unit"
         ],
-        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" --no-progress update phpunit"
+        "ci:tests:sof": "\"./tools/phpunit.phar\" --stop-on-failure",
+        "ci:tests:unit": "\"./tools/phpunit.phar\"",
+        "composer:normalize": "\"./tools/composer-normalize.phar\"",
+        "phive:update:phpunit": "echo y | \"./tools/phive.phar\" --no-progress update phpunit",
+        "php:fix": "\"./tools/php-cs-fixer.phar\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "php:version": "php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'"
     },
-    "extra": {
-        "branch-alias": {
-            "dev-main": "6.0.x-dev"
-        }
+    "support": {
+        "issues": "https://github.com/MyIntervals/emogrifier/issues",
+        "source": "https://github.com/MyIntervals/emogrifier"
     }
 }
