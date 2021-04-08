@@ -17,6 +17,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Drop support for PHP 7.1 (#967)
 
 ### Fixed
+- Allow line feeds within `<html>` tag (#987)
 
 ## 5.0.1
 

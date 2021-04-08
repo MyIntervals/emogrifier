@@ -310,7 +310,7 @@ abstract class AbstractHtmlProcessor
             );
         } elseif ($hasHtmlTag) {
             $reworkedHtml = \preg_replace(
-                '/<html(.*?)>/i',
+                '/<html(.*?)>/is',
                 '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
                 $html
             );
