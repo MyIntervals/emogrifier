@@ -777,6 +777,10 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HTML and HEAD element' => ['<html><head>', '</head></html>'],
             'HTML and HEAD element, HTML end tag omitted' => ['<html><head>', '</head>'],
             'HEAD element only' => ['<head>', '</head>'],
+            'HEAD element with space after start tag' => ['<head> ', '</head>'],
+            'HEAD element with line feed after start tag' => ["<head>\n", '</head>'],
+            'HEAD element with Windows line ending after start tag' => ["<head>\r\n", '</head>'],
+            'HEAD element with TAB after start tag' => ["<head>\t", '</head>'],
             'HEAD element with attribute' => ['<head lang="en">', '</head>'],
             'HTML, HEAD, and BODY with HEADER elements'
                 => ['<html><head>', '</head><body><header></header></body></html>'],
@@ -797,6 +801,10 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element with uppercase TEMPLATE element'
                 => ['<head><TEMPLATE id="test"><p>Test</p></TEMPLATE></title>', '</head>'],
             'HEAD element with uppercase TITLE element' => ['<head><TITLE>Test</TITLE>', '</head>'],
+            'Second valid(ish) Content-Type in BODY' => [
+                '<head>',
+                '</head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>',
+            ],
         ];
     }
 
@@ -822,9 +830,10 @@ final class AbstractHtmlProcessorTest extends TestCase
         $html = $htmlBefore . $contentTypeTag . $htmlAfter;
         $subject = TestingHtmlProcessor::fromHtml($html);
 
-        $result = $subject->render();
+        $domDocument = $subject->getDomDocument();
+        $resultHeadContent = $domDocument->saveHTML($domDocument->getElementsByTagName('head')->item(0));
 
-        $numberOfContentTypeMetaTags = \substr_count(\strtolower($result), 'content-type');
+        $numberOfContentTypeMetaTags = \substr_count(\strtolower($resultHeadContent), 'content-type');
         self::assertSame(1, $numberOfContentTypeMetaTags);
     }
 
