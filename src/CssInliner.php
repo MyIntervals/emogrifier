@@ -11,10 +11,6 @@ use Symfony\Component\CssSelector\Exception\ParseException;
 
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
- *
- * For Emogrifier 3.0.0, this will be the successor to the \Pelago\Emogrifier class (which then will be deprecated).
- *
- * For more information, please see the README.md file.
  */
 class CssInliner extends AbstractHtmlProcessor
 {
