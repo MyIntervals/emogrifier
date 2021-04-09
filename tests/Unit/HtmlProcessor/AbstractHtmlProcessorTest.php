@@ -421,6 +421,75 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideContentWithHtmlTag(): array
+    {
+        return [
+            'HTML only' => ['<html></html>'],
+            'HTML start tag only' => ['<html>'],
+            'doctype and HTML only' => ['<!DOCTYPE html><html></html>'],
+            'HTML and body content only' => ['<html><p>Hello</p></html>'],
+            'HTML and HEAD element' => ['<html><head></head></html>'],
+            'HTML and BODY element' => ['<html><body></body></html>'],
+            'HTML, HEAD AND BODY element' => ['<html><head></head><body></body></html>'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>> The second element of each dataset is optional, and is the expected
+     * normalization of the `<html>` tag, if different.
+     */
+    public function provideHtmlTagWithAttributes(): array
+    {
+        return [
+            'with one attribute' => ['<html lang="de">'],
+            'with two attributes' => ['<html lang="de" dir="ltr">'],
+            'with line feeds within tag' => ["<html\nlang='de'\n>", '<html lang="de">'],
+            'with Windows line endings within tag' => ["<html\r\nlang='de'\r\n>", '<html lang="de">'],
+            'with TABs within tag' => ["<html\tlang='de'\t>", '<html lang="de">'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     *
+     * @dataProvider provideContentWithHtmlTag
+     * @dataProvider provideHtmlTagWithAttributes
+     */
+    public function notAddsSecondHtmlTag(string $html): void
+    {
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        $htmlTagCount = \preg_match_all('%<html[\\s/>]%', $result);
+        self::assertSame(1, $htmlTagCount);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $html
+     * @param ?string $normalizedHtmlTag
+     *
+     * @dataProvider provideHtmlTagWithAttributes
+     */
+    public function preservesHtmlTagAttributes(string $html, ?string $normalizedHtmlTag = null): void
+    {
+        if ($normalizedHtmlTag === null) {
+            $normalizedHtmlTag = $html;
+        }
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        self::assertStringContainsString($normalizedHtmlTag, $result);
+    }
+
+    /**
      * @return string[][]
      */
     public function provideContentWithoutHeadTag(): array
@@ -457,6 +526,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      * @param string $html
      *
      * @dataProvider provideContentWithoutHeadTag
+     * @dataProvider provideHtmlTagWithAttributes
      */
     public function addsMissingHeadTagExactlyOnce(string $html): void
     {
@@ -464,7 +534,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $headTagCount = \substr_count($result, '<head>');
+        $headTagCount = \preg_match_all('%<head[\\s/>]%', $result);
         self::assertSame(1, $headTagCount);
     }
 
