@@ -22,14 +22,14 @@ class ArrayIntersector
     /**
      * the array with which the object was constructed, with all its keys exchanged with their associated values
      *
-     * @var (int|string)[]
+     * @var array<array-key, array-key>
      */
     private $invertedArray;
 
     /**
      * Constructs the object with the array that will be reused for many intersection computations.
      *
-     * @param (int|string)[] $array
+     * @param array<array-key, array-key> $array
      */
     public function __construct(array $array)
     {
@@ -39,9 +39,10 @@ class ArrayIntersector
     /**
      * Computes the intersection of `$array` and the array with which this object was constructed.
      *
-     * @param (int|string)[] $array
+     * @param array<array-key, array-key> $array
      *
-     * @return (int|string)[] Returns an array containing all of the values in `$array` whose values exist in the array
+     * @return array<array-key, array-key>
+     *         Returns an array containing all of the values in `$array` whose values exist in the array
      *         with which this object was constructed.  Note that keys are preserved, order is maintained, but
      *         duplicates are removed.
      */
