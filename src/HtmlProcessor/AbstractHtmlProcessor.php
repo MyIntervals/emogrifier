@@ -60,16 +60,16 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @var \DOMXPath
+     * @var \DOMXPath|null
      */
-    protected $xPath = null;
+    private $xPath = null;
 
     /**
      * The constructor.
      *
      * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
-    private function __construct()
+    final private function __construct()
     {
     }
 
@@ -128,15 +128,9 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
-        if ($this->domDocument === null) {
-            throw new \UnexpectedValueException(
-                (
-                    self::class .
-                    '::setDomDocument() has not yet been called on ' .
-                    static::class
-                ),
-                1570472239
-            );
+        if (!$this->domDocument instanceof \DOMDocument) {
+            $message = self::class . '::setDomDocument() has not yet been called on ' . static::class;
+            throw new \UnexpectedValueException($message, 1570472239);
         }
 
         return $this->domDocument;
@@ -149,6 +143,20 @@ abstract class AbstractHtmlProcessor
     {
         $this->domDocument = $domDocument;
         $this->xPath = new \DOMXPath($this->domDocument);
+    }
+
+    /**
+     * @return \DOMXPath
+     *
+     * @throws \BadMethodCallException
+     */
+    protected function getXPath(): \DOMXPath
+    {
+        if (!$this->xPath instanceof \DOMXPath) {
+            throw new \BadMethodCallException('$this->xPath has not been initialized yet.', 1617819086);
+        }
+
+        return $this->xPath;
     }
 
     /**
@@ -194,10 +202,17 @@ abstract class AbstractHtmlProcessor
      * This method assumes that there always is a BODY element.
      *
      * @return \DOMElement
+     *
+     * @throws \RuntimeException
      */
     private function getBodyElement(): \DOMElement
     {
-        return $this->getDomDocument()->getElementsByTagName('body')->item(0);
+        $node = $this->getDomDocument()->getElementsByTagName('body')->item(0);
+        if (!$node instanceof \DOMElement) {
+            throw new \RuntimeException('There is no body element.', 1617922607);
+        }
+
+        return $node;
     }
 
     /**
@@ -441,12 +456,12 @@ abstract class AbstractHtmlProcessor
      */
     private function ensureExistenceOfBodyElement(): void
     {
-        if ($this->getDomDocument()->getElementsByTagName('body')->item(0) !== null) {
+        if ($this->getDomDocument()->getElementsByTagName('body')->item(0) instanceof \DOMElement) {
             return;
         }
 
         $htmlElement = $this->getDomDocument()->getElementsByTagName('html')->item(0);
-        if ($htmlElement === null) {
+        if (!$htmlElement instanceof \DOMElement) {
             throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
         }
         $htmlElement->appendChild($this->getDomDocument()->createElement('body'));
