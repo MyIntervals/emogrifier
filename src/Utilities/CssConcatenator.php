@@ -159,8 +159,10 @@ class CssConcatenator
      */
     private static function getRuleBlockCss(\stdClass $ruleBlock): string
     {
-        /** @var string[] $selectors */
-        $selectors = \array_keys((array)$ruleBlock->selectorsAsKeys);
+        /** @var array<string, array-key> $selectorsAsKeys */
+        $selectorsAsKeys = $ruleBlock->selectorsAsKeys;
+        /** @var array<array-key, string> $selectors */
+        $selectors = \array_keys($selectorsAsKeys);
         /** @var string $declarationsBlock */
         $declarationsBlock = $ruleBlock->declarationsBlock;
         return \implode(',', $selectors) . '{' . $declarationsBlock . '}';
