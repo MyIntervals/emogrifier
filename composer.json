@@ -40,6 +40,7 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.2.0",
+        "phpunit/phpunit": "^8.5.15",
         "rawr/cross-data-providers": "^2.3.0"
     },
     "config": {
@@ -89,10 +90,9 @@
         "ci:tests": [
             "@ci:tests:unit"
         ],
-        "ci:tests:sof": "@php \"./tools/phpunit.phar\" --stop-on-failure",
-        "ci:tests:unit": "@php \"./tools/phpunit.phar\"",
+        "ci:tests:sof": "@php \"./vendor/bin/phpunit\" --stop-on-failure",
+        "ci:tests:unit": "@php \"./vendor/bin/phpunit\"",
         "composer:normalize": "@php \"./tools/composer-normalize\"",
-        "phive:update:phpunit": "echo y | \"./tools/phive\" --no-progress update phpunit",
         "php:fix": "@php \"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'"
     },
