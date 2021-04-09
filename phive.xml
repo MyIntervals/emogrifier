@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="composer-normalize" version="^2.13.3" installed="2.13.3" location="./tools/composer-normalize.phar" copy="true"/>
-  <phar name="phar-io/phive" version="^0.14.4" installed="0.14.4" location="./tools/phive.phar" copy="true"/>
-  <phar name="phpcs" version="^3.5.8" installed="3.5.8" location="./tools/phpcs.phar" copy="true"/>
-  <phar name="php-cs-fixer" version="^2.16.7" installed="2.16.7" location="./tools/php-cs-fixer.phar" copy="true"/>
-  <phar name="phpmd" version="^2.9.1" installed="2.9.1" location="./tools/phpmd.phar" copy="true"/>
+  <phar name="composer-normalize" version="^2.13.3" installed="2.13.3" location="./tools/composer-normalize" copy="true"/>
+  <phar name="phar-io/phive" version="^0.14.4" installed="0.14.4" location="./tools/phive" copy="true"/>
+  <phar name="php-cs-fixer" version="^2.16.7" installed="2.16.7" location="./tools/php-cs-fixer" copy="true"/>
+  <phar name="phpcs" version="^3.5.8" installed="3.5.8" location="./tools/phpcs" copy="true"/>
+  <phar name="phpmd" version="^2.9.1" installed="2.9.1" location="./tools/phpmd" copy="true"/>
   <phar name="phpunit" version="^8.5.15 || ^9.5.4" installed="8.5.15" location="./tools/phpunit.phar" copy="true"/>
-  <phar name="psalm" version="^4.7.0" installed="4.7.0" location="./tools/psalm.phar" copy="true"/>
+  <phar name="psalm" version="^4.7.0" installed="4.7.0" location="./tools/psalm" copy="true"/>
 </phive>
