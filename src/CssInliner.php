@@ -73,12 +73,12 @@ class CssInliner extends AbstractHtmlProcessor
     private const COMBINATOR_MATCHER = '(?:\\s++|\\s*+[>+~]\\s*+)(?=[[:alpha:]_\\-.#*:\\[])';
 
     /**
-     * @var bool[]
+     * @var array<string, bool>
      */
     private $excludedSelectors = [];
 
     /**
-     * @var bool[]
+     * @var array<string, bool>
      */
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
@@ -93,14 +93,14 @@ class CssInliner extends AbstractHtmlProcessor
     ];
 
     /**
-     * @var CssSelectorConverter
+     * @var CssSelectorConverter|null
      */
     private $cssSelectorConverter = null;
 
     /**
      * the visited nodes with the XPath paths as array keys
      *
-     * @var \DOMElement[]
+     * @var array<string, \DOMElement>
      */
     private $visitedNodes = [];
 
@@ -108,7 +108,7 @@ class CssInliner extends AbstractHtmlProcessor
      * the styles to apply to the nodes with the XPath paths as array keys for the outer array
      * and the attribute names/values as key/value pairs for the inner array
      *
-     * @var string[][]
+     * @var array<string, array<string, string>>
      */
     private $styleAttributesForNodes = [];
 

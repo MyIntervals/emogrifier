@@ -4,8 +4,7 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$node</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="2">
-      <code>$this-&gt;cssSelectorConverter === null</code>
+    <DocblockTypeContradiction occurrences="1">
       <code>$this-&gt;matchingUninlinableCssRules === null</code>
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="1">
@@ -20,9 +19,8 @@
     <MixedArgument occurrences="1">
       <code>$m[0]</code>
     </MixedArgument>
-    <MixedArgumentTypeCoercion occurrences="3">
+    <MixedArgumentTypeCoercion occurrences="2">
       <code>$attributeName</code>
-      <code>$selectorToExclude</code>
       <code>\usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence'])</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="4">
@@ -51,6 +49,10 @@
       <code>string[]</code>
       <code>string[][][]</code>
     </MixedInferredReturnType>
+    <MixedPropertyTypeCoercion occurrences="2">
+      <code>$this-&gt;styleAttributesForNodes</code>
+      <code>$this-&gt;visitedNodes</code>
+    </MixedPropertyTypeCoercion>
     <MixedReturnStatement occurrences="4">
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
@@ -65,8 +67,7 @@
     <MoreSpecificReturnType occurrences="1">
       <code>\DOMElement[]</code>
     </MoreSpecificReturnType>
-    <PossiblyNullPropertyAssignmentValue occurrences="2">
-      <code>null</code>
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
     <PossiblyNullReference occurrences="2">
