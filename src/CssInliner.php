@@ -342,7 +342,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     public function getMatchingUninlinableSelectors(): array
     {
-        if ($this->matchingUninlinableCssRules === null) {
+        if (!\is_array($this->matchingUninlinableCssRules)) {
             throw new \BadMethodCallException('inlineCss must be called first', 1568385221);
         }
 
@@ -421,9 +421,11 @@ class CssInliner extends AbstractHtmlProcessor
         // in order to not overwrite existing style attributes in the HTML, we
         // have to save the original HTML styles
         $nodePath = $node->getNodePath();
-        if (!isset($this->styleAttributesForNodes[$nodePath])) {
-            $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
-            $this->visitedNodes[$nodePath] = $node;
+        if (\is_string($nodePath)) {
+            if (!isset($this->styleAttributesForNodes[$nodePath])) {
+                $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
+                $this->visitedNodes[$nodePath] = $node;
+            }
         }
 
         $node->setAttribute('style', $normalizedOriginalStyle);
@@ -604,6 +606,7 @@ class CssInliner extends AbstractHtmlProcessor
      * @return \DOMElement[]
      *
      * @throws ParseException
+     * @throws \UnexpectedValueException
      */
     private function getNodesToExclude(): array
     {
@@ -619,6 +622,9 @@ class CssInliner extends AbstractHtmlProcessor
                 continue;
             }
             foreach ($matchingNodes as $node) {
+                if (!$node instanceof \DOMElement) {
+                    throw new \UnexpectedValueException('$node is on DOMElement.', 1617975914);
+                }
                 $excludedNodes[] = $node;
             }
         }
@@ -631,7 +637,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssSelectorConverter(): CssSelectorConverter
     {
-        if ($this->cssSelectorConverter === null) {
+        if (!$this->cssSelectorConverter instanceof CssSelectorConverter) {
             $this->cssSelectorConverter = new CssSelectorConverter();
         }
 
@@ -1284,8 +1290,9 @@ class CssInliner extends AbstractHtmlProcessor
      */
     protected function addStyleElementToDocument(string $css): void
     {
-        $styleElement = $this->domDocument->createElement('style', $css);
-        $styleAttribute = $this->domDocument->createAttribute('type');
+        $domDocument = $this->getDomDocument();
+        $styleElement = $domDocument->createElement('style', $css);
+        $styleAttribute = $domDocument->createAttribute('type');
         $styleAttribute->value = 'text/css';
         $styleElement->appendChild($styleAttribute);
 
@@ -1299,10 +1306,17 @@ class CssInliner extends AbstractHtmlProcessor
      * This method assumes that there always is a HEAD element.
      *
      * @return \DOMElement
+     *
+     * @throws \UnexpectedValueException
      */
     private function getHeadElement(): \DOMElement
     {
-        return $this->domDocument->getElementsByTagName('head')->item(0);
+        $node = $this->getDomDocument()->getElementsByTagName('head')->item(0);
+        if (!$node instanceof \DOMElement) {
+            throw new \UnexpectedValueException('The head is no DOMElement. This should never happen.', 1617923227);
+        }
+
+        return $node;
     }
 
     /**
@@ -1323,7 +1337,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $result = \preg_replace($pattern, $replacement, $subject);
 
-        if ($result === null) {
+        if (!\is_string($result)) {
             $this->logOrThrowPregLastError();
             $result = $subject;
         }
