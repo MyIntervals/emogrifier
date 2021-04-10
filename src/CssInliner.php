@@ -121,12 +121,12 @@ class CssInliner extends AbstractHtmlProcessor
     private $isInlineStyleAttributesParsingEnabled = true;
 
     /**
-     * Determines whether the <style> blocks in the HTML passed to this class should be parsed.
+     * Determines whether the `<style>` blocks in the HTML passed to this class should be parsed.
      *
-     * If set to true, the <style> blocks will be removed from the HTML and their contents will be applied to the HTML
+     * If set to true, the `<style>` blocks will be removed from the HTML and their contents will be applied to the HTML
      * via inline styles.
      *
-     * If set to false, the <style> blocks will be left as they are in the HTML.
+     * If set to false, the `<style>` blocks will be left as they are in the HTML.
      *
      * @var bool
      */
@@ -242,7 +242,7 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * Disables the parsing of <style> blocks.
+     * Disables the parsing of `<style>` blocks.
      *
      * @return self fluent interface
      */
