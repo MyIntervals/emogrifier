@@ -1286,19 +1286,17 @@ class CssInliner extends AbstractHtmlProcessor
      * Wraps `preg_replace`.  If an error occurs (which is highly unlikely), either it is logged and the original
      * `$subject` is returned, or in debug mode an exception is thrown.
      *
-     * This method does not currently allow `$subject` (and return value) to be an array, because a means of telling
-     * Psalm that a method returns the same type a particular parameter has not been found (though it knows this for
-     * `preg_replace`); nor does it currently support the optional parameters.
+     * This method only supports strings, not arrays of strings.
      *
-     * @param string|string[] $pattern
-     * @param string|string[] $replacement
+     * @param string $pattern
+     * @param string $replacement
      * @param string $subject
      *
      * @return string
      *
      * @throws \RuntimeException
      */
-    private function pregReplace($pattern, $replacement, string $subject): string
+    private function pregReplace(string $pattern, string $replacement, string $subject): string
     {
         $result = \preg_replace($pattern, $replacement, $subject);
 
