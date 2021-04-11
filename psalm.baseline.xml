@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
   <file src="src/CssInliner.php">
-    <ArgumentTypeCoercion occurrences="1">
+    <ArgumentTypeCoercion occurrences="2">
       <code>$node</code>
     </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="1">
@@ -17,7 +17,7 @@
     <LessSpecificReturnStatement occurrences="1">
       <code>$excludedNodes</code>
     </LessSpecificReturnStatement>
-    <MixedArgumentTypeCoercion occurrences="2">
+    <MixedArgumentTypeCoercion occurrences="1">
       <code>$attributeName</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="4">
