@@ -623,7 +623,8 @@ class CssInliner extends AbstractHtmlProcessor
             }
             foreach ($matchingNodes as $node) {
                 if (!$node instanceof \DOMElement) {
-                    throw new \UnexpectedValueException('$node is on DOMElement.', 1617975914);
+                    $path = $node->getNodePath() ?? '$node';
+                    throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
                 }
                 $excludedNodes[] = $node;
             }
@@ -1313,7 +1314,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $node = $this->getDomDocument()->getElementsByTagName('head')->item(0);
         if (!$node instanceof \DOMElement) {
-            throw new \UnexpectedValueException('The head is no DOMElement. This should never happen.', 1617923227);
+            throw new \UnexpectedValueException('There is no HEAD element. This should never happen.', 1617923227);
         }
 
         return $node;
