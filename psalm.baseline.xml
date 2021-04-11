@@ -92,4 +92,116 @@
       <code>$property</code>
     </MixedArgumentTypeCoercion>
   </file>
+  <file src="tests/Unit/CssInlinerTest.php">
+    <DeprecatedMethod occurrences="2">
+      <code>self::assertNotRegExp('/&lt;body&gt;.*&lt;style/s', $subject-&gt;render())</code>
+      <code>self::assertRegExp('/&lt;head&gt;.*&lt;style.*&lt;\\/head&gt;/s', $subject-&gt;render())</code>
+    </DeprecatedMethod>
+    <MixedReturnTypeCoercion occurrences="4">
+      <code>string[][]</code>
+      <code>string[][]</code>
+    </MixedReturnTypeCoercion>
+    <PossiblyNullReference occurrences="1">
+      <code>removeChild</code>
+    </PossiblyNullReference>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>CssInlinerTest</code>
+      <code>CssInlinerTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
+    <DeprecatedMethod occurrences="1">
+      <code>self::assertRegExp('%' . $needleMatcherWithNewlines . '%', $haystack, $message)</code>
+    </DeprecatedMethod>
+    <LessSpecificReturnStatement occurrences="1">
+      <code>$dataset</code>
+    </LessSpecificReturnStatement>
+    <MixedReturnTypeCoercion occurrences="2">
+      <code>DataProviders::cross($this-&gt;provideContentTypeMetaTag(), $this-&gt;provideHtmlAroundContentType())</code>
+      <code>string[][]</code>
+    </MixedReturnTypeCoercion>
+    <MoreSpecificReturnType occurrences="1">
+      <code>array{0:string, 1:string, 2:string}</code>
+    </MoreSpecificReturnType>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>AbstractHtmlProcessorTest</code>
+      <code>AbstractHtmlProcessorTest</code>
+    </PropertyNotSetInConstructor>
+    <UnnecessaryVarAnnotation occurrences="1">
+      <code>\DOMElement</code>
+    </UnnecessaryVarAnnotation>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>CssToAttributeConverterTest</code>
+      <code>CssToAttributeConverterTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/HtmlNormalizerTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>HtmlNormalizerTest</code>
+      <code>HtmlNormalizerTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
+    <DeprecatedMethod occurrences="1">
+      <code>self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string)</code>
+    </DeprecatedMethod>
+    <InvalidReturnStatement occurrences="7"/>
+    <InvalidReturnType occurrences="7">
+      <code>array&lt;string, array{0:string, 1:string, 2:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string, 2:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string[], 2:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string[], 2:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
+      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
+    </InvalidReturnType>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>HtmlPrunerTest</code>
+      <code>HtmlPrunerTest</code>
+    </PropertyNotSetInConstructor>
+    <UnnecessaryVarAnnotation occurrences="1">
+      <code>string</code>
+    </UnnecessaryVarAnnotation>
+  </file>
+  <file src="tests/Unit/Support/Constraint/CssConstraintTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>CssConstraintTest</code>
+      <code>CssConstraintTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/Support/Constraint/StringContainsCssCountTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>StringContainsCssCountTest</code>
+      <code>StringContainsCssCountTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/Support/Constraint/StringContainsCssTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>StringContainsCssTest</code>
+      <code>StringContainsCssTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/Support/Traits/AssertCssTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>AssertCssTest</code>
+      <code>AssertCssTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/Utilities/ArrayIntersectorTest.php">
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>ArrayIntersectorTest</code>
+      <code>ArrayIntersectorTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
+  <file src="tests/Unit/Utilities/CssConcatenatorTest.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>null</code>
+    </PossiblyNullPropertyAssignmentValue>
+    <PropertyNotSetInConstructor occurrences="2">
+      <code>CssConcatenatorTest</code>
+      <code>CssConcatenatorTest</code>
+    </PropertyNotSetInConstructor>
+  </file>
 </files>

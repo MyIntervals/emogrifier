@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Also check the unit test code with Psalm (#1003)
 
 ### Deprecated
 - Support for PHP 7.2 will be removed in Emogrifier 7.0.
