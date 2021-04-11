@@ -20,7 +20,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * only for certain values, the mapping is an object with a whitelist
      * of nodes and values.
      *
-     * @var mixed[][]
+     * @var array<string, array<string|string[]>>
      */
     private $cssToHtmlMap = [
         'background-color' => [
@@ -43,7 +43,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     ];
 
     /**
-     * @var string[][]
+     * @var array<string, array<string, string>>
      */
     private static $parsedCssCache = [];
 
@@ -89,7 +89,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
      *
-     * @return string[]
+     * @return array<string, string>
      *         the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationsBlock(string $cssDeclarationsBlock): array
@@ -100,6 +100,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
 
         $properties = [];
         foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
+            /** @var array<int, string> $matches */
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
@@ -120,7 +121,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * This method maps CSS styles to HTML attributes and adds those to the
      * node.
      *
-     * @param string[] $styles the new CSS styles taken from the global styles to be applied to this node
+     * @param array<string, string> $styles the new CSS styles taken from the global styles to be applied to this node
      * @param \DOMElement $node node to apply styles to
      */
     private function mapCssToHtmlAttributes(array $styles, \DOMElement $node): void
@@ -164,11 +165,12 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         }
 
         $mapping = $this->cssToHtmlMap[$property];
-        $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, $mapping['nodes'], true);
-        $valuesMatch = !isset($mapping['values']) || \in_array($value, $mapping['values'], true);
+        $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, (array)$mapping['nodes'], true);
+        $valuesMatch = !isset($mapping['values']) || \in_array($value, (array)$mapping['values'], true);
         $canBeMapped = $nodesMatch && $valuesMatch;
         if ($canBeMapped) {
-            $node->setAttribute($mapping['attribute'], $value);
+            $attributeMapping = \is_string($mapping['attribute']) ? $mapping['attribute'] : '';
+            $node->setAttribute($attributeMapping, $value);
         }
 
         return $canBeMapped;
@@ -209,6 +211,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     private function mapBackgroundProperty(\DOMElement $node, string $value): void
     {
         // parse out the color, if any
+        /** @var array<int, string> $styles */
         $styles = \explode(' ', $value, 2);
         $first = $styles[0];
         if (\is_numeric($first[0]) || \strncmp($first, 'url', 3) === 0) {
@@ -282,11 +285,12 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * @param string $value a string of CSS value with 1, 2, 3 or 4 sizes
      *        For example: padding: 0 auto; '0 auto' is split into top: 0, left: auto, bottom: 0, right: auto.
      *
-     * @return string[] an array of values for top, right, bottom and left (using these as associative array keys)
+     * @return array<string, string> an array of values for top, right, bottom and left
+     *         (using these as associative array keys)
      */
     private function parseCssShorthandValue(string $value): array
     {
-        /** @var string[] $values */
+        /** @var array<int, string> $values */
         $values = \preg_split('/\\s+/', $value);
 
         $css = [];
