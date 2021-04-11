@@ -5,7 +5,7 @@
       <code>$node</code>
     </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="1">
-      <code>$this-&gt;matchingUninlinableCssRules === null</code>
+      <code>\is_array($this-&gt;matchingUninlinableCssRules)</code>
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="3">
       <code>$cssRule</code>
@@ -14,9 +14,6 @@
     <InvalidOperand occurrences="1">
       <code>$matcher</code>
     </InvalidOperand>
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$excludedNodes</code>
-    </LessSpecificReturnStatement>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$attributeName</code>
     </MixedArgumentTypeCoercion>
@@ -32,13 +29,9 @@
       <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedArrayAssignment>
-    <MixedArrayOffset occurrences="3">
-      <code>$this-&gt;styleAttributesForNodes[$nodePath]</code>
-      <code>$this-&gt;styleAttributesForNodes[$nodePath]</code>
-      <code>$this-&gt;visitedNodes[$nodePath]</code>
-    </MixedArrayOffset>
-    <MixedAssignment occurrences="1">
+    <MixedAssignment occurrences="2">
       <code>$nodePath</code>
+      <code>$path</code>
     </MixedAssignment>
     <MixedInferredReturnType occurrences="4">
       <code>int</code>
@@ -46,9 +39,11 @@
       <code>string[]</code>
       <code>string[][][]</code>
     </MixedInferredReturnType>
-    <MixedPropertyTypeCoercion occurrences="2">
+    <MixedOperand occurrences="1">
+      <code>$path</code>
+    </MixedOperand>
+    <MixedPropertyTypeCoercion occurrences="1">
       <code>$this-&gt;styleAttributesForNodes</code>
-      <code>$this-&gt;visitedNodes</code>
     </MixedPropertyTypeCoercion>
     <MixedReturnStatement occurrences="4">
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
@@ -61,16 +56,9 @@
       <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
       <code>string[]</code>
     </MixedReturnTypeCoercion>
-    <MoreSpecificReturnType occurrences="1">
-      <code>\DOMElement[]</code>
-    </MoreSpecificReturnType>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyNullReference occurrences="2">
-      <code>createElement</code>
-      <code>getElementsByTagName</code>
-    </PossiblyNullReference>
     <PossiblyUndefinedVariable occurrences="2">
       <code>$matchingNodes</code>
       <code>$nodesMatchingCssSelectors</code>
