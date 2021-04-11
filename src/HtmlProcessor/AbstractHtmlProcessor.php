@@ -8,6 +8,8 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  * Base class for HTML processor that e.g., can remove, add or modify nodes or attributes.
  *
  * The "vanilla" subclass is the HtmlNormalizer.
+ *
+ * @psalm-consistent-constructor
  */
 abstract class AbstractHtmlProcessor
 {
@@ -69,7 +71,7 @@ abstract class AbstractHtmlProcessor
      *
      * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
-    final protected function __construct()
+    private function __construct()
     {
     }
 
