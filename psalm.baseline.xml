@@ -7,7 +7,8 @@
     <DocblockTypeContradiction occurrences="1">
       <code>$this-&gt;matchingUninlinableCssRules === null</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
+    <InvalidArgument occurrences="3">
+      <code>$cssRule</code>
       <code>$cssRule</code>
     </InvalidArgument>
     <InvalidOperand occurrences="1">
@@ -16,12 +17,8 @@
     <LessSpecificReturnStatement occurrences="1">
       <code>$excludedNodes</code>
     </LessSpecificReturnStatement>
-    <MixedArgument occurrences="1">
-      <code>$m[0]</code>
-    </MixedArgument>
     <MixedArgumentTypeCoercion occurrences="2">
       <code>$attributeName</code>
-      <code>\usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence'])</code>
     </MixedArgumentTypeCoercion>
     <MixedArrayAccess occurrences="4">
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>

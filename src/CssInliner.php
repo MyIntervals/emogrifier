@@ -411,7 +411,8 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
-            static function (array $m) {
+            /** @param array<int, string> $m */
+            static function (array $m): string {
                 return \strtolower($m[0]);
             },
             $node->getAttribute('style')
@@ -692,7 +693,16 @@ class CssInliner extends AbstractHtmlProcessor
             }
         }
 
-        \usort($cssRules['inlinable'], [$this, 'sortBySelectorPrecedence']);
+        \usort(
+            $cssRules['inlinable'],
+            /**
+             * @param array<string, string> $a
+             * @param array<string, string> $b
+             */
+            function (array $a, array $b): int {
+                return $this->sortBySelectorPrecedence($a, $b);
+            }
+        );
 
         $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
@@ -747,8 +757,8 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * @param string[] $a
-     * @param string[] $b
+     * @param array<string, string> $a
+     * @param array<string, string> $b
      *
      * @return int
      */
@@ -1073,7 +1083,13 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function determineMatchingUninlinableCssRules(array $cssRules): void
     {
-        $this->matchingUninlinableCssRules = \array_filter($cssRules, [$this, 'existsMatchForSelectorInCssRule']);
+        $this->matchingUninlinableCssRules = \array_filter(
+            $cssRules,
+            /** @param array<array-key, array{selector: string, hasUnmatchablePseudo: bool}> $cssRule */
+            function (array $cssRule): bool {
+                return $this->existsMatchForSelectorInCssRule($cssRule);
+            }
+        );
     }
 
     /**
@@ -1083,7 +1099,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
      * it will test for a match with its originating element.
      *
-     * @param string[] $cssRule
+     * @param array{selector: string, hasUnmatchablePseudo: bool} $cssRule
      *
      * @return bool
      *
@@ -1138,7 +1154,10 @@ class CssInliner extends AbstractHtmlProcessor
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim(\preg_replace_callback(
             '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
-            [$this, 'replaceUnmatchableNotComponent'],
+            /** @param array<int, string> $matches */
+            function (array $matches): string {
+                return $this->replaceUnmatchableNotComponent($matches);
+            },
             ' ' . $selector
         ));
 
@@ -1156,7 +1175,9 @@ class CssInliner extends AbstractHtmlProcessor
             return $selectorWithoutUnmatchablePseudoComponents;
         }
         return \implode('', \array_map(
-            [$this, 'removeUnsupportedOfTypePseudoClasses'],
+            function (string $selectorPart): string {
+                return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
+            },
             \preg_split(
                 '/(' . self::COMBINATOR_MATCHER . ')/',
                 $selectorWithoutUnmatchablePseudoComponents,
@@ -1170,7 +1191,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Helps `removeUnmatchablePseudoComponents()` replace or remove a selector `:not(...)` component if its argument
      * contains pseudo-elements or dynamic pseudo-classes.
      *
-     * @param string[] $matches array of elements matched by the regular expression
+     * @param array<int, string> $matches array of elements matched by the regular expression
      *
      * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
      *         combinator followed by "*", or an empty string if there was no preceding combinator
