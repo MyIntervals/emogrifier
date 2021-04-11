@@ -22,8 +22,6 @@ final class StringContainsCss extends CssConstraint
      */
     public function __construct(string $css)
     {
-        parent::__construct();
-
         $this->css = $css;
     }
 

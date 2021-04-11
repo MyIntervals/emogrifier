@@ -95,14 +95,4 @@ abstract class CssConstraint extends Constraint
 
         return $regularExpressionEquivalent;
     }
-
-    /**
-     * Invokes the parent class's constructor if there is one.
-     */
-    public function __construct()
-    {
-        if (\is_callable('parent::__construct')) {
-            parent::__construct();
-        }
-    }
 }
