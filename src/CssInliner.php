@@ -200,7 +200,8 @@ class CssInliner extends AbstractHtmlProcessor
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
-                $nodesMatchingCssSelectors = $this->xPath->query($cssSelectorConverter->toXPath($cssRule['selector']));
+                $nodesMatchingCssSelectors = $this->getXPath()
+                    ->query($cssSelectorConverter->toXPath($cssRule['selector']));
             } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
@@ -398,7 +399,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
-        return $this->xPath->query('//*[@style]');
+        return $this->getXPath()->query('//*[@style]');
     }
 
     /**
@@ -475,7 +476,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssFromAllStyleNodes(): string
     {
-        $styleNodes = $this->xPath->query('//style');
+        $styleNodes = $this->getXPath()->query('//style');
         if ($styleNodes === false) {
             return '';
         }
@@ -608,7 +609,8 @@ class CssInliner extends AbstractHtmlProcessor
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
             try {
-                $matchingNodes = $this->xPath->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
+                $matchingNodes = $this->getXPath()
+                    ->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
             } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
@@ -1110,7 +1112,7 @@ class CssInliner extends AbstractHtmlProcessor
     private function existsMatchForCssSelector(string $cssSelector): bool
     {
         try {
-            $nodesMatchingSelector = $this->xPath->query($this->getCssSelectorConverter()->toXPath($cssSelector));
+            $nodesMatchingSelector = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($cssSelector));
         } catch (ParseException $e) {
             if ($this->debug) {
                 throw $e;

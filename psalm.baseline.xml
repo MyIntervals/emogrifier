@@ -82,15 +82,6 @@
       <code>string[]</code>
     </UnnecessaryVarAnnotation>
   </file>
-  <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
-    <UnsafeInstantiation occurrences="2">
-      <code>new static()</code>
-      <code>new static()</code>
-    </UnsafeInstantiation>
-  </file>
   <file src="src/HtmlProcessor/CssToAttributeConverter.php">
     <MixedArgument occurrences="3">
       <code>$mapping['attribute']</code>
