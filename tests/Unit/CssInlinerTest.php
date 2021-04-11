@@ -10,6 +10,7 @@ use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
+use TRegx\DataProvider\DataProviders;
 
 /**
  * @covers \Pelago\Emogrifier\CssInliner
@@ -1752,7 +1753,7 @@ final class CssInlinerTest extends TestCase
                         // test with each possible CSS in all three positions
                         || ($cssBefore === $cssBetween && $cssBetween === $cssAfter)
                     ) {
-                        $description = ' with ' . $descriptionBefore . ' before, '
+                        $description = 'with ' . $descriptionBefore . ' before, '
                             . $descriptionBetween . ' between, '
                             . $descriptionAfter . ' after';
                         $datasetsSurroundingCss[$description] = [$cssBefore, $cssBetween, $cssAfter];
@@ -1761,28 +1762,21 @@ final class CssInlinerTest extends TestCase
             }
         }
 
-        $datasets = [];
-        foreach ($datasetsSurroundingCss as $description => $datasetSurroundingCss) {
-            $datasets += [
-                'two media rules' . $description => \array_merge(
-                    ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
-                    $datasetSurroundingCss
-                ),
-                'two rules involving pseudo-components' . $description => \array_merge(
-                    ['a:hover { color: blue; }', 'a:active { color: green; }'],
-                    $datasetSurroundingCss
-                ),
-                'media rule followed by rule involving pseudo-components' . $description => \array_merge(
-                    ['@media screen { p { color: #000; } }', 'a:hover { color: green; }'],
-                    $datasetSurroundingCss
-                ),
-                'rule involving pseudo-components followed by media rule' . $description => \array_merge(
-                    ['a:hover { color: green; }', '@media screen { p { color: #000; } }'],
-                    $datasetSurroundingCss
-                ),
-            ];
-        }
-        return $datasets;
+        return DataProviders::cross(
+            [
+                'two media rules' => ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
+                'two rules involving pseudo-components' => ['a:hover { color: blue; }', 'a:active { color: green; }'],
+                'media rule followed by rule involving pseudo-components' => [
+                    '@media screen { p { color: #000; } }',
+                    'a:hover { color: green; }',
+                ],
+                'rule involving pseudo-components followed by media rule' => [
+                    'a:hover { color: green; }',
+                    '@media screen { p { color: #000; } }',
+                ],
+            ],
+            $datasetsSurroundingCss
+        );
     }
 
     /**
@@ -3467,86 +3461,53 @@ final class CssInlinerTest extends TestCase
      */
     public function provideValidAtRulesWithSurroundingCss(): array
     {
-        $datasets = [];
-
-        foreach (self::BLACK_BOX_AT_RULES as $name => $rule) {
-            $datasets += [
-                'single ' . $name => [
-                    'before' => '',
-                    'at-rules' => $rule,
-                    'after' => '',
+        return DataProviders::cross(
+            $this->provideValidAtRules(),
+            [
+                'alone' => ['', ''],
+                'followed by matching inlinable rule' => ['', "\n" . 'p { color: green; }'],
+                'followed by matching uninlinable rule' => ['', "\n" . 'p:hover { color: green; }'],
+                'followed by matching @media rule' => [
+                    '',
+                    "\n" . '@media (max-width: 640px) { p { color: green; } }',
                 ],
-                $name . ' followed by matching inlinable rule' => [
-                    'before' => '',
-                    'at-rules' => $rule,
-                    'after' => "\n" . 'p { color: green; }',
+                'preceded by matching inlinable rule' => ["p { color: green; }\n", ''],
+                'preceded by matching uninlinable rule' => ["p:hover { color: green; }\n", ''],
+                'preceded by matching @media rule' => ["@media (max-width: 640px) { p { color: green; } }\n", ''],
+            ]
+        ) + DataProviders::cross(
+            [
+                'uppercase @FONT-FACE' => [
+                    '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 ],
-                $name . ' followed by matching uninlinable rule' => [
-                    'before' => '',
-                    'at-rules' => $rule,
-                    'after' => "\n" . 'p:hover { color: green; }',
+                'mixed case @FoNt-FaCe' => [
+                    '@FoNt-FaCe { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
                 ],
-                $name . ' followed by matching @media rule' => [
-                    'before' => '',
-                    'at-rules' => $rule,
-                    'after' => "\n" . '@media (max-width: 640px) { p { color: green; } }',
+                '2 @font-faces' => [
+                    '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }' . "\n"
+                    . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
                 ],
-                $name . ' preceded by matching inlinable rule' => [
-                    'before' => "p { color: green; }\n",
-                    'at-rules' => $rule,
-                    'after' => '',
-                ],
-                $name . ' preceded by matching uninlinable rule' => [
-                    'before' => "p:hover { color: green; }\n",
-                    'at-rules' => $rule,
-                    'after' => '',
-                ],
-                $name . ' preceded by matching @media rule' => [
-                    'before' => "@media (max-width: 640px) { p { color: green; } }\n",
-                    'at-rules' => $rule,
-                    'after' => '',
-                ],
-            ];
-        }
-
-        return $datasets + [
-            'uppercase @FONT-FACE' => [
-                'before' => '',
-                'at-rules' => '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
-            'mixed case @FoNt-FaCe' => [
-                'before' => '',
-                'at-rules' => '@FoNt-FaCe { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
-            '2 @font-faces' => [
-                'before' => '',
-                'at-rules' => '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }'
-                    . "\n" . '@font-face { font-family: "Bar Sans"; src: url("/bar-sans.woff2") format("woff2"); }',
-                'after' => '',
-            ],
-            '2 @font-faces, minified' => [
-                'before' => '',
-                'at-rules' => '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
+                '2 @font-faces, minified' => [
+                    '@font-face{font-family:"Foo Sans";src:url(/foo-sans.woff2) format("woff2")}'
                     . '@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
-                'after' => '',
+                ],
             ],
-        ];
+            ['alone' => ['', '']]
+        );
     }
 
     /**
      * @test
      *
-     * @param string $cssBefore
      * @param string $atRules
+     * @param string $cssBefore
      * @param string $cssAfter
      *
      * @dataProvider provideValidAtRulesWithSurroundingCss
      */
     public function inlineCssPreservesValidAtRules(
-        string $cssBefore,
         string $atRules,
+        string $cssBefore,
         string $cssAfter
     ): void {
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
