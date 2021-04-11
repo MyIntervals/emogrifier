@@ -55,12 +55,12 @@ abstract class AbstractHtmlProcessor
         = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';
 
     /**
-     * @var \DOMDocument|null
+     * @var ?\DOMDocument
      */
     protected $domDocument = null;
 
     /**
-     * @var \DOMXPath|null
+     * @var ?\DOMXPath
      */
     private $xPath = null;
 
@@ -69,7 +69,7 @@ abstract class AbstractHtmlProcessor
      *
      * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
-    final private function __construct()
+    final protected function __construct()
     {
     }
 
@@ -148,12 +148,13 @@ abstract class AbstractHtmlProcessor
     /**
      * @return \DOMXPath
      *
-     * @throws \BadMethodCallException
+     * @throws \UnexpectedValueException
      */
     protected function getXPath(): \DOMXPath
     {
         if (!$this->xPath instanceof \DOMXPath) {
-            throw new \BadMethodCallException('$this->xPath has not been initialized yet.', 1617819086);
+            $message = self::class . '::setDomDocument() has not yet been called on ' . static::class;
+            throw new \UnexpectedValueException($message, 1617819086);
         }
 
         return $this->xPath;
