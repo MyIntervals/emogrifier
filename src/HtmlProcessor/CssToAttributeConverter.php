@@ -20,7 +20,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      * only for certain values, the mapping is an object with a whitelist
      * of nodes and values.
      *
-     * @var array<string, array<string|string[]>>
+     * @var array<string, array{attribute: string, nodes?: array<int, string>, values?: array<int, string>}>
      */
     private $cssToHtmlMap = [
         'background-color' => [
@@ -165,12 +165,11 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         }
 
         $mapping = $this->cssToHtmlMap[$property];
-        $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, (array)$mapping['nodes'], true);
-        $valuesMatch = !isset($mapping['values']) || \in_array($value, (array)$mapping['values'], true);
+        $nodesMatch = !isset($mapping['nodes']) || \in_array($node->nodeName, $mapping['nodes'], true);
+        $valuesMatch = !isset($mapping['values']) || \in_array($value, $mapping['values'], true);
         $canBeMapped = $nodesMatch && $valuesMatch;
         if ($canBeMapped) {
-            $attributeMapping = \is_string($mapping['attribute']) ? $mapping['attribute'] : '';
-            $node->setAttribute($attributeMapping, $value);
+            $node->setAttribute($mapping['attribute'], $value);
         }
 
         return $canBeMapped;
