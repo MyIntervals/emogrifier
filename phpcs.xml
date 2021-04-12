@@ -55,6 +55,10 @@
         <exclude name="Squiz.Commenting.FunctionComment.ParamCommentFullStop"/>
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNotCapital"/>
         <exclude name="Squiz.Commenting.FunctionComment.ThrowsNoFullStop"/>
+        <!-- Allow `object{...}` type hints. -->
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamTag"/>
+        <exclude name="Squiz.Commenting.FunctionComment.MissingParamName"/>
+        <exclude name="Squiz.Commenting.FunctionComment.IncorrectTypeHint"/>
     </rule>
     <rule ref="Squiz.Commenting.FunctionCommentThrowTag">
         <!-- If we want to document exceptions thrown by called methods for a method that also throws its own
