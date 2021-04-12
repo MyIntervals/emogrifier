@@ -142,10 +142,6 @@ class CssConcatenator
             && \count($selectorsAsKeys1) === \count($selectorsAsKeys1 + $selectorsAsKeys2);
     }
 
-    // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamTag
-    // phpcs:disable Squiz.Commenting.FunctionComment.MissingParamName
-    // phpcs:disable Squiz.Commenting.FunctionComment.IncorrectTypeHint
-
     /**
      * @param object{
      *          media: string,
@@ -159,7 +155,6 @@ class CssConcatenator
      */
     private static function getMediaRuleCss(object $mediaRule): string
     {
-        // phpcs:enable
         $ruleBlocks = $mediaRule->ruleBlocks;
         $css = \implode('', \array_map([self::class, 'getRuleBlockCss'], $ruleBlocks));
         $media = $mediaRule->media;
@@ -169,8 +164,6 @@ class CssConcatenator
         return $css;
     }
 
-    // phpcs:disable Squiz.Commenting.FunctionComment.IncorrectTypeHint
-
     /**
      * @param object{selectorsAsKeys: array<string, array-key>, declarationsBlock: string} $ruleBlock
      *
@@ -178,7 +171,6 @@ class CssConcatenator
      */
     private static function getRuleBlockCss(object $ruleBlock): string
     {
-        // phpcs:enable
         $selectorsAsKeys = $ruleBlock->selectorsAsKeys;
         $selectors = \array_keys($selectorsAsKeys);
         $declarationsBlock = $ruleBlock->declarationsBlock;
