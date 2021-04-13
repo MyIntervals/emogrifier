@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Set `align` attribute of `<th>` elements with `CssToAttributeConverter` (#1008)
 
 ### Changed
 - Also check the unit test code with Psalm (#1003)

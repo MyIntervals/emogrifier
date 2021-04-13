@@ -84,6 +84,10 @@ final class CssToAttributeConverterTest extends TestCase
                 '<table><tr><td style="text-align: left;">hi</td></tr></table>',
                 'align="left',
             ],
+            'th.text-align => align' => [
+                '<table><tr><th style="text-align: left;">hi</th></tr></table>',
+                'align="left',
+            ],
             'text-align: left => align=left' => ['<p style="text-align: left;">hi</p>', 'align="left"'],
             'text-align: right => align=right' => ['<p style="text-align: right;">hi</p>', 'align="right"'],
             'text-align: center => align=center' => ['<p style="text-align: center;">hi</p>', 'align="center"'],
