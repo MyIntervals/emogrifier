@@ -55,7 +55,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      * This method also has the (presumably beneficial) side-effect of minifying (removing superfluous whitespace from)
      * `class` attributes.
      *
-     * @param string[] $classesToKeep names of classes that should not be removed
+     * @param array<array-key, string> $classesToKeep names of classes that should not be removed
      *
      * @return self fluent interface
      */
@@ -78,7 +78,7 @@ class HtmlPruner extends AbstractHtmlProcessor
      * removing the `class` attribute itself if the resultant list is empty.
      *
      * @param \DOMNodeList $elements
-     * @param string[] $classesToKeep
+     * @param array<array-key, string> $classesToKeep
      */
     private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep): void
     {
