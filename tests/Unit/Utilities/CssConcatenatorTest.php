@@ -15,7 +15,7 @@ final class CssConcatenatorTest extends TestCase
     /**
      * @var CssConcatenator
      */
-    private $subject = null;
+    private $subject;
 
     /**
      * Setup.
