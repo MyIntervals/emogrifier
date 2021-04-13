@@ -70,15 +70,15 @@
             "@ci:static",
             "@ci:dynamic"
         ],
-        "ci:composer:normalize": "@php \"./tools/composer-normalize\" --dry-run",
+        "ci:composer:normalize": "@php \"./.phive/composer-normalize\" --dry-run",
         "ci:dynamic": [
             "@ci:tests"
         ],
-        "ci:php:fixer": "@php \"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
+        "ci:php:fixer": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
         "ci:php:lint": "\"./vendor/bin/parallel-lint\" config src tests",
-        "ci:php:md": "@php \"./tools/phpmd\" src text config/phpmd.xml",
-        "ci:php:psalm": "@php \"./tools/psalm\" --show-info=false",
-        "ci:php:sniff": "@php \"./tools/phpcs\" config src tests",
+        "ci:php:md": "@php \"./.phive/phpmd\" src text config/phpmd.xml",
+        "ci:php:psalm": "@php \"./.phive/psalm\" --show-info=false",
+        "ci:php:sniff": "@php \"./.phive/phpcs\" config src tests",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
@@ -92,8 +92,8 @@
         ],
         "ci:tests:sof": "@php \"./vendor/bin/phpunit\" --stop-on-failure",
         "ci:tests:unit": "@php \"./vendor/bin/phpunit\"",
-        "composer:normalize": "@php \"./tools/composer-normalize\"",
-        "php:fix": "@php \"./tools/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "composer:normalize": "@php \"./.phive/composer-normalize\"",
+        "php:fix": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'"
     },
     "support": {
