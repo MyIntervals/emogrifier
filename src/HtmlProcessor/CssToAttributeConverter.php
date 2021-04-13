@@ -28,7 +28,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
         ],
         'text-align' => [
             'attribute' => 'align',
-            'nodes' => ['p', 'div', 'td'],
+            'nodes' => ['p', 'div', 'td', 'th'],
             'values' => ['left', 'right', 'center', 'justify'],
         ],
         'float' => [
