@@ -17,22 +17,17 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var int
      */
-    private const CACHE_KEY_CSS = 0;
+    private const CACHE_KEY_SELECTOR = 0;
 
     /**
      * @var int
      */
-    private const CACHE_KEY_SELECTOR = 1;
+    private const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 1;
 
     /**
      * @var int
      */
-    private const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 2;
-
-    /**
-     * @var int
-     */
-    private const CACHE_KEY_COMBINED_STYLES = 3;
+    private const CACHE_KEY_COMBINED_STYLES = 2;
 
     /**
      * This regular expression pattern will match any uninlinable at-rule with nested statements, along with any
@@ -86,7 +81,6 @@ class CssInliner extends AbstractHtmlProcessor
      * @var array<int, array<string, mixed>>
      */
     private $caches = [
-        self::CACHE_KEY_CSS => [],
         self::CACHE_KEY_SELECTOR => [],
         self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
         self::CACHE_KEY_COMBINED_STYLES => [],
@@ -361,7 +355,6 @@ class CssInliner extends AbstractHtmlProcessor
     private function clearAllCaches(): void
     {
         $this->caches = [
-            self::CACHE_KEY_CSS => [],
             self::CACHE_KEY_SELECTOR => [],
             self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
             self::CACHE_KEY_COMBINED_STYLES => [],
@@ -675,11 +668,6 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function parseCssRules(string $css): array
     {
-        $cssKey = \md5($css);
-        if (isset($this->caches[self::CACHE_KEY_CSS][$cssKey])) {
-            return $this->caches[self::CACHE_KEY_CSS][$cssKey];
-        }
-
         $matches = $this->getCssRuleMatches($css);
 
         $cssRules = [
@@ -721,8 +709,6 @@ class CssInliner extends AbstractHtmlProcessor
                 return $this->sortBySelectorPrecedence($a, $b);
             }
         );
-
-        $this->caches[self::CACHE_KEY_CSS][$cssKey] = $cssRules;
 
         return $cssRules;
     }
