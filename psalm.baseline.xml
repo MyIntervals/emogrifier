@@ -9,7 +9,6 @@
     </DocblockTypeContradiction>
     <InvalidArgument occurrences="1">
       <code>$cssRule</code>
-      <code>$cssRule</code>
     </InvalidArgument>
     <InvalidOperand occurrences="1">
       <code>$matcher</code>

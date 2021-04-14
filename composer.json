@@ -95,7 +95,7 @@
         "composer:normalize": "@php \"./.phive/composer-normalize\"",
         "php:fix": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "psalm:baseline": "@php \"./.phive/psalm\" --update-baseline",
+        "psalm:baseline": "@php \"./.phive/psalm\" --set-baseline=psalm.baseline.xml",
         "psalm:cc": "@php \"./.phive/psalm\" --clear-cache"
     },
     "support": {
