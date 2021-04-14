@@ -21,7 +21,7 @@
       <code>$nodePath</code>
       <code>$path</code>
     </MixedAssignment>
-    <MixedInferredReturnType occurrences="4">
+    <MixedInferredReturnType occurrences="3">
       <code>int</code>
       <code>string</code>
       <code>string[]</code>
@@ -32,9 +32,8 @@
     <MixedPropertyTypeCoercion occurrences="1">
       <code>$this-&gt;styleAttributesForNodes</code>
     </MixedPropertyTypeCoercion>
-    <MixedReturnStatement occurrences="4">
+    <MixedReturnStatement occurrences="3">
       <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedReturnStatement>
