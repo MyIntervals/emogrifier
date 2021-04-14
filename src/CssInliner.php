@@ -78,7 +78,11 @@ class CssInliner extends AbstractHtmlProcessor
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
     /**
-     * @var array<int, array<string, mixed>>
+     * @var array{
+     *         0: array<string, int>,
+     *         1: array<string, array<string, string>>,
+     *         2: array<string, string>
+     *      }
      */
     private $caches = [
         self::CACHE_KEY_SELECTOR => [],
@@ -444,7 +448,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
      *
-     * @return string[]
+     * @return array<string, string>
      *         the CSS declarations with the property names as array keys and the property values as array values
      */
     private function parseCssDeclarationsBlock(string $cssDeclarationsBlock): array
@@ -455,6 +459,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         $properties = [];
         foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
+            /** @var array<int, string> $matches */
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
