@@ -17,18 +17,6 @@
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$attributeName</code>
     </MixedArgumentTypeCoercion>
-    <MixedArrayAccess occurrences="4">
-      <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
-    </MixedArrayAccess>
-    <MixedArrayAssignment occurrences="4">
-      <code>$this-&gt;caches[self::CACHE_KEY_COMBINED_STYLES][$cacheKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS][$cssKey]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
-      <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
-    </MixedArrayAssignment>
     <MixedAssignment occurrences="2">
       <code>$nodePath</code>
       <code>$path</code>

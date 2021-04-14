@@ -83,7 +83,7 @@ class CssInliner extends AbstractHtmlProcessor
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
     /**
-     * @var mixed[]
+     * @var array<int, array<string, mixed>>
      */
     private $caches = [
         self::CACHE_KEY_CSS => [],
