@@ -152,7 +152,13 @@ class CssInliner extends AbstractHtmlProcessor
      * array of data describing CSS rules which apply to the document but cannot be inlined, in the format returned by
      * `parseCssRules`
      *
-     * @var string[][]
+     * @var array<array-key, array{
+     *        media: string,
+     *        selector: string,
+     *        hasUnmatchablePseudo: bool,
+     *        declarationsBlock: string,
+     *        line: int
+     *      }>
      */
     private $matchingUninlinableCssRules = null;
 
@@ -648,17 +654,24 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css a string of raw CSS code with comments removed
      *
-     * @return string[][][] A 2-entry array with the key "inlinable" containing rules which can be inlined as `style`
-     *         attributes and the key "uninlinable" containing rules which cannot.  Each value is an array of string
-     *         sub-arrays with the keys
-     *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
-     *         or an empty string if not from a `@media` rule),
-     *         "selector" (the CSS selector, e.g., "*" or "header h1"),
-     *         "hasUnmatchablePseudo" (true if that selector contains pseudo-elements or dynamic pseudo-classes
-     *         such that the declarations cannot be applied inline),
-     *         "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
-     *         e.g., "color: red; height: 4px;"),
-     *         and "line" (the line number e.g. 42)
+     * @return array<string, array<array-key, array{
+     *           media: string,
+     *           selector: string,
+     *           hasUnmatchablePseudo: bool,
+     *           declarationsBlock: string,
+     *           line: int
+     *         }>>
+     *         This 2-entry array has the key "inlinable" containing rules which can be inlined as `style` attributes
+     *         and the key "uninlinable" containing rules which cannot.  Each value is an array of sub-arrays with the
+     *         following keys:
+     *         - "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
+     *           or an empty string if not from a `@media` rule);
+     *         - "selector" (the CSS selector, e.g., "*" or "header h1");
+     *         - "hasUnmatchablePseudo" (`true` if that selector contains pseudo-elements or dynamic pseudo-classes such
+     *           that the declarations cannot be applied inline);
+     *         - "declarationsBlock" (the semicolon-separated CSS declarations for that selector,
+     *           e.g., `color: red; height: 4px;`);
+     *         - "line" (the line number, e.g. 42).
      */
     private function parseCssRules(string $css): array
     {
@@ -810,12 +823,13 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments removed
      *
-     * @return array<array-key, array<string, string>> Array of string sub-arrays with the keys
-     *         "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
-     *         or an empty string if not from an `@media` rule),
-     *         "selectors" (the CSS selector(s), e.g., "*" or "h1, h2"),
-     *         "declarations" (the semicolon-separated CSS declarations for that/those selector(s),
-     *         e.g., "color: red; height: 4px;"),
+     * @return array<int, array{media: string, selectors: string, declarations: string}>
+     *         Array of string sub-arrays with the following keys:
+     *         - "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
+     *           or an empty string if not from an `@media` rule);
+     *         - "selectors" (the CSS selector(s), e.g., "*" or "h1, h2");
+     *         - "declarations" (the semicolon-separated CSS declarations for that/those selector(s),
+     *           e.g., "color: red; height: 4px;").
      */
     private function getCssRuleMatches(string $css): array
     {
@@ -1084,13 +1098,19 @@ class CssInliner extends AbstractHtmlProcessor
      * Determines which of `$cssRules` actually apply to `$this->domDocument`, and sets them in
      * `$this->matchingUninlinableCssRules`.
      *
-     * @param string[][] $cssRules the "uninlinable" array of CSS rules returned by `parseCssRules`
+     * @param array<array-key, array{
+     *          media: string,
+     *          selector: string,
+     *          hasUnmatchablePseudo: bool,
+     *          declarationsBlock: string,
+     *          line: int
+     *        }> $cssRules
+     *        the "uninlinable" array of CSS rules returned by `parseCssRules`
      */
     private function determineMatchingUninlinableCssRules(array $cssRules): void
     {
         $this->matchingUninlinableCssRules = \array_filter(
             $cssRules,
-            /** @param array<array-key, array{selector: string, hasUnmatchablePseudo: bool}> $cssRule */
             function (array $cssRule): bool {
                 return $this->existsMatchForSelectorInCssRule($cssRule);
             }

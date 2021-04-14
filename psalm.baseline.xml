@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
   <file src="src/CssInliner.php">
-    <ArgumentTypeCoercion occurrences="2">
+    <ArgumentTypeCoercion occurrences="1">
       <code>$node</code>
     </ArgumentTypeCoercion>
     <DocblockTypeContradiction occurrences="1">
       <code>\is_array($this-&gt;matchingUninlinableCssRules)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="3">
+    <InvalidArgument occurrences="1">
       <code>$cssRule</code>
       <code>$cssRule</code>
     </InvalidArgument>
@@ -25,7 +25,6 @@
       <code>int</code>
       <code>string</code>
       <code>string[]</code>
-      <code>string[][][]</code>
     </MixedInferredReturnType>
     <MixedOperand occurrences="1">
       <code>$path</code>
@@ -39,11 +38,6 @@
       <code>$this-&gt;caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock]</code>
       <code>$this-&gt;caches[self::CACHE_KEY_SELECTOR][$selectorKey]</code>
     </MixedReturnStatement>
-    <MixedReturnTypeCoercion occurrences="3">
-      <code>$cssRules</code>
-      <code>\array_column($this-&gt;matchingUninlinableCssRules, 'selector')</code>
-      <code>string[]</code>
-    </MixedReturnTypeCoercion>
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
