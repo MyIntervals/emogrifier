@@ -30,9 +30,6 @@
       <code>$matchingNodes</code>
       <code>$nodesMatchingCssSelectors</code>
     </PossiblyUndefinedVariable>
-    <UnnecessaryVarAnnotation occurrences="1">
-      <code>string[]</code>
-    </UnnecessaryVarAnnotation>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <MixedReturnTypeCoercion occurrences="4">
