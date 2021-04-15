@@ -58,10 +58,6 @@
     </MixedArgumentTypeCoercion>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
-    <DeprecatedMethod occurrences="2">
-      <code>self::assertNotRegExp('/&lt;body&gt;.*&lt;style/s', $subject-&gt;render())</code>
-      <code>self::assertRegExp('/&lt;head&gt;.*&lt;style.*&lt;\\/head&gt;/s', $subject-&gt;render())</code>
-    </DeprecatedMethod>
     <MixedReturnTypeCoercion occurrences="4">
       <code>string[][]</code>
       <code>string[][]</code>
@@ -75,9 +71,6 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
-    <DeprecatedMethod occurrences="1">
-      <code>self::assertRegExp('%' . $needleMatcherWithNewlines . '%', $haystack, $message)</code>
-    </DeprecatedMethod>
     <LessSpecificReturnStatement occurrences="1">
       <code>$dataset</code>
     </LessSpecificReturnStatement>
@@ -109,9 +102,6 @@
     </PropertyNotSetInConstructor>
   </file>
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
-    <DeprecatedMethod occurrences="1">
-      <code>self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string)</code>
-    </DeprecatedMethod>
     <InvalidReturnStatement occurrences="7"/>
     <InvalidReturnType occurrences="7">
       <code>array&lt;string, array{0:string, 1:string, 2:string[]}&gt;</code>
