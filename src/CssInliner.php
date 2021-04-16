@@ -151,12 +151,12 @@ class CssInliner extends AbstractHtmlProcessor
      * `parseCssRules`
      *
      * @var array<array-key, array{
-     *        media: string,
-     *        selector: string,
-     *        hasUnmatchablePseudo: bool,
-     *        declarationsBlock: string,
-     *        line: int
-     *      }>
+     *          media: string,
+     *          selector: string,
+     *          hasUnmatchablePseudo: bool,
+     *          declarationsBlock: string,
+     *          line: int
+     *      }>|null
      */
     private $matchingUninlinableCssRules = null;
 
@@ -339,17 +339,33 @@ class CssInliner extends AbstractHtmlProcessor
      * `<style>` element.  The selectors may include those used within `@media` rules or those involving dynamic
      * pseudo-classes (such as `:hover`) or pseudo-elements (such as `::after`).
      *
-     * @return string[]
+     * @return array<array-key, string>
      *
      * @throws \BadMethodCallException if `inlineCss` has not been called first
      */
     public function getMatchingUninlinableSelectors(): array
     {
+        return \array_column($this->getMatchingUninlinableCssRules(), 'selector');
+    }
+
+    /**
+     * @return array<array-key, array{
+     *             media: string,
+     *             selector: string,
+     *             hasUnmatchablePseudo: bool,
+     *             declarationsBlock: string,
+     *             line: int
+     *         }>
+     *
+     * @throws \BadMethodCallException if `inlineCss` has not been called first
+     */
+    private function getMatchingUninlinableCssRules(): array
+    {
         if (!\is_array($this->matchingUninlinableCssRules)) {
             throw new \BadMethodCallException('inlineCss must be called first', 1568385221);
         }
 
-        return \array_column($this->matchingUninlinableCssRules, 'selector');
+        return $this->matchingUninlinableCssRules;
     }
 
     /**
@@ -1291,9 +1307,9 @@ class CssInliner extends AbstractHtmlProcessor
         $css = $uninlinableCss;
 
         // avoid including unneeded class dependency if there are no rules
-        if ($this->matchingUninlinableCssRules !== []) {
+        if ($this->getMatchingUninlinableCssRules() !== []) {
             $cssConcatenator = new CssConcatenator();
-            foreach ($this->matchingUninlinableCssRules as $cssRule) {
+            foreach ($this->getMatchingUninlinableCssRules() as $cssRule) {
                 $cssConcatenator->append([$cssRule['selector']], $cssRule['declarationsBlock'], $cssRule['media']);
             }
             $css .= $cssConcatenator->getCss();

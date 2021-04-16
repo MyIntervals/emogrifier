@@ -4,9 +4,6 @@
     <ArgumentTypeCoercion occurrences="1">
       <code>$node</code>
     </ArgumentTypeCoercion>
-    <DocblockTypeContradiction occurrences="1">
-      <code>\is_array($this-&gt;matchingUninlinableCssRules)</code>
-    </DocblockTypeContradiction>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$attributeName</code>
     </MixedArgumentTypeCoercion>
@@ -17,9 +14,6 @@
     <MixedOperand occurrences="1">
       <code>$path</code>
     </MixedOperand>
-    <PossiblyNullPropertyAssignmentValue occurrences="1">
-      <code>null</code>
-    </PossiblyNullPropertyAssignmentValue>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <MixedReturnTypeCoercion occurrences="4">
