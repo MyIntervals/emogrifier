@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Tests\Support\Traits;
 
 use PHPUnit\Framework\Constraint\Constraint;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Adds common tests to a test case for a `Constraint` which is expected to only evaluate against strings.
+ *
+ * @mixin TestCase
  */
 trait TestStringConstraint
 {

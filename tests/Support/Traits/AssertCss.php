@@ -6,9 +6,12 @@ namespace Pelago\Emogrifier\Tests\Support\Traits;
 
 use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCss;
 use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCssCount;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Provides assertion methods for use with CSS content where whitespace may vary.
+ *
+ * @mixin TestCase
  */
 trait AssertCss
 {
