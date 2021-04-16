@@ -7,7 +7,7 @@ namespace Pelago\Emogrifer\Tests\Unit;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\ParsedCss;
+use Pelago\Emogrifier\Utilities\CssDocument;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
@@ -3714,9 +3714,9 @@ final class CssInlinerTest extends TestCase
         $copyUninlinableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
-        $parsedCss = new ParsedCss('');
+        $cssDocument = new CssDocument('');
 
-        $copyUninlinableCssToStyleNode->invoke($subject, $parsedCss);
+        $copyUninlinableCssToStyleNode->invoke($subject, $cssDocument);
         $expectedHtml = $subject->render();
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
@@ -3724,7 +3724,7 @@ final class CssInlinerTest extends TestCase
         self::assertInstanceOf(\DOMElement::class, $styleElement->parentNode);
         $styleElement->parentNode->removeChild($styleElement);
 
-        $copyUninlinableCssToStyleNode->invoke($subject, $parsedCss);
+        $copyUninlinableCssToStyleNode->invoke($subject, $cssDocument);
 
         self::assertSame($expectedHtml, $subject->render());
     }

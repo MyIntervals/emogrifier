@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Utilities;
 
 /**
- * Parses and stores a CSS document from a string of CSS, with methods to return the CSS in parts or as data structures.
+ * Parses and stores a CSS document from a string of CSS, and provides methods to obtain the CSS in parts or as data
+ * structures.
  *
  * @internal
  */
-class ParsedCss
+class CssDocument
 {
     /**
      * This regular expression pattern will match any nested at-rule apart from
