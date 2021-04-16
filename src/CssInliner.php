@@ -414,10 +414,18 @@ class CssInliner extends AbstractHtmlProcessor
      * Returns a list with all DOM nodes that have a style attribute.
      *
      * @return \DOMNodeList
+     *
+     * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
-        return $this->getXPath()->query('//*[@style]');
+        $query = '//*[@style]';
+        $matches = $this->getXPath()->query($query);
+        if (!$matches instanceof \DOMNodeList) {
+            throw new \RuntimeException('XPatch query failed: ' . $query, 1618577797);
+        }
+
+        return $matches;
     }
 
     /**
@@ -436,8 +444,8 @@ class CssInliner extends AbstractHtmlProcessor
             $node->getAttribute('style')
         );
 
-        // in order to not overwrite existing style attributes in the HTML, we
-        // have to save the original HTML styles
+        // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
+        /** @var ?string $nodePath */
         $nodePath = $node->getNodePath();
         if (\is_string($nodePath) && !isset($this->styleAttributesForNodes[$nodePath])) {
             $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
@@ -622,7 +630,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Find the nodes that are not to be emogrified.
      *
-     * @return \DOMElement[]
+     * @return array<int, \DOMElement>
      *
      * @throws ParseException
      * @throws \UnexpectedValueException
@@ -637,6 +645,7 @@ class CssInliner extends AbstractHtmlProcessor
 
                 foreach ($matchingNodes as $node) {
                     if (!$node instanceof \DOMElement) {
+                        /** @var string $path */
                         $path = $node->getNodePath() ?? '$node';
                         throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
                     }
@@ -976,8 +985,8 @@ class CssInliner extends AbstractHtmlProcessor
      * This becomes the single point for CSS string generation allowing for consistent
      * CSS output no matter where the CSS originally came from.
      *
-     * @param string[] $oldStyles
-     * @param string[] $newStyles
+     * @param array<string, string> $oldStyles
+     * @param array<string, string> $newStyles
      *
      * @return string
      */
@@ -1056,6 +1065,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeImportantAnnotationFromAllInlineStyles(): void
     {
+        /** @var \DOMElement $node */
         foreach ($this->getAllNodesWithStyleAttribute() as $node) {
             $this->removeImportantAnnotationFromNodeInlineStyle($node);
         }
@@ -1076,7 +1086,9 @@ class CssInliner extends AbstractHtmlProcessor
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
         $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+        /** @var array<string, string> $regularStyleDeclarations */
         $regularStyleDeclarations = [];
+        /** @var array<string, string> $importantStyleDeclarations */
         $importantStyleDeclarations = [];
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
@@ -1085,10 +1097,7 @@ class CssInliner extends AbstractHtmlProcessor
                 $regularStyleDeclarations[$property] = $value;
             }
         }
-        $inlineStyleDeclarationsInNewOrder = \array_merge(
-            $regularStyleDeclarations,
-            $importantStyleDeclarations
-        );
+        $inlineStyleDeclarationsInNewOrder = \array_merge($regularStyleDeclarations, $importantStyleDeclarations);
         $node->setAttribute(
             'style',
             $this->generateStyleStringFromSingleDeclarationsArray($inlineStyleDeclarationsInNewOrder)
@@ -1098,7 +1107,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Generates a CSS style string suitable to be used inline from the $styleDeclarations property => value array.
      *
-     * @param string[] $styleDeclarations
+     * @param array<string, string> $styleDeclarations
      *
      * @return string
      */
