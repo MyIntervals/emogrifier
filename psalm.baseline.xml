@@ -7,12 +7,6 @@
     <DocblockTypeContradiction occurrences="1">
       <code>\is_array($this-&gt;matchingUninlinableCssRules)</code>
     </DocblockTypeContradiction>
-    <InvalidArgument occurrences="1">
-      <code>$cssRule</code>
-    </InvalidArgument>
-    <InvalidOperand occurrences="1">
-      <code>$matcher</code>
-    </InvalidOperand>
     <MixedArgumentTypeCoercion occurrences="1">
       <code>$attributeName</code>
     </MixedArgumentTypeCoercion>
@@ -26,10 +20,6 @@
     <PossiblyNullPropertyAssignmentValue occurrences="1">
       <code>null</code>
     </PossiblyNullPropertyAssignmentValue>
-    <PossiblyUndefinedVariable occurrences="2">
-      <code>$matchingNodes</code>
-      <code>$nodesMatchingCssSelectors</code>
-    </PossiblyUndefinedVariable>
   </file>
   <file src="tests/Unit/CssInlinerTest.php">
     <MixedReturnTypeCoercion occurrences="4">

@@ -135,7 +135,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Keys are a regular expression part to match before a CSS name.
      * Values are a multiplier factor per match to weight specificity.
      *
-     * @var int[]
+     * @var array<string, int>
      */
     private $selectorPrecedenceMatchers = [
         // IDs: worth 10000
@@ -206,19 +206,18 @@ class CssInliner extends AbstractHtmlProcessor
             try {
                 $nodesMatchingCssSelectors = $this->getXPath()
                     ->query($cssSelectorConverter->toXPath($cssRule['selector']));
+
+                /** @var \DOMElement $node */
+                foreach ($nodesMatchingCssSelectors as $node) {
+                    if (\in_array($node, $excludedNodes, true)) {
+                        continue;
+                    }
+                    $this->copyInlinableCssToStyleAttribute($node, $cssRule);
+                }
             } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
-                continue;
-            }
-
-            /** @var \DOMElement $node */
-            foreach ($nodesMatchingCssSelectors as $node) {
-                if (\in_array($node, $excludedNodes, true)) {
-                    continue;
-                }
-                $this->copyInlinableCssToStyleAttribute($node, $cssRule);
             }
         }
 
@@ -573,6 +572,7 @@ class CssInliner extends AbstractHtmlProcessor
                 $matches
             )
         ) {
+            /** @var array<int, string> $matches */
             [$fullMatch, $atRuleName] = $matches;
 
             if ($this->isValidAtRule($atRuleName, $fullMatch)) {
@@ -618,18 +618,18 @@ class CssInliner extends AbstractHtmlProcessor
             try {
                 $matchingNodes = $this->getXPath()
                     ->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
+
+                foreach ($matchingNodes as $node) {
+                    if (!$node instanceof \DOMElement) {
+                        $path = $node->getNodePath() ?? '$node';
+                        throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
+                    }
+                    $excludedNodes[] = $node;
+                }
             } catch (ParseException $e) {
                 if ($this->debug) {
                     throw $e;
                 }
-                continue;
-            }
-            foreach ($matchingNodes as $node) {
-                if (!$node instanceof \DOMElement) {
-                    $path = $node->getNodePath() ?? '$node';
-                    throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
-                }
-                $excludedNodes[] = $node;
             }
         }
 
@@ -871,7 +871,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css
      *
-     * @return string[][]
+     * @return array<int, array<string, string>>
      */
     private function splitCssAndMediaQuery(string $css): array
     {
@@ -901,6 +901,7 @@ class CssInliner extends AbstractHtmlProcessor
             $isMediaRule = $index % 2 !== 0;
             if ($isMediaRule) {
                 \preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
+                /** @var array<int, string> $matches */
                 $splitCss[] = [
                     'css' => $matches[2],
                     'media' => $matches[1],
@@ -924,11 +925,16 @@ class CssInliner extends AbstractHtmlProcessor
      * Note: This method does not check whether $cssRule matches $node.
      *
      * @param \DOMElement $node
-     * @param string[][] $cssRule
+     * @param array{
+     *            media: string,
+     *            selector: string,
+     *            hasUnmatchablePseudo: bool,
+     *            declarationsBlock: string,
+     *            line: int
+     *        } $cssRule
      */
     private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule): void
     {
-        /** @var string $declarationsBlock */
         $declarationsBlock = $cssRule['declarationsBlock'];
         $newStyleDeclarations = $this->parseCssDeclarationsBlock($declarationsBlock);
         if ($newStyleDeclarations === []) {
@@ -1090,11 +1096,11 @@ class CssInliner extends AbstractHtmlProcessor
      * `$this->matchingUninlinableCssRules`.
      *
      * @param array<array-key, array{
-     *          media: string,
-     *          selector: string,
-     *          hasUnmatchablePseudo: bool,
-     *          declarationsBlock: string,
-     *          line: int
+     *            media: string,
+     *            selector: string,
+     *            hasUnmatchablePseudo: bool,
+     *            declarationsBlock: string,
+     *            line: int
      *        }> $cssRules
      *        the "uninlinable" array of CSS rules returned by `parseCssRules`
      */
@@ -1115,7 +1121,13 @@ class CssInliner extends AbstractHtmlProcessor
      * Any dynamic pseudo-classes will be assumed to apply. If the selector matches a pseudo-element,
      * it will test for a match with its originating element.
      *
-     * @param array{selector: string, hasUnmatchablePseudo: bool} $cssRule
+     * @param array{
+     *            media: string,
+     *            selector: string,
+     *            hasUnmatchablePseudo: bool,
+     *            declarationsBlock: string,
+     *            line: int
+     *        } $cssRule
      *
      * @return bool
      *
