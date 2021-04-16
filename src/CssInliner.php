@@ -518,7 +518,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments removed
      *
-     * @return string[]
+     * @return array{0: string, 1: string}
      *         The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second element
      *         contains a concatenation of the valid `@import` rules, each followed by whatever whitespace followed it
      *         in the original CSS (so that either unminified or minified formatting is preserved); if there were no
@@ -556,7 +556,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments, import and charset removed
      *
-     * @return string[]
+     * @return array{0: string, 1: string}
      *         The first element is the CSS with the at-rules removed.  The second element contains a concatenation of
      *         the valid at-rules, each followed by whatever whitespace followed it in the original CSS (so that either
      *         unminified or minified formatting is preserved); if there were no at-rules, it will be an empty string.
