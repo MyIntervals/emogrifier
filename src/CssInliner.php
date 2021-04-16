@@ -518,10 +518,11 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments removed
      *
-     * @return string[] The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second
-     *         element contains a concatenation of the valid `@import` rules, each followed by whatever whitespace
-     *         followed it in the original CSS (so that either unminified or minified formatting is preserved); if there
-     *         were no `@import` rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
+     * @return string[]
+     *         The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second element
+     *         contains a concatenation of the valid `@import` rules, each followed by whatever whitespace followed it
+     *         in the original CSS (so that either unminified or minified formatting is preserved); if there were no
+     *         `@import` rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
      */
     private function extractImportAndCharsetRules(string $css): array
     {
@@ -555,10 +556,10 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $css CSS with comments, import and charset removed
      *
-     * @return string[] The first element is the CSS with the at-rules removed.  The second element contains a
-     *                  concatenation of the valid at-rules, each followed by whatever whitespace followed it in the
-     *                  original CSS (so that either unminified or minified formatting is preserved); if there were no
-     *                  at-rules, it will be an empty string.
+     * @return string[]
+     *         The first element is the CSS with the at-rules removed.  The second element contains a concatenation of
+     *         the valid at-rules, each followed by whatever whitespace followed it in the original CSS (so that either
+     *         unminified or minified formatting is preserved); if there were no at-rules, it will be an empty string.
      */
     private function extractUninlinableCssAtRules(string $css): array
     {
@@ -1160,8 +1161,9 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $selector
      *
-     * @return string Selector which will match the relevant DOM elements if the pseudo-classes are assumed to apply,
-     *                or in the case of pseudo-elements will match their originating element.
+     * @return string
+     *         selector which will match the relevant DOM elements if the pseudo-classes are assumed to apply, or in the
+     *         case of pseudo-elements will match their originating element
      */
     private function removeUnmatchablePseudoComponents(string $selector): string
     {
@@ -1208,8 +1210,9 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param array<int, string> $matches array of elements matched by the regular expression
      *
-     * @return string the full match if there were no unmatchable pseudo components within; otherwise, any preceding
-     *         combinator followed by "*", or an empty string if there was no preceding combinator
+     * @return string
+     *         the full match if there were no unmatchable pseudo components within; otherwise, any preceding combinator
+     *         followed by "*", or an empty string if there was no preceding combinator
      */
     private function replaceUnmatchableNotComponent(array $matches): string
     {
@@ -1227,8 +1230,9 @@ class CssInliner extends AbstractHtmlProcessor
      * @param string $matcher regular expression part to match the components to remove
      * @param string $selector
      *
-     * @return string selector which will match the relevant DOM elements if the removed components are assumed to apply
-     *         (or in the case of pseudo-elements will match their originating element)
+     * @return string
+     *         selector which will match the relevant DOM elements if the removed components are assumed to apply (or in
+     *         the case of pseudo-elements will match their originating element)
      */
     private function removeSelectorComponents(string $matcher, string $selector): string
     {
@@ -1245,8 +1249,8 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @param string $selectorPart part of a selector which has been split up at combinators
      *
-     * @return string selector part which will match the relevant DOM elements if the pseudo-classes are assumed to
-     *         apply
+     * @return string
+     *         selector part which will match the relevant DOM elements if the pseudo-classes are assumed to apply
      */
     private function removeUnsupportedOfTypePseudoClasses(string $selectorPart): string
     {
@@ -1264,10 +1268,11 @@ class CssInliner extends AbstractHtmlProcessor
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
      *
-     * @param string $uninlinableCss This may contain any `@import` or `@font-face` rules that should precede the CSS
-     *        placed in the `<style>` element.  If there are no unlinlinable CSS rules to copy there, a `<style>`
-     *        element will be created containing just `$uninlinableCss`.  `$uninlinableCss` may be an empty string;
-     *        if it is, and there are no unlinlinable CSS rules, an empty `<style>` element will not be created.
+     * @param string $uninlinableCss
+     *        This may contain any `@import` or `@font-face` rules that should precede the CSS placed in the `<style>`
+     *        element.  If there are no unlinlinable CSS rules to copy there, a `<style>` element will be created
+     *        containing just `$uninlinableCss`.  `$uninlinableCss` may be an empty string; if it is, and there are no
+     *        unlinlinable CSS rules, an empty `<style>` element will not be created.
      */
     private function copyUninlinableCssToStyleNode(string $uninlinableCss): void
     {

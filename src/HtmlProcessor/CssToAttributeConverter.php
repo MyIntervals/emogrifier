@@ -279,13 +279,13 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     }
 
     /**
-     * Parses a shorthand CSS value and splits it into individual values
+     * Parses a shorthand CSS value and splits it into individual values.  For example: `padding: 0 auto;` - `0 auto` is
+     * split into top: 0, left: auto, bottom: 0, right: auto.
      *
-     * @param string $value a string of CSS value with 1, 2, 3 or 4 sizes
-     *        For example: padding: 0 auto; '0 auto' is split into top: 0, left: auto, bottom: 0, right: auto.
+     * @param string $value a CSS property value with 1, 2, 3 or 4 sizes
      *
-     * @return array<string, string> an array of values for top, right, bottom and left
-     *         (using these as associative array keys)
+     * @return array<string, string>
+     *         an array of values for top, right, bottom and left (using these as associative array keys)
      */
     private function parseCssShorthandValue(string $value): array
     {

@@ -62,10 +62,12 @@ class CssConcatenator
     /**
      * Appends a declaration block to the CSS.
      *
-     * @param array<array-key, string> $selectors Array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"].
-     * @param string $declarationsBlock The property declarations, e.g. "margin-top: 0.5em; padding: 0".
-     * @param string $media The media query for the rule, e.g. "@media screen and (max-width:639px)",
-     *        or an empty string if none.
+     * @param array<array-key, string> $selectors
+     *        array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"]
+     * @param string $declarationsBlock
+     *        the property declarations, e.g. "margin-top: 0.5em; padding: 0"
+     * @param string $media
+     *        the media query for the rule, e.g. "@media screen and (max-width:639px)", or an empty string if none
      */
     public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
@@ -105,12 +107,12 @@ class CssConcatenator
      *        or an empty string if none.
      *
      * @return object{
-     *   media: string,
-     *   ruleBlocks: array<int, object{
-     *     selectorsAsKeys: array<string, array-key>,
-     *     declarationsBlock: string
-     *   }>
-     * }
+     *           media: string,
+     *           ruleBlocks: array<int, object{
+     *             selectorsAsKeys: array<string, array-key>,
+     *             declarationsBlock: string
+     *           }>
+     *         }
      */
     private function getOrCreateMediaRuleToAppendTo(string $media): object
     {
@@ -130,8 +132,8 @@ class CssConcatenator
     /**
      * Tests if two sets of selectors are equivalent (i.e. the same selectors, possibly in a different order).
      *
-     * @param array<string, array-key> $selectorsAsKeys1 array in which the selectors are the keys, and the values are
-     *        of no significance
+     * @param array<string, array-key> $selectorsAsKeys1
+     *        array in which the selectors are the keys, and the values are of no significance
      * @param array<string, array-key> $selectorsAsKeys2 another such array
      *
      * @return bool
