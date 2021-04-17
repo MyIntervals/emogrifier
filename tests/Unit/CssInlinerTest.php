@@ -49,7 +49,7 @@ final class CssInlinerTest extends TestCase
     ';
 
     /**
-     * @var string[]
+     * @var array<string, string>
      *
      * selection of at-rules which have no special handling by `CssInliner` but should be passed through and placed in a
      * `<style>` element unmodified, for testing that and testing around
@@ -1717,7 +1717,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function orderedRulesAndSurroundingCssDataProvider(): array
     {
@@ -1738,6 +1738,7 @@ final class CssInlinerTest extends TestCase
                 '@charset' => '@charset "UTF-8";',
             ];
 
+        /** @var array<string, array<int, string>> $datasetsSurroundingCss */
         $datasetsSurroundingCss = [];
         foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
             foreach ($possibleSurroundingCss as $descriptionBetween => $cssBetween) {
@@ -1762,7 +1763,8 @@ final class CssInlinerTest extends TestCase
             }
         }
 
-        return DataProviders::cross(
+        /** @var array<string, array<int, string>> $datasets */
+        $datasets = DataProviders::cross(
             [
                 'two media rules' => ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
                 'two rules involving pseudo-components' => ['a:hover { color: blue; }', 'a:active { color: green; }'],
@@ -1777,6 +1779,8 @@ final class CssInlinerTest extends TestCase
             ],
             $datasetsSurroundingCss
         );
+
+        return $datasets;
     }
 
     /**
@@ -3457,11 +3461,12 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function provideValidAtRulesWithSurroundingCss(): array
     {
-        return DataProviders::cross(
+        /** @var array<string, array<int, string>> $datasets */
+        $datasets = DataProviders::cross(
             $this->provideValidAtRules(),
             [
                 'alone' => ['', ''],
@@ -3494,6 +3499,8 @@ final class CssInlinerTest extends TestCase
             ],
             ['alone' => ['', '']]
         );
+
+        return $datasets;
     }
 
     /**
@@ -3518,11 +3525,12 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function provideValidAtRules(): array
     {
         return \array_map(
+            /** @return array<int, string> */
             static function (string $rule): array {
                 return [$rule];
             },
@@ -3711,6 +3719,7 @@ final class CssInlinerTest extends TestCase
 
         $styleElement = $domDocument->getElementsByTagName('style')->item(0);
         self::assertInstanceOf(\DOMElement::class, $styleElement);
+        self::assertInstanceOf(\DOMElement::class, $styleElement->parentNode);
         $styleElement->parentNode->removeChild($styleElement);
 
         $copyUninlinableCssToStyleNode->invoke($subject, '');
