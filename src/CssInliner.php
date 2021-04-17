@@ -179,10 +179,10 @@ class CssInliner extends AbstractHtmlProcessor
         if ($this->isStyleBlocksParsingEnabled) {
             $combinedCss .= $this->getCssFromAllStyleNodes();
         }
-        $cssDocument = new CssDocument($combinedCss);
+        $parsedCss = new CssDocument($combinedCss);
 
         $excludedNodes = $this->getNodesToExclude();
-        $cssRules = $this->collateCssRules($cssDocument);
+        $cssRules = $this->collateCssRules($parsedCss);
         $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
             try {
@@ -210,7 +210,7 @@ class CssInliner extends AbstractHtmlProcessor
         $this->removeImportantAnnotationFromAllInlineStyles();
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
-        $this->copyUninlinableCssToStyleNode($cssDocument);
+        $this->copyUninlinableCssToStyleNode($parsedCss);
 
         return $this;
     }
@@ -552,7 +552,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Collates the individual rules from a `CssDocument` object.
      *
-     * @param CssDocument $cssDocument
+     * @param CssDocument $parsedCss
      *
      * @return array<string, array<array-key, array{
      *           media: string,
@@ -573,9 +573,9 @@ class CssInliner extends AbstractHtmlProcessor
      *           e.g., `color: red; height: 4px;`);
      *         - "line" (the line number, e.g. 42).
      */
-    private function collateCssRules(CssDocument $cssDocument): array
+    private function collateCssRules(CssDocument $parsedCss): array
     {
-        $matches = $cssDocument->getStyleRulesData(\array_keys($this->allowedMediaTypes));
+        $matches = $parsedCss->getStyleRulesData(\array_keys($this->allowedMediaTypes));
 
         $cssRules = [
             'inlinable' => [],
@@ -1072,15 +1072,15 @@ class CssInliner extends AbstractHtmlProcessor
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
      *
-     * @param CssDocument $cssDocument
+     * @param CssDocument $parsedCss
      *        This may contain any `@import` or `@font-face` rules that should precede the CSS placed in the `<style>`
-     *        element.  If there are no unlinlinable CSS rules to copy there, a `<style>` element will be created
-     *        containing only the applicable at-rules from `$cssDocument`.  If there are none, and there are also no
+     *        element.  If there are no uninlinable CSS rules to copy there, a `<style>` element will be created
+     *        containing only the applicable at-rules from `$parsedCss`.  If there are none, and there are also no
      *        unlinlinable CSS rules, an empty `<style>` element will not be created.
      */
-    private function copyUninlinableCssToStyleNode(CssDocument $cssDocument): void
+    private function copyUninlinableCssToStyleNode(CssDocument $parsedCss): void
     {
-        $css = $cssDocument->renderNonConditionalAtRules();
+        $css = $parsedCss->renderNonConditionalAtRules();
 
         // avoid including unneeded class dependency if there are no rules
         if ($this->getMatchingUninlinableCssRules() !== []) {

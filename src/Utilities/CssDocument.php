@@ -13,6 +13,11 @@ namespace Pelago\Emogrifier\Utilities;
 class CssDocument
 {
     /**
+     * @var string
+     */
+    private const AT_CHARSET_OR_IMPORT_RULE_PATTERN = '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/';
+
+    /**
      * This regular expression pattern will match any nested at-rule apart from
      * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule#conditional_group_rules conditional group rules},
      * along with any whitespace immediately following.
@@ -25,8 +30,13 @@ class CssDocument
      *
      * @var string
      */
-    private const NON_CONDITIONAL_AT_RULE_MATCHER
+    private const NON_CONDITIONAL_AT_RULE_PATTERN
         = '/(@(?!media\\b)[\\w\\-]++)[^\\{]*+(\\{[^\\{\\}]*+(?:(?2)[^\\{\\}]*+)*+\\})\\s*+/i';
+
+    /**
+     * @var string
+     */
+    private const MEDIA_RULE_BODY_MATCHER = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
 
     /**
      * Includes regular style rules, and style rules within conditional group rules such as `@media`.
@@ -134,13 +144,7 @@ class CssDocument
         $possiblyModifiedCss = $css;
         $importRules = '';
 
-        while (
-            \preg_match(
-                '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/',
-                $possiblyModifiedCss,
-                $matches
-            )
-        ) {
+        while (\preg_match(self::AT_CHARSET_OR_IMPORT_RULE_PATTERN, $possiblyModifiedCss, $matches)) {
             [$fullMatch, $atRuleAndFollowingWhitespace, $atRuleName] = $matches;
 
             if (\strtolower($atRuleName) === 'import') {
@@ -172,25 +176,19 @@ class CssDocument
     private function extractNonConditionalAtRules(string $css): array
     {
         $possiblyModifiedCss = $css;
-        $atRules = '';
+        $atRules = [];
 
-        while (
-            \preg_match(
-                self::NON_CONDITIONAL_AT_RULE_MATCHER,
-                $possiblyModifiedCss,
-                $matches
-            )
-        ) {
+        while (\preg_match(self::NON_CONDITIONAL_AT_RULE_PATTERN, $possiblyModifiedCss, $matches)) {
             [$fullMatch, $atRuleName] = $matches;
 
             if ($this->isValidAtRule($atRuleName, $fullMatch)) {
-                $atRules .= $fullMatch;
+                $atRules[] = $fullMatch;
             }
 
             $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
         }
 
-        return [$possiblyModifiedCss, $atRules];
+        return [$possiblyModifiedCss, \implode('', $atRules)];
     }
 
     /**
@@ -247,10 +245,8 @@ class CssDocument
             $mediaTypesExpression = '|' . \implode('|', $allowedMediaTypes);
         }
 
-        $mediaRuleBodyMatcher = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
-
         $cssSplitForAllowedMediaTypes = \preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . $mediaRuleBodyMatcher
+            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . self::MEDIA_RULE_BODY_MATCHER
             . ')#misU',
             $this->styleRules,
             -1,
@@ -260,7 +256,7 @@ class CssDocument
         // filter the CSS outside/between allowed @media rules
         $cssCleaningMatchers = [
             'import/charset directives' => '/\\s*+@(?:import|charset)\\s[^;]++;/i',
-            'remaining media enclosures' => '/\\s*+@media\\s' . $mediaRuleBodyMatcher . '/isU',
+            'remaining media enclosures' => '/\\s*+@media\\s' . self::MEDIA_RULE_BODY_MATCHER . '/isU',
         ];
 
         $splitCss = [];
