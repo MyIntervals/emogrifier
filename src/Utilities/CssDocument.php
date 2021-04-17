@@ -4,6 +4,16 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Utilities;
 
+use Sabberworm\CSS\CSSList\AtRuleBlockList as CssAtRuleBlockList;
+use Sabberworm\CSS\CSSList\Document as SabberwormCssDocument;
+use Sabberworm\CSS\Parser as CssParser;
+use Sabberworm\CSS\Property\AtRule as CssAtRule;
+use Sabberworm\CSS\Property\Charset as CssCharset;
+use Sabberworm\CSS\Property\Import as CssImport;
+use Sabberworm\CSS\Renderable as CssRenderable;
+use Sabberworm\CSS\RuleSet\DeclarationBlock as CssDeclarationBlock;
+use Sabberworm\CSS\RuleSet\RuleSet as CssRuleSet;
+
 /**
  * Parses and stores a CSS document from a string of CSS, and provides methods to obtain the CSS in parts or as data
  * structures.
@@ -13,61 +23,30 @@ namespace Pelago\Emogrifier\Utilities;
 class CssDocument
 {
     /**
-     * @var string
+     * @var SabberwormCssDocument
      */
-    private const AT_CHARSET_OR_IMPORT_RULE_PATTERN = '/^\\s*+(@(import|charset)\\s[^;]++;\\s*+)/i';
+    private $sabberwormCssDocument;
 
     /**
-     * This regular expression pattern will match any nested at-rule apart from
-     * {@link https://developer.mozilla.org/en-US/docs/Web/CSS/At-rule#conditional_group_rules conditional group rules},
-     * along with any whitespace immediately following.
+     * `@import` rules must precede all other types of rules, except `@charset` rules.  This property is used while
+     * rendering at-rules to enforce that.
      *
-     * Currently, only `@media` rules are considered as conditional group rules; others are not yet supported.
-     *
-     * The first capturing group matches the 'at' sign and identifier (e.g. `@font-face`).  The second capturing group
-     * matches the nested statements along with their enclosing curly brackets (i.e. `{...}`), and via `(?2)` will match
-     * deeper nested blocks recursively.
-     *
-     * @var string
+     * @var bool
      */
-    private const NON_CONDITIONAL_AT_RULE_PATTERN
-        = '/(@(?!media\\b)[\\w\\-]++)[^\\{]*+(\\{[^\\{\\}]*+(?:(?2)[^\\{\\}]*+)*+\\})\\s*+/i';
-
-    /**
-     * @var string
-     */
-    private const MEDIA_RULE_BODY_MATCHER = '[^{]*+{(?:[^{}]*+{.*})?\\s*+}\\s*+';
-
-    /**
-     * Includes regular style rules, and style rules within conditional group rules such as `@media`.
-     *
-     * @var string
-     */
-    private $styleRules;
-
-    /**
-     * Excludes at-rules which are conditional group rules such as `@media`.  Also excludes `@charset` rules, which are
-     * discarded (only UTF-8 is supported).
-     *
-     * @var string
-     */
-    private $nonConditionalAtRules;
+    private $isImportRuleAllowed = true;
 
     /**
      * @param string $css
      */
     public function __construct(string $css)
     {
-        $cssWithoutComments = $this->removeCssComments($css);
-        [$cssWithoutCommentsCharsetOrImport, $cssImportRules]
-            = $this->extractImportAndCharsetRules($cssWithoutComments);
-        [$this->styleRules, $cssAtRules]
-            = $this->extractNonConditionalAtRules($cssWithoutCommentsCharsetOrImport);
-        $this->nonConditionalAtRules = $cssImportRules . $cssAtRules;
+        $cssParser = new CssParser($css);
+        /** @var SabberwormCssDocument $sabberwormCssDocument */
+        $sabberwormCssDocument = $cssParser->parse();
+        $this->sabberwormCssDocument = $sabberwormCssDocument;
     }
 
     /**
-     * Parses the style rules from the CSS into the media query, selectors and declarations for each ruleset.
      * Collates the media query, selectors and declarations for individual rules from the parsed CSS, in order.
      *
      * @param array<array-key, string> $allowedMediaTypes
@@ -82,23 +61,47 @@ class CssDocument
      */
     public function getStyleRulesData(array $allowedMediaTypes): array
     {
-        $splitCss = $this->splitCssAndMediaQuery($allowedMediaTypes);
-
         $ruleMatches = [];
-        foreach ($splitCss as $cssPart) {
-            // process each part for selectors and definitions
-            \preg_match_all('/(?:^|[\\s^{}]*)([^{]+){([^}]*)}/mi', $cssPart['css'], $matches, PREG_SET_ORDER);
-
-            foreach ($matches as $cssRule) {
+        /** @var CssRenderable $rule */
+        foreach ($this->sabberwormCssDocument->getContents() as $rule) {
+            if ($rule instanceof CssAtRuleBlockList && $rule->atRuleName() === 'media') {
+                /** @var string $mediaQueryList */
+                $mediaQueryList = $rule->atRuleArgs();
+                [$mediaType] = \explode('(', $mediaQueryList, 2);
+                if (\trim($mediaType) !== '') {
+                    $mediaTypesExpression = \implode('|', $allowedMediaTypes);
+                    if (!\preg_match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesExpression . ')/i', $mediaType)) {
+                        continue;
+                    }
+                }
+                $media = '@media ' . $mediaQueryList;
+                /** @var CssRenderable $nestedRule */
+                foreach ($rule->getContents() as $nestedRule) {
+                    if ($nestedRule instanceof CssDeclarationBlock) {
+                        $ruleMatches[] = [
+                            'media' => $media,
+                            'rule' => $nestedRule,
+                        ];
+                    }
+                }
+            } elseif ($rule instanceof CssDeclarationBlock) {
                 $ruleMatches[] = [
-                    'media' => $cssPart['media'],
-                    'selectors' => $cssRule[1],
-                    'declarations' => $cssRule[2],
+                    'media' => '',
+                    'rule' => $rule,
                 ];
             }
         }
 
-        return $ruleMatches;
+        return \array_map(
+            function (array $ruleMatch): array {
+                return [
+                    'media' => $ruleMatch['media'],
+                    'selectors' => \implode(',', $ruleMatch['rule']->getSelectors()),
+                    'declarations' => \implode('', $ruleMatch['rule']->getRules()),
+                ];
+            },
+            $ruleMatches
+        );
     }
 
     /**
@@ -110,177 +113,62 @@ class CssDocument
      */
     public function renderNonConditionalAtRules(): string
     {
-        return $this->nonConditionalAtRules;
-    }
+        $this->isImportRuleAllowed = true;
+        /** @var array<int, CssRenderable> $cssContents */
+        $cssContents = $this->sabberwormCssDocument->getContents();
+        $atRules = \array_filter($cssContents, [$this, 'isValidAtRuleToRender']);
 
-    /**
-     * Removes comments from the supplied CSS.
-     *
-     * @param string $css
-     *
-     * @return string CSS with the comments removed
-     */
-    private function removeCssComments(string $css): string
-    {
-        return \preg_replace('%/\\*[^*]*+(?:\\*(?!/)[^*]*+)*+\\*/%', '', $css);
-    }
-
-    /**
-     * Extracts `@import` and `@charset` rules from the supplied CSS.  These rules must not be preceded by any other
-     * rules, or they will be ignored.  (From the CSS 2.1 specification: "CSS 2.1 user agents must ignore any '@import'
-     * rule that occurs inside a block or after any non-ignored statement other than an @charset or an @import rule."
-     * Note also that `@charset` is case sensitive whereas `@import` is not.
-     * However, an invalidly cased `@charset` rule would be an ignored statement, and not affect the validity of any
-     * `@import` rules following.)
-     *
-     * @param string $css CSS with comments removed
-     *
-     * @return array{0: string, 1: string}
-     *         The first element is the CSS with the valid `@import` and `@charset` rules removed.  The second element
-     *         contains a concatenation of the valid `@import` rules, each followed by whatever whitespace followed it
-     *         in the original CSS (so that either unminified or minified formatting is preserved); if there were no
-     *         `@import` rules, it will be an empty string.  The (valid) `@charset` rules are discarded.
-     */
-    private function extractImportAndCharsetRules(string $css): array
-    {
-        $possiblyModifiedCss = $css;
-        $importRules = '';
-
-        while (\preg_match(self::AT_CHARSET_OR_IMPORT_RULE_PATTERN, $possiblyModifiedCss, $matches)) {
-            [$fullMatch, $atRuleAndFollowingWhitespace, $atRuleName] = $matches;
-
-            if (\strtolower($atRuleName) === 'import') {
-                $importRules .= $atRuleAndFollowingWhitespace;
-            }
-
-            $possiblyModifiedCss = \substr($possiblyModifiedCss, \strlen($fullMatch));
+        if ($atRules === []) {
+            return '';
         }
 
-        return [$possiblyModifiedCss, $importRules];
+        $atRulesDocument = new SabberwormCssDocument();
+        $atRulesDocument->setContents($atRules);
+
+        /** @var string $renderedRules */
+        $renderedRules = $atRulesDocument->render();
+        return $renderedRules;
     }
 
     /**
-     * Extracts at-rules with nested statements (i.e. a block enclosed in curly brackets) from the supplied CSS, with
-     * the exception of conditional group rules.  Currently, `@media` is the only supported conditional group rule;
-     * others will be extracted by this method.
+     * Tests if a CSS rule is an at-rule that should be passed though and copied to a `<style>` element unmodified:
+     * - `@charset` rules are discarded - only UTF-8 is supported - `false` is returned;
+     * - `@import` rules are passed through only if they satisfy the specification ("user agents must ignore any
+     *   '@import' rule that occurs inside a block or after any non-ignored statement other than an '@charset' or an
+     *   '@import' rule");
+     * - `@media` rules are processed separately to see if their nested rules apply - `false` is returned;
+     * - `@font-face` rules are checked for validity - they must contain both a `src` and `font-family` property;
+     * - other at-rules are assumed to be valid and treated as a black box - `true` is returned.
      *
-     * These rules can be placed anywhere in the CSS and are not case sensitive.
-     *
-     * `@font-face` rules will be checked for validity, though other at-rules will be assumed to be valid.
-     *
-     * @param string $css CSS with comments, `@import` and `@charset` removed
-     *
-     * @return array{0: string, 1: string}
-     *         The first element is the CSS with the at-rules removed.  The second element contains a concatenation of
-     *         the valid at-rules, each followed by whatever whitespace followed it in the original CSS (so that either
-     *         unminified or minified formatting is preserved); if there were no at-rules, it will be an empty string.
-     */
-    private function extractNonConditionalAtRules(string $css): array
-    {
-        $possiblyModifiedCss = $css;
-        $atRules = [];
-
-        while (\preg_match(self::NON_CONDITIONAL_AT_RULE_PATTERN, $possiblyModifiedCss, $matches)) {
-            /** @var array<int, string> $matches */
-            [$fullMatch, $atRuleName] = $matches;
-
-            if ($this->isValidAtRule($atRuleName, $fullMatch)) {
-                $atRules[] = $fullMatch;
-            }
-
-            $possiblyModifiedCss = \str_replace($fullMatch, '', $possiblyModifiedCss);
-        }
-
-        return [$possiblyModifiedCss, \implode('', $atRules)];
-    }
-
-    /**
-     * Tests if an at-rule is valid.  Currently only `@font-face` rules are checked for validity; others are assumed to
-     * be valid.
-     *
-     * @param string $atIdentifier name of the at-rule with the preceding at sign
-     * @param string $rule full content of the rule, including the at-identifier
+     * @param CssRenderable $rule
      *
      * @return bool
      */
-    private function isValidAtRule(string $atIdentifier, string $rule): bool
+    private function isValidAtRuleToRender(CssRenderable $rule): bool
     {
-        if (\strcasecmp($atIdentifier, '@font-face') === 0) {
-            return \stripos($rule, 'font-family') !== false && \stripos($rule, 'src') !== false;
+        if ($rule instanceof CssCharset) {
+            return false;
         }
 
-        return true;
-    }
-
-    /**
-     * Splits input CSS code into an array of parts for different media queries, in order.
-     * Each part is an array where:
-     *
-     * - key "css" will contain clean CSS code (for @media rules this will be the group rule body within "{...}")
-     * - key "media" will contain "@media " followed by the media query list, for all allowed media queries,
-     *   or an empty string for CSS not within a media query
-     *
-     * Example:
-     *
-     * The CSS code
-     *
-     *   "@import "file.css"; h1 { color:red; } @media { h1 {}} @media tv { h1 {}}"
-     *
-     * will be parsed into the following array:
-     *
-     *   0 => [
-     *     "css" => "h1 { color:red; }",
-     *     "media" => ""
-     *   ],
-     *   1 => [
-     *     "css" => " h1 {}",
-     *     "media" => "@media "
-     *   ]
-     *
-     * @param array<array-key, string> $allowedMediaTypes
-     *
-     * @return array<int, array{css: string, media: string}>
-     */
-    private function splitCssAndMediaQuery(array $allowedMediaTypes): array
-    {
-        $mediaTypesExpression = '';
-        if (!empty($allowedMediaTypes)) {
-            $escapedAllowedMediaTypes = \array_map(
-                static function (string $mediaType): string {
-                    return \preg_quote($mediaType, '#');
-                },
-                $allowedMediaTypes
-            );
-            $mediaTypesExpression = '|' . \implode('|', $escapedAllowedMediaTypes);
+        if ($rule instanceof CssImport) {
+            return $this->isImportRuleAllowed;
         }
 
-        $cssSplitForAllowedMediaTypes = \preg_split(
-            '#(@media\\s++(?:only\\s++)?+(?:(?=[{(])' . $mediaTypesExpression . ')' . self::MEDIA_RULE_BODY_MATCHER
-            . ')#misU',
-            $this->styleRules,
-            -1,
-            PREG_SPLIT_DELIM_CAPTURE
-        );
+        $this->isImportRuleAllowed = false;
 
-        // filter the CSS outside/between allowed @media rules
-        $cssCleaningMatchers = [
-            'import/charset directives' => '/\\s*+@(?:import|charset)\\s[^;]++;/i',
-            'remaining media enclosures' => '/\\s*+@media\\s' . self::MEDIA_RULE_BODY_MATCHER . '/isU',
-        ];
-
-        $splitCss = [];
-        foreach ($cssSplitForAllowedMediaTypes as $index => $cssPart) {
-            $isMediaRule = $index % 2 !== 0;
-            if ($isMediaRule) {
-                \preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
-                $splitCss[] = ['css' => $matches[2], 'media' => $matches[1]];
-            } else {
-                $cleanedCss = \trim(\preg_replace($cssCleaningMatchers, '', $cssPart));
-                if ($cleanedCss !== '') {
-                    $splitCss[] = ['css' => $cleanedCss, 'media' => ''];
-                }
-            }
+        if (!$rule instanceof CssAtRule) {
+            return false;
         }
-        return $splitCss;
+
+        switch ($rule->atRuleName()) {
+            case 'media':
+                return false;
+            case 'font-face':
+                return $rule instanceof CssRuleSet
+                    && $rule->getRules('font-family') !== []
+                    && $rule->getRules('src') !== [];
+            default:
+                return true;
+        }
     }
 }
