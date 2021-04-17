@@ -879,11 +879,14 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
     public function provideContentTypeTagAndSurroundingHtml(): array
     {
-        return DataProviders::cross($this->provideContentTypeMetaTag(), $this->provideHtmlAroundContentType());
+        /** @var array<string, array<int, string>> $datasets */
+        $datasets = DataProviders::cross($this->provideContentTypeMetaTag(), $this->provideHtmlAroundContentType());
+
+        return $datasets;
     }
 
     /**
@@ -908,7 +911,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0:string, 1:string}>
+     * @return array<string, array{0: string, 1: string}>
      */
     public function xmlSelfClosingTagDataProvider(): array
     {
@@ -952,7 +955,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0:string, 1:string, 2:string}>
+     * @return array<string, array{0: string, 1: string, 2: string}>
      *         Each dataset has three elements in the following order:
      *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
@@ -962,14 +965,16 @@ final class AbstractHtmlProcessorTest extends TestCase
     {
         return \array_map(
             /**
-             * @param array{0:string, 1:string} $dataset
+             * @param array{0: string, 1: string} $dataset
              *
-             * @return array{0:string, 1:string, 2:string}
+             * @return array{0: string, 1: string, 2:string}
              */
-            static function (array $dataset) {
-                \array_unshift($dataset, \str_replace('/>', '>', $dataset[0]));
+            static function (array $dataset): array {
+                $updatedDataset = $dataset;
+                \array_unshift($updatedDataset, \str_replace('/>', '>', $dataset[0]));
 
-                return $dataset;
+                /** @var array{0: string, 1: string, 2:string} $updatedDataset */
+                return $updatedDataset;
             },
             $this->xmlSelfClosingTagDataProvider()
         );
@@ -1209,7 +1214,6 @@ final class AbstractHtmlProcessorTest extends TestCase
         $domDocument = $subject->getDomDocument();
 
         $voidElements = $domDocument->getElementsByTagName($tagName);
-        /** @var \DOMElement $element */
         foreach ($voidElements as $element) {
             self::assertFalse($element->hasChildNodes());
         }
