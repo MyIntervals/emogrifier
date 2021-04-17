@@ -15,12 +15,9 @@ final class CssDocumentTest extends TestCase
     /**
      * @var string
      */
-    private const VALID_AT_FONT_FACE_RULE = '
-        @font-face {
-          font-family: "Foo Sans";
-          src: url("/foo-sans.woff2") format("woff2");
-        }
-    ';
+    private const VALID_AT_FONT_FACE_RULE = '@font-face {' . "\n"
+        . '  font-family: "Foo Sans"' . "\n"
+        . '  src: url("/foo-sans.woff2") format("woff2");' . "\n}";
 
     /**
      * @test
@@ -28,6 +25,7 @@ final class CssDocumentTest extends TestCase
      * @param string $selector
      *
      * @dataProvider provideSelector
+     * @dataProvider provideSelectorWithVariedWhitespace
      */
     public function parsesSelector(string $selector): void
     {
@@ -37,8 +35,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        $trimmedResultantSelector = \trim($result[0]['selectors']);
-        self::assertSame(\trim($selector), $trimmedResultantSelector);
+        self::assertSameTrimmed($selector, $result[0]['selectors']);
     }
 
     /**
@@ -71,6 +68,15 @@ final class CssDocumentTest extends TestCase
             'general sibling' => ['h1 ~ p'],
             'adjacent sibling' => ['h1 + p'],
             'list' => ['h1, h2'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideSelectorWithVariedWhitespace(): array
+    {
+        return [
             'with space after' => ['p '],
             'with line feed after' => ["p\n"],
             'with Windows line ending after' => ["p\r\n"],
@@ -86,6 +92,7 @@ final class CssDocumentTest extends TestCase
      * @param string $declarations
      *
      * @dataProvider provideDeclarations
+     * @dataProvider provideDeclarationsWithVariedWhitespace
      */
     public function parsesDeclarations(string $declarations): void
     {
@@ -95,8 +102,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        $trimmedResultantDeclarations = \trim($result[0]['declarations']);
-        self::assertSame(\trim($declarations), $trimmedResultantDeclarations);
+        self::assertSameTrimmed($declarations, $result[0]['declarations']);
     }
 
     /**
@@ -118,6 +124,16 @@ final class CssDocumentTest extends TestCase
                 'background-image: '
                 . '-webkit-gradient(linear, left top, left bottom, color-stop(0.05, #83bc38), color-stop(1, #57873b));',
             ],
+            'multiple' => ['color: green; text-decoration: underline;'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideDeclarationsWithVariedWhitespace(): array
+    {
+        return [
             'minified' => ['color:green'],
             'with space before' => [' color: green;'],
             'with line feed before' => ["\ncolor: green;"],
@@ -125,7 +141,6 @@ final class CssDocumentTest extends TestCase
             'with TAB before' => ["\tcolor: green;"],
             'with line feed within' => ["color:\ngreen;"],
             'with line feed after' => ["color: green;\n"],
-            'multiple' => ['color: green; text-decoration: underline;'],
             'multiple (minified)' => ['color:green;text-decoration:underline'],
             'multiple (separated by line feed)' => ["color: green;\ntext-decoration: underline;"],
             'multiple (separated by Windows line ending)' => ["color: green;\r\ntext-decoration: underline;"],
@@ -137,29 +152,25 @@ final class CssDocumentTest extends TestCase
      * @test
      *
      * @param string $mediaQuery
-     * @param string $optionalSeparator
-     * @param string $separator
      *
-     * @dataProvider provideMediaQueryAndSeparators
+     * @dataProvider provideMediaQuery
      */
-    public function parsesMediaRule(string $mediaQuery, string $optionalSeparator = '', string $separator = ' '): void
+    public function parsesAtMediaRule(string $mediaQuery): void
     {
-        $atMediaAndQuery = '@media' . $separator . $mediaQuery;
-        $css = $atMediaAndQuery . $optionalSeparator
-            . '{' . $optionalSeparator . 'p { color: green; }' . $optionalSeparator . '}';
+        $atMediaAndQuery = '@media ' . $mediaQuery;
+        $css = $atMediaAndQuery . ' { p { color: green; } }';
         $subject = new CssDocument($css);
 
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        $rightTrimmedResultantAtMediaAndQuery = \rtrim($result[0]['media']);
-        self::assertSame($atMediaAndQuery, $rightTrimmedResultantAtMediaAndQuery);
+        self::assertSameTrimmed($atMediaAndQuery, $result[0]['media']);
     }
 
     /**
      * @return array<string, array<int, string>>
      */
-    public function provideMediaQueryAndSeparators(): array
+    public function provideMediaQuery(): array
     {
         return [
             'type' => ['screen'],
@@ -171,12 +182,45 @@ final class CssDocumentTest extends TestCase
             'type and plain value' => ['screen and (max-width: 480px)'],
             'range (singly bounded)' => ['(height > 600px)'],
             'range (fully bounded)' => ['(400px <= width <= 700px)'],
-            'with line feed before media query' => ['screen', '', "\n"],
-            'with Windows line ending before media query' => ['screen', '', "\r\n"],
-            'with TAB before media query' => ['screen', '', "\t"],
-            'with line feeds within rule' => ['screen', "\n"],
-            'with Windows line endings within rule' => ['screen', "\r\n"],
-            'with TABs within rule' => ['screen', "\t"],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param string $whitespaceAfterAtMedia
+     * @param string $optionalWhitespaceWithinRule
+     *
+     * @dataProvider provideVariedWhitespaceForAtMediaRule
+     */
+    public function parsesAtMediaRuleWithVariedWhitespace(
+        string $whitespaceAfterAtMedia,
+        string $optionalWhitespaceWithinRule
+    ): void {
+        $atMediaAndQuery = '@media' . $whitespaceAfterAtMedia . 'screen';
+        $css = $atMediaAndQuery . $optionalWhitespaceWithinRule
+            . '{' . $optionalWhitespaceWithinRule . 'p { color: green; }' . $optionalWhitespaceWithinRule . '}';
+        $subject = new CssDocument($css);
+
+        $result = $subject->getStyleRulesData(['screen']);
+
+        self::assertCount(1, $result);
+        self::assertSameTrimmed($atMediaAndQuery, $result[0]['media']);
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideVariedWhitespaceForAtMediaRule(): array
+    {
+        return [
+            // Space before media query is already covered by `parsesAtMediaRule`, as are spaces within rule.
+            'line feed before media query' => ["\n", ''],
+            'Windows line ending before media query' => ["\r\n", ''],
+            'TAB before media query' => ["\t", ''],
+            'line feeds within rule' => [' ', "\n"],
+            'Windows line endings within rule' => [' ', "\r\n"],
+            'TABs within rule' => [' ', "\t"],
         ];
     }
 
@@ -186,6 +230,7 @@ final class CssDocumentTest extends TestCase
      * @param string $mediaQuery
      *
      * @dataProvider provideMediaQueryWithTvType
+     * @dataProvider provideMediaQueryWithTvTypeAndVariedWhitespace
      */
     public function discardsMediaRuleWithTypeNotInAllowlist(string $mediaQuery): void
     {
@@ -209,6 +254,15 @@ final class CssDocumentTest extends TestCase
             'type and plain values with `and`' => ['tv and (min-width: 320px) and (max-width: 480px)'],
             'type and range (singly bounded)' => ['tv and (height > 600px)'],
             'type and range (fully bounded)' => ['tv and (400px <= width <= 700px)'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideMediaQueryWithTvTypeAndVariedWhitespace(): array
+    {
+        return [
             'with line feed before' => ["\ntv"],
             'with Windows line ending before' => ["\r\ntv"],
             'with TAB before' => ["\ttv"],
@@ -219,14 +273,31 @@ final class CssDocumentTest extends TestCase
      * @test
      *
      * @param string $cssBetween
-     * @param string $cssBefore
      *
      * @dataProvider provideCssWithoutStyleRules
      */
-    public function parsesMultipleStyleRules(string $cssBetween, string $cssBefore = ''): void
+    public function parsesMultipleStyleRulesWithOtherCssBetween(string $cssBetween): void
+    {
+        $subject = new CssDocument('p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }');
+
+        $result = $subject->getStyleRulesData(['screen']);
+
+        // The content of the parsed rules is covered by other tests.  Here just check the number of parsed rules.
+        self::assertCount(2, $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssBefore
+     *
+     * @dataProvider provideCssWithoutStyleRules
+     * @dataProvider provideCssThatMustPrecedeStyleRules
+     */
+    public function parsesMultipleStyleRulesWithOtherCssBefore(string $cssBefore): void
     {
         $subject = new CssDocument(
-            $cssBefore . 'p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }'
+            $cssBefore . 'p { color: green; } @media screen { h1 { color: green; } }'
         );
 
         $result = $subject->getStyleRulesData(['screen']);
@@ -249,11 +320,17 @@ final class CssDocumentTest extends TestCase
             'non-conditional at-rule (valid `@font-face`)' => [self::VALID_AT_FONT_FACE_RULE],
             'comment' => ['/* Test */'],
             'commented-out style rule' => ['/* p { color: red; } */'],
-            'space before' => ['', ' '],
-            'line feed before' => ['', "\n"],
-            'Windows line ending before' => ['', "\r\n"],
-            'TAB before' => ['', "\r\n"],
-            'non-conditional at-rule (`@charset`) before' => ['', '@charset "UTF-8";'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideCssThatMustPrecedeStyleRules(): array
+    {
+        return [
+            '`@charset` rule' => ['@charset "UTF-8";'],
+            '`@import` rule' => ['@import "foo.css";'],
         ];
     }
 
@@ -271,7 +348,7 @@ final class CssDocumentTest extends TestCase
 
         $result = $subject->renderNonConditionalAtRules();
 
-        self::assertStringContainsString(\trim($atRuleCss), $result);
+        self::assertStringContainsString($atRuleCss, $result);
     }
 
     /**
@@ -399,5 +476,16 @@ final class CssDocumentTest extends TestCase
         $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
+    }
+
+    /**
+     * Asserts that two strings are the same after `trim`ming both of them.
+     *
+     * @param string $expected
+     * @param string $actual
+     */
+    private static function assertSameTrimmed(string $expected, string $actual): void
+    {
+        self::assertSame(\trim($expected), \trim($actual));
     }
 }

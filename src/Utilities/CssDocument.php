@@ -179,6 +179,7 @@ class CssDocument
         $atRules = [];
 
         while (\preg_match(self::NON_CONDITIONAL_AT_RULE_PATTERN, $possiblyModifiedCss, $matches)) {
+            /** @var array<int, string> $matches */
             [$fullMatch, $atRuleName] = $matches;
 
             if ($this->isValidAtRule($atRuleName, $fullMatch)) {
@@ -242,7 +243,13 @@ class CssDocument
     {
         $mediaTypesExpression = '';
         if (!empty($allowedMediaTypes)) {
-            $mediaTypesExpression = '|' . \implode('|', $allowedMediaTypes);
+            $escapedAllowedMediaTypes = \array_map(
+                static function (string $mediaType): string {
+                    return \preg_quote($mediaType, '#');
+                },
+                $allowedMediaTypes
+            );
+            $mediaTypesExpression = '|' . \implode('|', $escapedAllowedMediaTypes);
         }
 
         $cssSplitForAllowedMediaTypes = \preg_split(
@@ -264,17 +271,11 @@ class CssDocument
             $isMediaRule = $index % 2 !== 0;
             if ($isMediaRule) {
                 \preg_match('/^([^{]*+){(.*)}[^}]*+$/s', $cssPart, $matches);
-                $splitCss[] = [
-                    'css' => $matches[2],
-                    'media' => $matches[1],
-                ];
+                $splitCss[] = ['css' => $matches[2], 'media' => $matches[1]];
             } else {
                 $cleanedCss = \trim(\preg_replace($cssCleaningMatchers, '', $cssPart));
                 if ($cleanedCss !== '') {
-                    $splitCss[] = [
-                        'css' => $cleanedCss,
-                        'media' => '',
-                    ];
+                    $splitCss[] = ['css' => $cleanedCss, 'media' => ''];
                 }
             }
         }
