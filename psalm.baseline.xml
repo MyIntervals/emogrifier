@@ -1,20 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
-  <file src="tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php">
-    <LessSpecificReturnStatement occurrences="1">
-      <code>$dataset</code>
-    </LessSpecificReturnStatement>
-    <MixedReturnTypeCoercion occurrences="2">
-      <code>DataProviders::cross($this-&gt;provideContentTypeMetaTag(), $this-&gt;provideHtmlAroundContentType())</code>
-      <code>string[][]</code>
-    </MixedReturnTypeCoercion>
-    <MoreSpecificReturnType occurrences="1">
-      <code>array{0:string, 1:string, 2:string}</code>
-    </MoreSpecificReturnType>
-    <UnnecessaryVarAnnotation occurrences="1">
-      <code>\DOMElement</code>
-    </UnnecessaryVarAnnotation>
-  </file>
   <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
     <InvalidReturnStatement occurrences="7"/>
     <InvalidReturnType occurrences="7">
