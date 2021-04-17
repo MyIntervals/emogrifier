@@ -1080,7 +1080,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function copyUninlinableCssToStyleNode(CssDocument $cssDocument): void
     {
-        $css = $cssDocument->renderAtRules();
+        $css = $cssDocument->renderNonConditionalAtRules();
 
         // avoid including unneeded class dependency if there are no rules
         if ($this->getMatchingUninlinableCssRules() !== []) {

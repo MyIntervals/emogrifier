@@ -269,7 +269,7 @@ final class CssDocumentTest extends TestCase
     {
         $subject = new CssDocument($cssBefore . $atRuleCss);
 
-        $result = $subject->renderAtRules();
+        $result = $subject->renderNonConditionalAtRules();
 
         self::assertStringContainsString(\trim($atRuleCss), $result);
     }
@@ -307,7 +307,7 @@ final class CssDocumentTest extends TestCase
     {
         $subject = new CssDocument('@import "foo.css";' . $cssBetween . self::VALID_AT_FONT_FACE_RULE);
 
-        $result = $subject->renderAtRules();
+        $result = $subject->renderNonConditionalAtRules();
 
         // The content of the rendered rules is covered by other tests.  Here just check the number of rendered rules.
         self::assertSame(2, \substr_count($result, '@'));
@@ -338,7 +338,7 @@ final class CssDocumentTest extends TestCase
     {
         $subject = new CssDocument('@charset "UTF-8";');
 
-        $result = $subject->renderAtRules();
+        $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
     }
@@ -355,7 +355,7 @@ final class CssDocumentTest extends TestCase
     {
         $subject = new CssDocument($cssBefore . $atRuleCss);
 
-        $result = $subject->renderAtRules();
+        $result = $subject->renderNonConditionalAtRules();
 
         self::assertThat(
             \trim($result),
@@ -396,7 +396,7 @@ final class CssDocumentTest extends TestCase
     {
         $subject = new CssDocument('@media screen { p { color: red; } }');
 
-        $result = $subject->renderAtRules();
+        $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
     }

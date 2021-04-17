@@ -41,7 +41,7 @@ class CssDocument
      *
      * @var string
      */
-    private $atRules;
+    private $nonConditionalAtRules;
 
     /**
      * @param string $css
@@ -53,7 +53,7 @@ class CssDocument
             = $this->extractImportAndCharsetRules($cssWithoutComments);
         [$this->styleRules, $cssAtRules]
             = $this->extractNonConditionalAtRules($cssWithoutCommentsCharsetOrImport);
-        $this->atRules = $cssImportRules . $cssAtRules;
+        $this->nonConditionalAtRules = $cssImportRules . $cssAtRules;
     }
 
     /**
@@ -93,13 +93,14 @@ class CssDocument
 
     /**
      * Renders at-rules from the parsed CSS that are valid and not conditional group rules (i.e. not rules such as
-     * `@media` which contain style rules whose data is returned by {@see getStyleRulesData}).
+     * `@media` which contain style rules whose data is returned by {@see getStyleRulesData}).  Also does not render
+     * `@charset` rules; these are discarded (only UTF-8 is supported).
      *
      * @return string
      */
-    public function renderAtRules(): string
+    public function renderNonConditionalAtRules(): string
     {
-        return $this->atRules;
+        return $this->nonConditionalAtRules;
     }
 
     /**
