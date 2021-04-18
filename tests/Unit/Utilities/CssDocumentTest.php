@@ -469,7 +469,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      */
-    public function notRendersAtMediaRule(): void
+    public function notRendersAtMediaRuleInNonConditionalAtRules(): void
     {
         $subject = new CssDocument('@media screen { p { color: red; } }');
 
