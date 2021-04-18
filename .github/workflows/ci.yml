@@ -173,7 +173,7 @@ jobs:
           else
             DEPENDENCIES='';
           fi;
-          composer install --no-progress
+          composer install --no-progress;
           composer update --with-dependencies --no-progress "${DEPENDENCIES}";
           composer show;
 
