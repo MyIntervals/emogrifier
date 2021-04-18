@@ -1,18 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
-  <file src="tests/Unit/HtmlProcessor/HtmlPrunerTest.php">
-    <InvalidReturnStatement occurrences="7"/>
-    <InvalidReturnType occurrences="7">
-      <code>array&lt;string, array{0:string, 1:string, 2:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string, 2:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string[], 2:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string[], 2:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
-      <code>array&lt;string, array{0:string, 1:string[]}&gt;</code>
-    </InvalidReturnType>
-    <UnnecessaryVarAnnotation occurrences="1">
-      <code>string</code>
-    </UnnecessaryVarAnnotation>
-  </file>
-</files>
+<files psalm-version="4.x-dev@"/>
