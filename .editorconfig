@@ -22,3 +22,13 @@ indent_size = 4
 [*.xml]
 indent_style = space
 indent_size = 4
+
+# YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
