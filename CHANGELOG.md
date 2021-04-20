@@ -15,9 +15,9 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support for PHP 7.2 will be removed in Emogrifier 7.0.
 
 ### Removed
+- Remove a redundant CSS data cache (#1018)
 - Drop support for Symfony 5.1 (#972)
 - Drop support for PHP 7.1 (#967)
-- Remove a redundant CSS data cache (#1018)
 
 ### Fixed
 - Allow line feeds within `<html>` tag (#987)
