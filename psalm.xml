@@ -1,24 +1,24 @@
 <?xml version="1.0"?>
 <psalm
-    totallyTyped="true"
-    strictBinaryOperands="true"
-    findUnusedCode="false"
-    findUnusedVariablesAndParams="true"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns="https://getpsalm.org/schema/config"
-    xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
-    errorBaseline="psalm.baseline.xml"
+  totallyTyped="true"
+  strictBinaryOperands="true"
+  findUnusedCode="false"
+  findUnusedVariablesAndParams="true"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="https://getpsalm.org/schema/config"
+  xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
+  errorBaseline="psalm.baseline.xml"
 >
-    <projectFiles>
-        <directory name="src"/>
-        <directory name="tests"/>
-    </projectFiles>
+  <projectFiles>
+    <directory name="src"/>
+    <directory name="tests"/>
+  </projectFiles>
 
-    <issueHandlers>
-        <PropertyNotSetInConstructor>
-            <errorLevel type="suppress">
-                <directory name="tests"/>
-            </errorLevel>
-        </PropertyNotSetInConstructor>
-    </issueHandlers>
+  <issueHandlers>
+    <PropertyNotSetInConstructor>
+      <errorLevel type="suppress">
+        <directory name="tests"/>
+      </errorLevel>
+    </PropertyNotSetInConstructor>
+  </issueHandlers>
 </psalm>

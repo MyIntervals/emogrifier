@@ -31,8 +31,8 @@ This is the workflow for contributing changes to Emogrifier:
 7. Add a changelog entry.
 8. [Commit](#git-commits) and push your changes.
 9. [Create a pull request](https://help.github.com/articles/about-pull-requests/)
-   for your changes. Check that the Travis build is green. (If it is not, fix the
-   problems listed by Travis.)
+   for your changes. Check that the Travis build is green. (If it is not, fix
+   the problems listed by Travis.)
 10. [Request a review](https://help.github.com/articles/about-pull-request-reviews/)
     from @oliverklee.
 11. Together with him, polish your changes until they are ready to be merged.
