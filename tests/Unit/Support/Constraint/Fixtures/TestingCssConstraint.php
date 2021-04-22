@@ -12,14 +12,14 @@ use Pelago\Emogrifier\Tests\Support\Constraint\CssConstraint;
 abstract class TestingCssConstraint extends CssConstraint
 {
     /**
-     * Chains on to `getCssNeedleRegularExpressionPattern` for testing the protected method.
+     * Chains on to {@see getCssRegularExpressionMatcher} for testing the protected method.
      *
-     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`.
+     * @param string $css
      *
-     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
+     * @return string
      */
-    public static function getCssNeedleRegularExpressionPatternForTesting(string $needle): string
+    public static function getCssRegularExpressionMatcherForTesting(string $css): string
     {
-        return self::getCssNeedleRegularExpressionPattern($needle);
+        return self::getCssRegularExpressionMatcher($css);
     }
 }

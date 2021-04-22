@@ -49,35 +49,35 @@ abstract class CssConstraint extends Constraint
     /x';
 
     /**
-     * Processing of @media rules may involve removal of some unnecessary whitespace from the CSS placed in the <style>
-     * element added to the document, due to the way that certain parts are `trim`med.  Notably, whitespace either side
-     * of "{", "}", ";", "," and (within a declarations block) ":", or at the beginning of the CSS may be removed.
-     * Other whitespace may be varied where equivalent (though not added or removed).
+     * Emogrification may result in CSS or `style` property values that do not exactly match the input CSS but are
+     * nonetheless equivalent.
      *
-     * This method helps takes care of that, by converting a search needle for an exact match into a regular expression
-     * that allows for such whitespace removal, so that the tests themselves do not need to be written less humanly
-     * readable and can use inputs containing extra whitespace.
+     * Notably, whitespace either side of "{", "}", ";", "," and (within a declarations block) ":", or at the beginning
+     * of the CSS may be removed.  Other whitespace may be varied where equivalent (though not added or removed).
      *
-     * @param string $needle Needle that would be used with `assertContains` or `assertNotContains`.
+     * This method helps takes care of that, by converting a CSS string into a regular expression part that will match
+     * the equivalent CSS whilst allowing for such whitespace variation.  Thus, such nuances can be abstracted away from
+     * the main tests, also allowing their test data to be written more humanly-readable with additional whitespace.
      *
-     * @return string Needle to use with `assertRegExp` or `assertNotRegExp` instead.
+     * @param string $css
+     *
+     * @return string Slashes (`/`) should be used as deliminters in the pattern composed using this.
      */
-    protected static function getCssNeedleRegularExpressionPattern(string $needle): string
+    protected static function getCssRegularExpressionMatcher(string $css): string
     {
-        $needleMatcher = \preg_replace_callback(
+        return \preg_replace_callback(
             self::CSS_REGULAR_EXPRESSION_PATTERN,
-            [self::class, 'getCssNeedleRegularExpressionReplacement'],
-            $needle
+            [self::class, 'getCssRegularExpressionReplacement'],
+            $css
         );
-        return '/' . $needleMatcher . '/';
     }
 
     /**
-     * @param string[] $matches array of matches for {@see CSS_REGEX_PATTERN}
+     * @param string[] $matches array of matches for {@see CSS_REGULAR_EXPRESSION_PATTERN}
      *
      * @return string replacement string, which may be `$matches[0]` if no alteration is needed
      */
-    private static function getCssNeedleRegularExpressionReplacement(array $matches): string
+    private static function getCssRegularExpressionReplacement(array $matches): string
     {
         if (($matches[1] ?? '') !== '') {
             $regularExpressionEquivalent = '(?:\\s*+;)?+\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';

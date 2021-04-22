@@ -15,16 +15,16 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegularExpressionPatternEscapesAllSpecialCharacters(): void
+    public function getCssRegularExpressionMatcherEscapesAllSpecialCharacters(): void
     {
-        $needle = '.\\+*?[^]$(){}=!<>|:-/';
+        $css = '.\\+*?[^]$(){}=!<>|:-/';
 
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting($css);
 
         $resultWithOtherMatchersRemoved = \str_replace(['(?:\\s*+;)?+', '\\s*+'], '', $result);
 
         self::assertSame(
-            '/' . \preg_quote($needle, '/') . '/',
+            \preg_quote($css, '/'),
             $resultWithOtherMatchersRemoved
         );
     }
@@ -32,19 +32,15 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegularExpressionPatternNotEscapesNonSpecialCharacters(): void
+    public function getCssRegularExpressionMatcherNotEscapesNonSpecialCharacters(): void
     {
-        $needle = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 ')))
-            . '`¬"£%&_;\'@~,';
+        $css = \implode('', \array_merge(\range('a', 'z'), \range('A', 'Z'), \range('0 ', '9 '))) . '`¬"£%&_;\'@~,';
 
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting($css);
 
         $resultWithWhitespaceMatchersRemoved = \str_replace('\\s*+', '', $result);
 
-        self::assertSame(
-            '/' . $needle . '/',
-            $resultWithWhitespaceMatchersRemoved
-        );
+        self::assertSame($css, $resultWithWhitespaceMatchersRemoved);
     }
 
     /**
@@ -74,11 +70,11 @@ final class CssConstraintTest extends TestCase
      *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
-    public function getCssNeedleRegularExpressionPatternInsertsOptionalWhitespace(
+    public function getCssRegularExpressionMatcherInsertsOptionalWhitespace(
         string $contentToInsertAround,
         string $otherContent
     ): void {
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting(
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting(
             $otherContent . $contentToInsertAround . $otherContent
         );
 
@@ -92,11 +88,11 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      */
-    public function getCssNeedleRegularExpressionPatternReplacesWhitespaceAtStartWithOptionalWhitespace(): void
+    public function getCssRegularExpressionMatcherReplacesWhitespaceAtStartWithOptionalWhitespace(): void
     {
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting(' a');
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting(' a');
 
-        self::assertSame('/\\s*+a/', $result);
+        self::assertSame('\\s*+a', $result);
     }
 
     /**
@@ -116,15 +112,15 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
+     * @param string $css
      *
      * @dataProvider styleTagDataProvider
      */
-    public function getCssNeedleRegularExpressionPatternInsertsOptionalWhitespaceAfterStyleTag(string $needle): void
+    public function getCssRegularExpressionMatcherInsertsOptionalWhitespaceAfterStyleTag(string $css): void
     {
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting($css);
 
-        self::assertSame('/\\<style\\>\\s*+a/', $result);
+        self::assertSame('\\<style\\>\\s*+a', $result);
     }
 
     /**
@@ -144,14 +140,14 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
+     * @param string $css
      *
      * @dataProvider provideWhitespaceBetweenWords
      */
-    public function getCssNeedleRegularExpressionPatternReplacesWhitespaceWithVariableWhitespace(string $needle): void
+    public function getCssRegularExpressionMatcherReplacesWhitespaceWithVariableWhitespace(string $css): void
     {
-        $result = TestingCssConstraint::getCssNeedleRegularExpressionPatternForTesting($needle);
+        $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting($css);
 
-        self::assertStringContainsString('a\\s++b', $result);
+        self::assertSame('a\\s++b', $result);
     }
 }

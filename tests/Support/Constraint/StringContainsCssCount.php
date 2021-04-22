@@ -23,6 +23,11 @@ final class StringContainsCssCount extends CssConstraint
     private $css;
 
     /**
+     * @var string
+     */
+    private $cssPattern;
+
+    /**
      * @param int $count
      * @param string $css
      */
@@ -32,6 +37,7 @@ final class StringContainsCssCount extends CssConstraint
 
         $this->count = $count;
         $this->css = $css;
+        $this->cssPattern = '/' . self::getCssRegularExpressionMatcher($css) . '/';
     }
 
     /**
@@ -55,6 +61,6 @@ final class StringContainsCssCount extends CssConstraint
             return false;
         }
 
-        return \preg_match_all(self::getCssNeedleRegularExpressionPattern($this->css), $other) === $this->count;
+        return \preg_match_all($this->cssPattern, $other) === $this->count;
     }
 }
