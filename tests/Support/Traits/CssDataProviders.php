@@ -41,14 +41,11 @@ trait CssDataProviders
     {
         $datasetsWithoutStyleTags = $this->provideEquivalentCss();
 
-        $datasetsWithRenamedKeys = \array_combine(
-            \array_map(
-                static function (string $description): string {
-                    return $description . ' in <style> tag';
-                },
-                \array_keys($datasetsWithoutStyleTags)
-            ),
-            \array_values($datasetsWithoutStyleTags)
+        $datasetsWithRenamedKeys = static::arrayMapKeys(
+            static function (string $description): string {
+                return $description . ' in <style> tag';
+            },
+            $datasetsWithoutStyleTags
         );
 
         $datasets = \array_map(
@@ -131,5 +128,26 @@ trait CssDataProviders
             ],
             'more CSS than haystack' => ['p { color: green; } h1 { color: red; }', 'p { color: green; }'],
         ];
+    }
+
+    /**
+     * @template T
+     *
+     * @param callable(string):string $callback
+     * @param array<string, T> $array
+     *
+     * @return array<string, T>
+     *
+     * @throws \RuntimeException
+     */
+    private static function arrayMapKeys(callable $callback, array $array): array
+    {
+        $result = \array_combine(\array_map($callback, \array_keys($array)), \array_values($array));
+
+        if ($result === false) {
+            throw new \RuntimeException('`array_keys` and `array_values` did not give equal-length arrays', 1619201107);
+        }
+
+        return $result;
     }
 }
