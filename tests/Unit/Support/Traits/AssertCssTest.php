@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Tests\Unit\Support\Traits;
 
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
+use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
 
@@ -133,5 +134,117 @@ final class AssertCssTest extends TestCase
             'expecting 2 but finding none' => [2, 'a', 'b'],
             'expecting 2 but finding 1' => [2, 'a', 'a'],
         ];
+    }
+
+    /**
+     * @test
+     */
+    public function isEquivalentCssReturnsConstraint(): void
+    {
+        $subject = self::isEquivalentCss('');
+
+        self::assertInstanceOf(Constraint::class, $subject);
+    }
+
+    /**
+     * @test
+     */
+    public function isEquivalentCssReturnsConstraintMatchingEquivalentCss(): void
+    {
+        $subject = self::isEquivalentCss('a');
+
+        $result = $subject->evaluate('a', '', true);
+
+        self::assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function isEquivalentCssReturnsConstraintNotMatchingNonEquivalentCss(): void
+    {
+        $subject = self::isEquivalentCss('a');
+
+        $result = $subject->evaluate('b', '', true);
+
+        self::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function stringContainsCssReturnsConstraint(): void
+    {
+        $subject = self::stringContainsCss('');
+
+        self::assertInstanceOf(Constraint::class, $subject);
+    }
+
+    /**
+     * @test
+     */
+    public function stringContainsCssReturnsConstraintMatchingIfNeedleFound(): void
+    {
+        $subject = self::stringContainsCss('a');
+
+        $result = $subject->evaluate('a', '', true);
+
+        self::assertTrue($result);
+    }
+
+    /**
+     * @test
+     */
+    public function stringContainsCssReturnsConstraintNotMatchingIfNeedleNotFound(): void
+    {
+        $subject = self::stringContainsCss('a');
+
+        $result = $subject->evaluate('b', '', true);
+
+        self::assertFalse($result);
+    }
+
+    /**
+     * @test
+     */
+    public function stringContainsCssCountReturnsConstraint(): void
+    {
+        $subject = self::stringContainsCssCount(0, '');
+
+        self::assertInstanceOf(Constraint::class, $subject);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider providePassingCssCountData
+     */
+    public function stringContainsCssCountReturnsConstraintMatchingExpectedNumberOfNeedles(
+        int $count,
+        string $needle,
+        string $haystack
+    ): void {
+        $subject = self::stringContainsCssCount($count, $needle);
+
+        $result = $subject->evaluate($haystack, '', true);
+
+        self::assertTrue($result);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideFailingCssCountData
+     */
+    public function stringContainsCssCountReturnsConstraintNotMatchingDifferentNumberOfNeedles(
+        int $count,
+        string $needle,
+        string $haystack
+    ): void {
+        $subject = self::stringContainsCssCount($count, $needle);
+
+        $result = $subject->evaluate($haystack, '', true);
+
+        self::assertFalse($result);
     }
 }
