@@ -51,8 +51,12 @@ trait CssDataProviders
             \array_values($datasetsWithoutStyleTags)
         );
 
-        /** @var array<string, array{0: string, 1: string}> $datasets */
         $datasets = \array_map(
+            /**
+             * @param array{0: string, 1: string} $dataset
+             *
+             * @return array{0: string, 1: string}
+             */
             static function (array $dataset): array {
                 return \array_map(
                     static function (string $css): string {
