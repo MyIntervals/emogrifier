@@ -53,75 +53,49 @@ final class AssertCssTest extends TestCase
 
     /**
      * @test
+     *
+     * @dataProvider providePassingCssCountData
      */
-    public function assertContainsCssCountPassesTestExpectingZeroIfNeedleNotFound(): void
+    public function assertContainsCssCountPassesTestWhenExpected(int $count, string $needle, string $haystack): void
     {
-        self::assertContainsCssCount(0, 'a', 'b');
+        self::assertContainsCssCount($count, $needle, $haystack);
+    }
+
+    /**
+     * @return array<string, array{0: int, 1: string, 2: string}>
+     */
+    public function providePassingCssCountData()
+    {
+        return [
+            'not finding needle when asked not to' => [0, 'a', 'b'],
+            'finding exactly 1 needles' => [1, 'a', 'a'],
+            'finding exactly 2 needles' => [2, 'a', 'a a'],
+        ];
     }
 
     /**
      * @test
+     *
+     * @dataProvider provideFailingCssCountData
      */
-    public function assertContainsCssCountFailsTestExpectingZeroIfNeedleFound(): void
+    public function assertContainsCssCountFailsTestWhenExpected(int $count, string $needle, string $haystack): void
     {
         $this->expectException(ExpectationFailedException::class);
 
-        self::assertContainsCssCount(0, 'a', 'a');
+        self::assertContainsCssCount($count, $needle, $haystack);
     }
 
     /**
-     * @test
+     * @return array<string, array{0: int, 1: string, 2: string}>
      */
-    public function assertContainsCssCountPassesTestExpectingOneIfNeedleFound(): void
+    public function provideFailingCssCountData()
     {
-        self::assertContainsCssCount(1, 'a', 'a');
-    }
-
-    /**
-     * @test
-     */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleNotFound(): void
-    {
-        $this->expectException(ExpectationFailedException::class);
-
-        self::assertContainsCssCount(1, 'a', 'b');
-    }
-
-    /**
-     * @test
-     */
-    public function assertContainsCssCountFailsTestExpectingOneIfNeedleFoundTwice(): void
-    {
-        $this->expectException(ExpectationFailedException::class);
-
-        self::assertContainsCssCount(1, 'a', 'a a');
-    }
-
-    /**
-     * @test
-     */
-    public function assertContainsCssCountPassesTestExpectingTwoIfNeedleFoundTwice(): void
-    {
-        self::assertContainsCssCount(2, 'a', 'a a');
-    }
-
-    /**
-     * @test
-     */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleNotFound(): void
-    {
-        $this->expectException(ExpectationFailedException::class);
-
-        self::assertContainsCssCount(2, 'a', 'b');
-    }
-
-    /**
-     * @test
-     */
-    public function assertContainsCssCountFailsTestExpectingTwoIfNeedleFoundOnlyOnce(): void
-    {
-        $this->expectException(ExpectationFailedException::class);
-
-        self::assertContainsCssCount(2, 'a', 'a');
+        return [
+            'expecting none but finding some' => [0, 'a', 'a'],
+            'expecting 1 but finding none' => [1, 'a', 'b'],
+            'expecting 1 but finding 2' => [1, 'a', 'a a'],
+            'expecting 2 but finding none' => [2, 'a', 'b'],
+            'expecting 2 but finding 1' => [2, 'a', 'a'],
+        ];
     }
 }
