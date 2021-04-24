@@ -45,15 +45,50 @@ abstract class CssConstraint extends Constraint
     /x';
 
     /**
+     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
+     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s++`.  It matches
+     * one or more characters which are not quotes, whitespace, a semicolon, or a closing parenthesis, optionally
+     * enclosed in single or double quotes, and not beginning with `url(`.  The URL without the enclosing quotes is
+     * captured in its second group (the first group is needed to match the optional opening quote so that the closing
+     * quote can be matched).
+     *
+     * @var string
+     */
+    private const URL_MATCHER_MATCHER = '(?!url\\\\\\()([\'"]?+)((?:(?!\\\\s\\+\\+|\\\\\\))[^\'";])++)\\g{-2}';
+
+    /**
+     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
+     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s++`.  It matches
+     * `@import` followed by whitespace then a URL which may or may not be enclosed in single or double quotes and/or
+     * using the `url` CSS function.  The actual URL will be captured in the 2nd or 4th group, depending on whether the
+     * `url` CSS function was used.
+     *
+     * @var string
+     */
+    private const AT_IMPORT_AND_URL_MATCHER_PATTERN = '/@import\\\\s\\+\\+(?:' . self::URL_MATCHER_MATCHER
+        . '|url\\\\\\((?:\\\\s\\+\\+)?+' . self::URL_MATCHER_MATCHER . '(?:\\\\s\\+\\+)?+\\\\\\))/';
+
+    /**
+     * @see AT_IMPORT_AND_URL_MATCHER_PATTERN
+     *
+     * @var string
+     */
+    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$2$4\\g{-1})';
+
+    /**
      * Emogrification may result in CSS or `style` property values that do not exactly match the input CSS but are
      * nonetheless equivalent.
      *
      * Notably, whitespace either side of "{", "}", ";", "," and (within a declarations block) ":", or at the beginning
      * of the CSS may be removed.  Other whitespace may be varied where equivalent (though not added or removed).
      *
+     * Additionally, the parameter of an `@import` rule may be optionally enclosed in quotes or wrapped with the CSS
+     * `url` function.
+     *
      * This method helps takes care of that, by converting a CSS string into a regular expression part that will match
-     * the equivalent CSS whilst allowing for such whitespace variation.  Thus, such nuances can be abstracted away from
-     * the main tests, also allowing their test data to be written more humanly-readable with additional whitespace.
+     * the equivalent CSS whilst allowing for such whitespace and other variation.  Thus, such nuances can be abstracted
+     * away from the main tests, also allowing their test data to be written more humanly-readable with additional
+     * whitespace.
      *
      * @param string $css
      *
@@ -61,11 +96,20 @@ abstract class CssConstraint extends Constraint
      */
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
-        return \preg_replace_callback(
+        $matcher = \preg_replace_callback(
             self::CSS_REGULAR_EXPRESSION_PATTERN,
             [self::class, 'getCssRegularExpressionReplacement'],
             $css
         );
+
+        $matcherAllowingAtImportParameterVariation = \preg_replace(
+            self::AT_IMPORT_AND_URL_MATCHER_PATTERN,
+            '@import\\s++(?:' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER
+                . '|url\\(\\s*+' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER . '\\s*+\\))',
+            $matcher
+        );
+
+        return $matcherAllowingAtImportParameterVariation;
     }
 
     /**
