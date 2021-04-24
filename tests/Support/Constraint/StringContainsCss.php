@@ -18,6 +18,11 @@ final class StringContainsCss extends CssConstraint
     private $css;
 
     /**
+     * @var string
+     */
+    private $cssPattern;
+
+    /**
      * @param string $css
      */
     public function __construct(string $css)
@@ -25,6 +30,7 @@ final class StringContainsCss extends CssConstraint
         parent::__construct();
 
         $this->css = $css;
+        $this->cssPattern = '/' . self::getCssRegularExpressionMatcher($css) . '/';
     }
 
     /**
@@ -48,6 +54,6 @@ final class StringContainsCss extends CssConstraint
             return false;
         }
 
-        return \preg_match(self::getCssNeedleRegularExpressionPattern($this->css), $other) > 0;
+        return \preg_match($this->cssPattern, $other) > 0;
     }
 }
