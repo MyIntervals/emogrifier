@@ -18,6 +18,42 @@ final class AssertCssTest extends TestCase
     /**
      * @test
      */
+    public function assertEquivalentCssPassesTestWithMatchingCss(): void
+    {
+        self::assertEquivalentCss('a', 'a');
+    }
+
+    /**
+     * @test
+     */
+    public function assertEquivalentCssFailsTestWithNonMatchingCss(): void
+    {
+        $this->expectException(ExpectationFailedException::class);
+
+        self::assertEquivalentCss('a', 'b');
+    }
+
+    /**
+     * @test
+     */
+    public function assertNotEquivalentCssPassesTestWithNonMatchingCss(): void
+    {
+        self::assertNotEquivalentCss('a', 'b');
+    }
+
+    /**
+     * @test
+     */
+    public function assertNotEquivalentCssFailsTestWithMatchingCss(): void
+    {
+        $this->expectException(ExpectationFailedException::class);
+
+        self::assertNotEquivalentCss('a', 'a');
+    }
+
+    /**
+     * @test
+     */
     public function assertContainsCssPassesTestIfNeedleFound(): void
     {
         self::assertContainsCss('a', 'a');

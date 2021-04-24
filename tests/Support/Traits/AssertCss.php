@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Traits;
 
+use Pelago\Emogrifier\Tests\Support\Constraint\IsEquivalentCss;
 use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCss;
 use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCssCount;
 use PHPUnit\Framework\TestCase;
@@ -15,6 +16,34 @@ use PHPUnit\Framework\TestCase;
  */
 trait AssertCss
 {
+    /**
+     * Like `assertSame` but allows for addition or removal of some unnecessary whitespace in the CSS.
+     *
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    private static function assertEquivalentCss(string $expected, string $actual, string $message = ''): void
+    {
+        $constraint = new IsEquivalentCss($expected);
+
+        self::assertThat($actual, $constraint, $message);
+    }
+
+    /**
+     * Like `assertNotSame` but allows for addition or removal of some unnecessary whitespace in the CSS.
+     *
+     * @param string $expected
+     * @param string $actual
+     * @param string $message
+     */
+    private static function assertNotEquivalentCss(string $expected, string $actual, string $message = ''): void
+    {
+        $constraint = self::logicalNot(new IsEquivalentCss($expected));
+
+        self::assertThat($actual, $constraint, $message);
+    }
+
     /**
      * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS.
      *
