@@ -92,4 +92,35 @@ trait AssertCss
 
         self::assertThat($haystack, $constraint, $message);
     }
+
+    /**
+     * @param string $css
+     *
+     * @return IsEquivalentCss
+     */
+    private static function isEquivalentCss(string $css): IsEquivalentCss
+    {
+        return new IsEquivalentCss($css);
+    }
+
+    /**
+     * @param string $needle
+     *
+     * @return StringContainsCss
+     */
+    private static function stringContainsCss(string $needle): StringContainsCss
+    {
+        return new StringContainsCss($needle);
+    }
+
+    /**
+     * @param int $expectedCount
+     * @param string $needle
+     *
+     * @return StringContainsCssCount
+     */
+    private static function stringContainsCssCount(int $expectedCount, string $needle): StringContainsCssCount
+    {
+        return new StringContainsCssCount($expectedCount, $needle);
+    }
 }
