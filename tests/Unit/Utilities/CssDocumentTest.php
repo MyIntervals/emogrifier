@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
+use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use Pelago\Emogrifier\Utilities\CssDocument;
 use PHPUnit\Framework\TestCase;
 
@@ -12,6 +13,8 @@ use PHPUnit\Framework\TestCase;
  */
 final class CssDocumentTest extends TestCase
 {
+    use AssertCss;
+
     /**
      * @var string
      */
@@ -35,7 +38,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertSameTrimmed($selector, $result[0]['selectors']);
+        self::assertEquivalentCss($selector, $result[0]['selectors']);
     }
 
     /**
@@ -102,7 +105,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertSameTrimmed($declarations, $result[0]['declarations']);
+        self::assertEquivalentCss($declarations, $result[0]['declarations']);
     }
 
     /**
@@ -205,7 +208,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        self::assertSameTrimmed($atMediaAndQuery, $result[0]['media']);
+        self::assertEquivalentCss($atMediaAndQuery, $result[0]['media']);
     }
 
     /**
@@ -348,7 +351,7 @@ final class CssDocumentTest extends TestCase
 
         $result = $subject->renderNonConditionalAtRules();
 
-        self::assertStringContainsString($atRuleCss, $result);
+        self::assertContainsCss($atRuleCss, $result);
     }
 
     /**
