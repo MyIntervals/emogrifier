@@ -342,36 +342,45 @@ final class CssDocumentTest extends TestCase
      *
      * @param string $atRuleCss
      * @param string $cssBefore
+     * @param array<int, string> $alternativeRenderings
      *
      * @dataProvider provideValidNonConditionalAtRule
      */
-    public function rendersValidNonConditionalAtRule(string $atRuleCss, string $cssBefore = ''): void
-    {
+    public function rendersValidNonConditionalAtRule(
+        string $atRuleCss,
+        string $cssBefore = '',
+        array $alternativeRenderings = []
+    ): void {
         $subject = new CssDocument($cssBefore . $atRuleCss);
 
         $result = $subject->renderNonConditionalAtRules();
 
-        self::assertContainsCss($atRuleCss, $result);
+        $constraints = \array_map(
+            [self::class, 'stringContainsCss'],
+            \array_merge([$atRuleCss], $alternativeRenderings)
+        );
+        self::assertThat($result, self::logicalOr(...$constraints));
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array{0: string, 1?: string, 2?: array<int, string>}>
      */
     public function provideValidNonConditionalAtRule(): array
     {
         return [
-            '`@import`' => ['@import "foo.css";'],
+            '`@import`' => ['@import "foo.css";', '', ['@import url("foo.css");']],
             '`@font-face`' => [self::VALID_AT_FONT_FACE_RULE],
-            '`@import` after `@charset`' => ['@import "foo.css";', '@charset "UTF-8";'],
-            '`@import` after `@import`' => ['@import "foo.css";', '@import "bar.css";'],
-            '`@import` after space' => ['@import "foo.css";', ' '],
-            '`@import` after line feed' => ['@import "foo.css";', "\n"],
-            '`@import` after Windows line ending' => ['@import "foo.css";', "\r\n"],
-            '`@import` after TAB' => ['@import "foo.css";', "\t"],
-            '`@import` after comment' => ['@import "foo.css";', '/* Test */'],
+            '`@import` after `@charset`' => ['@import "foo.css";', '@charset "UTF-8";', ['@import url("foo.css");']],
+            '`@import` after `@import`' => ['@import "foo.css";', '@import "bar.css";', ['@import url("foo.css");']],
+            '`@import` after space' => ['@import "foo.css";', ' ', ['@import url("foo.css");']],
+            '`@import` after line feed' => ['@import "foo.css";', "\n", ['@import url("foo.css");']],
+            '`@import` after Windows line ending' => ['@import "foo.css";', "\r\n", ['@import url("foo.css");']],
+            '`@import` after TAB' => ['@import "foo.css";', "\t", ['@import url("foo.css");']],
+            '`@import` after comment' => ['@import "foo.css";', '/* Test */', ['@import url("foo.css");']],
             '`@import` after commented-out `@font-face` rule' => [
                 '@import "foo.css";',
                 '/* ' . self::VALID_AT_FONT_FACE_RULE . ' */',
+                ['@import url("foo.css");'],
             ],
         ];
     }
