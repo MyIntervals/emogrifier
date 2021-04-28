@@ -1081,6 +1081,68 @@ final class AbstractHtmlProcessorTest extends TestCase
 
     /**
      * @test
+     *
+     * @param string $transparentTagName
+     * @param string $flowOrPhrasingContent
+     *
+     * @dataProvider provideTransparentTagNameAndFlowOrPhrasingContent
+     */
+    public function supportsTransparentContentModel(string $transparentTagName, string $flowOrPhrasingContent): void
+    {
+        $html = '<!DOCTYPE html>' . "\n" . '<html><head></head><body>'
+            . '<' . $transparentTagName . '>' . $flowOrPhrasingContent . '</' . $transparentTagName . '>'
+            . '</body>';
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        self::assertStringContainsString('</' . $transparentTagName . '></body>', $result);
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public function provideTransparentTagNameAndFlowOrPhrasingContent()
+    {
+        /** @var array<string, array{0: string, 1: string}> $datasets */
+        $datasets = DataProviders::cross($this->provideTransparentTagName(), $this->provideFlowOrPhrasingContent());
+
+        return $datasets;
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public function provideTransparentTagName()
+    {
+        $tagNames = ['a', 'ins', 'del'];
+
+        return \array_combine(
+            $tagNames,
+            \array_map(
+                function (string $tagName): array {
+                    return [$tagName];
+                },
+                $tagNames
+            )
+        );
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public function provideFlowOrPhrasingContent()
+    {
+        return [
+            'div' => ['<div></div>'],
+            'ul' => ['<ul></ul>'],
+            'table' => ['<table></table>'],
+            'table in div' => ['<div><table></table></div>'],
+        ];
+    }
+
+    /**
+     * @test
      */
     public function renderBodyContentForEmptyBodyReturnsEmptyString(): void
     {
