@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-20.04
 
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - 7.2
@@ -94,6 +95,7 @@ jobs:
     needs: [php-lint, composer-validate]
 
     strategy:
+      fail-fast: false
       matrix:
         command:
           - fixer
@@ -136,6 +138,7 @@ jobs:
     needs: [php-lint, composer-validate]
 
     strategy:
+      fail-fast: false
       matrix:
         php-version:
           - 7.2
