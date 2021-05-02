@@ -437,13 +437,9 @@ final class CssDocumentTest extends TestCase
 
         $result = $subject->renderNonConditionalAtRules();
 
-        self::assertThat(
-            \trim($result),
-            self::logicalOr(
-                self::identicalTo(''),
-                self::identicalTo(\trim($cssBefore))
-            )
-        );
+        \preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
+        $atAndRuleName = $atAndRuleNameMatches[0];
+        self::assertStringNotContainsString($atAndRuleName, $result);
     }
 
     /**
