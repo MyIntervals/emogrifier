@@ -19,19 +19,43 @@ trait CssDataProviders
      */
     public function provideEquivalentCss(): array
     {
-        $cssStrings = [
-            'unminified CSS' => ['@media screen { html, body { color: green; } }'],
-            'minified CSS' => ['@media screen{html,body{color:green}}'],
-            'CSS with extra spaces' => ['  @media  screen  {  html  ,  body  {  color  :  green  ;  }  }  '],
-            'CSS with linefeeds' => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
-            'CSS with Windows line endings'
+        $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration = [
+            'unminified CSS with `@media` rule, selector list, and property declaration'
+                => ['@media screen { html, body { color: green; } }'],
+            'minified CSS with `@media` rule, selector list, and property declaration'
+                => ['@media screen{html,body{color:green}}'],
+            'CSS with `@media` rule, selector list, and property declaration, with extra spaces'
+                => ['  @media  screen  {  html  ,  body  {  color  :  green  ;  }  }  '],
+            'CSS with `@media` rule, selector list, and property declaration, with linefeeds'
+                => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
+            'CSS with `@media` rule, selector list, and property declaration, with Windows line endings'
                 => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
         ];
 
-        /** @var array<string, array{0: string, 1: string}> $datasets */
-        $datasets = DataProviders::cross($cssStrings, $cssStrings);
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration */
+        $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = DataProviders::cross(
+            $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration,
+            $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration
+        );
 
-        return $datasets;
+        $equivalentCssWithAtImportRule = [
+            '`@import` with unquoted string' => ['@import foo/bar.css;'],
+            '`@import` with single-quoted string' => ['@import \'foo/bar.css\';'],
+            '`@import` with double-quoted string' => ['@import "foo/bar.css";'],
+            '`@import` with unquoted URL' => ['@import url(foo/bar.css);'],
+            '`@import` with single-quoted URL' => ['@import url(\'foo/bar.css\');'],
+            '`@import` with double-quoted URL' => ['@import url("foo/bar.css");'],
+            '`@import` with spaces around unquoted URL' => ['@import url( foo/bar.css );'],
+            '`@import` with spaces around quoted URL' => ['@import url( "foo/bar.css" );'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithAtImportRule */
+        $datasetsWithAtImportRule = DataProviders::cross(
+            $equivalentCssWithAtImportRule,
+            $equivalentCssWithAtImportRule
+        );
+
+        return $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration + $datasetsWithAtImportRule;
     }
 
     /**
@@ -125,6 +149,16 @@ trait CssDataProviders
             'missing required whitespace in calc after addition operator' => [
                 'width: calc(1px + 50%);',
                 'width: calc(1px +50%);',
+            ],
+            '`@import` rule does not match with parameter in backticks' => ['@import foo.css;', '@import `foo.css`;'],
+            '`@import` rule does not match with parameter in brackets' => ['@import foo.css;', '@import (foo.css);'],
+            '`@import` rule does not match with misspelt `url` function' => [
+                '@import foo.css;',
+                '@import uri(foo.css);',
+            ],
+            '`@import` rule with media query does not match if media query is part of URL in quotes' => [
+                '@import foo.css screen;',
+                '@import "foo.css screen";',
             ],
             'more CSS than haystack' => ['p { color: green; } h1 { color: red; }', 'p { color: green; }'],
         ];
