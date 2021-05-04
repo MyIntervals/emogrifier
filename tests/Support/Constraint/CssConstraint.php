@@ -46,6 +46,18 @@ abstract class CssConstraint extends Constraint
 
     /**
      * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
+     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where
+     * optional) or `\s++`.
+     * It matches the end of the string, and optionally preceding whitespace or a semicolon surrounded by optional
+     * whitespace, provided that what precedes is not a semicolon or whitespace.
+     *
+     * @var string
+     */
+    private const OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN
+        = '/(?<!;)(?<!\\\\s[\\+\\*]\\+)(?:\\\\s\\*\\+;\\\\s\\*\\+|\\\\s\\+\\+)?+$/';
+
+    /**
+     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
      * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s++`.  It matches
      * one or more characters which are not quotes, whitespace, a semicolon, or a closing parenthesis, optionally
      * enclosed in single or double quotes, and not beginning with `url(`.  The URL without the enclosing quotes is
@@ -102,14 +114,9 @@ abstract class CssConstraint extends Constraint
             $css
         );
 
-        $matcherAllowingAtImportParameterVariation = \preg_replace(
-            self::AT_IMPORT_AND_URL_MATCHER_PATTERN,
-            '@import\\s++(?:' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER
-                . '|url\\(\\s*+' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER . '\\s*+\\))',
-            $matcher
+        return self::getCssMatcherAllowingAtImportParameterVariation(
+            self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css)
         );
-
-        return $matcherAllowingAtImportParameterVariation;
     }
 
     /**
@@ -134,6 +141,49 @@ abstract class CssConstraint extends Constraint
         }
 
         return $regularExpressionEquivalent;
+    }
+
+    /**
+     * @param string $matcher
+     *        regular expression part designed to match the CSS whilst allowing for whitespace and other syntactic
+     *        variation
+     * @param string $css original CSS to match
+     *
+     * @return string
+     *         regular expression part which will also allow for an optional trailing semicolon if the CSS appears to
+     *         consist only of property declarations
+     */
+    private static function getCssMatcherAllowingOptionalTrailingSemicolon(string $matcher, string $css): string
+    {
+        $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && \preg_match('/[@\\{\\}]/', $css) === 0;
+
+        if ($isPropertyDeclarationsOnly) {
+            return \preg_replace(
+                self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
+                '(?:\\s*+;)?+',
+                $matcher
+            );
+        }
+
+        return $matcher;
+    }
+
+    /**
+     * @param string $matcher
+     *        regular expression part designed to match CSS whilst allowing for whitespace and other syntactic variation
+     *
+     * @return string
+     *         regular expression part which will also allow the `@import` rule URL parameter to be enclosed in quotes
+     *         and/or use the CSS `url` function (or not).
+     */
+    private static function getCssMatcherAllowingAtImportParameterVariation(string $matcher): string
+    {
+        return \preg_replace(
+            self::AT_IMPORT_AND_URL_MATCHER_PATTERN,
+            '@import\\s++(?:' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER
+                . '|url\\(\\s*+' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER . '\\s*+\\))',
+            $matcher
+        );
     }
 
     /**
