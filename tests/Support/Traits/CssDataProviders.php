@@ -19,6 +19,14 @@ trait CssDataProviders
      */
     public function provideEquivalentCss(): array
     {
+        return $this->provideEquivalentCompleteCss() + $this->provideEquivalentCssComponents();
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public function provideEquivalentCompleteCss(): array
+    {
         $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration = [
             'unminified CSS with `@media` rule, selector list, and property declaration'
                 => ['@media screen { html, body { color: green; } }'],
@@ -64,9 +72,34 @@ trait CssDataProviders
     /**
      * @return array<string, array{0: string, 1: string}>
      */
+    public function provideEquivalentCssComponents(): array
+    {
+        $equivalentCssPropertyDeclarations = [
+            'property declaration' => ['color: green;'],
+            'property declaration without trailing semicolon' => ['color: green'],
+            'property declaration without trailing semicolon but space after' => ['color: green '],
+            'property declaration with space before trailing semicolon' => ['color: green ;'],
+            'property declaration with line feed before trailing semicolon' => ["color: green\n;"],
+            'property declaration with Windows line ending before trailing semicolon' => ["color: green\r\n;"],
+            'property declaration with TAB before trailing semicolon' => ["color: green\t;"],
+            'property declaration with space after trailing semicolon' => ['color: green; '],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcaration */
+        $datasetsWithPropertyDelcaration = DataProviders::cross(
+            $equivalentCssPropertyDeclarations,
+            $equivalentCssPropertyDeclarations
+        );
+
+        return $datasetsWithPropertyDelcaration;
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
     public function provideEquivalentCssInStyleTags(): array
     {
-        $datasetsWithoutStyleTags = $this->provideEquivalentCss();
+        $datasetsWithoutStyleTags = $this->provideEquivalentCompleteCss();
 
         $datasetsWithRenamedKeys = static::arrayMapKeys(
             static function (string $description): string {
@@ -124,10 +157,18 @@ trait CssDataProviders
                 "body { color: green\nfont-size: 15px; }",
             ],
             'extra `;` after declaration' => ['body { color: green; }', 'body { color: green;; }'],
+            'spurious `;` in empty rule' => ['body { }', 'body { ; }'],
             'spurious `;` after rule in at-rule' => [
                 '@media print { body { color: green; } }',
                 '@media print { body { color: green; }; }',
             ],
+            'spurious `;` after rule in needle' => ['body { color: green; };', 'body { color: green; }'],
+            'spurious `;` after rule in needle with space between' => [
+                'body { color: green; } ;',
+                'body { color: green; }',
+            ],
+            'spurious `;` after declaration in needle' => ['color: green;;', 'color: green;'],
+            'spurious `;` after declaration in needle with spaces around' => ['color: green ; ;', 'color: green;'],
             'invalid space after `:` for pseudo-class' => [
                 'p:first-child { color: green; }',
                 'p: first-child { color: green; }',
@@ -191,6 +232,7 @@ trait CssDataProviders
                 '@import foo.css screen;',
                 '@import "foo.css screen";',
             ],
+            '`@import` rule does not match with missing semicolon' => ['@import foo.css;', '@import foo.css'],
             'more CSS than haystack' => ['p { color: green; } h1 { color: red; }', 'p { color: green; }'],
         ];
     }
