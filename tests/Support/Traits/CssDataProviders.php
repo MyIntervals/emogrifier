@@ -47,6 +47,9 @@ trait CssDataProviders
             '`@import` with double-quoted URL' => ['@import url("foo/bar.css");'],
             '`@import` with spaces around unquoted URL' => ['@import url( foo/bar.css );'],
             '`@import` with spaces around quoted URL' => ['@import url( "foo/bar.css" );'],
+            '`@import` with space after unquoted string' => ['@import foo/bar.css ;'],
+            '`@import` with space after quoted string' => ['@import "foo/bar.css" ;'],
+            '`@import` with space after URL' => ['@import url(foo/bar.css) ;'],
         ];
 
         /** @var array<string, array{0: string, 1: string}> $datasetsWithAtImportRule */
@@ -149,6 +152,34 @@ trait CssDataProviders
             'missing required whitespace in calc after addition operator' => [
                 'width: calc(1px + 50%);',
                 'width: calc(1px +50%);',
+            ],
+            '`@import` rule does not match with leading space inside quotes' => [
+                '@import foo.css;',
+                '@import " foo.css";',
+            ],
+            '`@import` rule does not match with leading line feed inside quotes' => [
+                '@import foo.css;',
+                "@import '\nfoo.css';",
+            ],
+            '`@import` rule does not match with leading Windows line ending inside quotes' => [
+                '@import foo.css;',
+                "@import '\r\nfoo.css';",
+            ],
+            '`@import` rule does not match with leading TAB inside quotes' => [
+                '@import foo.css;',
+                "@import '\tfoo.css';",
+            ],
+            '`@import` rule does not match with trailing space inside quotes' => [
+                '@import foo.css;',
+                '@import "foo.css ";',
+            ],
+            '`@import` rule does not match with leading space inside quotes with `url` function' => [
+                '@import foo.css;',
+                '@import url(" foo.css");',
+            ],
+            '`@import` rule does not match with trailing space inside quotes with `url` function' => [
+                '@import foo.css;',
+                '@import url("foo.css ");',
             ],
             '`@import` rule does not match with parameter in backticks' => ['@import foo.css;', '@import `foo.css`;'],
             '`@import` rule does not match with parameter in brackets' => ['@import foo.css;', '@import (foo.css);'],
