@@ -54,7 +54,7 @@ abstract class CssConstraint extends Constraint
      *
      * @var string
      */
-    private const URL_MATCHER_MATCHER = '(?!url\\\\\\()([\'"]?+)((?:(?!\\\\s\\+\\+|\\\\\\))[^\'";])++)\\g{-2}';
+    private const URL_MATCHER_MATCHER = '(?!url\\\\\\()([\'"]?+)((?:(?!\\\\s[\\+\\*]\\+|\\\\\\))[^\'";])++)\\g{-2}';
 
     /**
      * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
