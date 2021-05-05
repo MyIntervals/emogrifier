@@ -32,6 +32,8 @@ abstract class CssConstraint extends Constraint
         |(>)\\s*+                           # - `>` (e.g. closing a `<style>` element opening tag) with optional
                                             #   whitespace following, captured in group 4
         |(\\s++)                            # - whitespace, captured in group 5
+        |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
+            (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -39,6 +41,8 @@ abstract class CssConstraint extends Constraint
                     |\\:(?![^\\{\\}]*+\\{)  #
                 )                           #
                 |\\s                        #
+                |(\\#[0-9A-Fa-f]++\\b)      #
+                    (?![^\\{\\}]*+\\{)      #
             )                               #
             [^>]                            #
         )++                                 #
@@ -136,6 +140,8 @@ abstract class CssConstraint extends Constraint
             $regularExpressionEquivalent = \preg_quote($matches[4], '/') . '\\s*+';
         } elseif (($matches[5] ?? '') !== '') {
             $regularExpressionEquivalent = '\\s++';
+        } elseif (($matches[6] ?? '') !== '') {
+            $regularExpressionEquivalent = '(?i:' . \preg_quote($matches[6], '/') . ')';
         } else {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }

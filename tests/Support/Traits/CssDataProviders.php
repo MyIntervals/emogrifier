@@ -91,7 +91,33 @@ trait CssDataProviders
             $equivalentCssPropertyDeclarations
         );
 
-        return $datasetsWithPropertyDelcaration;
+        $equivalentPropertyDeclarationsWithRgbValue = [
+            'property declaration with lowercase RGB value' => ['color: #0f0;'],
+            'property declaration with uppercase RGB value' => ['color: #0F0;'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithRgbValue */
+        $datasetsWithPropertyDelcarationWithRgbValue = DataProviders::cross(
+            $equivalentPropertyDeclarationsWithRgbValue,
+            $equivalentPropertyDeclarationsWithRgbValue
+        );
+
+        $equivalentPropertyDeclarationsWithSixDigitRgbValue = [
+            'property declaration with lowercase 6-digit RGB value' => ['color: #abcdef;'],
+            'property declaration with uppercase 6-digit RGB value' => ['color: #ABCDEF;'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithSixDigitRgbValue */
+        $datasetsWithPropertyDelcarationWithSixDigitRgbValue = DataProviders::cross(
+            $equivalentPropertyDeclarationsWithSixDigitRgbValue,
+            $equivalentPropertyDeclarationsWithSixDigitRgbValue
+        );
+
+        return \array_merge(
+            $datasetsWithPropertyDelcaration,
+            $datasetsWithPropertyDelcarationWithRgbValue,
+            $datasetsWithPropertyDelcarationWithSixDigitRgbValue
+        );
     }
 
     /**
@@ -181,6 +207,9 @@ trait CssDataProviders
                 'p :first-child { color: green; }',
                 'p:first-child { color: green; }',
             ],
+            'class does not match if uppercase' => ['.a { color: red; }', '.A { color: red; }'],
+            'ID does not match if uppercase' => ['#a { color: red; }', '#A { color: red; }'],
+            '`font-family` does not match if uppercase' => ['font-family: a;', 'font-family: A;'],
             'missing required whitespace after at-rule identifier' => ['@media screen', '@mediascreen'],
             'missing required whitespace in calc before addition operator' => [
                 'width: calc(1px + 50%);',
