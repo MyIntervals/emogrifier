@@ -102,7 +102,22 @@ trait CssDataProviders
             $equivalentPropertyDeclarationsWithRgbValue
         );
 
-        return $datasetsWithPropertyDelcaration + $datasetsWithPropertyDelcarationWithRgbValue;
+        $equivalentPropertyDeclarationsWithSixDigitRgbValue = [
+            'property declaration with lowercase 6-digit RGB value' => ['color: #abcdef;'],
+            'property declaration with uppercase 6-digit RGB value' => ['color: #ABCDEF;'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithSixDigitRgbValue */
+        $datasetsWithPropertyDelcarationWithSixDigitRgbValue = DataProviders::cross(
+            $equivalentPropertyDeclarationsWithSixDigitRgbValue,
+            $equivalentPropertyDeclarationsWithSixDigitRgbValue
+        );
+
+        return \array_merge(
+            $datasetsWithPropertyDelcaration,
+            $datasetsWithPropertyDelcarationWithRgbValue,
+            $datasetsWithPropertyDelcarationWithSixDigitRgbValue
+        );
     }
 
     /**
