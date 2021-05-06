@@ -49,9 +49,9 @@ abstract class CssConstraint extends Constraint
     /x';
 
     /**
-     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
-     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where
-     * optional) or `\s++`.
+     * This is for matching a string that has already been converted from CSS into a regular expression pattern to match
+     * it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where optional) or
+     * `\s++`.
      * It matches the end of the string, and optionally preceding whitespace or a semicolon surrounded by optional
      * whitespace, provided that what precedes is not a semicolon or whitespace.
      *
