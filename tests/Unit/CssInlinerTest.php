@@ -65,8 +65,8 @@ final class CssInlinerTest extends TestCase
         '@-webkit-keyframes' => '
             @-webkit-keyframes bounceIn {
               from, 20%, 40%, 60%, 80%, to {
-                -webkit-animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
-                animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+                -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+                animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
               }
               0% {
                 opacity: 0;
@@ -100,7 +100,7 @@ final class CssInlinerTest extends TestCase
         '@keyframes' => '
             @keyframes bounceIn {
               from, 20%, 40%, 60%, 80%, to {
-                animation-timing-function: cubic-bezier(0.215, 0.610, 0.355, 1.000);
+                animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
               }
               0% {
                 opacity: 0;
