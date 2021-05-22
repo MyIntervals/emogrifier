@@ -100,8 +100,8 @@ trait CssDataProviders
             'property declaration with space after trailing semicolon' => ['color: green; '],
         ];
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcaration */
-        $datasetsWithPropertyDelcaration = DataProviders::cross(
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclaration */
+        $datasetsWithPropertyDeclaration = DataProviders::cross(
             $equivalentCssPropertyDeclarations,
             $equivalentCssPropertyDeclarations
         );
@@ -111,8 +111,8 @@ trait CssDataProviders
             'property declaration with uppercase RGB value' => ['color: #0F0;'],
         ];
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithRgbValue */
-        $datasetsWithPropertyDelcarationWithRgbValue = DataProviders::cross(
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithRgbValue */
+        $datasetsWithPropertyDeclarationWithRgbValue = DataProviders::cross(
             $equivalentPropertyDeclarationsWithRgbValue,
             $equivalentPropertyDeclarationsWithRgbValue
         );
@@ -122,8 +122,8 @@ trait CssDataProviders
             'property declaration with uppercase 6-digit RGB value' => ['color: #ABCDEF;'],
         ];
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithSixDigitRgbValue */
-        $datasetsWithPropertyDelcarationWithSixDigitRgbValue = DataProviders::cross(
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithSixDigitRgbValue */
+        $datasetsWithPropertyDeclarationWithSixDigitRgbValue = DataProviders::cross(
             $equivalentPropertyDeclarationsWithSixDigitRgbValue,
             $equivalentPropertyDeclarationsWithSixDigitRgbValue
         );
@@ -137,17 +137,17 @@ trait CssDataProviders
             'property declaration with space after URL' => ['background-image: url(images/foo.jpeg) ;'],
         ];
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithUrlValue */
-        $datasetsWithPropertyDelcarationWithUrlValue = DataProviders::cross(
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithUrlValue */
+        $datasetsWithPropertyDeclarationWithUrlValue = DataProviders::cross(
             $equivalentPropertyDeclarationsWithUrlValue,
             $equivalentPropertyDeclarationsWithUrlValue
         );
 
         return \array_merge(
-            $datasetsWithPropertyDelcaration,
-            $datasetsWithPropertyDelcarationWithRgbValue,
-            $datasetsWithPropertyDelcarationWithSixDigitRgbValue,
-            $datasetsWithPropertyDelcarationWithUrlValue
+            $datasetsWithPropertyDeclaration,
+            $datasetsWithPropertyDeclarationWithRgbValue,
+            $datasetsWithPropertyDeclarationWithSixDigitRgbValue,
+            $datasetsWithPropertyDeclarationWithUrlValue
         );
     }
 
