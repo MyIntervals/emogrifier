@@ -8,6 +8,7 @@ use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use Pelago\Emogrifier\Utilities\CssDocument;
+use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
@@ -1369,10 +1370,12 @@ final class CssInlinerTest extends TestCase
             'one declaration with linefeed in property value' => [
                 "text-shadow:\n1px 1px 3px #000,\n1px 1px 1px #000;",
                 "text-shadow: 1px 1px 3px #000,\n1px 1px 1px #000;",
+                'text-shadow: 1px 1px 3px #000,1px 1px 1px #000;',
             ],
             'one declaration with Windows line ending in property value' => [
                 "text-shadow:\r\n1px 1px 3px #000,\r\n1px 1px 1px #000;",
                 "text-shadow: 1px 1px 3px #000,\r\n1px 1px 1px #000;",
+                'text-shadow: 1px 1px 3px #000,1px 1px 1px #000;',
             ],
         ];
     }
@@ -1381,19 +1384,26 @@ final class CssInlinerTest extends TestCase
      * @test
      *
      * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
-     * @param string $expectedStyleAttributeContent the expected value of the style attribute
+     * @param string ...$expectedStyleAttributeContentPossibilities
+     *        possibilities for the expected value of the style attribute
      *
      * @dataProvider formattedCssDeclarationDataProvider
      */
     public function inlineCssFormatsCssDeclarations(
         string $cssDeclarationBlock,
-        string $expectedStyleAttributeContent
+        string ...$expectedStyleAttributeContentPossibilities
     ): void {
         $subject = $this->buildDebugSubject('<html></html>');
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
 
-        self::assertStringContainsString('<html style="' . $expectedStyleAttributeContent . '">', $subject->render());
+        $constraints = \array_map(
+            static function (string $styleAttributeContent): Constraint {
+                return self::stringContains('<html style="' . $styleAttributeContent . '">', false);
+            },
+            $expectedStyleAttributeContentPossibilities
+        );
+        self::assertThat($subject->render(), self::logicalOr(...$constraints));
     }
 
     /**
