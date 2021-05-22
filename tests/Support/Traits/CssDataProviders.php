@@ -46,6 +46,17 @@ trait CssDataProviders
             $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration
         );
 
+        $equivalentCssWithUrlPropertyValue = [
+            'CSS with unquoted URL in property value' => ['body { background-image: url(images/foo.jpeg); }'],
+            'CSS with quoted URL in property value' => ['body { background-image: url("images/foo.jpeg"); }'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithUrlPropertyValue */
+        $datasetsWithUrlPropertyValue = DataProviders::cross(
+            $equivalentCssWithUrlPropertyValue,
+            $equivalentCssWithUrlPropertyValue
+        );
+
         $equivalentCssWithAtImportRule = [
             '`@import` with unquoted string' => ['@import foo/bar.css;'],
             '`@import` with single-quoted string' => ['@import \'foo/bar.css\';'],
@@ -66,7 +77,11 @@ trait CssDataProviders
             $equivalentCssWithAtImportRule
         );
 
-        return $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration + $datasetsWithAtImportRule;
+        return \array_merge(
+            $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration,
+            $datasetsWithUrlPropertyValue,
+            $datasetsWithAtImportRule
+        );
     }
 
     /**
@@ -113,10 +128,26 @@ trait CssDataProviders
             $equivalentPropertyDeclarationsWithSixDigitRgbValue
         );
 
+        $equivalentPropertyDeclarationsWithUrlValue = [
+            'property declaration with unquoted URL' => ['background-image: url(images/foo.jpeg);'],
+            'property declaration with single-quoted URL' => ['background-image: url(\'images/foo.jpeg\');'],
+            'property declaration with double-quoted URL' => ['background-image: url("images/foo.jpeg");'],
+            'property declaration with spaces around unquoted URL' => ['background-image: url( images/foo.jpeg );'],
+            'property declaration with spaces around quoted URL' => ['background-image: url( "images/foo.jpeg" );'],
+            'property declaration with space after URL' => ['background-image: url(images/foo.jpeg) ;'],
+        ];
+
+        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDelcarationWithUrlValue */
+        $datasetsWithPropertyDelcarationWithUrlValue = DataProviders::cross(
+            $equivalentPropertyDeclarationsWithUrlValue,
+            $equivalentPropertyDeclarationsWithUrlValue
+        );
+
         return \array_merge(
             $datasetsWithPropertyDelcaration,
             $datasetsWithPropertyDelcarationWithRgbValue,
-            $datasetsWithPropertyDelcarationWithSixDigitRgbValue
+            $datasetsWithPropertyDelcarationWithSixDigitRgbValue,
+            $datasetsWithPropertyDelcarationWithUrlValue
         );
     }
 
@@ -222,6 +253,29 @@ trait CssDataProviders
             'missing required whitespace in calc after addition operator' => [
                 'width: calc(1px + 50%);',
                 'width: calc(1px +50%);',
+            ],
+            '`attr` does not match quoted attribute name' => ['content: attr(title);', 'content: attr("title");'],
+            '`url` does not match without explicit `url`' => ['background: url(foo.jpeg);', 'background: foo.jpeg;'],
+            '`url` does not match different URL' => ['background: url(foo.jpeg);', 'background: url(foo.png);'],
+            '`url` with space in URL does not match unquoted' => [
+                'background: url("f o.jpeg");',
+                'background: url(f o.jpeg);',
+            ],
+            '`url` with `(` in URL does not match unquoted' => [
+                'background: url("f(o.jpeg");',
+                'background: url(f(o.jpeg);',
+            ],
+            '`url` with `)` in URL does not match unquoted' => [
+                'background: url("f)o.jpeg");',
+                'background: url(f)o.jpeg);',
+            ],
+            '`url` with single quote in URL does not match unquoted' => [
+                'background: url("f\'o.jpeg");',
+                'background: url(f\'o.jpeg);',
+            ],
+            '`url` with double quote in URL does not match unquoted' => [
+                'background: url(\'f"o.jpeg\');',
+                'background: url(f"o.jpeg);',
             ],
             '`@import` rule does not match with leading space inside quotes' => [
                 '@import foo.css;',

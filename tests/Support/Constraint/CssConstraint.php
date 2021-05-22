@@ -34,6 +34,11 @@ abstract class CssConstraint extends Constraint
         |(\\s++)                            # - whitespace, captured in group 5
         |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
             (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
+        |\\burl\\(\\s*+                     # - CSS `url` function, with optional quote captured in group 7, and
+            ([\'"]?+)                       #   (non-empty) URL value in group 8, provided the URL does not contain
+            ([^\'"\\(\\)\\s]++)             #   quotes, parentheses or whitespace
+            \\g{-2}                         #
+            \\s*+\\)                        #
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -43,6 +48,9 @@ abstract class CssConstraint extends Constraint
                 |\\s                        #
                 |(\\#[0-9A-Fa-f]++\\b)      #
                     (?![^\\{\\}]*+\\{)      #
+                |\\burl\\(\\s*+([\'"]?+)    #
+                    [^\'"\\(\\)\\s]++       #
+                    \\g{-1}\\s*+\\)         #
             )                               #
             [^>]                            #
         )++                                 #
@@ -61,35 +69,57 @@ abstract class CssConstraint extends Constraint
         = '/(?<!;)(?<!\\\\s[\\+\\*]\\+)(?:\\\\s\\*\\+;\\\\s\\*\\+|\\\\s\\+\\+)?+$/';
 
     /**
-     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
-     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s++`.  It matches
-     * one or more characters which are not quotes, whitespace, a semicolon, or a closing parenthesis, optionally
-     * enclosed in single or double quotes, and not beginning with `url(`.  The URL without the enclosing quotes is
-     * captured in its second group (the first group is needed to match the optional opening quote so that the closing
-     * quote can be matched).
+     * This is for matching a string that has already been converted from CSS into a regular expression pattern to match
+     * it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where optional) or
+     * `\s++`.
+     * It matches `@import` followed by whitespace then a URL which may or may not be enclosed in single or double
+     * quotes and/or using the `url` CSS function.
+     * Since conversion from CSS into a regular expression matcher already allows for optional quotes within the CSS
+     * `url` function, this needs account for that and match the converted matcher for it in the case where the `url`
+     * function is used - this allows for the `url()` function wrapper to be dropped specifically in the case of
+     * `@import` rules.
+     *
+     * Validity of the URL is not checked; any sequnce of characters excluding whitespace, quotes, a closing bracket or
+     * semicolon will be matched as a URL.
+     * The actual URL (with special characters already escaped) will be captured in the 2nd or 3rd group, depending on
+     * whether the CSS `url` function was used.
      *
      * @var string
      */
-    private const URL_MATCHER_MATCHER = '(?!url\\\\\\()([\'"]?+)((?:(?!\\\\s[\\+\\*]\\+|\\\\\\))[^\'";])++)\\g{-2}';
-
-    /**
-     * This is for matching a URL in a string that has already been converted from CSS into a regular expression pattern
-     * to match it, thus needs to match special characters in their escaped form, and whitespace as `\s++`.  It matches
-     * `@import` followed by whitespace then a URL which may or may not be enclosed in single or double quotes and/or
-     * using the `url` CSS function.  The actual URL will be captured in the 2nd or 4th group, depending on whether the
-     * `url` CSS function was used.
-     *
-     * @var string
-     */
-    private const AT_IMPORT_AND_URL_MATCHER_PATTERN = '/@import\\\\s\\+\\+(?:' . self::URL_MATCHER_MATCHER
-        . '|url\\\\\\((?:\\\\s\\+\\+)?+' . self::URL_MATCHER_MATCHER . '(?:\\\\s\\+\\+)?+\\\\\\))/';
+    private const AT_IMPORT_AND_URL_MATCHER_PATTERN = '/
+        @import\\\\s\\+\\+  # `@import` followed by whitespace
+        (?:
+            (?!url\\\\\\()  # not starting with `url(`
+            ([\'"]?+)  # optional opening quote, captured
+            (
+                (?:
+                    (?!\\\\s[\\+\\*]\\+|\\\\\\))  # not whitespace (optional or mandatory) nor closing bracket
+                    [^\'";]
+                )++
+            )
+            \\g{-2}  # closing quote matching opening quote (or lack of)
+        |
+            url\\\\\\(  # `url(`
+            \\\\s\\*\\+  # optional whitespace
+            \\(\\[\'"\\]\\?\\+\\)  # matcher for optional opening quote
+            (
+                (?:
+                    (?!\\\\g)  # not starting matcher for (optional) closing quote
+                    .
+                )++
+            )
+            \\\\g\\{\\-1\\}  # matcher for (optional) closing quote
+            \\\\s\\*\\+  # optional whitespace
+            \\\\\\)  # `)`
+        )
+    /x';
 
     /**
      * @see AT_IMPORT_AND_URL_MATCHER_PATTERN
      *
      * @var string
      */
-    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$2$4\\g{-1})';
+    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$2$3\\g{-1})';
 
     /**
      * Emogrification may result in CSS or `style` property values that do not exactly match the input CSS but are
@@ -142,6 +172,8 @@ abstract class CssConstraint extends Constraint
             $regularExpressionEquivalent = '\\s++';
         } elseif (($matches[6] ?? '') !== '') {
             $regularExpressionEquivalent = '(?i:' . \preg_quote($matches[6], '/') . ')';
+        } elseif (($matches[8] ?? '') !== '') {
+            $regularExpressionEquivalent = 'url\\(\\s*+([\'"]?+)' . \preg_quote($matches[8], '/') . '\\g{-1}\\s*+\\)';
         } else {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }
