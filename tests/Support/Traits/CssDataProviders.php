@@ -27,7 +27,7 @@ trait CssDataProviders
      */
     public function provideEquivalentCompleteCss(): array
     {
-        $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration = [
+        $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = static::crossDatasetWithItself([
             'unminified CSS with `@media` rule, selector list, and property declaration'
                 => ['@media screen { html, body { color: green; } }'],
             'minified CSS with `@media` rule, selector list, and property declaration'
@@ -38,26 +38,14 @@ trait CssDataProviders
                 => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
             'CSS with `@media` rule, selector list, and property declaration, with Windows line endings'
                 => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
-        ];
+        ]);
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration */
-        $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = DataProviders::cross(
-            $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration,
-            $equivalentCssWithAtMediaRuleSelectorListAndPropertyDeclaration
-        );
-
-        $equivalentCssWithUrlPropertyValue = [
+        $datasetsWithUrlPropertyValue = static::crossDatasetWithItself([
             'CSS with unquoted URL in property value' => ['body { background-image: url(images/foo.jpeg); }'],
             'CSS with quoted URL in property value' => ['body { background-image: url("images/foo.jpeg"); }'],
-        ];
+        ]);
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithUrlPropertyValue */
-        $datasetsWithUrlPropertyValue = DataProviders::cross(
-            $equivalentCssWithUrlPropertyValue,
-            $equivalentCssWithUrlPropertyValue
-        );
-
-        $equivalentCssWithAtImportRule = [
+        $datasetsWithAtImportRule = static::crossDatasetWithItself([
             '`@import` with unquoted string' => ['@import foo/bar.css;'],
             '`@import` with single-quoted string' => ['@import \'foo/bar.css\';'],
             '`@import` with double-quoted string' => ['@import "foo/bar.css";'],
@@ -69,13 +57,7 @@ trait CssDataProviders
             '`@import` with space after unquoted string' => ['@import foo/bar.css ;'],
             '`@import` with space after quoted string' => ['@import "foo/bar.css" ;'],
             '`@import` with space after URL' => ['@import url(foo/bar.css) ;'],
-        ];
-
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithAtImportRule */
-        $datasetsWithAtImportRule = DataProviders::cross(
-            $equivalentCssWithAtImportRule,
-            $equivalentCssWithAtImportRule
-        );
+        ]);
 
         return \array_merge(
             $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration,
@@ -89,7 +71,7 @@ trait CssDataProviders
      */
     public function provideEquivalentCssComponents(): array
     {
-        $equivalentCssPropertyDeclarations = [
+        $datasetsWithPropertyDeclaration = static::crossDatasetWithItself([
             'property declaration' => ['color: green;'],
             'property declaration without trailing semicolon' => ['color: green'],
             'property declaration without trailing semicolon but space after' => ['color: green '],
@@ -98,50 +80,26 @@ trait CssDataProviders
             'property declaration with Windows line ending before trailing semicolon' => ["color: green\r\n;"],
             'property declaration with TAB before trailing semicolon' => ["color: green\t;"],
             'property declaration with space after trailing semicolon' => ['color: green; '],
-        ];
+        ]);
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclaration */
-        $datasetsWithPropertyDeclaration = DataProviders::cross(
-            $equivalentCssPropertyDeclarations,
-            $equivalentCssPropertyDeclarations
-        );
-
-        $equivalentPropertyDeclarationsWithRgbValue = [
+        $datasetsWithPropertyDeclarationWithRgbValue = static::crossDatasetWithItself([
             'property declaration with lowercase RGB value' => ['color: #0f0;'],
             'property declaration with uppercase RGB value' => ['color: #0F0;'],
-        ];
+        ]);
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithRgbValue */
-        $datasetsWithPropertyDeclarationWithRgbValue = DataProviders::cross(
-            $equivalentPropertyDeclarationsWithRgbValue,
-            $equivalentPropertyDeclarationsWithRgbValue
-        );
-
-        $equivalentPropertyDeclarationsWithSixDigitRgbValue = [
+        $datasetsWithPropertyDeclarationWithSixDigitRgbValue = static::crossDatasetWithItself([
             'property declaration with lowercase 6-digit RGB value' => ['color: #abcdef;'],
             'property declaration with uppercase 6-digit RGB value' => ['color: #ABCDEF;'],
-        ];
+        ]);
 
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithSixDigitRgbValue */
-        $datasetsWithPropertyDeclarationWithSixDigitRgbValue = DataProviders::cross(
-            $equivalentPropertyDeclarationsWithSixDigitRgbValue,
-            $equivalentPropertyDeclarationsWithSixDigitRgbValue
-        );
-
-        $equivalentPropertyDeclarationsWithUrlValue = [
+        $datasetsWithPropertyDeclarationWithUrlValue = static::crossDatasetWithItself([
             'property declaration with unquoted URL' => ['background-image: url(images/foo.jpeg);'],
             'property declaration with single-quoted URL' => ['background-image: url(\'images/foo.jpeg\');'],
             'property declaration with double-quoted URL' => ['background-image: url("images/foo.jpeg");'],
             'property declaration with spaces around unquoted URL' => ['background-image: url( images/foo.jpeg );'],
             'property declaration with spaces around quoted URL' => ['background-image: url( "images/foo.jpeg" );'],
             'property declaration with space after URL' => ['background-image: url(images/foo.jpeg) ;'],
-        ];
-
-        /** @var array<string, array{0: string, 1: string}> $datasetsWithPropertyDeclarationWithUrlValue */
-        $datasetsWithPropertyDeclarationWithUrlValue = DataProviders::cross(
-            $equivalentPropertyDeclarationsWithUrlValue,
-            $equivalentPropertyDeclarationsWithUrlValue
-        );
+        ]);
 
         return \array_merge(
             $datasetsWithPropertyDeclaration,
@@ -318,6 +276,21 @@ trait CssDataProviders
             '`@import` rule does not match with missing semicolon' => ['@import foo.css;', '@import foo.css'],
             'more CSS than haystack' => ['p { color: green; } h1 { color: red; }', 'p { color: green; }'],
         ];
+    }
+
+    /**
+     * @template T
+     *
+     * @param array<string, array{0: T}> $dataset
+     *
+     * @return array<string, array{0: T, 1: T}>
+     */
+    private static function crossDatasetWithItself(array $dataset): array
+    {
+        /** @var array<string, array{0: T, 1: T}> $result */
+        $result = DataProviders::cross($dataset, $dataset);
+
+        return $result;
     }
 
     /**
