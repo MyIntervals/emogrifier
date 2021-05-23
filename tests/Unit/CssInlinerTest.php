@@ -1499,7 +1499,13 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss('html {mArGiN:0 2pX;}');
 
-        self::assertStringContainsString('style="margin: 0 2pX;"', $subject->render());
+        self::assertThat(
+            $subject->render(),
+            self::logicalOr(
+                self::stringContains('style="margin: 0 2pX;"'),
+                self::stringContains('style="margin: 0 2px;"')
+            )
+        );
     }
 
     /**
