@@ -27,7 +27,7 @@ trait CssDataProviders
      */
     public function provideEquivalentCompleteCss(): array
     {
-        $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = static::crossDatasetWithItself([
+        $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = self::crossDatasetWithItself([
             'unminified CSS with `@media` rule, selector list, and property declaration'
                 => ['@media screen { html, body { color: green; } }'],
             'minified CSS with `@media` rule, selector list, and property declaration'
@@ -40,12 +40,12 @@ trait CssDataProviders
                 => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
         ]);
 
-        $datasetsWithUrlPropertyValue = static::crossDatasetWithItself([
+        $datasetsWithUrlPropertyValue = self::crossDatasetWithItself([
             'CSS with unquoted URL in property value' => ['body { background-image: url(images/foo.jpeg); }'],
             'CSS with quoted URL in property value' => ['body { background-image: url("images/foo.jpeg"); }'],
         ]);
 
-        $datasetsWithAtImportRule = static::crossDatasetWithItself([
+        $datasetsWithAtImportRule = self::crossDatasetWithItself([
             '`@import` with unquoted string' => ['@import foo/bar.css;'],
             '`@import` with single-quoted string' => ['@import \'foo/bar.css\';'],
             '`@import` with double-quoted string' => ['@import "foo/bar.css";'],
@@ -71,7 +71,7 @@ trait CssDataProviders
      */
     public function provideEquivalentCssComponents(): array
     {
-        $datasetsWithPropertyDeclaration = static::crossDatasetWithItself([
+        $datasetsWithPropertyDeclaration = self::crossDatasetWithItself([
             'property declaration' => ['color: green;'],
             'property declaration without trailing semicolon' => ['color: green'],
             'property declaration without trailing semicolon but space after' => ['color: green '],
@@ -82,17 +82,17 @@ trait CssDataProviders
             'property declaration with space after trailing semicolon' => ['color: green; '],
         ]);
 
-        $datasetsWithPropertyDeclarationWithRgbValue = static::crossDatasetWithItself([
+        $datasetsWithPropertyDeclarationWithRgbValue = self::crossDatasetWithItself([
             'property declaration with lowercase RGB value' => ['color: #0f0;'],
             'property declaration with uppercase RGB value' => ['color: #0F0;'],
         ]);
 
-        $datasetsWithPropertyDeclarationWithSixDigitRgbValue = static::crossDatasetWithItself([
+        $datasetsWithPropertyDeclarationWithSixDigitRgbValue = self::crossDatasetWithItself([
             'property declaration with lowercase 6-digit RGB value' => ['color: #abcdef;'],
             'property declaration with uppercase 6-digit RGB value' => ['color: #ABCDEF;'],
         ]);
 
-        $datasetsWithPropertyDeclarationWithUrlValue = static::crossDatasetWithItself([
+        $datasetsWithPropertyDeclarationWithUrlValue = self::crossDatasetWithItself([
             'property declaration with unquoted URL' => ['background-image: url(images/foo.jpeg);'],
             'property declaration with single-quoted URL' => ['background-image: url(\'images/foo.jpeg\');'],
             'property declaration with double-quoted URL' => ['background-image: url("images/foo.jpeg");'],
