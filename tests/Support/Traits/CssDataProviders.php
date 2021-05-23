@@ -82,6 +82,16 @@ trait CssDataProviders
             'property declaration with space after trailing semicolon' => ['color: green; '],
         ]);
 
+        $datasetsWithPropertyDeclarationWithDecimalValueLessThanOne = self::crossDatasetWithItself([
+            'property declaration with decimal value with leading zero' => ['margin: 0.5em;'],
+            'property declaration with decimal value without leading zero' => ['margin: .5em;'],
+        ]);
+
+        $datasetsWithPropertyDeclarationWithNegativeDecimalValueLessThanOne = self::crossDatasetWithItself([
+            'property declaration with decimal value with leading zero' => ['margin: -0.5em;'],
+            'property declaration with decimal value without leading zero' => ['margin: -.5em;'],
+        ]);
+
         $datasetsWithPropertyDeclarationWithRgbValue = self::crossDatasetWithItself([
             'property declaration with lowercase RGB value' => ['color: #0f0;'],
             'property declaration with uppercase RGB value' => ['color: #0F0;'],
@@ -103,6 +113,8 @@ trait CssDataProviders
 
         return \array_merge(
             $datasetsWithPropertyDeclaration,
+            $datasetsWithPropertyDeclarationWithDecimalValueLessThanOne,
+            $datasetsWithPropertyDeclarationWithNegativeDecimalValueLessThanOne,
             $datasetsWithPropertyDeclarationWithRgbValue,
             $datasetsWithPropertyDeclarationWithSixDigitRgbValue,
             $datasetsWithPropertyDeclarationWithUrlValue
@@ -199,6 +211,7 @@ trait CssDataProviders
             'class does not match if uppercase' => ['.a { color: red; }', '.A { color: red; }'],
             'ID does not match if uppercase' => ['#a { color: red; }', '#A { color: red; }'],
             '`font-family` does not match if uppercase' => ['font-family: a;', 'font-family: A;'],
+            'type and class does not match class only' => ['p.x { color: red; }', '.x { color: red; }'],
             'missing required whitespace after at-rule identifier' => ['@media screen', '@mediascreen'],
             'missing required whitespace in calc before addition operator' => [
                 'width: calc(1px + 50%);',
@@ -211,6 +224,14 @@ trait CssDataProviders
             'missing required whitespace in calc after addition operator' => [
                 'width: calc(1px + 50%);',
                 'width: calc(1px +50%);',
+            ],
+            'value does not match with significant zero removed before decimal point' => [
+                'width: 10.5em;',
+                'width: 1.5em;',
+            ],
+            'value does not match with only decimal point as number' => [
+                'width: .em;',
+                'width: 0.em;',
             ],
             '`attr` does not match quoted attribute name' => ['content: attr(title);', 'content: attr("title");'],
             '`url` does not match without explicit `url`' => ['background: url(foo.jpeg);', 'background: foo.jpeg;'],
