@@ -39,6 +39,8 @@ abstract class CssConstraint extends Constraint
             ([^\'"\\(\\)\\s]++)             #   quotes, parentheses or whitespace
             \\g{-2}                         #
             \\s*+\\)                        #
+        |(?<!\\w)0?+(\\.)(?=\\d)            # - start of decimal number less than 1 - optional `0` then decimal point
+                                            #   (captured in group 9), provided followed by a digit
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -51,6 +53,7 @@ abstract class CssConstraint extends Constraint
                 |\\burl\\(\\s*+([\'"]?+)    #
                     [^\'"\\(\\)\\s]++       #
                     \\g{-1}\\s*+\\)         #
+                |(?<!\\w)0?+\\.(?=\\d)      #
             )                               #
             [^>]                            #
         )++                                 #
@@ -174,6 +177,8 @@ abstract class CssConstraint extends Constraint
             $regularExpressionEquivalent = '(?i:' . \preg_quote($matches[6], '/') . ')';
         } elseif (($matches[8] ?? '') !== '') {
             $regularExpressionEquivalent = 'url\\(\\s*+([\'"]?+)' . \preg_quote($matches[8], '/') . '\\g{-1}\\s*+\\)';
+        } elseif (($matches[9] ?? '') !== '') {
+            $regularExpressionEquivalent = '0?+\\.';
         } else {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }
