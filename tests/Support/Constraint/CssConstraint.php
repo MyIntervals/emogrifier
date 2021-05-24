@@ -34,13 +34,26 @@ abstract class CssConstraint extends Constraint
         |(\\s++)                            # - whitespace, captured in group 5
         |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
             (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
-        |\\burl\\(\\s*+                     # - CSS `url` function, with optional quote captured in group 7, and
-            ([\'"]?+)                       #   (non-empty) URL value in group 8, provided the URL does not contain
+        |@import\\s++                       # - `@import` followed by whitespace and a URL, optionally enclosed in
+            (?:                             #   quotes and optionally using the CSS `url` function, provided the URL is
+                (?!url\\()                  #   not empty and does not contain whitespace, quotes, a closing bracket or
+                ([\'"]?+)                   #   semicolon, with the URL captured in group 8 or 10 depending on whether
+                ([^\'"\\s\\);]++)           #   the CSS `url` function was used (and the opening quote, if any, captured
+                \\g{-2}                     #   in group 7 or 9)
+            |                               #
+                url\\(\\s*+                 #
+                ([\'"]?+)                   #
+                ([^\'"\\s\\);]++)           #
+                \\g{-2}                     #
+                \\s*+\\)                    #
+            )                               #
+        |\\burl\\(\\s*+                     # - CSS `url` function, with optional quote captured in group 11, and
+            ([\'"]?+)                       #   (non-empty) URL value in group 12, provided the URL does not contain
             ([^\'"\\(\\)\\s]++)             #   quotes, parentheses or whitespace
             \\g{-2}                         #
             \\s*+\\)                        #
         |(?<!\\w)0?+(\\.)(?=\\d)            # - start of decimal number less than 1 - optional `0` then decimal point
-                                            #   (captured in group 9), provided followed by a digit
+                                            #   (captured in group 13), provided followed by a digit
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -50,6 +63,19 @@ abstract class CssConstraint extends Constraint
                 |\\s                        #
                 |(\\#[0-9A-Fa-f]++\\b)      #
                     (?![^\\{\\}]*+\\{)      #
+                |@import\\s++               #
+                    (?:                     #
+                        (?!url\\()          #
+                        ([\'"]?+)           #
+                        [^\'"\\s\\);]++     #
+                        \\g{-1}             #
+                    |                       #
+                        url\\(\\s*+         #
+                        ([\'"]?+)           #
+                        [^\'"\\s\\);]++     #
+                        \\g{-1}             #
+                        \\s*+\\)            #
+                    )                       #
                 |\\burl\\(\\s*+([\'"]?+)    #
                     [^\'"\\(\\)\\s]++       #
                     \\g{-1}\\s*+\\)         #
@@ -70,59 +96,6 @@ abstract class CssConstraint extends Constraint
      */
     private const OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN
         = '/(?<!;)(?<!\\\\s[\\+\\*]\\+)(?:\\\\s\\*\\+;\\\\s\\*\\+|\\\\s\\+\\+)?+$/';
-
-    /**
-     * This is for matching a string that has already been converted from CSS into a regular expression pattern to match
-     * it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where optional) or
-     * `\s++`.
-     * It matches `@import` followed by whitespace then a URL which may or may not be enclosed in single or double
-     * quotes and/or using the `url` CSS function.
-     * Since conversion from CSS into a regular expression matcher already allows for optional quotes within the CSS
-     * `url` function, this needs account for that and match the converted matcher for it in the case where the `url`
-     * function is used - this allows for the `url()` function wrapper to be dropped specifically in the case of
-     * `@import` rules.
-     *
-     * Validity of the URL is not checked; any sequnce of characters excluding whitespace, quotes, a closing bracket or
-     * semicolon will be matched as a URL.
-     * The actual URL (with special characters already escaped) will be captured in the 2nd or 3rd group, depending on
-     * whether the CSS `url` function was used.
-     *
-     * @var string
-     */
-    private const AT_IMPORT_AND_URL_MATCHER_PATTERN = '/
-        @import\\\\s\\+\\+  # `@import` followed by whitespace
-        (?:
-            (?!url\\\\\\()  # not starting with `url(`
-            ([\'"]?+)  # optional opening quote, captured
-            (
-                (?:
-                    (?!\\\\s[\\+\\*]\\+|\\\\\\))  # not whitespace (optional or mandatory) nor closing bracket
-                    [^\'";]
-                )++
-            )
-            \\g{-2}  # closing quote matching opening quote (or lack of)
-        |
-            url\\\\\\(  # `url(`
-            \\\\s\\*\\+  # optional whitespace
-            \\(\\[\'"\\]\\?\\+\\)  # matcher for optional opening quote
-            (
-                (?:
-                    (?!\\\\g)  # not starting matcher for (optional) closing quote
-                    .
-                )++
-            )
-            \\\\g\\{\\-1\\}  # matcher for (optional) closing quote
-            \\\\s\\*\\+  # optional whitespace
-            \\\\\\)  # `)`
-        )
-    /x';
-
-    /**
-     * @see AT_IMPORT_AND_URL_MATCHER_PATTERN
-     *
-     * @var string
-     */
-    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$2$3\\g{-1})';
 
     /**
      * Emogrification may result in CSS or `style` property values that do not exactly match the input CSS but are
@@ -151,9 +124,7 @@ abstract class CssConstraint extends Constraint
             $css
         );
 
-        return self::getCssMatcherAllowingAtImportParameterVariation(
-            self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css)
-        );
+        return self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css);
     }
 
     /**
@@ -175,9 +146,12 @@ abstract class CssConstraint extends Constraint
             $regularExpressionEquivalent = '\\s++';
         } elseif (($matches[6] ?? '') !== '') {
             $regularExpressionEquivalent = '(?i:' . \preg_quote($matches[6], '/') . ')';
-        } elseif (($matches[8] ?? '') !== '') {
-            $regularExpressionEquivalent = 'url\\(\\s*+([\'"]?+)' . \preg_quote($matches[8], '/') . '\\g{-1}\\s*+\\)';
-        } elseif (($matches[9] ?? '') !== '') {
+        } elseif (($matches[8] ?? '') !== '' || ($matches[10] ?? '') !== '') {
+            $urlMatcher = '(?:([\'"]?+)' . \preg_quote(($matches[8] ?? '') . ($matches[10] ?? ''), '/') . '\\g{-1})';
+            $regularExpressionEquivalent = '@import\\s++(?:' . $urlMatcher . '|url\\(\\s*+' . $urlMatcher . '\\s*+\\))';
+        } elseif (($matches[12] ?? '') !== '') {
+            $regularExpressionEquivalent = 'url\\(\\s*+([\'"]?+)' . \preg_quote($matches[12], '/') . '\\g{-1}\\s*+\\)';
+        } elseif (($matches[13] ?? '') !== '') {
             $regularExpressionEquivalent = '0?+\\.';
         } else {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
@@ -209,24 +183,6 @@ abstract class CssConstraint extends Constraint
         }
 
         return $matcher;
-    }
-
-    /**
-     * @param string $matcher
-     *        regular expression part designed to match CSS whilst allowing for whitespace and other syntactic variation
-     *
-     * @return string
-     *         regular expression part which will also allow the `@import` rule URL parameter to be enclosed in quotes
-     *         and/or use the CSS `url` function (or not).
-     */
-    private static function getCssMatcherAllowingAtImportParameterVariation(string $matcher): string
-    {
-        return \preg_replace(
-            self::AT_IMPORT_AND_URL_MATCHER_PATTERN,
-            '@import\\s++(?:' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER
-                . '|url\\(\\s*+' . self::AT_IMPORT_URL_REPLACEMENT_MATCHER . '\\s*+\\))',
-            $matcher
-        );
     }
 
     /**
