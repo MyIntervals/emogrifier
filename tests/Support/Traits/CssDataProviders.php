@@ -45,6 +45,14 @@ trait CssDataProviders
             'CSS with quoted URL in property value' => ['body { background-image: url("images/foo.jpeg"); }'],
         ]);
 
+        $datasetsWithQuotedPropertyValue = self::crossDatasetWithItself([
+            'CSS with single-quoted string in property value' => ['.new::before { content: \'New Entry! \'; }'],
+            'CSS with double-quoted string in property value' => ['.new::before { content: "New Entry! "; }'],
+            'CSS with quoted string in property value without trailing semicolon'
+                => ['.new::before { content: "New Entry! " }'],
+            'minified CSS with quoted string in property value' => ['.new::before{content:"New Entry! "}'],
+        ]);
+
         $datasetsWithAtImportRule = self::crossDatasetWithItself([
             '`@import` with unquoted string' => ['@import foo/bar.css;'],
             '`@import` with single-quoted string' => ['@import \'foo/bar.css\';'],
@@ -62,6 +70,7 @@ trait CssDataProviders
         return \array_merge(
             $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration,
             $datasetsWithUrlPropertyValue,
+            $datasetsWithQuotedPropertyValue,
             $datasetsWithAtImportRule
         );
     }
@@ -232,6 +241,17 @@ trait CssDataProviders
             'value does not match with only decimal point as number' => [
                 'width: .em;',
                 'width: 0.em;',
+            ],
+            'quoted value does not match unquoted' => ['content: "Test";', 'content: Test;'],
+            'quoted value does not match with leading space inside quotes' => ['content: "Test";', 'content: " Test";'],
+            'quoted value does not match with trailing space inside quotes' => [
+                'content: "Test";',
+                'content: "Test ";',
+            ],
+            'quoted empty string does not match string containing quotes' => ['content: ""', 'content: \'""\''],
+            'quoted string containing single quotes does not match quoted string containing double quotes' => [
+                'content: "\'\'";',
+                'content: \'""\';',
             ],
             '`attr` does not match quoted attribute name' => ['content: attr(title);', 'content: attr("title");'],
             '`url` does not match without explicit `url`' => ['background: url(foo.jpeg);', 'background: foo.jpeg;'],

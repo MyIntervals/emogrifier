@@ -52,8 +52,13 @@ abstract class CssConstraint extends Constraint
             ([^\'"\\(\\)\\s]++)             #   quotes, parentheses or whitespace
             \\g{-2}                         #
             \\s*+\\)                        #
+        |(?<=[\\s:])                        # - singly or doubly quoted string, surrounded by whitespace or delimiters
+            ([\'"])                         #   of a property value (i.e. a colon is allowed before, and a semicolon or
+            ([^\'"]*+)                      #   closing curly brace is allowed after), with the quote captured in group
+            \\g{-2}                         #   13 and the string in group 14
+            (?=[\\s;\\}])                   #
         |(?<!\\w)0?+(\\.)(?=\\d)            # - start of decimal number less than 1 - optional `0` then decimal point
-                                            #   (captured in group 13), provided followed by a digit
+                                            #   (captured in group 15), provided followed by a digit
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -79,6 +84,9 @@ abstract class CssConstraint extends Constraint
                 |\\burl\\(\\s*+([\'"]?+)    #
                     [^\'"\\(\\)\\s]++       #
                     \\g{-1}\\s*+\\)         #
+                |(?<=[\\s:])([\'"])         #
+                    [^\'"]++                #
+                    \\g{-1}(?=[\\s;\\}])    #
                 |(?<!\\w)0?+\\.(?=\\d)      #
             )                               #
             [^>]                            #
@@ -112,7 +120,8 @@ abstract class CssConstraint extends Constraint
         8 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
         10 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
         12 => 'url\\(\\s*+([\'"]?+)$12\\g{-1}\\s*+\\)',
-        13 => '0?+\\.',
+        13 => '([\'"])$14\\g{-1}',
+        15 => '0?+\\.',
     ];
 
     /**
