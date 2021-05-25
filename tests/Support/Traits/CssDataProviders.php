@@ -243,6 +243,8 @@ trait CssDataProviders
                 'width: 0.em;',
             ],
             'quoted value does not match unquoted' => ['content: "Test";', 'content: Test;'],
+            'quoted value does not match upper-cased' => ['content: "Test";', 'content: "TEST";'],
+            'quoted value does not match lower-cased' => ['content: "Test";', 'content: "test";'],
             'quoted value does not match with leading space inside quotes' => ['content: "Test";', 'content: " Test";'],
             'quoted value does not match with trailing space inside quotes' => [
                 'content: "Test";',
@@ -256,6 +258,8 @@ trait CssDataProviders
             '`attr` does not match quoted attribute name' => ['content: attr(title);', 'content: attr("title");'],
             '`url` does not match without explicit `url`' => ['background: url(foo.jpeg);', 'background: foo.jpeg;'],
             '`url` does not match different URL' => ['background: url(foo.jpeg);', 'background: url(foo.png);'],
+            '`url` does not match lower-cased URL' => ['background: url(Foo.JPEG);', 'background: url(foo.jpeg);'],
+            '`url` does not match upper-cased URL' => ['background: url(Foo.JPEG);', 'background: url(FOO.JPEG);'],
             '`url` with space in URL does not match unquoted' => [
                 'background: url("f o.jpeg");',
                 'background: url(f o.jpeg);',
@@ -276,6 +280,8 @@ trait CssDataProviders
                 'background: url(\'f"o.jpeg\');',
                 'background: url(f"o.jpeg);',
             ],
+            '`@import` rule does not match with lower-cased parameter' => ['@import Foo.CSS;', '@import foo.css;'],
+            '`@import` rule does not match with upper-cased parameter' => ['@import Foo.CSS;', '@import FOO.CSS;'],
             '`@import` rule does not match with leading space inside quotes' => [
                 '@import foo.css;',
                 '@import " foo.css";',
