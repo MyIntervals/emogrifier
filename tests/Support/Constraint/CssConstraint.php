@@ -86,6 +86,36 @@ abstract class CssConstraint extends Constraint
     /x';
 
     /**
+     * @var string
+     */
+    private const URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$8$10\\g{-1})';
+
+    /**
+     * @var string
+     */
+    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '@import\\s++(?:' . self::URL_REPLACEMENT_MATCHER . '|url\\(\\s*+'
+        . self::URL_REPLACEMENT_MATCHER . '\\s*+\\))';
+
+    /**
+     * Regular expression replacements for parts of the CSS matched by {@see CSS_REGULAR_EXPRESSION_PATTERN}, indexed by
+     * capturing group upon which capturing a non-empty string means the corresponding replacement should be selected.
+     *
+     * @var array<int, string>
+     */
+    private const CSS_REGULAR_EXPRESSION_REPLACEMENTS = [
+        1 => '(?:\\s*+;)?+\\s*+$1\\s*+',
+        2 => '\\s*+$2\\s*+',
+        3 => '\\s*+',
+        4 => '$4\\s*+',
+        5 => '\\s++',
+        6 => '(?i:$6)',
+        8 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
+        10 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
+        12 => 'url\\(\\s*+([\'"]?+)$12\\g{-1}\\s*+\\)',
+        13 => '0?+\\.',
+    ];
+
+    /**
      * This is for matching a string that has already been converted from CSS into a regular expression pattern to match
      * it, thus needs to match special characters in their escaped form, and whitespace as `\s*+` (where optional) or
      * `\s++`.
@@ -134,26 +164,22 @@ abstract class CssConstraint extends Constraint
      */
     private static function getCssRegularExpressionReplacement(array $matches): string
     {
-        if (($matches[1] ?? '') !== '') {
-            $regularExpressionEquivalent = '(?:\\s*+;)?+\\s*+' . \preg_quote($matches[1], '/') . '\\s*+';
-        } elseif (($matches[2] ?? '') !== '') {
-            $regularExpressionEquivalent = '\\s*+' . \preg_quote($matches[2], '/') . '\\s*+';
-        } elseif (($matches[3] ?? '') !== '') {
-            $regularExpressionEquivalent = '\\s*+';
-        } elseif (($matches[4] ?? '') !== '') {
-            $regularExpressionEquivalent = \preg_quote($matches[4], '/') . '\\s*+';
-        } elseif (($matches[5] ?? '') !== '') {
-            $regularExpressionEquivalent = '\\s++';
-        } elseif (($matches[6] ?? '') !== '') {
-            $regularExpressionEquivalent = '(?i:' . \preg_quote($matches[6], '/') . ')';
-        } elseif (($matches[8] ?? '') !== '' || ($matches[10] ?? '') !== '') {
-            $urlMatcher = '(?:([\'"]?+)' . \preg_quote(($matches[8] ?? '') . ($matches[10] ?? ''), '/') . '\\g{-1})';
-            $regularExpressionEquivalent = '@import\\s++(?:' . $urlMatcher . '|url\\(\\s*+' . $urlMatcher . '\\s*+\\))';
-        } elseif (($matches[12] ?? '') !== '') {
-            $regularExpressionEquivalent = 'url\\(\\s*+([\'"]?+)' . \preg_quote($matches[12], '/') . '\\g{-1}\\s*+\\)';
-        } elseif (($matches[13] ?? '') !== '') {
-            $regularExpressionEquivalent = '0?+\\.';
-        } else {
+        $regularExpressionEquivalent = null;
+
+        foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
+            if (($matches[$index] ?? '') !== '') {
+                $regularExpressionEquivalent = \preg_replace_callback(
+                    '/\\$(\\d++)/',
+                    static function (array $referenceMatches) use ($matches): string {
+                        return \preg_quote($matches[(int)$referenceMatches[1]] ?? '', '/');
+                    },
+                    $replacement
+                );
+                break;
+            }
+        }
+
+        if (!\is_string($regularExpressionEquivalent)) {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }
 
