@@ -179,7 +179,7 @@ abstract class CssConstraint extends Constraint
             }
         }
 
-        if ($regularExpressionEquivalent === null) {
+        if (!\is_string($regularExpressionEquivalent)) {
             $regularExpressionEquivalent = \preg_quote($matches[0], '/');
         }
 
