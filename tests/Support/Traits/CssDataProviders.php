@@ -38,6 +38,10 @@ trait CssDataProviders
                 => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
             'CSS with `@media` rule, selector list, and property declaration, with Windows line endings'
                 => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
+            'CSS with `@media` rule, selector list, and property declaration, with uppercase at-rule name'
+                => ['@MEDIA screen { html, body { color: green; } }'],
+            'CSS with `@media` rule, selector list, and property declaration, with mixed-case at-rule name'
+                => ['@MeDiA screen { html, body { color: green; } }'],
         ]);
 
         $datasetsWithUrlPropertyValue = self::crossDatasetWithItself([
@@ -65,6 +69,8 @@ trait CssDataProviders
             '`@import` with space after unquoted string' => ['@import foo/bar.css ;'],
             '`@import` with space after quoted string' => ['@import "foo/bar.css" ;'],
             '`@import` with space after URL' => ['@import url(foo/bar.css) ;'],
+            '`@import` with uppercase at-rule name' => ['@IMPORT foo/bar.css;'],
+            '`@import` with mixed-case at-rule name' => ['@ImPoRt foo/bar.css;'],
         ]);
 
         return \array_merge(
@@ -321,6 +327,7 @@ trait CssDataProviders
                 '@import "foo.css screen";',
             ],
             '`@import` rule does not match with missing semicolon' => ['@import foo.css;', '@import foo.css'],
+            '`@charset` rule does not match with uppercase at-rule name' => ['@charset "UTF-8";', '@CHARSET "UTF-8";'],
             'more CSS than haystack' => ['p { color: green; } h1 { color: red; }', 'p { color: green; }'],
         ];
     }

@@ -34,12 +34,12 @@ abstract class CssConstraint extends Constraint
         |(\\s++)                            # - whitespace, captured in group 5
         |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
             (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
-        |@import\\s++                       # - `@import` followed by whitespace and a URL, optionally enclosed in
-            (?:                             #   quotes and optionally using the CSS `url` function, provided the URL is
-                (?!url\\()                  #   not empty and does not contain whitespace, quotes, a closing bracket or
-                ([\'"]?+)                   #   semicolon, with the URL captured in group 8 or 10 depending on whether
-                ([^\'"\\s\\);]++)           #   the CSS `url` function was used (and the opening quote, if any, captured
-                \\g{-2}                     #   in group 7 or 9)
+        |@(?i:import)\\s++                  # - `@import` (case insensitive) followed by whitespace and a URL,
+            (?:                             #   optionally enclosed in quotes and optionally using the CSS `url`
+                (?!url\\()                  #   function, provided the URL is not empty and does not contain whitespace,
+                ([\'"]?+)                   #   quotes, a closing bracket or semicolon, with the URL captured in group 8
+                ([^\'"\\s\\);]++)           #   or 10 depending on whether the CSS `url` function was used (and the
+                \\g{-2}                     #   opening quote, if any, captured in group 7 or 9)
             |                               #
                 url\\(\\s*+                 #
                 ([\'"]?+)                   #
@@ -59,6 +59,9 @@ abstract class CssConstraint extends Constraint
             (?=[\\s;\\}])                   #
         |(?<!\\w)0?+(\\.)(?=\\d)            # - start of decimal number less than 1 - optional `0` then decimal point
                                             #   (captured in group 15), provided followed by a digit
+        |@                                  # - at-rule name, captured in group 16, along with preceding `@`, provided
+            (?!(?i:charset)[^\\w\\-])       #   followed by character not part of at-rule name which is not `charset`
+            ([\\w\\-]++)(?=[^\\w\\-])       #
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
@@ -68,7 +71,7 @@ abstract class CssConstraint extends Constraint
                 |\\s                        #
                 |(\\#[0-9A-Fa-f]++\\b)      #
                     (?![^\\{\\}]*+\\{)      #
-                |@import\\s++               #
+                |@(?i:import)\\s++          #
                     (?:                     #
                         (?!url\\()          #
                         ([\'"]?+)           #
@@ -88,6 +91,8 @@ abstract class CssConstraint extends Constraint
                     [^\'"]++                #
                     \\g{-1}(?=[\\s;\\}])    #
                 |(?<!\\w)0?+\\.(?=\\d)      #
+                |@(?!(?i:charset)[^\\w\\-]) #
+                    [\\w\\-]++(?=[^\\w\\-]) #
             )                               #
             [^>]                            #
         )++                                 #
@@ -101,8 +106,8 @@ abstract class CssConstraint extends Constraint
     /**
      * @var string
      */
-    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '@import\\s++(?:' . self::URL_REPLACEMENT_MATCHER . '|url\\(\\s*+'
-        . self::URL_REPLACEMENT_MATCHER . '\\s*+\\))';
+    private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '@(?i:import)\\s++(?:' . self::URL_REPLACEMENT_MATCHER
+        . '|url\\(\\s*+' . self::URL_REPLACEMENT_MATCHER . '\\s*+\\))';
 
     /**
      * Regular expression replacements for parts of the CSS matched by {@see CSS_REGULAR_EXPRESSION_PATTERN}, indexed by
@@ -122,6 +127,7 @@ abstract class CssConstraint extends Constraint
         12 => 'url\\(\\s*+([\'"]?+)$12\\g{-1}\\s*+\\)',
         13 => '([\'"])$14\\g{-1}',
         15 => '0?+\\.',
+        16 => '@(?i:$16)',
     ];
 
     /**
