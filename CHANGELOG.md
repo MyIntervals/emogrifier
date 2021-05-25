@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Set `align` attribute of `<th>` elements with `CssToAttributeConverter` (#1008)
 
 ### Changed
+- Use `cerdic/css-tidy` to parse the CSS (#1076)
 - Also check the unit test code with Psalm (#1003)
 
 ### Deprecated

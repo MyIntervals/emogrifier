@@ -36,6 +36,7 @@
         "php": "~7.2.0 || ~7.3.0 || ~7.4.0 || ~8.0.0",
         "ext-dom": "*",
         "ext-libxml": "*",
+        "cerdic/css-tidy": "^1.7.3",
         "symfony/css-selector": "^3.4.32 || ^4.4 || ^5.2 || ^6.0"
     },
     "require-dev": {

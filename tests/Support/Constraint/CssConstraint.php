@@ -31,15 +31,16 @@ abstract class CssConstraint extends Constraint
         |(^\\s++)                           # - whitespace at the very start, captured in group 3
         |(>)\\s*+                           # - `>` (e.g. closing a `<style>` element opening tag) with optional
                                             #   whitespace following, captured in group 4
-        |(\\s++)                            # - whitespace, captured in group 5
-        |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
+        |\\s*+(\\!important)                # - `!important` captured in group 5, with optional whitespace before
+        |(\\s++)                            # - whitespace, captured in group 6
+        |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 7, if in a declarations
             (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
         |@(?i:import)\\s++                  # - `@import` (case insensitive) followed by whitespace and a URL,
             (?:                             #   optionally enclosed in quotes and optionally using the CSS `url`
                 (?!url\\()                  #   function, provided the URL is not empty and does not contain whitespace,
-                ([\'"]?+)                   #   quotes, a closing bracket or semicolon, with the URL captured in group 8
-                ([^\'"\\s\\);]++)           #   or 10 depending on whether the CSS `url` function was used (and the
-                \\g{-2}                     #   opening quote, if any, captured in group 7 or 9)
+                ([\'"]?+)                   #   quotes, a closing bracket or semicolon, with the URL captured in group 9
+                ([^\'"\\s\\);]++)           #   or 11 depending on whether the CSS `url` function was used (and the
+                \\g{-2}                     #   opening quote, if any, captured in group 8 or 10)
             |                               #
                 url\\(\\s*+                 #
                 ([\'"]?+)                   #
@@ -47,27 +48,31 @@ abstract class CssConstraint extends Constraint
                 \\g{-2}                     #
                 \\s*+\\)                    #
             )                               #
-        |\\burl\\(\\s*+                     # - CSS `url` function, with optional quote captured in group 11, and
-            ([\'"]?+)                       #   (non-empty) URL value in group 12, provided the URL does not contain
+        |\\burl\\(\\s*+                     # - CSS `url` function, with optional quote captured in group 12, and
+            ([\'"]?+)                       #   (non-empty) URL value in group 13, provided the URL does not contain
             ([^\'"\\(\\)\\s]++)             #   quotes, parentheses or whitespace
             \\g{-2}                         #
             \\s*+\\)                        #
         |(?<=[\\s:])                        # - singly or doubly quoted string, surrounded by whitespace or delimiters
             ([\'"])                         #   of a property value (i.e. a colon is allowed before, and a semicolon or
             ([^\'"]*+)                      #   closing curly brace is allowed after), with the quote captured in group
-            \\g{-2}                         #   13 and the string in group 14
+            \\g{-2}                         #   14 and the string in group 15
             (?=[\\s;\\}])                   #
         |(?<!\\w)0?+(\\.)(?=\\d)            # - start of decimal number less than 1 - optional `0` then decimal point
-                                            #   (captured in group 15), provided followed by a digit
-        |@                                  # - at-rule name, captured in group 16, along with preceding `@`, provided
+                                            #   (captured in group 16), provided followed by a digit
+        |@                                  # - at-rule name, captured in group 17, along with preceding `@`, provided
             (?!(?i:charset)[^\\w\\-])       #   followed by character not part of at-rule name which is not `charset`
             ([\\w\\-]++)(?=[^\\w\\-])       #
+        |(?<=^|[\\s~+>,\\}])                # - `:`, captured in group 18, if in selector (i.e. followed later by `{`
+            \\*?+(\\:)                      #   without `}` first), optionally preceded by `*`, provided at the start of
+            (?=[^\\{\\}]*+\\{)              #   a rule of with a combinator preceding
         |(?:                                # - Anything else is matched, though not captured.  This is required so that
             (?!                             #   any characters in the input string that happen to have a special meaning
                 \\s*+(?:                    #   in a regular expression can be escaped.  `.` would also work, but
                     [{};,]                  #   matching a longer sequence is more optimal (and `.*` would not work).
                     |\\:(?![^\\{\\}]*+\\{)  #
                 )                           #
+                |\\s*+\\!important          #
                 |\\s                        #
                 |(\\#[0-9A-Fa-f]++\\b)      #
                     (?![^\\{\\}]*+\\{)      #
@@ -93,6 +98,9 @@ abstract class CssConstraint extends Constraint
                 |(?<!\\w)0?+\\.(?=\\d)      #
                 |@(?!(?i:charset)[^\\w\\-]) #
                     [\\w\\-]++(?=[^\\w\\-]) #
+                |(?<=^|[\\s~+>,\\}])        #
+                    \\*?+\\:                #
+                    (?=[^\\{\\}]*+\\{)      #
             )                               #
             [^>]                            #
         )++                                 #
@@ -101,7 +109,7 @@ abstract class CssConstraint extends Constraint
     /**
      * @var string
      */
-    private const URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$8$10\\g{-1})';
+    private const URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$9$11\\g{-1})';
 
     /**
      * @var string
@@ -120,14 +128,16 @@ abstract class CssConstraint extends Constraint
         2 => '\\s*+$2\\s*+',
         3 => '\\s*+',
         4 => '$4\\s*+',
-        5 => '\\s++',
-        6 => '(?i:$6)',
-        8 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
-        10 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
-        12 => 'url\\(\\s*+([\'"]?+)$12\\g{-1}\\s*+\\)',
-        13 => '([\'"])$14\\g{-1}',
-        15 => '0?+\\.',
-        16 => '@(?i:$16)',
+        5 => '\\s*+$5',
+        6 => '\\s++',
+        7 => '(?i:$7)',
+        9 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
+        11 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,
+        13 => 'url\\(\\s*+([\'"]?+)$13\\g{-1}\\s*+\\)',
+        14 => '([\'"])$15\\g{-1}',
+        16 => '0?+\\.',
+        17 => '@(?i:$17)',
+        18 => '\\*?+\\:',
     ];
 
     /**
