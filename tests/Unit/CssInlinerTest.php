@@ -1518,10 +1518,9 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss('p {' . $cssDeclaration . '}');
 
-        self::assertStringContainsString(
-            '<p style="' . $cssDeclaration . '">target</p>',
-            $subject->renderBodyContent()
-        );
+        $result = $subject->renderBodyContent();
+        self::assertStringContainsString('<p style=', $result);
+        self::assertContainsCss($cssDeclaration, $result);
     }
 
     /**
@@ -1536,10 +1535,9 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertStringContainsString(
-            '<p style="' . $cssDeclaration . '">target</p>',
-            $subject->renderBodyContent()
-        );
+        $result = $subject->renderBodyContent();
+        self::assertStringContainsString('<p style=', $result);
+        self::assertContainsCss($cssDeclaration, $result);
     }
 
     /**
@@ -2002,7 +2000,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss($css);
 
-        self::assertStringContainsString('<style type="text/css">' . $css . '</style>', $subject->render());
+        self::assertContainsCss('<style type="text/css">' . $css . '</style>', $subject->render());
     }
 
     /**
@@ -3222,7 +3220,9 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss('html {' . $styleRule . '}');
 
-        self::assertStringContainsString('<html style="' . $styleRule . '">', $subject->render());
+        $result = $subject->render();
+        self::assertStringContainsString('<html style=', $result);
+        self::assertContainsCss($styleRule, $result);
     }
 
     /**
@@ -3423,7 +3423,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss($cssBefore . $cssImports . $cssAfter);
 
-        self::assertStringContainsString($cssImports, $subject->render());
+        self::assertContainsCss($cssImports, $subject->render());
     }
 
     /**
@@ -3538,7 +3538,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss($cssBefore . $atRules . $cssAfter);
 
-        self::assertStringContainsString(\ltrim($atRules), $subject->render());
+        self::assertContainsCss($atRules, $subject->render());
     }
 
     /**
