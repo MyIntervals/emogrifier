@@ -1071,12 +1071,16 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Applies `$this->matchingUninlinableCssRules` to `$this->domDocument` by placing them as CSS in a `<style>`
      * element.
+     * If there are no uninlinable CSS rules to copy there, a `<style>` element will be created containing only the
+     * applicable at-rules from `$parsedCss`.
+     * If there are none of either, an empty `<style>` element will not be created.
      *
      * @param CssDocument $parsedCss
-     *        This may contain any `@import` or `@font-face` rules that should precede the CSS placed in the `<style>`
-     *        element.  If there are no uninlinable CSS rules to copy there, a `<style>` element will be created
-     *        containing only the applicable at-rules from `$parsedCss`.  If there are none, and there are also no
-     *        unlinlinable CSS rules, an empty `<style>` element will not be created.
+     *        This may contain various at-rules whose content `CssInliner` does not currently attempt to inline or
+     *        process in any other way, such as `@import`, `@font-face`, `@keyframes`, etc., and which should precede
+     *        the processed but found-to-be-uninlinable CSS placed in the `<style>` element.
+     *        Note that `CssInliner` processes `@media` rules so that they can be ordered correctly with respect to
+     *        other uninlinable rules; these will not be duplicated from `$parsedCss`.
      */
     private function copyUninlinableCssToStyleNode(CssDocument $parsedCss): void
     {
