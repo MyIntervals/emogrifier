@@ -15,7 +15,7 @@ class CssDocument
     /**
      * @var string
      */
-    private const AT_CHARSET_OR_IMPORT_RULE_PATTERN = '/^\\s*+(@((?i)import(?-i)|charset)\\s[^;]++;\\s*+)/';
+    private const AT_CHARSET_OR_IMPORT_RULE_PATTERN = '/^\\s*+(@(import|charset)\\s[^;]++;\\s*+)/i';
 
     /**
      * This regular expression pattern will match any nested at-rule apart from
@@ -129,7 +129,9 @@ class CssDocument
      * Extracts `@import` and `@charset` rules from the supplied CSS.  These rules must not be preceded by any other
      * rules, or they will be ignored.  (From the CSS 2.1 specification: "CSS 2.1 user agents must ignore any '@import'
      * rule that occurs inside a block or after any non-ignored statement other than an @charset or an @import rule."
-     * Note also that `@charset` is case sensitive whereas `@import` is not.)
+     * Note also that `@charset` is case sensitive whereas `@import` is not.
+     * However, an invalidly cased `@charset` rule would be an ignored statement, and not affect the validity of any
+     * `@import` rules following.)
      *
      * @param string $css CSS with comments removed
      *

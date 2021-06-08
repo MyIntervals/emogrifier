@@ -1612,7 +1612,10 @@ final class CssInlinerTest extends TestCase
         return [
             'CSS comments with one asterisk' => ['p {color: #000;/* black */}', 'black'],
             'CSS comments with two asterisks' => ['p {color: #000;/** black */}', 'black'],
-            '@charset directive' => ['@charset "UTF-8";', '@charset'],
+            '@charset rule' => ['@charset "UTF-8";', '@charset'],
+            'invalid @charset rule (uppercase identifier)' => ['@CHARSET "UTF-8";', '@'],
+            'invalid @charset rule (extra space)' => ['@charset  "UTF-8";', '@'],
+            'invalid @charset rule (unquoted value)' => ['@charset UTF-8;', '@'],
             'style in "aural" media type rule' => ['@media aural {p {color: #000;}}', '#000'],
             'style in "braille" media type rule' => ['@media braille {p {color: #000;}}', '#000'],
             'style in "embossed" media type rule' => ['@media embossed {p {color: #000;}}', '#000'],
@@ -1751,6 +1754,9 @@ final class CssInlinerTest extends TestCase
         $possibleCssBefore = $possibleSurroundingCss + [
                 '@import' => '@import "foo.css";',
                 '@charset' => '@charset "UTF-8";',
+                'invalid @charset (uppercase identifier)' => '@CHARSET "UTF-8";',
+                'invalid @charset (extra space)' => '@charset  "UTF-8";',
+                'invalid @charset (unquoted value)' => '@charset UTF-8;',
             ];
 
         /** @var array<string, array<int, string>> $datasetsSurroundingCss */
@@ -3390,6 +3396,21 @@ final class CssInlinerTest extends TestCase
                 '@import' => '@import "foo.css";',
                 'after' => '',
             ],
+            '@import after ignored invalid @charset (uppercase identifier)' => [
+                'before' => '@CHARSET "UTF-8";' . "\n",
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            '@import after ignored invalid @charset (extra space)' => [
+                'before' => '@charset  "UTF-8";' . "\n",
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
+            '@import after ignored invalid @charset (unquoted value)' => [
+                'before' => '@charset UTF-8;' . "\n",
+                '@import' => '@import "foo.css";',
+                'after' => '',
+            ],
             '@import followed by matching inlinable rule' => [
                 'before' => '',
                 '@import' => '@import "foo.css";',
@@ -3432,16 +3453,24 @@ final class CssInlinerTest extends TestCase
     public function provideInvalidImportRules(): array
     {
         return [
-            '@import after other rule' => [
+            '@import after matching style rule' => [
                 'p { color: red; }' . "\n"
                 . '@import "foo.css";',
             ],
-            '@import after @media rule' => [
+            '@import after non-matching style rule' => [
+                '.nonexistent { color: red; }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after matching @media rule' => [
                 '@media (max-width: 640px) { p { color: red; } }' . "\n"
                 . '@import "foo.css";',
             ],
-            '@import after incorrectly-cased @charset rule' => [
-                '@CHARSET "UTF-8";' . "\n"
+            '@import after non-matching @media rule' => [
+                '@media (max-width: 640px) { .nonexistent { color: red; } }' . "\n"
+                . '@import "foo.css";',
+            ],
+            '@import after (valid) @font-face rule' => [
+                '@font-face { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }' . "\n"
                 . '@import "foo.css";',
             ],
         ];
