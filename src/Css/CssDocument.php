@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Css;
 
+use Pelago\Emogrifier\CssParsing\StyleRule;
 use Sabberworm\CSS\CSSList\AtRuleBlockList as CssAtRuleBlockList;
 use Sabberworm\CSS\CSSList\Document as SabberwormCssDocument;
 use Sabberworm\CSS\Parser as CssParser;
@@ -51,13 +52,7 @@ class CssDocument
      *
      * @param array<array-key, string> $allowedMediaTypes
      *
-     * @return array<int, array{media: string, selectors: string, declarations: string}>
-     *         Array of string sub-arrays with the following keys:
-     *         - "media" (the media query string, e.g. "@media screen and (max-width: 480px)",
-     *           or an empty string if not from an `@media` rule);
-     *         - "selectors" (the CSS selector(s), e.g., "*" or "h1, h2");
-     *         - "declarations" (the semicolon-separated CSS declarations for that/those selector(s),
-     *           e.g., "color: red; height: 4px;").
+     * @return array<int, StyleRule>
      */
     public function getStyleRulesData(array $allowedMediaTypes): array
     {
@@ -70,16 +65,24 @@ class CssDocument
                     /** @var CssRenderable $nestedRule */
                     foreach ($rule->getContents() as $nestedRule) {
                         if ($nestedRule instanceof CssDeclarationBlock) {
-                            $ruleMatches[] = ['containingAtRule' => $containingAtRule, 'rule' => $nestedRule];
+                            $ruleMatches[] = new StyleRule(
+                                $containingAtRule,
+                                \implode(',', $nestedRule->getSelectors()),
+                                \implode('', $nestedRule->getRules())
+                            );
                         }
                     }
                 }
             } elseif ($rule instanceof CssDeclarationBlock) {
-                $ruleMatches[] = ['containingAtRule' => '', 'rule' => $rule];
+                $ruleMatches[] = new StyleRule(
+                    '',
+                    \implode(',', $rule->getSelectors()),
+                    \implode('', $rule->getRules())
+                );
             }
         }
 
-        return \array_map([self::class, 'createStyleRuleElement'], $ruleMatches);
+        return $ruleMatches;
     }
 
     /**
@@ -106,24 +109,6 @@ class CssDocument
         /** @var string $renderedRules */
         $renderedRules = $atRulesDocument->render();
         return $renderedRules;
-    }
-
-    /**
-     * @param array{containingAtRule: string, rule: CssDeclarationBlock} $ruleData
-     *        `containingAtRule` is an empty string if there is no such containing rule, otherwise it comprises the full
-     *        raw text before the opening brace of the containing rule, e.g. "@media screen and (max-width: 640px)".
-     *
-     * @return array{media: string, selectors: string, declarations: string}
-     *         For legacy reasons, the containing at-rule is currently named `media`, because this is the only nested
-     *         rule currently supported, but in theory it could represent any nested rule.
-     */
-    private static function createStyleRuleElement(array $ruleData): array
-    {
-        return [
-            'media' => $ruleData['containingAtRule'],
-            'selectors' => \implode(',', $ruleData['rule']->getSelectors()),
-            'declarations' => \implode('', $ruleData['rule']->getRules()),
-        ];
     }
 
     /**

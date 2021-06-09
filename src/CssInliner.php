@@ -582,26 +582,28 @@ class CssInliner extends AbstractHtmlProcessor
             'uninlinable' => [],
         ];
         foreach ($matches as $key => $cssRule) {
-            $cssDeclaration = \trim($cssRule['declarations']);
-            if ($cssDeclaration === '') {
+            if (!$cssRule->hasNonEmptyDeclarationsBlock()) {
                 continue;
             }
 
-            foreach (\explode(',', $cssRule['selectors']) as $selector) {
+            $mediaQuery = $cssRule->getMediaQuery();
+            $declarationsBlock = $cssRule->getDeclarationsBlock();
+            foreach ($cssRule->getSelectors() as $selector) {
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
                 $hasPseudoElement = \strpos($selector, '::') !== false;
                 $hasUnmatchablePseudo = $hasPseudoElement || $this->hasUnsupportedPseudoClass($selector);
 
                 $parsedCssRule = [
-                    'media' => $cssRule['media'],
-                    'selector' => \trim($selector),
+                    'media' => $mediaQuery,
+                    'selector' => $selector,
                     'hasUnmatchablePseudo' => $hasUnmatchablePseudo,
-                    'declarationsBlock' => $cssDeclaration,
+                    'declarationsBlock' => $declarationsBlock,
                     // keep track of where it appears in the file, since order is important
                     'line' => $key,
                 ];
-                $ruleType = ($cssRule['media'] === '' && !$hasUnmatchablePseudo) ? 'inlinable' : 'uninlinable';
+                $ruleType = (!$cssRule->hasNonEmptyMediaQuery() && !$hasUnmatchablePseudo)
+                    ? 'inlinable' : 'uninlinable';
                 $cssRules[$ruleType][] = $parsedCssRule;
             }
         }
