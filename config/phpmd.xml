@@ -36,7 +36,6 @@
     <rule ref="rulesets/design.xml/DevelopmentCodeFragment"/>
 
     <!--<rule ref="rulesets/naming.xml/ShortVariable"/>-->
-    <!--<rule ref="rulesets/naming.xml/LongVariable"/>-->
     <rule ref="rulesets/naming.xml/ShortMethodName"/>
     <rule ref="rulesets/naming.xml/ConstructorWithNameAsEnclosingClass"/>
     <rule ref="rulesets/naming.xml/ConstantNamingConventions"/>
