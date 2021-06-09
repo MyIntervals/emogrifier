@@ -363,6 +363,9 @@ final class CssDocumentTest extends TestCase
             '`@import`' => ['@import "foo.css";'],
             '`@font-face`' => [self::VALID_AT_FONT_FACE_RULE],
             '`@import` after `@charset`' => ['@import "foo.css";', '@charset "UTF-8";'],
+            '`@import` after invalid `@charset` (uppercase identifier)' => ['@import "foo.css";', '@CHARSET "UTF-8";'],
+            '`@import` after invalid `@charset` (extra space)' => ['@import "foo.css";', '@charset  "UTF-8";'],
+            '`@import` after invalid `@charset` (unquoted value)' => ['@import "foo.css";', '@charset UTF-8;'],
             '`@import` after `@import`' => ['@import "foo.css";', '@import "bar.css";'],
             '`@import` after space' => ['@import "foo.css";', ' '],
             '`@import` after line feed' => ['@import "foo.css";', "\n"],
@@ -413,14 +416,42 @@ final class CssDocumentTest extends TestCase
 
     /**
      * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideValidAtCharsetRules
+     * @dataProvider provideInvalidAtCharsetRules
      */
-    public function discardsAtCharsetRule(): void
+    public function discardsValidOrInvalidAtCharsetRule(string $css): void
     {
-        $subject = new CssDocument('@charset "UTF-8";');
+        $subject = new CssDocument($css);
 
         $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public function provideValidAtCharsetRules(): array
+    {
+        return [
+            'UTF-8' => ['@charset "UTF-8";'],
+            'iso-8859-15' => ['@charset "iso-8859-15";'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public function provideInvalidAtCharsetRules(): array
+    {
+        return [
+            'with uppercase identifier' => ['@CHARSET "UTF-8";'],
+            'with extra space' => ['@charset  "UTF-8";'],
+            'with unquoted value' => ['@charset UTF-8;'],
+        ];
     }
 
     /**
