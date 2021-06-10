@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifer\Tests\Unit;
 
+use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\CssDocument;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\CssSelector\CssSelectorConverter;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier;
 
+use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Utilities\CssConcatenator;
-use Pelago\Emogrifier\Utilities\CssDocument;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 

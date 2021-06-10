@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier\Tests\Unit\Utilities;
+namespace Pelago\Emogrifier\Tests\Unit\Css;
 
+use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\CssDocument;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Pelago\Emogrifier\Utilities\CssDocument
+ * @covers \Pelago\Emogrifier\Css\CssDocument
  */
 final class CssDocumentTest extends TestCase
 {

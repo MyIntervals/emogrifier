@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier\Utilities;
+namespace Pelago\Emogrifier\Css;
 
 use Sabberworm\CSS\CSSList\AtRuleBlockList as CssAtRuleBlockList;
 use Sabberworm\CSS\CSSList\Document as SabberwormCssDocument;
