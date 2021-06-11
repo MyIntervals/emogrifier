@@ -64,24 +64,17 @@ class CssDocument
         $ruleMatches = [];
         /** @var CssRenderable $rule */
         foreach ($this->sabberwormCssDocument->getContents() as $rule) {
-            if ($rule instanceof CssAtRuleBlockList && $rule->atRuleName() === 'media') {
-                /** @var string $mediaQueryList */
-                $mediaQueryList = $rule->atRuleArgs();
-                [$mediaType] = \explode('(', $mediaQueryList, 2);
-                if (\trim($mediaType) !== '') {
-                    $mediaTypesExpression = \implode('|', $allowedMediaTypes);
-                    if (!\preg_match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesExpression . ')/i', $mediaType)) {
-                        continue;
-                    }
-                }
-                $media = '@media ' . $mediaQueryList;
-                /** @var CssRenderable $nestedRule */
-                foreach ($rule->getContents() as $nestedRule) {
-                    if ($nestedRule instanceof CssDeclarationBlock) {
-                        $ruleMatches[] = [
-                            'media' => $media,
-                            'rule' => $nestedRule,
-                        ];
+            if ($rule instanceof CssAtRuleBlockList) {
+                $media = $this->getFilteredAtIdentifierAndRule($rule, $allowedMediaTypes);
+                if ($media !== null) {
+                    /** @var CssRenderable $nestedRule */
+                    foreach ($rule->getContents() as $nestedRule) {
+                        if ($nestedRule instanceof CssDeclarationBlock) {
+                            $ruleMatches[] = [
+                                'media' => $media,
+                                'rule' => $nestedRule,
+                            ];
+                        }
                     }
                 }
             } elseif ($rule instanceof CssDeclarationBlock) {
@@ -128,6 +121,43 @@ class CssDocument
         /** @var string $renderedRules */
         $renderedRules = $atRulesDocument->render();
         return $renderedRules;
+    }
+
+    /**
+     * @param CssAtRuleBlockList $rule
+     * @param array<array-key, string> $allowedMediaTypes
+     *
+     * @return ?string
+     *         If the nested at-rule is supported, it's opening declaration (e.g. "@media (max-width: 768px)") is
+     *         returned; otherwise the return value is null.
+     */
+    private function getFilteredAtIdentifierAndRule(CssAtRuleBlockList $rule, array $allowedMediaTypes): ?string
+    {
+        $result = null;
+
+        if ($rule->atRuleName() === 'media') {
+            /** @var string $mediaQueryList */
+            $mediaQueryList = $rule->atRuleArgs();
+            [$mediaType] = \explode('(', $mediaQueryList, 2);
+            if (\trim($mediaType) !== '') {
+                $escapedAllowedMediaTypes = \array_map(
+                    static function (string $allowedMediaType): string {
+                        return \preg_quote($allowedMediaType, '/');
+                    },
+                    $allowedMediaTypes
+                );
+                $mediaTypesMatcher = \implode('|', $escapedAllowedMediaTypes);
+                $isAllowed = \preg_match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesMatcher . ')/i', $mediaType) > 0;
+            } else {
+                $isAllowed = true;
+            }
+
+            if ($isAllowed) {
+                $result = '@media ' . $mediaQueryList;
+            }
+        }
+
+        return $result;
     }
 
     /**
