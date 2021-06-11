@@ -197,13 +197,18 @@ class CssDocument
 
         switch ($rule->atRuleName()) {
             case 'media':
-                return false;
+                $result = false;
+                break;
             case 'font-face':
-                return $rule instanceof CssRuleSet
+                $result = $rule instanceof CssRuleSet
                     && $rule->getRules('font-family') !== []
                     && $rule->getRules('src') !== [];
+                break;
             default:
-                return true;
+                $result = true;
+                break;
         }
+
+        return $result;
     }
 }
