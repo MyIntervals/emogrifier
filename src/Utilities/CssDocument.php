@@ -86,7 +86,12 @@ class CssDocument
         }
 
         return \array_map(
-            function (array $ruleMatch): array {
+            /**
+             * @param array{media: string, rule: CssDeclarationBlock} $ruleMatch
+             *
+             * @return array{media: string, selectors: string, declarations: string}
+             */
+            static function (array $ruleMatch): array {
                 return [
                     'media' => $ruleMatch['media'],
                     'selectors' => \implode(',', $ruleMatch['rule']->getSelectors()),
