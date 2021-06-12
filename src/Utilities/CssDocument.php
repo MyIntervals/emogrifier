@@ -65,41 +65,21 @@ class CssDocument
         /** @var CssRenderable $rule */
         foreach ($this->sabberwormCssDocument->getContents() as $rule) {
             if ($rule instanceof CssAtRuleBlockList) {
-                $media = $this->getFilteredAtIdentifierAndRule($rule, $allowedMediaTypes);
-                if ($media !== null) {
+                $containingAtRule = $this->getFilteredAtIdentifierAndRule($rule, $allowedMediaTypes);
+                if (\is_string($containingAtRule)) {
                     /** @var CssRenderable $nestedRule */
                     foreach ($rule->getContents() as $nestedRule) {
                         if ($nestedRule instanceof CssDeclarationBlock) {
-                            $ruleMatches[] = [
-                                'media' => $media,
-                                'rule' => $nestedRule,
-                            ];
+                            $ruleMatches[] = ['containingAtRule' => $containingAtRule, 'rule' => $nestedRule];
                         }
                     }
                 }
             } elseif ($rule instanceof CssDeclarationBlock) {
-                $ruleMatches[] = [
-                    'media' => '',
-                    'rule' => $rule,
-                ];
+                $ruleMatches[] = ['containingAtRule' => '', 'rule' => $rule];
             }
         }
 
-        return \array_map(
-            /**
-             * @param array{media: string, rule: CssDeclarationBlock} $ruleMatch
-             *
-             * @return array{media: string, selectors: string, declarations: string}
-             */
-            static function (array $ruleMatch): array {
-                return [
-                    'media' => $ruleMatch['media'],
-                    'selectors' => \implode(',', $ruleMatch['rule']->getSelectors()),
-                    'declarations' => \implode('', $ruleMatch['rule']->getRules()),
-                ];
-            },
-            $ruleMatches
-        );
+        return \array_map([self::class, 'createStyleRuleElement'], $ruleMatches);
     }
 
     /**
@@ -126,6 +106,24 @@ class CssDocument
         /** @var string $renderedRules */
         $renderedRules = $atRulesDocument->render();
         return $renderedRules;
+    }
+
+    /**
+     * @param array{containingAtRule: string, rule: CssDeclarationBlock} $ruleData
+     *        `containingAtRule` is an empty string if there is no such containing rule, otherwise it comprises the full
+     *        raw text before the opening brace of the containing rule, e.g. "@media screen and (max-width: 640px)".
+     *
+     * @return array{media: string, selectors: string, declarations: string}
+     *         For legacy reasons, the containing at-rule is currently named `media`, because this is the only nested
+     *         rule currently supported, but in theory it could represent any nested rule.
+     */
+    private static function createStyleRuleElement(array $ruleData): array
+    {
+        return [
+            'media' => $ruleData['containingAtRule'],
+            'selectors' => \implode(',', $ruleData['rule']->getSelectors()),
+            'declarations' => \implode('', $ruleData['rule']->getRules()),
+        ];
     }
 
     /**
@@ -206,7 +204,6 @@ class CssDocument
                 break;
             default:
                 $result = true;
-                break;
         }
 
         return $result;
