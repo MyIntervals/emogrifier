@@ -139,7 +139,8 @@
     <rule ref="PEAR.WhiteSpace.ScopeClosingBrace"/>
     <rule ref="Squiz.WhiteSpace.CastSpacing"/>
     <rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
-    <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
+    <!-- disabled until https://github.com/squizlabs/PHP_CodeSniffer/issues/3377 is fixed -->
+    <!-- <rule ref="Squiz.WhiteSpace.OperatorSpacing"/> -->
     <rule ref="Squiz.WhiteSpace.PropertyLabelSpacing"/>
     <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 </ruleset>
