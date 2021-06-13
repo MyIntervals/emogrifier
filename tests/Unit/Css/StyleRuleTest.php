@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier\Tests\Unit\CssParsing;
+namespace Pelago\Emogrifier\Tests\Unit\Css;
 
-use Pelago\Emogrifier\CssParsing\StyleRule;
+use Pelago\Emogrifier\Css\StyleRule;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Pelago\Emogrifier\CssParsing\StyleRule;
+ * @covers \Pelago\Emogrifier\Css\StyleRule;
  */
 final class StyleRuleTest extends TestCase
 {
@@ -18,7 +18,7 @@ final class StyleRuleTest extends TestCase
     public function getMediaQueryReturnsMediaQueryProvidedByConstructor(): void
     {
         $mediaQuery = '@media screen and (max-width: 480px)';
-        $rule = new StyleRule($mediaQuery, '*', 'color: black;');
+        $rule = new \Pelago\Emogrifier\Css\StyleRule($mediaQuery, '*', 'color: black;');
 
         self::assertSame($mediaQuery, $rule->getMediaQuery());
     }
@@ -29,7 +29,7 @@ final class StyleRuleTest extends TestCase
     public function getMediaQueryTrimsMediaQuery(): void
     {
         $mediaQuery = ' @media screen and (max-width: 480px) ';
-        $rule = new StyleRule($mediaQuery, '*', 'color: black;');
+        $rule = new \Pelago\Emogrifier\Css\StyleRule($mediaQuery, '*', 'color: black;');
 
         self::assertSame(\trim($mediaQuery), $rule->getMediaQuery());
     }
@@ -40,7 +40,7 @@ final class StyleRuleTest extends TestCase
     public function mediaQueryCanBeEmpty(): void
     {
         $mediaQuery = '';
-        $rule = new StyleRule($mediaQuery, '*', 'color: black;');
+        $rule = new \Pelago\Emogrifier\Css\StyleRule($mediaQuery, '*', 'color: black;');
 
         self::assertSame($mediaQuery, $rule->getMediaQuery());
     }
@@ -66,7 +66,7 @@ final class StyleRuleTest extends TestCase
      */
     public function hasNonEmptyMediaQueryForEmptyMediaQueryReturnsFalse(string $mediaQuery): void
     {
-        $rule = new StyleRule($mediaQuery, '*', 'color: black;');
+        $rule = new \Pelago\Emogrifier\Css\StyleRule($mediaQuery, '*', 'color: black;');
 
         self::assertFalse($rule->hasNonEmptyMediaQuery());
     }
@@ -92,7 +92,7 @@ final class StyleRuleTest extends TestCase
         $this->expectExceptionMessage('Please provide non-empty selectors.');
         $this->expectExceptionCode(1623263716);
 
-        new StyleRule('@media screen', $selectors, 'color: black;');
+        new \Pelago\Emogrifier\Css\StyleRule('@media screen', $selectors, 'color: black;');
     }
 
     /**
@@ -120,7 +120,7 @@ final class StyleRuleTest extends TestCase
      */
     public function getSelectorsReturnsSeparateSelectors(string $concatenatedSelectors, array $singleSelectors): void
     {
-        $rule = new StyleRule('', $concatenatedSelectors, 'color: black;');
+        $rule = new \Pelago\Emogrifier\Css\StyleRule('', $concatenatedSelectors, 'color: black;');
 
         self::assertSame($singleSelectors, $rule->getSelectors());
     }
@@ -131,7 +131,7 @@ final class StyleRuleTest extends TestCase
     public function getDeclarationsBlockReturnsDeclarationsBlockProvidedByConstructor(): void
     {
         $declarations = 'color: red; height: 4px;';
-        $rule = new StyleRule('', '*', $declarations);
+        $rule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
         self::assertSame($declarations, $rule->getDeclarationsBlock());
     }
@@ -142,7 +142,7 @@ final class StyleRuleTest extends TestCase
     public function getDeclarationsBlockTrimsDeclarationsBlock(): void
     {
         $declarations = ' color: red; height: 4px; ';
-        $rule = new StyleRule('', '*', $declarations);
+        $rule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
         self::assertSame(\trim($declarations), $rule->getDeclarationsBlock());
     }
@@ -165,7 +165,7 @@ final class StyleRuleTest extends TestCase
      */
     public function hasDeclarationsBlockForEmptyDeclarationsBlockReturnsFalse(string $declarations): void
     {
-        $styleRule = new StyleRule('', '*', $declarations);
+        $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
         self::assertFalse($styleRule->hasNonEmptyDeclarationsBlock());
     }
@@ -189,7 +189,7 @@ final class StyleRuleTest extends TestCase
      */
     public function hasDeclarationsBlockForNonEmptyDeclarationsBlockReturnsTrue(string $declarations): void
     {
-        $styleRule = new StyleRule('', '*', $declarations);
+        $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
         self::assertTrue($styleRule->hasNonEmptyDeclarationsBlock());
     }

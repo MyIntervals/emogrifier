@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier\CssParsing;
+namespace Pelago\Emogrifier\Css;
 
 /**
  * This class represents a CSS style rule, including a media query, selectors and a declarations block.
