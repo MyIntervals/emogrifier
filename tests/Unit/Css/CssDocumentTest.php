@@ -118,7 +118,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($declarations, $result[0]->getDeclarationsBlock());
+        self::assertEquivalentCss($declarations, $result[0]->getDeclarationBlock());
     }
 
     /**
@@ -180,7 +180,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        self::assertSameTrimmed($atMediaAndQuery, $result[0]->getMediaQuery());
+        self::assertSameTrimmed($atMediaAndQuery, $result[0]->getContainingAtRule());
     }
 
     /**
@@ -221,7 +221,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($atMediaAndQuery, $result[0]->getMediaQuery());
+        self::assertEquivalentCss($atMediaAndQuery, $result[0]->getContainingAtRule());
     }
 
     /**

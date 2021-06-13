@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Css;
 
-use Pelago\Emogrifier\Css\StyleRule;
 use Sabberworm\CSS\CSSList\AtRuleBlockList as CssAtRuleBlockList;
 use Sabberworm\CSS\CSSList\Document as SabberwormCssDocument;
 use Sabberworm\CSS\Parser as CssParser;

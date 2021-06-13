@@ -582,12 +582,12 @@ class CssInliner extends AbstractHtmlProcessor
             'uninlinable' => [],
         ];
         foreach ($matches as $key => $cssRule) {
-            if (!$cssRule->hasNonEmptyDeclarationsBlock()) {
+            if (!$cssRule->hasDeclarationBlock()) {
                 continue;
             }
 
-            $mediaQuery = $cssRule->getMediaQuery();
-            $declarationsBlock = $cssRule->getDeclarationsBlock();
+            $mediaQuery = $cssRule->getContainingAtRule();
+            $declarationsBlock = $cssRule->getDeclarationBlock();
             foreach ($cssRule->getSelectors() as $selector) {
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
@@ -602,8 +602,7 @@ class CssInliner extends AbstractHtmlProcessor
                     // keep track of where it appears in the file, since order is important
                     'line' => $key,
                 ];
-                $ruleType = (!$cssRule->hasNonEmptyMediaQuery() && !$hasUnmatchablePseudo)
-                    ? 'inlinable' : 'uninlinable';
+                $ruleType = (!$cssRule->hasContainingAtRule() && !$hasUnmatchablePseudo) ? 'inlinable' : 'uninlinable';
                 $cssRules[$ruleType][] = $parsedCssRule;
             }
         }
