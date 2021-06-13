@@ -75,7 +75,7 @@
         "ci:dynamic": [
             "@ci:tests"
         ],
-        "ci:php:fixer": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots --diff-format=udiff config/ src/ tests/",
+        "ci:php:fixer": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "\"./vendor/bin/parallel-lint\" config src tests",
         "ci:php:md": "@php \"./.phive/phpmd\" src text config/phpmd.xml",
         "ci:php:psalm": "@php \"./.phive/psalm\" --show-info=false",
