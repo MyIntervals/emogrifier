@@ -419,9 +419,9 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
-            /** @param array<int, string> $m */
-            static function (array $m): string {
-                return \strtolower($m[0]);
+            /** @param array<int, string> $propertyNameMatches */
+            static function (array $propertyNameMatches): string {
+                return \strtolower($propertyNameMatches[0]);
             },
             $node->getAttribute('style')
         );
@@ -609,11 +609,11 @@ class CssInliner extends AbstractHtmlProcessor
         \usort(
             $cssRules['inlinable'],
             /**
-             * @param array{selector: string, line: int} $a
-             * @param array{selector: string, line: int} $b
+             * @param array{selector: string, line: int} $first
+             * @param array{selector: string, line: int} $second
              */
-            function (array $a, array $b): int {
-                return $this->sortBySelectorPrecedence($a, $b);
+            function (array $first, array $second): int {
+                return $this->sortBySelectorPrecedence($first, $second);
             }
         );
 
@@ -668,21 +668,21 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * @param array{selector: string, line: int} $a
-     * @param array{selector: string, line: int} $b
+     * @param array{selector: string, line: int} $first
+     * @param array{selector: string, line: int} $second
      *
      * @return int
      */
-    private function sortBySelectorPrecedence(array $a, array $b): int
+    private function sortBySelectorPrecedence(array $first, array $second): int
     {
-        $precedenceA = $this->getCssSelectorPrecedence($a['selector']);
-        $precedenceB = $this->getCssSelectorPrecedence($b['selector']);
+        $precedenceOfFirst = $this->getCssSelectorPrecedence($first['selector']);
+        $precedenceOfSecond = $this->getCssSelectorPrecedence($second['selector']);
 
         // We want these sorted in ascending order so selectors with lesser precedence get processed first and
         // selectors with greater precedence get sorted last.
-        $precedenceForEquals = ($a['line'] < $b['line'] ? -1 : 1);
-        $precedenceForNotEquals = ($precedenceA < $precedenceB ? -1 : 1);
-        return ($precedenceA === $precedenceB) ? $precedenceForEquals : $precedenceForNotEquals;
+        $precedenceForEquals = $first['line'] < $second['line'] ? -1 : 1;
+        $precedenceForNotEquals = $precedenceOfFirst < $precedenceOfSecond ? -1 : 1;
+        return ($precedenceOfFirst === $precedenceOfSecond) ? $precedenceForEquals : $precedenceForNotEquals;
     }
 
     /**
