@@ -419,9 +419,9 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
-            /** @param array<int, string> $mixedCaseString */
-            static function (array $mixedCaseString): string {
-                return \strtolower($mixedCaseString[0]);
+            /** @param array<int, string> $propertyNameMatches */
+            static function (array $propertyNameMatches): string {
+                return \strtolower($propertyNameMatches[0]);
             },
             $node->getAttribute('style')
         );
