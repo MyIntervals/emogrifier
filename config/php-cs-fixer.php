@@ -58,6 +58,7 @@ return (new \PhpCsFixer\Config())
             'single_line_comment_style' => true,
 
             // constant notation
+            // (no rules used from this section)
 
             // control structure
             'elseif' => true,
@@ -87,6 +88,7 @@ return (new \PhpCsFixer\Config())
             'is_null' => true,
 
             // list notation
+            // (no rules used from this section)
 
             // namespace notation
             'no_leading_namespace_whitespace' => true,
