@@ -52,6 +52,7 @@ return (new \PhpCsFixer\Config())
             'no_php4_constructor' => true,
 
             // class usage
+            // (no rules used from this section)
 
             // comment
             'no_empty_comment' => true,
@@ -94,6 +95,7 @@ return (new \PhpCsFixer\Config())
             'no_leading_namespace_whitespace' => true,
 
             // naming
+            // (no rules used from this section)
 
             // operator
             'concat_space' => ['spacing' => 'one'],
