@@ -44,7 +44,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      */
-    public function canParsesMultipleSelectors(): void
+    public function canParseMultipleSelectors(): void
     {
         $css = 'h1, h2 { color: green; }';
         $subject = new CssDocument($css);
@@ -118,7 +118,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($declarations, $result[0]->getDeclarationBlock());
+        self::assertEquivalentCss($declarations, $result[0]->getDeclarationAsText());
     }
 
     /**

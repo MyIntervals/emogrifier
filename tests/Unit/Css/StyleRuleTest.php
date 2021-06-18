@@ -6,19 +6,108 @@ namespace Pelago\Emogrifier\Tests\Unit\Css;
 
 use Pelago\Emogrifier\Css\StyleRule;
 use PHPUnit\Framework\TestCase;
+use Sabberworm\CSS\Rule\Rule;
+use Sabberworm\CSS\RuleSet\DeclarationBlock;
 
 /**
- * @covers \Pelago\Emogrifier\Css\StyleRule;
+ * @covers \Pelago\Emogrifier\Css\StyleRule
  */
 final class StyleRuleTest extends TestCase
 {
+    /**
+     * @return array<string, array{0: array<int, string>, 1: string}>
+     */
+    public function provideSelectors(): array
+    {
+        return [
+            'single selector' => [['h1'], 'h1'],
+            'two selectors' => [['h1', 'p'], 'h1, p'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param array<int, string> $selectors
+     *
+     * @dataProvider provideSelectors
+     */
+    public function getSelectorsReturnsSelectorsProvidedInConstructor(array $selectors): void
+    {
+        $declarationBlock = new DeclarationBlock();
+        $declarationBlock->setSelectors($selectors);
+        $rule = new StyleRule($declarationBlock, '');
+
+        self::assertSame($selectors, $rule->getSelectors());
+    }
+
+    /**
+     * @test
+     */
+    public function hasAtLeastOneDeclarationForEmptyDeclarationBlockReturnsFalse(): void
+    {
+        $styleRule = new StyleRule(new DeclarationBlock(), '');
+
+        self::assertFalse($styleRule->hasAtLeastOneDeclaration());
+    }
+
+    /**
+     * @test
+     */
+    public function hasAtLeastOneDeclarationForDeclarationBlockWithOneRuleReturnsTrue(): void
+    {
+        $declarationBlock = new DeclarationBlock();
+        $declarationBlock->addRule(new Rule('color: black;'));
+        $styleRule = new StyleRule($declarationBlock, '');
+
+        self::assertTrue($styleRule->hasAtLeastOneDeclaration());
+    }
+
+    /**
+     * @return array<string, array{0: array<int, array{property: string, value: string}>, 1: string}>
+     */
+    public function provideDeclarations(): array
+    {
+        return [
+            'no rules' => [[], ''],
+            '1 rule' => [[['property' => 'color', 'value' => 'black']], 'color: black;'],
+            '2 rules' => [
+                [['property' => 'color', 'value' => 'black'], ['property' => 'border', 'value' => 'none']],
+                'color: black; border: none;',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param array<int, array{property: string, value: string}> $declarations
+     * @param string $expected
+     *
+     * @dataProvider provideDeclarations
+     */
+    public function getDeclarationAsTextReturnConcatenatedDeclarationsFromRules(
+        array $declarations,
+        string $expected
+    ): void {
+        $declarationBlock = new DeclarationBlock();
+        foreach ($declarations as $declaration) {
+            $rule = new Rule($declaration['property']);
+            $rule->setValue($declaration['value']);
+            $declarationBlock->addRule($rule);
+        }
+        $styleRule = new StyleRule($declarationBlock, '');
+
+        self::assertSame($expected, $styleRule->getDeclarationAsText());
+    }
+
     /**
      * @test
      */
     public function getContainingAtRuleReturnsContainingAtRuleProvidedByConstructor(): void
     {
         $containingAtRule = '@media screen and (max-width: 480px)';
-        $rule = new \Pelago\Emogrifier\Css\StyleRule($containingAtRule, '*', 'color: black;');
+        $rule = new StyleRule(new DeclarationBlock(), $containingAtRule);
 
         self::assertSame($containingAtRule, $rule->getContainingAtRule());
     }
@@ -29,7 +118,7 @@ final class StyleRuleTest extends TestCase
     public function getContainingAtRuleTrimsContainingAtRule(): void
     {
         $containingAtRule = ' @media screen and (max-width: 480px) ';
-        $rule = new \Pelago\Emogrifier\Css\StyleRule($containingAtRule, '*', 'color: black;');
+        $rule = new StyleRule(new DeclarationBlock(), $containingAtRule);
 
         self::assertSame(\trim($containingAtRule), $rule->getContainingAtRule());
     }
@@ -40,9 +129,19 @@ final class StyleRuleTest extends TestCase
     public function containingAtRuleCanBeEmpty(): void
     {
         $containingAtRule = '';
-        $rule = new \Pelago\Emogrifier\Css\StyleRule($containingAtRule, '*', 'color: black;');
+        $rule = new StyleRule(new DeclarationBlock(), $containingAtRule);
 
         self::assertSame($containingAtRule, $rule->getContainingAtRule());
+    }
+
+    /**
+     * @test
+     */
+    public function containingAtRuleByDefaultIsEmpty(): void
+    {
+        $rule = new StyleRule(new DeclarationBlock());
+
+        self::assertSame('', $rule->getContainingAtRule());
     }
 
     /**
@@ -66,7 +165,7 @@ final class StyleRuleTest extends TestCase
      */
     public function hasContainingAtRuleForEmptyContainingAtRuleReturnsFalse(string $containingAtRule): void
     {
-        $rule = new \Pelago\Emogrifier\Css\StyleRule($containingAtRule, '*', 'color: black;');
+        $rule = new StyleRule(new DeclarationBlock(), $containingAtRule);
 
         self::assertFalse($rule->hasContainingAtRule());
     }
@@ -76,121 +175,8 @@ final class StyleRuleTest extends TestCase
      */
     public function hasContainingAtRuleForNonEmptyContainingAtRuleReturnsTrue(): void
     {
-        $rule = new StyleRule('@media all', '*', 'color: black;');
+        $rule = new StyleRule(new DeclarationBlock(), '@media all');
 
         self::assertTrue($rule->hasContainingAtRule());
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider provideEmptyOrWhiteSpaceOnlyStrings
-     */
-    public function selectorsCannotBeEmpty(string $selectors): void
-    {
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Please provide non-empty selectors.');
-        $this->expectExceptionCode(1623263716);
-
-        new \Pelago\Emogrifier\Css\StyleRule('@media screen', $selectors, 'color: black;');
-    }
-
-    /**
-     * @return array<string, array{0: string, 1: array<int, string>}>
-     */
-    public function provideSelectors(): array
-    {
-        return [
-            'single selector' => ['h1', ['h1']],
-            'single selector with leading whitespace' => [' h1', ['h1']],
-            'single selector with trailing whitespace' => ['h1 ', ['h1']],
-            'two selectors without whitespace' => ['h1,p', ['h1', 'p']],
-            'two selectors with whitespace after the comma' => ['h1, p', ['h1', 'p']],
-            'two selectors with whitespace before the comma' => ['h1 ,p', ['h1', 'p']],
-        ];
-    }
-
-    /**
-     * @test
-     *
-     * @param string $concatenatedSelectors
-     * @param array<int, string> $singleSelectors
-     *
-     * @dataProvider provideSelectors
-     */
-    public function getSelectorsReturnsSeparateSelectors(string $concatenatedSelectors, array $singleSelectors): void
-    {
-        $rule = new \Pelago\Emogrifier\Css\StyleRule('', $concatenatedSelectors, 'color: black;');
-
-        self::assertSame($singleSelectors, $rule->getSelectors());
-    }
-
-    /**
-     * @test
-     */
-    public function getDeclarationBlockReturnsDeclarationBlockProvidedByConstructor(): void
-    {
-        $declarations = 'color: red; height: 4px;';
-        $rule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
-
-        self::assertSame($declarations, $rule->getDeclarationBlock());
-    }
-
-    /**
-     * @test
-     */
-    public function getDeclarationBlockTrimsDeclarationBlock(): void
-    {
-        $declarations = ' color: red; height: 4px; ';
-        $rule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
-
-        self::assertSame(\trim($declarations), $rule->getDeclarationBlock());
-    }
-
-    /**
-     * @test
-     */
-    public function declarationsCanBeEmpty(): void
-    {
-        $declarations = '';
-        $rule = new StyleRule('@media screen', '*', $declarations);
-
-        self::assertSame($declarations, $rule->getDeclarationBlock());
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider provideEmptyOrWhiteSpaceOnlyStrings
-     */
-    public function hasAtLeastOneDeclarationForEmptyDeclarationBlockReturnsFalse(string $declarations): void
-    {
-        $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
-
-        self::assertFalse($styleRule->hasAtLeastOneDeclaration());
-    }
-
-    /**
-     * @return array<string, array{0: string}>
-     */
-    public function provideNonEmptyDeclarationBlock(): array
-    {
-        return [
-            'non-empty' => ['color: black;'],
-            'non-empty with trailing whitespace' => ['color: black; '],
-            'non-empty with leading whitespace' => [' color: black;'],
-        ];
-    }
-
-    /**
-     * @test
-     *
-     * @dataProvider provideNonEmptyDeclarationBlock
-     */
-    public function hasAtLeastOneDeclarationForNonEmptyDeclarationBlockReturnsTrue(string $declarations): void
-    {
-        $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
-
-        self::assertTrue($styleRule->hasAtLeastOneDeclaration());
     }
 }

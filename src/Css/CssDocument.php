@@ -64,20 +64,12 @@ class CssDocument
                     /** @var CssRenderable $nestedRule */
                     foreach ($rule->getContents() as $nestedRule) {
                         if ($nestedRule instanceof CssDeclarationBlock) {
-                            $ruleMatches[] = new StyleRule(
-                                $containingAtRule,
-                                \implode(',', $nestedRule->getSelectors()),
-                                \implode('', $nestedRule->getRules())
-                            );
+                            $ruleMatches[] = new StyleRule($nestedRule, $containingAtRule);
                         }
                     }
                 }
             } elseif ($rule instanceof CssDeclarationBlock) {
-                $ruleMatches[] = new StyleRule(
-                    '',
-                    \implode(',', $rule->getSelectors()),
-                    \implode('', $rule->getRules())
-                );
+                $ruleMatches[] = new StyleRule($rule);
             }
         }
 

@@ -587,7 +587,7 @@ class CssInliner extends AbstractHtmlProcessor
             }
 
             $mediaQuery = $cssRule->getContainingAtRule();
-            $declarationsBlock = $cssRule->getDeclarationBlock();
+            $declarationsBlock = $cssRule->getDeclarationAsText();
             foreach ($cssRule->getSelectors() as $selector) {
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
