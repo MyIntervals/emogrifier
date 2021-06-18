@@ -582,7 +582,7 @@ class CssInliner extends AbstractHtmlProcessor
             'uninlinable' => [],
         ];
         foreach ($matches as $key => $cssRule) {
-            if (!$cssRule->hasDeclarationBlock()) {
+            if (!$cssRule->hasAtLeastOneDeclaration()) {
                 continue;
             }
 

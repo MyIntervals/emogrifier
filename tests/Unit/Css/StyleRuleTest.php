@@ -163,11 +163,11 @@ final class StyleRuleTest extends TestCase
      *
      * @dataProvider provideEmptyOrWhiteSpaceOnlyStrings
      */
-    public function hasDeclarationBlockForEmptyDeclarationBlockReturnsFalse(string $declarations): void
+    public function hasAtLeastOneDeclarationForEmptyDeclarationBlockReturnsFalse(string $declarations): void
     {
         $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
-        self::assertFalse($styleRule->hasDeclarationBlock());
+        self::assertFalse($styleRule->hasAtLeastOneDeclaration());
     }
 
     /**
@@ -187,10 +187,10 @@ final class StyleRuleTest extends TestCase
      *
      * @dataProvider provideNonEmptyDeclarationBlock
      */
-    public function hasDeclarationBlockForNonEmptyDeclarationBlockReturnsTrue(string $declarations): void
+    public function hasAtLeastOneDeclarationForNonEmptyDeclarationBlockReturnsTrue(string $declarations): void
     {
         $styleRule = new \Pelago\Emogrifier\Css\StyleRule('', '*', $declarations);
 
-        self::assertTrue($styleRule->hasDeclarationBlock());
+        self::assertTrue($styleRule->hasAtLeastOneDeclaration());
     }
 }

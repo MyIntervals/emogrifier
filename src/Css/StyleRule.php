@@ -77,9 +77,9 @@ class StyleRule
     }
 
     /**
-     * Checks whether the declaration block is non-empty and has any non-whitespace characters.
+     * Checks whether the declaration block has at least one non-empty declaration.
      */
-    public function hasDeclarationBlock(): bool
+    public function hasAtLeastOneDeclaration(): bool
     {
         return $this->getDeclarationBlock() !== '';
     }
