@@ -75,8 +75,9 @@ elements in the HTML, you can omit the `$css` parameter:
 $visualHtml = CssInliner::fromHtml($html)->inlineCss()->render();
 ```
 
-If you would like to get back only the content of the `<body>` element instead of
-the complete HTML document, you can use the `renderBodyContent` method instead:
+If you would like to get back only the content of the `<body>` element instead
+of the complete HTML document, you can use the `renderBodyContent` method
+instead:
 
 ```php
 $bodyContent = $visualHtml = CssInliner::fromHtml($html)->inlineCss()
