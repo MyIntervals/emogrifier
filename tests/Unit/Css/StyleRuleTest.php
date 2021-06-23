@@ -32,7 +32,7 @@ final class StyleRuleTest extends TestCase
      *
      * @dataProvider provideSelectors
      */
-    public function getSelectorsReturnsSelectorsProvidedInConstructor(array $selectors): void
+    public function getSelectorsReturnsSelectorsProvidedToConstructor(array $selectors): void
     {
         $declarationBlock = new DeclarationBlock();
         $declarationBlock->setSelectors($selectors);
@@ -86,7 +86,7 @@ final class StyleRuleTest extends TestCase
      *
      * @dataProvider provideDeclarations
      */
-    public function getDeclarationAsTextReturnConcatenatedDeclarationsFromRules(
+    public function getDeclarationAsTextReturnsConcatenatedDeclarationsFromRules(
         array $declarations,
         string $expected
     ): void {
@@ -104,7 +104,7 @@ final class StyleRuleTest extends TestCase
     /**
      * @test
      */
-    public function getContainingAtRuleReturnsContainingAtRuleProvidedByConstructor(): void
+    public function getContainingAtRuleReturnsContainingAtRuleProvidedToConstructor(): void
     {
         $containingAtRule = '@media screen and (max-width: 480px)';
         $rule = new StyleRule(new DeclarationBlock(), $containingAtRule);
