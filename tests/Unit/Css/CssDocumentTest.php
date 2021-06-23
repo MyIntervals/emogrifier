@@ -38,7 +38,21 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($selector, $result[0]['selectors']);
+        self::assertEquivalentCss($selector, $result[0]->getSelectors()[0]);
+    }
+
+    /**
+     * @test
+     */
+    public function canParseMultipleSelectors(): void
+    {
+        $css = 'h1, h2 { color: green; }';
+        $subject = new CssDocument($css);
+
+        $result = $subject->getStyleRulesData([]);
+
+        self::assertCount(1, $result);
+        self::assertSame(['h1', 'h2'], $result[0]->getSelectors());
     }
 
     /**
@@ -70,7 +84,6 @@ final class CssDocumentTest extends TestCase
             'child' => ['p > .classy'],
             'general sibling' => ['h1 ~ p'],
             'adjacent sibling' => ['h1 + p'],
-            'list' => ['h1, h2'],
         ];
     }
 
@@ -105,7 +118,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($declarations, $result[0]['declarations']);
+        self::assertEquivalentCss($declarations, $result[0]->getDeclarationAsText());
     }
 
     /**
@@ -167,7 +180,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        self::assertSameTrimmed($atMediaAndQuery, $result[0]['media']);
+        self::assertSameTrimmed($atMediaAndQuery, $result[0]->getContainingAtRule());
     }
 
     /**
@@ -208,7 +221,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData(['screen']);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($atMediaAndQuery, $result[0]['media']);
+        self::assertEquivalentCss($atMediaAndQuery, $result[0]->getContainingAtRule());
     }
 
     /**
