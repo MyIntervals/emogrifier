@@ -37,7 +37,7 @@ final class SimpleStringCacheTest extends TestCase
     /**
      * @test
      */
-    public function hasInitiallyIsFalseForAnyKey(): void
+    public function hasInitiallyReturnsFalseForAnyKey(): void
     {
         self::assertFalse($this->subject->has('hello'));
     }
@@ -112,12 +112,24 @@ final class SimpleStringCacheTest extends TestCase
     }
 
     /**
-     * @test
+     * @return array<string, array<int, string>>
      */
-    public function getForKeyThatHasBeenSetReturnsSetValue(): void
+    public function provideValues(): array
+    {
+        return [
+            'empty string' => [''],
+            'non-empty string' => ['hello'],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideValues
+     */
+    public function getForKeyThatHasBeenSetReturnsSetValue(string $value): void
     {
         $key = 'hello';
-        $value = 'world';
 
         $this->subject->set($key, $value);
 
@@ -127,25 +139,12 @@ final class SimpleStringCacheTest extends TestCase
     /**
      * @test
      */
-    public function getForKeyThatHasBeenSetTwiceReturnsValueThatHasBeenSetLast(): void
+    public function getForKeyThatHasBeenSetTwiceReturnsValueSetLast(): void
     {
         $key = 'hello';
         $value = 'world';
 
         $this->subject->set($key, 'coffee');
-        $this->subject->set($key, $value);
-
-        self::assertSame($value, $this->subject->get($key));
-    }
-
-    /**
-     * @test
-     */
-    public function setAndGetCanAlsoReturnEmptyString(): void
-    {
-        $key = 'hello';
-        $value = '';
-
         $this->subject->set($key, $value);
 
         self::assertSame($value, $this->subject->get($key));

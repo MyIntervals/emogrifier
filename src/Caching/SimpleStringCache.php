@@ -17,6 +17,8 @@ namespace Pelago\Emogrifier\Caching;
  *     $cachedValue = $cache->get($value);
  * }
  * ```
+ *
+ * @internal
  */
 class SimpleStringCache
 {
@@ -34,7 +36,7 @@ class SimpleStringCache
      */
     public function has(string $key): bool
     {
-        $this->checkForNonEmptyKey($key);
+        $this->assertNotEmptyKey($key);
 
         return isset($this->values[$key]);
     }
@@ -68,7 +70,7 @@ class SimpleStringCache
      */
     public function set(string $key, string $value): void
     {
-        $this->checkForNonEmptyKey($key);
+        $this->assertNotEmptyKey($key);
 
         $this->values[$key] = $value;
     }
@@ -76,7 +78,7 @@ class SimpleStringCache
     /**
      * @throws \InvalidArgumentException
      */
-    private function checkForNonEmptyKey(string $key): void
+    private function assertNotEmptyKey(string $key): void
     {
         if ($key === '') {
             throw new \InvalidArgumentException('Please provide a non-empty key.', 1625995840);
