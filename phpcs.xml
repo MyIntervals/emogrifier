@@ -39,6 +39,8 @@
   <rule ref="Squiz.Commenting.DocCommentAlignment"/>
   <rule ref="Squiz.Commenting.EmptyCatchComment"/>
   <rule ref="Squiz.Commenting.FunctionComment">
+    <exclude-pattern>*/tests/*</exclude-pattern>
+
     <!-- Allow no comment for self-describing parameter and exception class names. -->
     <exclude name="Squiz.Commenting.FunctionComment.MissingParamComment"/>
     <exclude name="Squiz.Commenting.FunctionComment.EmptyThrows"/>

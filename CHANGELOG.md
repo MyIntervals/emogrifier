@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add a dedicated class for caching (#1097)
 - Allow installation together with Symfony 6 (#1065)
 - Support more file types in the `.editorconfig` (#1035)
 - Set `align` attribute of `<th>` elements with `CssToAttributeConverter` (#1008)
