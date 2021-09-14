@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
 final class IsEquivalentCssTest extends TestCase
 {
     use CssDataProviders;
+
     use TestStringConstraint;
 
     /**

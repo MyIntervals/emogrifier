@@ -1,2 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@"/>
+<files psalm-version="4.x-dev@">
+  <file src="src/CssInliner.php">
+    <DocblockTypeContradiction occurrences="1">
+      <code>[]</code>
+    </DocblockTypeContradiction>
+    <MixedArgumentTypeCoercion occurrences="2"/>
+    <RedundantConditionGivenDocblockType occurrences="1">
+      <code>\is_array($pcreConstants)</code>
+    </RedundantConditionGivenDocblockType>
+    <UnnecessaryVarAnnotation occurrences="2">
+      <code>?string</code>
+      <code>string</code>
+    </UnnecessaryVarAnnotation>
+  </file>
+</files>
