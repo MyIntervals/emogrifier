@@ -419,7 +419,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $normalizedOriginalStyle = \preg_replace_callback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
-            /** @param array<int, string> $propertyNameMatches */
+            /** @param array<array-key, string> $propertyNameMatches */
             static function (array $propertyNameMatches): string {
                 return \strtolower($propertyNameMatches[0]);
             },
@@ -427,7 +427,6 @@ class CssInliner extends AbstractHtmlProcessor
         );
 
         // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
-        /** @var ?string $nodePath */
         $nodePath = $node->getNodePath();
         if (\is_string($nodePath) && !isset($this->styleAttributesForNodes[$nodePath])) {
             $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
@@ -521,7 +520,6 @@ class CssInliner extends AbstractHtmlProcessor
 
                 foreach ($matchingNodes as $node) {
                     if (!$node instanceof \DOMElement) {
-                        /** @var string $path */
                         $path = $node->getNodePath() ?? '$node';
                         throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
                     }
@@ -976,7 +974,7 @@ class CssInliner extends AbstractHtmlProcessor
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim(\preg_replace_callback(
             '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
-            /** @param array<int, string> $matches */
+            /** @param array<array-key, string> $matches */
             function (array $matches): string {
                 return $this->replaceUnmatchableNotComponent($matches);
             },
@@ -1013,7 +1011,7 @@ class CssInliner extends AbstractHtmlProcessor
      * Helps `removeUnmatchablePseudoComponents()` replace or remove a selector `:not(...)` component if its argument
      * contains pseudo-elements or dynamic pseudo-classes.
      *
-     * @param array<int, string> $matches array of elements matched by the regular expression
+     * @param array<array-key, string> $matches array of elements matched by the regular expression
      *
      * @return string
      *         the full match if there were no unmatchable pseudo components within; otherwise, any preceding combinator
@@ -1178,13 +1176,13 @@ class CssInliner extends AbstractHtmlProcessor
     private function logOrThrowPregLastError(): void
     {
         $pcreConstants = \get_defined_constants(true)['pcre'];
-        $pcreErrorConstantNames = \is_array($pcreConstants) ? \array_flip(\array_filter(
+        $pcreErrorConstantNames = \array_flip(\array_filter(
             $pcreConstants,
             static function (string $key): bool {
                 return \substr($key, -6) === '_ERROR';
             },
             ARRAY_FILTER_USE_KEY
-        )) : [];
+        ));
 
         $pregLastError = \preg_last_error();
         $message = 'PCRE regex execution error `' . (string)($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
