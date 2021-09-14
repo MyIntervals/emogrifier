@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add support for PHP 8.1 (#1103)
 - Add a dedicated class for caching (#1097)
 - Allow installation together with Symfony 6 (#1065)
 - Support more file types in the `.editorconfig` (#1035)
