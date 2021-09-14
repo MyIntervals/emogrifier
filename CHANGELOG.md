@@ -21,7 +21,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 
 ### Removed
 - Remove a redundant CSS data cache (#1018)
-- Drop support for Symfony 5.1 (#972)
+- Drop support for Symfony 5.1 and 5.2 (#972, #1104)
 - Drop support for PHP 7.1 (#967)
 
 ### Fixed
