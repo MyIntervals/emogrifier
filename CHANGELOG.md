@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Upgrade to PHPUnit 9 (#1112)
 
 ### Deprecated
 - Support for PHP 7.3 will be removed in Emogrifier 8.0.
