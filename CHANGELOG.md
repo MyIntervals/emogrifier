@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Only support up to 69 atomic expressions in a selector (#1113)
 - Require `sabberworm/php-css-parser:^8.4.0` (#1134)
 - Upgrade to PHPUnit 9 (#1112)
 
