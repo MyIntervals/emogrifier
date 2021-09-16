@@ -6,6 +6,19 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+
+### Changed
+
+### Deprecated
+- Support for PHP 7.3 will be removed in Emogrifier 8.0.
+
+### Removed
+
+### Fixed
+
+## 6.0.0
+
+### Added
 - Test with Symfony 6-dev (#1109)
 - Add support for PHP 8.1 (#1103)
 - Add a dedicated class for caching (#1097)
