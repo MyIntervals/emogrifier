@@ -52,7 +52,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "6.0.x-dev"
+            "dev-main": "7.0.x-dev"
         }
     },
     "autoload": {
