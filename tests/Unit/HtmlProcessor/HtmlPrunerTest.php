@@ -628,6 +628,6 @@ final class HtmlPrunerTest extends TestCase
      */
     private static function assertMinified(string $string): void
     {
-        self::assertNotRegExp('/^\\s|\\s{2}|\\s$/', $string);
+        self::assertDoesNotMatchRegularExpression('/^\\s|\\s{2}|\\s$/', $string);
     }
 }

@@ -1917,7 +1917,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertRegExp('/<head>.*<style.*<\\/head>/s', $subject->render());
+        self::assertMatchesRegularExpression('/<head>.*<style.*<\\/head>/s', $subject->render());
     }
 
     /**
@@ -1931,7 +1931,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss();
 
-        self::assertNotRegExp('/<body>.*<style/s', $subject->render());
+        self::assertDoesNotMatchRegularExpression('/<body>.*<style/s', $subject->render());
     }
 
     /**

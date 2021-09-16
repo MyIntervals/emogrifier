@@ -1238,7 +1238,7 @@ final class AbstractHtmlProcessorTest extends TestCase
             $needleMatcher
         );
 
-        self::assertRegExp('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
+        self::assertMatchesRegularExpression('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
     }
 
     /**
