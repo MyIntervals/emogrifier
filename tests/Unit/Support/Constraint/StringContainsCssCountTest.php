@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 final class StringContainsCssCountTest extends TestCase
 {
     use CssDataProviders;
-
     use TestStringConstraint;
 
     /**
