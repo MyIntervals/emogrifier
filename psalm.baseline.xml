@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@"/>
+<files psalm-version="4.x-dev@">
+  <file src="src/Css/CssDocument.php">
+    <ArgumentTypeCoercion occurrences="1">
+      <code>$atRules</code>
+    </ArgumentTypeCoercion>
+  </file>
+  <file src="tests/Unit/Css/StyleRuleTest.php">
+    <InvalidArgument occurrences="1">
+      <code>$declaration['value']</code>
+    </InvalidArgument>
+  </file>
+</files>

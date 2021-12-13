@@ -40,10 +40,7 @@ class CssDocument
      */
     public function __construct(string $css)
     {
-        $cssParser = new CssParser($css);
-        /** @var SabberwormCssDocument $sabberwormCssDocument */
-        $sabberwormCssDocument = $cssParser->parse();
-        $this->sabberwormCssDocument = $sabberwormCssDocument;
+        $this->sabberwormCssDocument = (new CssParser($css))->parse();
     }
 
     /**
@@ -97,9 +94,7 @@ class CssDocument
         $atRulesDocument = new SabberwormCssDocument();
         $atRulesDocument->setContents($atRules);
 
-        /** @var string $renderedRules */
-        $renderedRules = $atRulesDocument->render();
-        return $renderedRules;
+        return $atRulesDocument->render();
     }
 
     /**
@@ -115,7 +110,6 @@ class CssDocument
         $result = null;
 
         if ($rule->atRuleName() === 'media') {
-            /** @var string $mediaQueryList */
             $mediaQueryList = $rule->atRuleArgs();
             [$mediaType] = \explode('(', $mediaQueryList, 2);
             if (\trim($mediaType) !== '') {
