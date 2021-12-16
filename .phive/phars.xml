@@ -5,5 +5,5 @@
   <phar name="php-cs-fixer" version="^3.3.2" installed="3.3.2" location="./.phive/php-cs-fixer" copy="true"/>
   <phar name="phpcs" version="^3.6.1" installed="3.6.1" location="./.phive/phpcs" copy="true"/>
   <phar name="phpmd" version="^2.11.0" installed="2.11.0" location="./.phive/phpmd" copy="true"/>
-  <phar name="psalm" version="^4.10.0" installed="4.15.0" location="./.phive/psalm" copy="true"/>
+  <phar name="psalm" version="^4.15.0" installed="4.15.0" location="./.phive/psalm" copy="true"/>
 </phive>
