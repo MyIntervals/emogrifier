@@ -66,7 +66,9 @@ final class CssDocumentTest extends TestCase
             'class' => ['.classy'],
             'ID' => ['#toc'],
             'attribute (presence)' => ['[title]'],
-            'attribute (value match)' => ['[href=https://example.org]'],
+            // disabled as this currently breaks due to a bug in the CSS parser
+            // @see https://github.com/sabberworm/PHP-CSS-Parser/issues/347
+            // 'attribute (value match)' => ['[href=https://example.org]'],
             'attribute (word match)' => ['[class~=logo]'],
             'attribute (hyphenated prefix match)' => ['[lang|=de]'],
             'attribute (prefix match)' => ['[href^=#]'],
