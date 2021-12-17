@@ -1,13 +1,12 @@
 {
     "name": "pelago/emogrifier",
     "description": "Converts CSS styles into inline style attributes in your HTML code",
+    "license": "MIT",
     "keywords": [
         "email",
         "css",
         "pre-processing"
     ],
-    "homepage": "https://www.myintervals.com/emogrifier.php",
-    "license": "MIT",
     "authors": [
         {
             "name": "Oliver Klee",
@@ -32,6 +31,11 @@
             "name": "Jaime Prado"
         }
     ],
+    "homepage": "https://www.myintervals.com/emogrifier.php",
+    "support": {
+        "issues": "https://github.com/MyIntervals/emogrifier/issues",
+        "source": "https://github.com/MyIntervals/emogrifier"
+    },
     "require": {
         "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0",
         "ext-dom": "*",
@@ -44,6 +48,17 @@
         "phpunit/phpunit": "^9.5.9",
         "rawr/cross-data-providers": "^2.3.0"
     },
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Pelago\\Emogrifier\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Pelago\\Emogrifier\\Tests\\": "tests/"
+        }
+    },
     "config": {
         "preferred-install": {
             "*": "dist"
@@ -55,17 +70,6 @@
             "dev-main": "7.0.x-dev"
         }
     },
-    "autoload": {
-        "psr-4": {
-            "Pelago\\Emogrifier\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "Pelago\\Emogrifier\\Tests\\": "tests/"
-        }
-    },
-    "prefer-stable": true,
     "scripts": {
         "ci": [
             "@ci:static",
@@ -117,9 +121,5 @@
         "php:version": "Outputs the installed PHP version.",
         "psalm:baseline": "Updates the Psalm baseline file to match the code.",
         "psalm:cc": "Clears the Psalm cache."
-    },
-    "support": {
-        "issues": "https://github.com/MyIntervals/emogrifier/issues",
-        "source": "https://github.com/MyIntervals/emogrifier"
     }
 }
