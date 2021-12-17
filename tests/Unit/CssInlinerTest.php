@@ -1122,7 +1122,7 @@ final class CssInlinerTest extends TestCase
      *     < 2# < 2#+t < 2#+2t < 2#+. < 2#+.+t < 2#+.+2t < 2#+2. < 2#+2.+t < 2#+2.+2t
      * where '*' is the universal selector, 't' is a type selector, '.' is a class selector, and '#' is an ID selector.
      *
-     * Also confirm up to 99 class selectors are supported (much beyond this would require a more complex comparator).
+     * Also confirm up to 69 class selectors are supported (much beyond this would require a more complex comparator).
      *
      * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
      * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
@@ -1179,10 +1179,10 @@ final class CssInlinerTest extends TestCase
             $previousDescription = $description;
         }
 
-        // broken: class more specific than 99 types (requires support for chaining `:not(h1):not(h1)...`)
-        $datasets['ID more specific than 99 classes'] = [
+        // broken: class more specific than 69 types (requires support for chaining `:not(h1):not(h1)...`)
+        $datasets['ID more specific than 69 classes'] = [
             '<p class="p-4" id="p4"',
-            \str_repeat('.p-4', 99),
+            \str_repeat('.p-4', 69),
             '#p4',
         ];
 
