@@ -897,8 +897,8 @@ final class CssInlinerTest extends TestCase
             'child universal => not self' => ['body > * { %1$s }', '<body>'],
             'child universal => not grandchild' => ['body > * { %1$s }', '<span>'],
             'child of universal => not root element' => ['* > html { %1$s }', '<html>'],
-            'descendent universal => not parent' => ['p *', '<body>'],
-            'descendent universal => not self' => ['p *', '<p class="p-1">'],
+            'descendent universal => not parent' => ['p * { %1$s }', '<body>'],
+            'descendent universal => not self' => ['p * { %1$s }', '<p class="p-1">'],
             'descendant of universal => not root element' => ['* html { %1$s }', '<html>'],
             'descendent type & attribute value with ^ => not element with only substring match in attribute value' => [
                 'p span[title^=njo] { %1$s }',
@@ -3252,7 +3252,7 @@ final class CssInlinerTest extends TestCase
     public function inlineCssKeepsInlineStylePriorityVersusStyleBlockRules(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><head><style>p {padding:10px};</style></head><body><p style="padding-left:20px;"></p></body></html>'
+            '<html><head><style>p {padding:10px;}</style></head><body><p style="padding-left:20px;"></p></body></html>'
         );
 
         $subject->inlineCss();
