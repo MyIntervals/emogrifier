@@ -7,6 +7,8 @@ namespace Pelago\Emogrifier\Tests\Unit\Css;
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\TestCase;
+use Sabberworm\CSS\Parsing\UnexpectedEOFException;
+use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 
 /**
  * @covers \Pelago\Emogrifier\Css\CssDocument
@@ -33,7 +35,7 @@ final class CssDocumentTest extends TestCase
     public function parsesSelector(string $selector): void
     {
         $css = $selector . '{ color: green; }';
-        $subject = new CssDocument($css);
+        $subject = self::createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -47,7 +49,7 @@ final class CssDocumentTest extends TestCase
     public function canParseMultipleSelectors(): void
     {
         $css = 'h1, h2 { color: green; }';
-        $subject = new CssDocument($css);
+        $subject = self::createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -115,7 +117,7 @@ final class CssDocumentTest extends TestCase
     public function parsesDeclarations(string $declarations): void
     {
         $css = 'p {' . $declarations . '}';
-        $subject = new CssDocument($css);
+        $subject = self::createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -177,7 +179,7 @@ final class CssDocumentTest extends TestCase
     {
         $atMediaAndQuery = '@media ' . $mediaQuery;
         $css = $atMediaAndQuery . ' { p { color: green; } }';
-        $subject = new CssDocument($css);
+        $subject = self::createDebugSubject($css);
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -218,7 +220,7 @@ final class CssDocumentTest extends TestCase
         $atMediaAndQuery = '@media' . $whitespaceAfterAtMedia . 'screen';
         $css = $atMediaAndQuery . $optionalWhitespaceWithinRule
             . '{' . $optionalWhitespaceWithinRule . 'p { color: green; }' . $optionalWhitespaceWithinRule . '}';
-        $subject = new CssDocument($css);
+        $subject = self::createDebugSubject($css);
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -252,7 +254,7 @@ final class CssDocumentTest extends TestCase
      */
     public function discardsMediaRuleWithTypeNotInAllowlist(string $mediaQuery): void
     {
-        $subject = new CssDocument('@media ' . $mediaQuery . ' { p { color: red; } }');
+        $subject = self::createDebugSubject('@media ' . $mediaQuery . ' { p { color: red; } }');
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -296,7 +298,9 @@ final class CssDocumentTest extends TestCase
      */
     public function parsesMultipleStyleRulesWithOtherCssBetween(string $cssBetween): void
     {
-        $subject = new CssDocument('p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }');
+        $subject = self::createDebugSubject(
+            'p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }'
+        );
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -314,7 +318,7 @@ final class CssDocumentTest extends TestCase
      */
     public function parsesMultipleStyleRulesWithOtherCssBefore(string $cssBefore): void
     {
-        $subject = new CssDocument(
+        $subject = self::createDebugSubject(
             $cssBefore . 'p { color: green; } @media screen { h1 { color: green; } }'
         );
 
@@ -362,7 +366,7 @@ final class CssDocumentTest extends TestCase
      */
     public function rendersValidNonConditionalAtRule(string $atRuleCss, string $cssBefore = ''): void
     {
-        $subject = new CssDocument($cssBefore . $atRuleCss);
+        $subject = self::createDebugSubject($cssBefore . $atRuleCss);
 
         $result = $subject->renderNonConditionalAtRules();
 
@@ -403,7 +407,7 @@ final class CssDocumentTest extends TestCase
      */
     public function rendersMultipleNonConditionalAtRules(string $cssBetween): void
     {
-        $subject = new CssDocument('@import "foo.css";' . $cssBetween . self::VALID_AT_FONT_FACE_RULE);
+        $subject = self::createDebugSubject('@import "foo.css";' . $cssBetween . self::VALID_AT_FONT_FACE_RULE);
 
         $result = $subject->renderNonConditionalAtRules();
 
@@ -437,13 +441,50 @@ final class CssDocumentTest extends TestCase
      * @dataProvider provideValidAtCharsetRules
      * @dataProvider provideInvalidAtCharsetRules
      */
-    public function discardsValidOrInvalidAtCharsetRule(string $css): void
+    public function discardsValidOrInvalidAtCharsetRuleNotInDebugMode(string $css): void
     {
-        $subject = new CssDocument($css);
+        $subject = new CssDocument($css, false);
 
         $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideValidAtCharsetRules
+     */
+    public function discardsValidAtCharsetRuleInDebugMode(string $css): void
+    {
+        $subject = self::createDebugSubject($css);
+
+        $result = $subject->renderNonConditionalAtRules();
+
+        self::assertSame('', $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $css
+     *
+     * @dataProvider provideInvalidAtCharsetRules
+     */
+    public function throwsExceptionForOrDiscardsInvalidAtCharsetRuleInDebugMode(string $css): void
+    {
+        try {
+            $subject = self::createDebugSubject($css);
+
+            $result = $subject->renderNonConditionalAtRules();
+
+            self::assertSame('', $result);
+        } catch (UnexpectedEOFException $exception) {
+            // Passed test
+            self::expectNotToPerformAssertions();
+        }
     }
 
     /**
@@ -477,15 +518,41 @@ final class CssDocumentTest extends TestCase
      *
      * @dataProvider provideInvalidNonConditionalAtRule
      */
-    public function notRendersInvalidNonConditionalAtRule(string $atRuleCss, string $cssBefore = ''): void
+    public function discardsInvalidNonConditionalAtRuleNotInDebugMode(string $atRuleCss, string $cssBefore = ''): void
     {
-        $subject = new CssDocument($cssBefore . $atRuleCss);
+        $subject = new CssDocument($cssBefore . $atRuleCss, false);
 
         $result = $subject->renderNonConditionalAtRules();
 
         \preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
         $atAndRuleName = $atAndRuleNameMatches[0];
         self::assertStringNotContainsString($atAndRuleName, $result);
+    }
+
+    /**
+     * @test
+     *
+     * @param string $atRuleCss
+     * @param string $cssBefore
+     *
+     * @dataProvider provideInvalidNonConditionalAtRule
+     */
+    public function throwsExceptionForOrDiscardsInvalidNonConditionalAtRuleInDebugMode(
+        string $atRuleCss,
+        string $cssBefore = ''
+    ): void {
+        try {
+            $subject = self::createDebugSubject($cssBefore . $atRuleCss);
+
+            $result = $subject->renderNonConditionalAtRules();
+
+            \preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
+            $atAndRuleName = $atAndRuleNameMatches[0];
+            self::assertStringNotContainsString($atAndRuleName, $result);
+        } catch (UnexpectedTokenException $exception) {
+            // Passed test
+            self::expectNotToPerformAssertions();
+        }
     }
 
     /**
@@ -516,11 +583,16 @@ final class CssDocumentTest extends TestCase
      */
     public function notRendersAtMediaRuleInNonConditionalAtRules(): void
     {
-        $subject = new CssDocument('@media screen { p { color: red; } }');
+        $subject = self::createDebugSubject('@media screen { p { color: red; } }');
 
         $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
+    }
+
+    private static function createDebugSubject(string $css): CssDocument
+    {
+        return new CssDocument($css, true);
     }
 
     /**

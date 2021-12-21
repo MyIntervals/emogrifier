@@ -10,6 +10,7 @@ use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
+use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use TRegx\DataProvider\DataProviders;
@@ -1407,15 +1408,24 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array<int, string>>
      */
-    public function invalidDeclarationDataProvider(): array
+    public function provideInvalidDeclaration(): array
     {
         return [
             'missing dash in property name' => ['font weight: bold;'],
-            'invalid character in property name' => ['-9webkit-text-size-adjust:none;'],
             'missing :' => ['-webkit-text-size-adjust none'],
             'missing value' => ['-webkit-text-size-adjust :'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideDeclarationWithInvalidPropertyName(): array
+    {
+        return [
+            'invalid character in property name' => ['-9webkit-text-size-adjust:none;'],
         ];
     }
 
@@ -1424,15 +1434,32 @@ final class CssInlinerTest extends TestCase
      *
      * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
      *
-     * @dataProvider invalidDeclarationDataProvider
+     * @dataProvider provideInvalidDeclaration
+     * @dataProvider provideDeclarationWithInvalidPropertyName
      */
-    public function inlineCssDropsInvalidCssDeclaration(string $cssDeclarationBlock): void
+    public function inlineCssNotInDebugModeDropsInvalidCssDeclaration(string $cssDeclarationBlock): void
     {
-        $subject = $this->buildDebugSubject('<html></html>');
+        $subject = CssInliner::fromHtml('<html></html>');
 
         $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
 
         self::assertStringContainsString('<html>', $subject->render());
+    }
+
+    /**
+     * @test
+     *
+     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     *
+     * @dataProvider provideInvalidDeclaration
+     */
+    public function inlineCssInDebugModeForInvalidCssDeclarationThrowsException(string $cssDeclarationBlock): void
+    {
+        $this->expectException(UnexpectedTokenException::class);
+
+        $subject = $this->buildDebugSubject('<html></html>');
+
+        $subject->inlineCss('html {' . $cssDeclarationBlock . '}');
     }
 
     /**
@@ -1557,10 +1584,7 @@ final class CssInlinerTest extends TestCase
      */
     public function inlineCssInDebugModeForInvalidCssSelectorThrowsException(): void
     {
-        // @see https://github.com/sabberworm/PHP-CSS-Parser/issues/347
-        self::markTestSkipped('This test is disabled as it currently is failing due to a bug in the CSS parser.');
-
-        $this->expectException(SyntaxErrorException::class);
+        $this->expectException(UnexpectedTokenException::class);
 
         $subject = CssInliner::fromHtml(
             '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
@@ -3758,7 +3782,7 @@ final class CssInlinerTest extends TestCase
         $copyUninlinableCssToStyleNode->setAccessible(true);
 
         $domDocument = $subject->getDomDocument();
-        $cssDocument = new CssDocument('');
+        $cssDocument = new CssDocument('', true);
 
         $copyUninlinableCssToStyleNode->invoke($subject, $cssDocument);
         $expectedHtml = $subject->render();

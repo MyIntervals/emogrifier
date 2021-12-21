@@ -179,7 +179,7 @@ class CssInliner extends AbstractHtmlProcessor
         if ($this->isStyleBlocksParsingEnabled) {
             $combinedCss .= $this->getCssFromAllStyleNodes();
         }
-        $parsedCss = new CssDocument($combinedCss);
+        $parsedCss = new CssDocument($combinedCss, $this->debug);
 
         $excludedNodes = $this->getNodesToExclude();
         $cssRules = $this->collateCssRules($parsedCss);
