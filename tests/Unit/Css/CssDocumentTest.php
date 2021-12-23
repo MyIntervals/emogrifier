@@ -24,6 +24,11 @@ final class CssDocumentTest extends TestCase
         . '  font-family: "Foo Sans";' . "\n"
         . '  src: url("/foo-sans.woff2") format("woff2");' . "\n}";
 
+    private static function createDebugSubject(string $css): CssDocument
+    {
+        return new CssDocument($css, true);
+    }
+
     /**
      * @test
      *
@@ -436,8 +441,6 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider provideValidAtCharsetRules
      * @dataProvider provideInvalidAtCharsetRules
      */
@@ -453,8 +456,6 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider provideValidAtCharsetRules
      */
     public function discardsValidAtCharsetRuleInDebugMode(string $css): void
@@ -468,8 +469,6 @@ final class CssDocumentTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider provideInvalidAtCharsetRules
      */
@@ -512,9 +511,6 @@ final class CssDocumentTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $atRuleCss
-     * @param string $cssBefore
      *
      * @dataProvider provideInvalidNonConditionalAtRule
      */
@@ -588,11 +584,6 @@ final class CssDocumentTest extends TestCase
         $result = $subject->renderNonConditionalAtRules();
 
         self::assertSame('', $result);
-    }
-
-    private static function createDebugSubject(string $css): CssDocument
-    {
-        return new CssDocument($css, true);
     }
 
     /**

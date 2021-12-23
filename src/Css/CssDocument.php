@@ -13,6 +13,7 @@ use Sabberworm\CSS\Property\Import as CssImport;
 use Sabberworm\CSS\Renderable as CssRenderable;
 use Sabberworm\CSS\RuleSet\DeclarationBlock as CssDeclarationBlock;
 use Sabberworm\CSS\RuleSet\RuleSet as CssRuleSet;
+use Sabberworm\CSS\Settings as ParserSettings;
 
 /**
  * Parses and stores a CSS document from a string of CSS, and provides methods to obtain the CSS in parts or as data
@@ -36,7 +37,7 @@ class CssDocument
     private $isImportRuleAllowed = true;
 
     /**
-     * @param string $css
+     * @param string $css {@see https://github.com/squizlabs/PHP_CodeSniffer/issues/3521}
      * @param bool $debug
      *        If this is `true`, an exception will be thrown if invalid CSS is encountered.
      *        Otherwise the parser will try to do the best it can.
@@ -44,15 +45,23 @@ class CssDocument
     public function __construct(string $css, bool $debug)
     {
         // CSS Parser currently throws exception with nested at-rules (like `@media`) in strict parsing mode
-        // @see https://github.com/sabberworm/PHP-CSS-Parser/issues/127
-        $parserSettings = \Sabberworm\CSS\Settings::create()->withLenientParsing(
-            !$debug ||
-            \preg_match('/@(?:media|supports|(?:-webkit-|-moz-|-ms-|-o-)?+(keyframes|document))\\b/', $css) === 1
-        );
+        $parserSettings = ParserSettings::create()->withLenientParsing(!$debug || static::hasNestedAtRule($css));
 
         // CSS Parser currently throws exception with non-empty whitespace-only CSS in strict parsing mode, so `trim()`
         // @see https://github.com/sabberworm/PHP-CSS-Parser/issues/349
         $this->sabberwormCssDocument = (new CssParser(\trim($css), $parserSettings))->parse();
+    }
+
+    /**
+     * Tests if a string of CSS appears to contain an at-rule with nested rules
+     * (`@media`, `@supports`, `@keyframes`, `@document`,
+     * the latter two additionally with vendor prefixes that may commonly be used).
+     *
+     * @see https://github.com/sabberworm/PHP-CSS-Parser/issues/127
+     */
+    private static function hasNestedAtRule(string $css): bool
+    {
+        return \preg_match('/@(?:media|supports|(?:-webkit-|-moz-|-ms-|-o-)?+(keyframes|document))\\b/', $css) === 1;
     }
 
     /**
