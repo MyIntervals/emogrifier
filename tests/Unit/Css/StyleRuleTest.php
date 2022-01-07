@@ -8,6 +8,7 @@ use Pelago\Emogrifier\Css\StyleRule;
 use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Rule\Rule;
 use Sabberworm\CSS\RuleSet\DeclarationBlock;
+use Sabberworm\CSS\Value\RuleValueList;
 
 /**
  * @covers \Pelago\Emogrifier\Css\StyleRule
@@ -93,7 +94,9 @@ final class StyleRuleTest extends TestCase
         $declarationBlock = new DeclarationBlock();
         foreach ($declarations as $declaration) {
             $rule = new Rule($declaration['property']);
-            $rule->setValue($declaration['value']);
+            $value = new RuleValueList();
+            $value->addListComponent($declaration['value']);
+            $rule->setValue($value);
             $declarationBlock->addRule($rule);
         }
         $styleRule = new StyleRule($declarationBlock, '');
