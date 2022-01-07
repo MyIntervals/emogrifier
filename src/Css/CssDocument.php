@@ -83,7 +83,6 @@ class CssDocument
     public function renderNonConditionalAtRules(): string
     {
         $this->isImportRuleAllowed = true;
-        /** @var array<int, CssRenderable> $cssContents */
         $cssContents = $this->sabberwormCssDocument->getContents();
         $atRules = \array_filter($cssContents, [$this, 'isValidAtRuleToRender']);
 
