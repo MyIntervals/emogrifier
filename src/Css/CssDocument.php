@@ -37,7 +37,7 @@ class CssDocument
     private $isImportRuleAllowed = true;
 
     /**
-     * @param string $css {@see https://github.com/squizlabs/PHP_CodeSniffer/issues/3521}
+     * @param string $css
      * @param bool $debug
      *        If this is `true`, an exception will be thrown if invalid CSS is encountered.
      *        Otherwise the parser will try to do the best it can.
@@ -45,7 +45,7 @@ class CssDocument
     public function __construct(string $css, bool $debug)
     {
         // CSS Parser currently throws exception with nested at-rules (like `@media`) in strict parsing mode
-        $parserSettings = ParserSettings::create()->withLenientParsing(!$debug || static::hasNestedAtRule($css));
+        $parserSettings = ParserSettings::create()->withLenientParsing(!$debug || $this->hasNestedAtRule($css));
 
         // CSS Parser currently throws exception with non-empty whitespace-only CSS in strict parsing mode, so `trim()`
         // @see https://github.com/sabberworm/PHP-CSS-Parser/issues/349
@@ -59,7 +59,7 @@ class CssDocument
      *
      * @see https://github.com/sabberworm/PHP-CSS-Parser/issues/127
      */
-    private static function hasNestedAtRule(string $css): bool
+    private function hasNestedAtRule(string $css): bool
     {
         return \preg_match('/@(?:media|supports|(?:-webkit-|-moz-|-ms-|-o-)?+(keyframes|document))\\b/', $css) === 1;
     }

@@ -24,7 +24,7 @@ final class CssDocumentTest extends TestCase
         . '  font-family: "Foo Sans";' . "\n"
         . '  src: url("/foo-sans.woff2") format("woff2");' . "\n}";
 
-    private static function createDebugSubject(string $css): CssDocument
+    private function createDebugSubject(string $css): CssDocument
     {
         return new CssDocument($css, true);
     }
@@ -40,7 +40,7 @@ final class CssDocumentTest extends TestCase
     public function parsesSelector(string $selector): void
     {
         $css = $selector . '{ color: green; }';
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -54,7 +54,7 @@ final class CssDocumentTest extends TestCase
     public function canParseMultipleSelectors(): void
     {
         $css = 'h1, h2 { color: green; }';
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -122,7 +122,7 @@ final class CssDocumentTest extends TestCase
     public function parsesDeclarations(string $declarations): void
     {
         $css = 'p {' . $declarations . '}';
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->getStyleRulesData([]);
 
@@ -184,7 +184,7 @@ final class CssDocumentTest extends TestCase
     {
         $atMediaAndQuery = '@media ' . $mediaQuery;
         $css = $atMediaAndQuery . ' { p { color: green; } }';
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -225,7 +225,7 @@ final class CssDocumentTest extends TestCase
         $atMediaAndQuery = '@media' . $whitespaceAfterAtMedia . 'screen';
         $css = $atMediaAndQuery . $optionalWhitespaceWithinRule
             . '{' . $optionalWhitespaceWithinRule . 'p { color: green; }' . $optionalWhitespaceWithinRule . '}';
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -259,7 +259,7 @@ final class CssDocumentTest extends TestCase
      */
     public function discardsMediaRuleWithTypeNotInAllowlist(string $mediaQuery): void
     {
-        $subject = self::createDebugSubject('@media ' . $mediaQuery . ' { p { color: red; } }');
+        $subject = $this->createDebugSubject('@media ' . $mediaQuery . ' { p { color: red; } }');
 
         $result = $subject->getStyleRulesData(['screen']);
 
@@ -303,7 +303,7 @@ final class CssDocumentTest extends TestCase
      */
     public function parsesMultipleStyleRulesWithOtherCssBetween(string $cssBetween): void
     {
-        $subject = self::createDebugSubject(
+        $subject = $this->createDebugSubject(
             'p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }'
         );
 
@@ -323,7 +323,7 @@ final class CssDocumentTest extends TestCase
      */
     public function parsesMultipleStyleRulesWithOtherCssBefore(string $cssBefore): void
     {
-        $subject = self::createDebugSubject(
+        $subject = $this->createDebugSubject(
             $cssBefore . 'p { color: green; } @media screen { h1 { color: green; } }'
         );
 
@@ -371,7 +371,7 @@ final class CssDocumentTest extends TestCase
      */
     public function rendersValidNonConditionalAtRule(string $atRuleCss, string $cssBefore = ''): void
     {
-        $subject = self::createDebugSubject($cssBefore . $atRuleCss);
+        $subject = $this->createDebugSubject($cssBefore . $atRuleCss);
 
         $result = $subject->renderNonConditionalAtRules();
 
@@ -412,7 +412,7 @@ final class CssDocumentTest extends TestCase
      */
     public function rendersMultipleNonConditionalAtRules(string $cssBetween): void
     {
-        $subject = self::createDebugSubject('@import "foo.css";' . $cssBetween . self::VALID_AT_FONT_FACE_RULE);
+        $subject = $this->createDebugSubject('@import "foo.css";' . $cssBetween . self::VALID_AT_FONT_FACE_RULE);
 
         $result = $subject->renderNonConditionalAtRules();
 
@@ -460,7 +460,7 @@ final class CssDocumentTest extends TestCase
      */
     public function discardsValidAtCharsetRuleInDebugMode(string $css): void
     {
-        $subject = self::createDebugSubject($css);
+        $subject = $this->createDebugSubject($css);
 
         $result = $subject->renderNonConditionalAtRules();
 
@@ -472,18 +472,16 @@ final class CssDocumentTest extends TestCase
      *
      * @dataProvider provideInvalidAtCharsetRules
      */
-    public function throwsExceptionForOrDiscardsInvalidAtCharsetRuleInDebugMode(string $css): void
+    public function throwsExceptionForInvalidAtCharsetRuleInDebugMode(string $css): void
     {
-        try {
-            $subject = self::createDebugSubject($css);
+        $this->expectException(UnexpectedEOFException::class);
 
-            $result = $subject->renderNonConditionalAtRules();
+        $this->createDebugSubject($css);
 
-            self::assertSame('', $result);
-        } catch (UnexpectedEOFException $exception) {
-            // Passed test
-            self::expectNotToPerformAssertions();
-        }
+        self::markTestSkipped(
+            'This test is disabled as currently the CSS parser does not throw an exception in all cases.'
+            . ' Discarding of invalid rules in non-debug mode is already covered by other tests.'
+        );
     }
 
     /**
@@ -528,27 +526,20 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $atRuleCss
-     * @param string $cssBefore
-     *
      * @dataProvider provideInvalidNonConditionalAtRule
      */
-    public function throwsExceptionForOrDiscardsInvalidNonConditionalAtRuleInDebugMode(
+    public function throwsExceptionForInvalidNonConditionalAtRuleInDebugMode(
         string $atRuleCss,
         string $cssBefore = ''
     ): void {
-        try {
-            $subject = self::createDebugSubject($cssBefore . $atRuleCss);
+        $this->expectException(UnexpectedTokenException::class);
 
-            $result = $subject->renderNonConditionalAtRules();
+        $this->createDebugSubject($cssBefore . $atRuleCss);
 
-            \preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
-            $atAndRuleName = $atAndRuleNameMatches[0];
-            self::assertStringNotContainsString($atAndRuleName, $result);
-        } catch (UnexpectedTokenException $exception) {
-            // Passed test
-            self::expectNotToPerformAssertions();
-        }
+        self::markTestSkipped(
+            'This test is disabled as currently the CSS parser does not throw an exception in all cases.'
+            . ' Discarding of invalid rules in non-debug mode is already covered by other tests.'
+        );
     }
 
     /**
@@ -579,7 +570,7 @@ final class CssDocumentTest extends TestCase
      */
     public function notRendersAtMediaRuleInNonConditionalAtRules(): void
     {
-        $subject = self::createDebugSubject('@media screen { p { color: red; } }');
+        $subject = $this->createDebugSubject('@media screen { p { color: red; } }');
 
         $result = $subject->renderNonConditionalAtRules();
 
