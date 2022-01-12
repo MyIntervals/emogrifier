@@ -441,8 +441,9 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider provideValidAtCharsetRules
-     * @dataProvider provideInvalidAtCharsetRules
+     * @dataProvider provideValidAtCharsetRule
+     * @dataProvider provideInvalidAtCharsetRuleWhichCausesException
+     * @dataProvider provideInvalidAtCharsetRuleWhichDoesNotCauseException
      */
     public function discardsValidOrInvalidAtCharsetRuleNotInDebugMode(string $css): void
     {
@@ -456,7 +457,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider provideValidAtCharsetRules
+     * @dataProvider provideValidAtCharsetRule
      */
     public function discardsValidAtCharsetRuleInDebugMode(string $css): void
     {
@@ -470,7 +471,9 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider provideInvalidAtCharsetRules
+     * @dataProvider provideInvalidAtCharsetRuleWhichCausesException
+     *
+     * Invalid `@charset` rules which do not currently cause an exception not yet tested.
      */
     public function throwsExceptionForInvalidAtCharsetRuleInDebugMode(string $css): void
     {
@@ -487,7 +490,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @return array<string, array{0: string}>
      */
-    public function provideValidAtCharsetRules(): array
+    public function provideValidAtCharsetRule(): array
     {
         return [
             'UTF-8' => ['@charset "UTF-8";'],
@@ -498,19 +501,29 @@ final class CssDocumentTest extends TestCase
     /**
      * @return array<string, array{0: string}>
      */
-    public function provideInvalidAtCharsetRules(): array
+    public function provideInvalidAtCharsetRuleWhichCausesException(): array
+    {
+        return [
+            'with unquoted value' => ['@charset UTF-8;'],
+        ];
+    }
+
+    /**
+     * @return array<string, array{0: string}>
+     */
+    public function provideInvalidAtCharsetRuleWhichDoesNotCauseException(): array
     {
         return [
             'with uppercase identifier' => ['@CHARSET "UTF-8";'],
             'with extra space' => ['@charset  "UTF-8";'],
-            'with unquoted value' => ['@charset UTF-8;'],
         ];
     }
 
     /**
      * @test
      *
-     * @dataProvider provideInvalidNonConditionalAtRule
+     * @dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
+     * @dataProvider provideInvalidNonConditionalAtRuleWhichDoesNotCauseException
      */
     public function discardsInvalidNonConditionalAtRuleNotInDebugMode(string $atRuleCss, string $cssBefore = ''): void
     {
@@ -526,7 +539,9 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @dataProvider provideInvalidNonConditionalAtRule
+     * @dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
+     *
+     * Invalid non-conditional at-rules which do not currently cause an exception not yet tested.
      */
     public function throwsExceptionForInvalidNonConditionalAtRuleInDebugMode(
         string $atRuleCss,
@@ -535,17 +550,23 @@ final class CssDocumentTest extends TestCase
         $this->expectException(UnexpectedTokenException::class);
 
         $this->createDebugSubject($cssBefore . $atRuleCss);
-
-        self::markTestSkipped(
-            'This test is disabled as currently the CSS parser does not throw an exception in all cases.'
-            . ' Discarding of invalid rules in non-debug mode is already covered by other tests.'
-        );
     }
 
     /**
      * @return array<string, array<int, string>>
      */
-    public function provideInvalidNonConditionalAtRule(): array
+    public function provideInvalidNonConditionalAtRuleWhichCausesException(): array
+    {
+        return [
+            '`@charset` after style rule' => ['@charset "UTF-8";', 'p { color: red; }'],
+            '`@charset` after `@import` rule' => ['@charset "UTF-8";', '@import "foo.css";'],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function provideInvalidNonConditionalAtRuleWhichDoesNotCauseException(): array
     {
         return [
             '`@font-face` without `font-family`' => ['
@@ -558,8 +579,6 @@ final class CssDocumentTest extends TestCase
                   font-family: "Foo Sans";
                 }
             '],
-            '`@charset` after style rule' => ['@charset "UTF-8";', 'p { color: red; }'],
-            '`@charset` after `@import` rule' => ['@charset "UTF-8";', '@import "foo.css";'],
             '`@import` after style rule' => ['@import "foo.css";', 'p { color: red; }'],
             '`@import` after `@font-face` rule' => ['@import "foo.css";', self::VALID_AT_FONT_FACE_RULE],
         ];
