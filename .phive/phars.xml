@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="composer-normalize" version="^2.18.0" installed="2.18.0" location="./.phive/composer-normalize" copy="true"/>
+  <phar name="composer-normalize" version="^2.26.0" installed="2.26.0" location="./.phive/composer-normalize" copy="true"/>
   <phar name="phar-io/phive" version="^0.14.5" installed="0.14.5" location="./.phive/phive" copy="true"/>
   <phar name="php-cs-fixer" version="^3.4.0" installed="3.4.0" location="./.phive/php-cs-fixer" copy="true"/>
   <phar name="phpcs" version="^3.6.2" installed="3.6.2" location="./.phive/phpcs" copy="true"/>
