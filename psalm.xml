@@ -1,5 +1,6 @@
 <?xml version="1.0"?>
 <psalm
+  errorLevel="1"
   strictBinaryOperands="true"
   findUnusedCode="false"
   findUnusedVariablesAndParams="true"

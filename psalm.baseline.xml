@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="4.x-dev@">
+  <file src="src/CssInliner.php">
+    <PossiblyNullOperand occurrences="1">
+      <code>$styleNode-&gt;nodeValue</code>
+    </PossiblyNullOperand>
+  </file>
   <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
     <ArgumentTypeCoercion occurrences="1">
       <code>$this-&gt;prepareHtmlForDomConversion($html)</code>
