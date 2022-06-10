@@ -18,11 +18,11 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - 7.3
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
 
     steps:
       - name: Checkout
@@ -48,7 +48,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.4
+          - '7.4'
 
     steps:
       - name: Checkout
@@ -72,7 +72,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - 7.4
+          - '7.4'
 
     steps:
       - name: Checkout
@@ -104,7 +104,7 @@ jobs:
           - psalm
           - sniff
         php-version:
-          - 7.4
+          - '7.4'
 
     steps:
       - name: Checkout
@@ -142,11 +142,11 @@ jobs:
       fail-fast: false
       matrix:
         php-version:
-          - 7.3
-          - 7.4
-          - 8.0
-          - 8.1
-          - 8.2
+          - '7.3'
+          - '7.4'
+          - '8.0'
+          - '8.1'
+          - '8.2'
         dependencies:
           - lowest
           - highest
