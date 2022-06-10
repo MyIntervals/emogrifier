@@ -163,6 +163,10 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Fake PHP version for 8.2.
+        run: composer config platform.php 8.1.99
+        if: matrix.php-version == '8.2'
+
       - name: Cache dependencies installed with composer
         uses: actions/cache@v3
         with:
