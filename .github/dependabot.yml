@@ -7,3 +7,11 @@ updates:
     schedule:
       interval: "daily"
     milestone: 12
+
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    allow:
+      - dependency-type: "development"
+    versioning-strategy: "increase"
