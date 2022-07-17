@@ -4,6 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![License](https://poser.pugx.org/pelago/emogrifier/license.svg)](https://packagist.org/packages/pelago/emogrifier)
+[![Coverage Status](https://coveralls.io/repos/github/MyIntervals/emogrifier/badge.svg?branch=main)](https://coveralls.io/github/MyIntervals/emogrifier?branch=main)
 
 _n. e•mog•ri•fi•er [\ē-'mä-grƏ-,fī-Ər\] - a utility for changing completely the
 nature or appearance of HTML email, esp. in a particularly fantastic or bizarre
