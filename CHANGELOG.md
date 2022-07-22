@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Add support for PHP 8.2 (#1155)
 
 ### Changed
 - Throw exception with invalid CSS in debug mode (#1142)
