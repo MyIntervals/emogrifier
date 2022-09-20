@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
-  <phar name="composer-normalize" version="^2.26.0" installed="2.26.0" location="./.phive/composer-normalize" copy="true"/>
+  <phar name="composer-normalize" version="^2.28.3" installed="2.28.3" location="./.phive/composer-normalize" copy="true"/>
   <phar name="phar-io/phive" version="^0.14.5" installed="0.14.5" location="./.phive/phive" copy="true"/>
-  <phar name="php-cs-fixer" version="^3.4.0" installed="3.4.0" location="./.phive/php-cs-fixer" copy="true"/>
-  <phar name="phpcs" version="^3.6.2" installed="3.6.2" location="./.phive/phpcs" copy="true"/>
-  <phar name="phpmd" version="^2.11.0" installed="2.11.0" location="./.phive/phpmd" copy="true"/>
-  <phar name="psalm" version="^4.23.0" installed="4.23.0" location="./.phive/psalm" copy="true"/>
+  <phar name="php-cs-fixer" version="^3.11.0" installed="3.11.0" location="./.phive/php-cs-fixer" copy="true"/>
+  <phar name="phpcs" version="^3.7.1" installed="3.7.1" location="./.phive/phpcs" copy="true"/>
+  <phar name="phpmd" version="^2.13.0" installed="2.13.0" location="./.phive/phpmd" copy="true"/>
+  <phar name="psalm" version="^4.27.0" installed="4.27.0" location="./.phive/psalm" copy="true"/>
 </phive>
