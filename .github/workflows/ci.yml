@@ -34,6 +34,12 @@ jobs:
           php-version: ${{ matrix.php-version }}
           coverage: none
 
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
+
       - name: PHP Lint
         # Note: Unlike the "ci:php:lint" Composer script, we do not use the
         # "parallel-lint" tool here. This allows us to lint the files without
@@ -61,6 +67,12 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
+
       - name: Composer Validate
         run: composer validate --no-check-all --no-check-lock --strict
 
@@ -84,6 +96,12 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: none
+
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
 
       - name: Composer Normalize
         run: composer ci:composer:normalize
@@ -116,6 +134,12 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer:v2
           coverage: none
+
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v3
@@ -162,6 +186,12 @@ jobs:
           ini-values: xdebug.max_nesting_level=500
           tools: composer:v2
           coverage: none
+
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
 
       - name: Cache dependencies installed with composer
         uses: actions/cache@v3
