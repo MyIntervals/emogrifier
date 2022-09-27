@@ -25,3 +25,5 @@ nbproject
 /.phpunit.result.cache
 /vendor/
 composer.lock
+/.phive
+!/.phive/phars.xml
