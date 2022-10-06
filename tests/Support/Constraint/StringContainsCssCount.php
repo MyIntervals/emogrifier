@@ -33,8 +33,6 @@ final class StringContainsCssCount extends CssConstraint
      */
     public function __construct(int $count, string $css)
     {
-        parent::__construct();
-
         $this->count = $count;
         $this->css = $css;
         $this->cssPattern = '/' . self::getCssRegularExpressionMatcher($css) . '/';

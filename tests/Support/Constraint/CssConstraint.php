@@ -225,23 +225,4 @@ abstract class CssConstraint extends Constraint
 
         return $matcher;
     }
-
-    /**
-     * Invokes the parent class's constructor if there is one.  Since PHPUnit 8.x, `Constraint` (the parent class) does
-     * not have a defined constructor.  But...
-     *
-     * In PHP, a class that may be extended should have a defined constructor, even if it does nothing.
-     *
-     * That way, a child class that needs a constructor can explicitly call its parent's constructor.  If it could not,
-     * and then a newer version of the parent class needed a constructor, the newly added constructor would not be
-     * invoked implicitly during instantiation of the child class.  In that eventuality, the child class would also need
-     * updating, so there would be a compatibility issue, and potential for uncaught bugs if the child class's
-     * constructor was not updated.
-     */
-    protected function __construct()
-    {
-        if (\is_callable('parent::__construct')) {
-            parent::__construct();
-        }
-    }
 }

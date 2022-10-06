@@ -27,8 +27,6 @@ final class IsEquivalentCss extends CssConstraint
      */
     public function __construct(string $css)
     {
-        parent::__construct();
-
         $this->css = $css;
         $this->cssPattern = '/^\\s*+' . self::getCssRegularExpressionMatcher(\trim($css)) . '\\s*+$/';
     }
