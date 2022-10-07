@@ -94,7 +94,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: composer:v2
+          tools: composer:v2, phive
           coverage: none
 
       - name: Show the Composer version
@@ -102,6 +102,9 @@ jobs:
 
       - name: Show the Composer configuration
         run: composer config --global --list
+
+      - name: Install development tools
+        run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,A972B9ABB95D0B760B51442231C7E470E2138192,9882DD2B38813C08EA651B69A4E55EA12C7C085C,2DE50EB60C013FFFA831040D12CE0F1D262429A5
 
       - name: Composer Normalize
         run: composer ci:composer:normalize
@@ -132,7 +135,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: composer:v2
+          tools: composer:v2, phive
           coverage: none
 
       - name: Show the Composer version
@@ -151,6 +154,9 @@ jobs:
 
       - name: Install Composer dependencies
         run: composer install --no-progress
+
+      - name: Install development tools
+        run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,A972B9ABB95D0B760B51442231C7E470E2138192,9882DD2B38813C08EA651B69A4E55EA12C7C085C,2DE50EB60C013FFFA831040D12CE0F1D262429A5
 
       - name: Run Command
         run: composer ci:php:${{ matrix.command }}
