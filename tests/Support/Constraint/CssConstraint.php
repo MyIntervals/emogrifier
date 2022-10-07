@@ -240,7 +240,7 @@ abstract class CssConstraint extends Constraint
      */
     protected function __construct()
     {
-        if (\is_callable('parent::__construct')) {
+        if (\is_callable([parent::class, '__construct'])) {
             parent::__construct();
         }
     }
