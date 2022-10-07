@@ -22,6 +22,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Drop support for PHP 7.2 (#1111)
 
 ### Fixed
+- Bump the minimum Symfony 4.4 version to avoid PHP deprecation warnings (#1187)
 
 ## 6.0.0
 
