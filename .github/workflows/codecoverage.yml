@@ -1,0 +1,62 @@
+# https://help.github.com/en/categories/automating-your-workflow-with-github-actions
+
+name: Code coverage
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  code-coverage:
+    name: Code coverage
+
+    runs-on: ubuntu-22.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '8.1'
+        dependencies:
+          - highest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          ini-values: xdebug.max_nesting_level=500
+          tools: composer:v2
+          coverage: xdebug
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v3
+        with:
+          path: ~/.cache/composer
+          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+
+      - name: Install Composer dependencies
+        run: |
+          if [[ "${{ matrix.dependencies }}" == 'lowest' ]]; then
+            DEPENDENCIES='--prefer-lowest';
+          else
+            DEPENDENCIES='';
+          fi;
+          composer install --no-progress;
+          composer update --with-dependencies --no-progress "${DEPENDENCIES}";
+          composer show;
+
+      - name: Run Tests
+        run: composer ci:tests:coverage
+
+      - name: "Upload coverage results to Coveralls"
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./vendor/bin/php-coveralls --coverage_clover=coverage.xml -v
