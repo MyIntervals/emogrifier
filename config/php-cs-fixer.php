@@ -21,7 +21,7 @@ return (new \PhpCsFixer\Config())
             '@PHPUnit60Migration:risky' => true,
             '@PHPUnit75Migration:risky' => true,
             '@PHPUnit84Migration:risky' => true,
-            '@PSR12' => true,
+            '@PER' => true,
 
             // alias
             'no_alias_functions' => true,
