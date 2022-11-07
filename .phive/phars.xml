@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <phive xmlns="https://phar.io/phive">
   <phar name="composer-normalize" version="^2.28.3" installed="2.28.3" location="./.phive/composer-normalize" copy="false"/>
-  <phar name="php-cs-fixer" version="^3.11.0" installed="3.11.0" location="./.phive/php-cs-fixer" copy="false"/>
+  <phar name="php-cs-fixer" version="^3.13.0" installed="3.13.0" location="./.phive/php-cs-fixer" copy="false"/>
   <phar name="phpcs" version="^3.7.1" installed="3.7.1" location="./.phive/phpcs" copy="false"/>
   <phar name="phpmd" version="^2.13.0" installed="2.13.0" location="./.phive/phpmd" copy="false"/>
-  <phar name="psalm" version="^4.29.0" installed="4.29.0" location="./.phive/psalm" copy="false"/>
+  <phar name="psalm" version="^4.30.0" installed="4.30.0" location="./.phive/psalm" copy="false"/>
 </phive>
