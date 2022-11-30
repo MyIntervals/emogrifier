@@ -1,13 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="4.x-dev@">
+<files psalm-version="dev-master@">
   <file src="src/CssInliner.php">
-    <PossiblyNullOperand occurrences="1">
+    <InvalidArgument occurrences="1"/>
+    <MixedArgument occurrences="1">
+      <code>$styleNode</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="8">
+      <code>$matchingNodes</code>
+      <code>$node</code>
+      <code>$nodesMatchingCssSelectors</code>
+      <code>$nodesMatchingSelector</code>
+      <code>$parentNode</code>
+      <code>$path</code>
+      <code>$styleNode</code>
+      <code>$styleNodes</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>getNodePath</code>
+    </MixedMethodCall>
+    <MixedOperand occurrences="2">
+      <code>$path</code>
       <code>$styleNode-&gt;nodeValue</code>
-    </PossiblyNullOperand>
+    </MixedOperand>
+    <MixedPropertyFetch occurrences="3">
+      <code>$nodesMatchingSelector-&gt;length</code>
+      <code>$styleNode-&gt;nodeValue</code>
+      <code>$styleNode-&gt;parentNode</code>
+    </MixedPropertyFetch>
+    <RawObjectIteration occurrences="3">
+      <code>$matchingNodes</code>
+      <code>$nodesMatchingCssSelectors</code>
+      <code>$styleNodes</code>
+    </RawObjectIteration>
+    <ReservedWord occurrences="3">
+      <code>$matchingNodes</code>
+      <code>$nodesMatchingCssSelectors</code>
+      <code>$styleNodes</code>
+    </ReservedWord>
+    <UndefinedClass occurrences="1">
+      <code>$nodesMatchingSelector-&gt;length</code>
+    </UndefinedClass>
   </file>
-  <file src="src/HtmlProcessor/AbstractHtmlProcessor.php">
-    <ArgumentTypeCoercion occurrences="1">
-      <code>$this-&gt;prepareHtmlForDomConversion($html)</code>
-    </ArgumentTypeCoercion>
+  <file src="src/HtmlProcessor/CssToAttributeConverter.php">
+    <MixedInferredReturnType occurrences="1">
+      <code>\DOMNodeList</code>
+    </MixedInferredReturnType>
+    <MixedReturnStatement occurrences="1">
+      <code>$this-&gt;getXPath()-&gt;query('//*[@style]')</code>
+    </MixedReturnStatement>
+  </file>
+  <file src="src/HtmlProcessor/HtmlPruner.php">
+    <MixedArgument occurrences="2">
+      <code>$elementsWithClassAttribute</code>
+      <code>$elementsWithClassAttribute</code>
+    </MixedArgument>
+    <MixedAssignment occurrences="4">
+      <code>$element</code>
+      <code>$elementsWithClassAttribute</code>
+      <code>$elementsWithStyleDisplayNone</code>
+      <code>$parentNode</code>
+    </MixedAssignment>
+    <MixedMethodCall occurrences="1">
+      <code>removeChild</code>
+    </MixedMethodCall>
+    <MixedPropertyFetch occurrences="2">
+      <code>$element-&gt;parentNode</code>
+      <code>$elementsWithStyleDisplayNone-&gt;length</code>
+    </MixedPropertyFetch>
+    <RawObjectIteration occurrences="1">
+      <code>$elementsWithStyleDisplayNone</code>
+    </RawObjectIteration>
+    <ReservedWord occurrences="1">
+      <code>$elementsWithStyleDisplayNone</code>
+    </ReservedWord>
+    <UndefinedClass occurrences="1">
+      <code>$elementsWithStyleDisplayNone-&gt;length</code>
+    </UndefinedClass>
   </file>
 </files>
