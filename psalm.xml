@@ -2,6 +2,7 @@
 <psalm
   errorLevel="1"
   strictBinaryOperands="true"
+  findUnusedBaselineEntry="true"
   findUnusedCode="false"
   findUnusedVariablesAndParams="true"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
