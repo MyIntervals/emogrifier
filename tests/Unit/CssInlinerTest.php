@@ -3142,6 +3142,94 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param array<non-empty-string> $exludedSelectors
+     *
+     * @dataProvider excludedCssRuleDataProvider
+     */
+    public function addExcludedCssSelectorCanExcludeCssSelectors(
+        string $css,
+        array $exludedSelectors,
+        string $expectedInlineCss
+    ): void {
+        $subject = $this->buildDebugSubject('<html><body><section><div class="green"></div></section></body></html>');
+
+        foreach ($exludedSelectors as $exludedSelector) {
+            $subject->addExcludedCssSelector($exludedSelector);
+        }
+        $subject->inlineCss($css);
+
+        self::assertStringContainsString(
+            '<section><div class="green" style="' . $expectedInlineCss . '"></div></section>',
+            $subject->renderBodyContent()
+        );
+    }
+
+    /**
+     * @return array<array{non-empty-string, array<non-empty-string>, non-empty-string}>
+     */
+    public function excludedCssRuleDataProvider(): array
+    {
+        return [
+            'simple selector' => [
+                // CSS
+                '* { margin: 0; } .green { color: green; }',
+                // Exclude
+                ['*'],
+                // Expected inline CSS
+                'color: green;',
+            ],
+            'multiple selectors' => [
+                '*, div { border: solid 1px red; } .green { color: green; }',
+                ['*'],
+                'border: solid 1px red; color: green;',
+            ],
+            'descendant selector' => [
+                'section .green { color: green; } .green { border-color: green; }',
+                ['section .green'],
+                'border-color: green;',
+            ],
+            'descendant selector with line break' => [
+                "section\n\n\t.green { color: green; } .green { border-color: green; }",
+                ['section .green'],
+                'border-color: green;',
+            ],
+            'descendant selector with non standard spaces' => [
+                "section\u{a0}.green { color: green; } .green { border-color: green; }",
+                ['section .green'],
+                'border-color: green;',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     */
+    public function removeExcludedCssSelectorProvidesFluentInterface(): void
+    {
+        $subject = CssInliner::fromHtml('<html></html>');
+
+        $result = $subject->removeExcludedCssSelector('p.x');
+
+        self::assertSame($subject, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function removeExcludedCssSelectorGetsMatchingElementsToBeInlinedAgain(): void
+    {
+        $subject = $this->buildDebugSubject('<html><body><p class="x"></p></body></html>');
+        $subject->addExcludedCssSelector('p.x');
+
+        $subject->removeExcludedCssSelector('p.x');
+        $subject->inlineCss('p.x { margin: 0; }');
+
+        self::assertStringContainsString('<p class="x" style="margin: 0;"></p>', $subject->renderBodyContent());
+    }
+
+    /**
+     * @test
      */
     public function emptyMediaQueriesAreRemoved(): void
     {
