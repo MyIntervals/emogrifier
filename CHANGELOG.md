@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Re-establish support for PHP 7.2 (#1208)
 
 ### Deprecated
 
@@ -30,8 +31,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 - Support for PHP 7.3 will be removed in Emogrifier 8.0.
 
 ### Removed
-- Drop support for Symfony 3.x and 5.3 (#1120, #1162)
-- Drop support for PHP 7.2 (#1111)
 
 ### Fixed
 - Bump the minimum Symfony 4.4 version to avoid PHP deprecation warnings (#1187)
