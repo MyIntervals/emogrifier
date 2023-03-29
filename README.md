@@ -121,7 +121,6 @@ The `HtmlNormalizer` class normalizes the given HTML in the following ways:
 - add a document type (HTML5) if missing
 - disentangle incorrectly nested tags
 - add HEAD and BODY elements (if they are missing)
-- reformat the HTML
 
 The class can be used like this:
 
