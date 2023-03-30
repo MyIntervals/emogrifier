@@ -118,10 +118,10 @@ final class AbstractHtmlProcessorTest extends TestCase
 <html lang="en">
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-        <title>Word Word</title>
+        <title>Hello world</title>
     </head>
     <body>
-       <li><em>Word</em>. Word</li>
+       <li><em>Hello</em> world</li>
     </body>
 </html>
 HTML;
