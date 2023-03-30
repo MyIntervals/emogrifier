@@ -18,7 +18,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## 8.0.0
 
 ### Changed
-- Disable HTML formatting by default (https://github.com/MyIntervals/emogrifier/pull/1214)
+- Disable HTML formatting by default (#1214)
 
 ## 7.0.0
 
