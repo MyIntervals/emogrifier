@@ -121,7 +121,7 @@ final class AbstractHtmlProcessorTest extends TestCase
         <title>Word Word</title>
     </head>
     <body>
-       <li><span>Word</span>. Word</li>
+       <li><em>Word</em>. Word</li>
     </body>
 </html>
 HTML;
