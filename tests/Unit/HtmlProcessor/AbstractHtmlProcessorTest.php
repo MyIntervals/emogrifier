@@ -111,6 +111,30 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
+    public function renderPreservesOriginalHtmlFormatting(): void
+    {
+        $rawHtml = <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>Word Word</title>
+    </head>
+    <body>
+       <li><span>Word</span>. Word</li>
+    </body>
+</html>
+HTML;
+
+        $subject = TestingHtmlProcessor::fromHtml($rawHtml);
+        $renderedHtml = $subject->render();
+
+        self::assertEqualsHtml($rawHtml, $renderedHtml);
+    }
+
+    /**
+     * @test
+     */
     public function fromHtmlWithEmptyStringThrowsException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
