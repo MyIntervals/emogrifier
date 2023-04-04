@@ -113,18 +113,15 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     public function renderPreservesOriginalHtmlFormatting(): void
     {
-        $rawHtml = '<!DOCTYPE html>
-                    <html lang="en">
-                        <head>
-                            <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-                            <title>Hello world</title>
-                        </head>
-                        <body>
-                            <ul>
-                                <li><em>Hello</em> world</li>
-                            </ul>
-                        </body>
-                    </html>';
+        $rawHtml = "<!DOCTYPE html>\n" .
+            "<html>\n" .
+            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
+            "<body>\n" .
+            "<ul>\n" .
+            "<li><em>Hello</em> world</li>\n" .
+            "</ul>\n" .
+            "</body>\n" .
+            '</html>';
 
         $subject = TestingHtmlProcessor::fromHtml($rawHtml);
         $renderedHtml = $subject->render();
