@@ -8,17 +8,13 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Added
 
 ### Changed
+- Disable HTML formatting by default (#1214)
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
-
-## 8.0.0
-
-### Changed
-- Disable HTML formatting by default (#1214)
 
 ## 7.0.0
 
