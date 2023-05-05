@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.6.0@e784128902dfe01d489c4123d69918a9f3c1eac5">
+<files psalm-version="5.11.0@c9b192ab8400fdaf04b2b13d110575adc879aa90">
   <file src="src/CssInliner.php">
     <InvalidArgument>
-      <code>\usort(
+      <code><![CDATA[\usort(
             $cssRules['inlinable'],
             /**
              * @param array{selector: string, line: int} $first
              * @param array{selector: string, line: int} $second
              */
             function (array $first, array $second): int {
-                return $this-&gt;sortBySelectorPrecedence($first, $second);
+                return $this->sortBySelectorPrecedence($first, $second);
             }
-        )</code>
+        )]]></code>
     </InvalidArgument>
     <PossiblyNullOperand>
-      <code>$styleNode-&gt;nodeValue</code>
+      <code><![CDATA[$styleNode->nodeValue]]></code>
     </PossiblyNullOperand>
+  </file>
+  <file src="tests/Support/Constraint/CssConstraint.php">
+    <DirectConstructorCall>
+      <code>parent::__construct()</code>
+    </DirectConstructorCall>
   </file>
 </files>
