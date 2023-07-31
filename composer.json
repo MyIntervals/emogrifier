@@ -37,7 +37,7 @@
         "source": "https://github.com/MyIntervals/emogrifier"
     },
     "require": {
-        "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0",
+        "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
         "ext-dom": "*",
         "ext-libxml": "*",
         "sabberworm/php-css-parser": "^8.4.0",
