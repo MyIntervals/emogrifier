@@ -834,7 +834,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<array-key, array<int, string>>
      */
     public function provideContentTypeMetaTag(): array
     {
@@ -860,7 +860,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<array-key, array<int, string>>
      */
     public function provideHtmlAroundContentType(): array
     {
