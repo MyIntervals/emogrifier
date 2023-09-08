@@ -18,7 +18,7 @@ final class IsEquivalentCss extends CssConstraint
     private $css;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $cssPattern;
 

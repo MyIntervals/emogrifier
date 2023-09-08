@@ -1146,7 +1146,7 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * This method only supports strings, not arrays of strings.
      *
-     * @param string $pattern
+     * @param non-empty-string $pattern
      * @param string $replacement
      * @param string $subject
      *
