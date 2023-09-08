@@ -23,7 +23,7 @@ final class StringContainsCssCount extends CssConstraint
     private $css;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $cssPattern;
 

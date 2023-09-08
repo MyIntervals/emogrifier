@@ -18,7 +18,7 @@ final class StringContainsCss extends CssConstraint
     private $css;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private $cssPattern;
 
