@@ -75,15 +75,15 @@
             "@ci:static",
             "@ci:dynamic"
         ],
-        "ci:composer:normalize": "@php \"./.phive/composer-normalize\" --dry-run",
+        "ci:composer:normalize": "\"./.phive/composer-normalize\" --dry-run",
         "ci:dynamic": [
             "@ci:tests"
         ],
-        "ci:php:fixer": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
+        "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "\"./vendor/bin/parallel-lint\" config src tests",
-        "ci:php:md": "@php \"./.phive/phpmd\" src text config/phpmd.xml",
-        "ci:php:psalm": "@php \"./.phive/psalm\" --show-info=false",
-        "ci:php:sniff": "@php \"./.phive/phpcs\" config src tests",
+        "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
+        "ci:php:psalm": "\"./.phive/psalm\" --show-info=false",
+        "ci:php:sniff": "\"./.phive/phpcs\" config src tests",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
@@ -97,11 +97,11 @@
         ],
         "ci:tests:sof": "@php \"./vendor/bin/phpunit\" --stop-on-failure --do-not-cache-result",
         "ci:tests:unit": "@php \"./vendor/bin/phpunit\" --do-not-cache-result",
-        "composer:normalize": "@php \"./.phive/composer-normalize\" --no-check-lock",
-        "php:fix": "@php \"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
+        "php:fix": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "psalm:baseline": "@php \"./.phive/psalm\" --set-baseline=psalm.baseline.xml",
-        "psalm:cc": "@php \"./.phive/psalm\" --clear-cache"
+        "psalm:baseline": "\"./.phive/psalm\" --set-baseline=psalm.baseline.xml",
+        "psalm:cc": "\"./.phive/psalm\" --clear-cache"
     },
     "scripts-descriptions": {
         "ci": "Runs all dynamic and static code checks.",
