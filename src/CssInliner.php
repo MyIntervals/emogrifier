@@ -492,7 +492,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         $css = '';
         foreach ($styleNodes as $styleNode) {
-            if ($styleNode->nodeValue !== null) {
+            if (\is_string($styleNode->nodeValue)) {
                 $css .= "\n\n" . $styleNode->nodeValue;
             }
             $parentNode = $styleNode->parentNode;
