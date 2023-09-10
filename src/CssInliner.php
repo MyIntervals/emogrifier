@@ -463,7 +463,7 @@ class CssInliner extends AbstractHtmlProcessor
 
         $properties = [];
         foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
-            /** @var array<int, string> $matches */
+            /** @var list<string> $matches */
             $matches = [];
             if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
                 continue;
@@ -505,7 +505,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * Find the nodes that are not to be emogrified.
      *
-     * @return array<int, \DOMElement>
+     * @return list<\DOMElement>
      *
      * @throws ParseException
      * @throws \UnexpectedValueException
