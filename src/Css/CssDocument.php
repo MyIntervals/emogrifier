@@ -69,7 +69,7 @@ class CssDocument
      *
      * @param array<array-key, string> $allowedMediaTypes
      *
-     * @return array<int, StyleRule>
+     * @return list<StyleRule>
      */
     public function getStyleRulesData(array $allowedMediaTypes): array
     {
