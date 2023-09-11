@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="5.11.0@c9b192ab8400fdaf04b2b13d110575adc879aa90">
   <file src="src/CssInliner.php">
-    <InvalidArgument>
-      <code><![CDATA[\usort(
-            $cssRules['inlinable'],
-            /**
-             * @param array{selector: string, line: int} $first
-             * @param array{selector: string, line: int} $second
-             */
-            function (array $first, array $second): int {
-                return $this->sortBySelectorPrecedence($first, $second);
-            }
-        )]]></code>
-    </InvalidArgument>
     <PossiblyNullOperand>
       <code><![CDATA[$styleNode->nodeValue]]></code>
     </PossiblyNullOperand>

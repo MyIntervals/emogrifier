@@ -608,8 +608,8 @@ class CssInliner extends AbstractHtmlProcessor
         \usort(
             $cssRules['inlinable'],
             /**
-             * @param array{selector: string, line: int} $first
-             * @param array{selector: string, line: int} $second
+             * @param array{selector: string, line: int, ...} $first
+             * @param array{selector: string, line: int, ...} $second
              */
             function (array $first, array $second): int {
                 return $this->sortBySelectorPrecedence($first, $second);
@@ -667,8 +667,8 @@ class CssInliner extends AbstractHtmlProcessor
     }
 
     /**
-     * @param array{selector: string, line: int} $first
-     * @param array{selector: string, line: int} $second
+     * @param array{selector: string, line: int, ...} $first
+     * @param array{selector: string, line: int, ...} $second
      *
      * @return int
      */
