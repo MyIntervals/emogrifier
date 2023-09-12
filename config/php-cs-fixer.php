@@ -72,7 +72,7 @@ return (new \PhpCsFixer\Config())
             'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
 
             // function notation
-            'function_typehint_space' => true,
+            'type_declaration_spaces' => ['elements' => ['function', 'property']],
             'native_function_invocation' => ['include' => ['@all']],
             'no_spaces_after_function_name' => true,
             'return_type_declaration' => ['space_before' => 'none'],
@@ -149,7 +149,7 @@ return (new \PhpCsFixer\Config())
             // whitespace
             'compact_nullable_typehint' => true,
             'no_extra_blank_lines' => true,
-            'no_spaces_inside_parenthesis' => true,
+            'spaces_inside_parentheses' => ['space' => 'none'],
             'no_whitespace_in_blank_line' => true,
         ]
     );
