@@ -492,7 +492,9 @@ class CssInliner extends AbstractHtmlProcessor
 
         $css = '';
         foreach ($styleNodes as $styleNode) {
-            $css .= "\n\n" . $styleNode->nodeValue;
+            if (\is_string($styleNode->nodeValue)) {
+                $css .= "\n\n" . $styleNode->nodeValue;
+            }
             $parentNode = $styleNode->parentNode;
             if ($parentNode instanceof \DOMNode) {
                 $parentNode->removeChild($styleNode);
