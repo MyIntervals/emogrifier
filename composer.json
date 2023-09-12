@@ -44,9 +44,9 @@
         "symfony/css-selector": "^4.4.23 || ^5.4.0 || ^6.0.0"
     },
     "require-dev": {
-        "php-parallel-lint/php-parallel-lint": "^1.3.2",
-        "phpunit/phpunit": "^9.6.11",
-        "rawr/cross-data-providers": "^2.3.0"
+        "php-parallel-lint/php-parallel-lint": "1.3.2",
+        "phpunit/phpunit": "9.6.11",
+        "rawr/cross-data-providers": "2.4.0"
     },
     "prefer-stable": true,
     "autoload": {
