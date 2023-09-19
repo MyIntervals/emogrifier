@@ -238,6 +238,21 @@ calling the `inlineCss` method:
   $cssInliner->addExcludedSelector('.message-preview');
   $cssInliner->addExcludedSelector('.message-preview *');
   ```
+* `->addExcludedCssSelector(string $selector)` - Contrary to `addExcludedSelector`
+  which excludes HTML nodes, this method excludes CSS selectors from
+  being inlined. This is for example useful if you don't want your CSS reset rules
+  to be inlined on each HTML node (e.g. `* { margin: 0; padding: 0; font-size: 100% }`).
+  Note that these selectors must precisely match the selectors you wish to exclude.
+  Meaning that excluding `.example` will not exclude `p .example`.
+  ```php
+  $cssInliner->addExcludedCssSelector('*');
+  $cssInliner->addExcludedCssSelector('form');
+  ```
+* `->removeExcludedCssSelector(string $selector)` - Removes previously added excluded
+  selectors, if any.
+  ```php
+  $cssInliner->removeExcludedCssSelector('form');
+  ```
 
 ### Migrating from the dropped `Emogrifier` class to the `CssInliner` class
 

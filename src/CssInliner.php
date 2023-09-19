@@ -64,6 +64,11 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var array<string, bool>
      */
+    private $excludedCssSelectors = [];
+
+    /**
+     * @var array<string, bool>
+     */
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
     /**
@@ -296,6 +301,36 @@ class CssInliner extends AbstractHtmlProcessor
     {
         if (isset($this->excludedSelectors[$selector])) {
             unset($this->excludedSelectors[$selector]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Adds a selector to exclude CSS selector from emogrification.
+     *
+     * @param string $selector the selector to exclude, e.g., ".editor"
+     *
+     * @return $this
+     */
+    public function addExcludedCssSelector(string $selector): self
+    {
+        $this->excludedCssSelectors[$selector] = true;
+
+        return $this;
+    }
+
+    /**
+     * No longer excludes the CSS selector from emogrification.
+     *
+     * @param string $selector the selector to no longer exclude, e.g., ".editor"
+     *
+     * @return $this
+     */
+    public function removeExcludedCssSelector(string $selector): self
+    {
+        if (isset($this->excludedCssSelectors[$selector])) {
+            unset($this->excludedCssSelectors[$selector]);
         }
 
         return $this;
@@ -588,7 +623,21 @@ class CssInliner extends AbstractHtmlProcessor
 
             $mediaQuery = $cssRule->getContainingAtRule();
             $declarationsBlock = $cssRule->getDeclarationAsText();
-            foreach ($cssRule->getSelectors() as $selector) {
+            $selectors = $cssRule->getSelectors();
+
+            // Maybe exclude CSS selectors
+            if (!empty($this->excludedCssSelectors)) {
+                // Normalize spaces, line breaks & tabs
+                $selectorsNormalized = \array_map(static function ($selector) {
+                    return \preg_replace('@\\s++@u', ' ', $selector);
+                }, $selectors);
+
+                $selectors = \array_filter($selectorsNormalized, function ($selector) {
+                    return !isset($this->excludedCssSelectors[$selector]);
+                });
+            }
+
+            foreach ($selectors as $selector) {
                 // don't process pseudo-elements and behavioral (dynamic) pseudo-classes;
                 // only allow structural pseudo-classes
                 $hasPseudoElement = \strpos($selector, '::') !== false;
