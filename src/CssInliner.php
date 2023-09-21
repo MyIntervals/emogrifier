@@ -157,6 +157,13 @@ class CssInliner extends AbstractHtmlProcessor
     private $debug = false;
 
     /**
+     * Emogrifier will remove !important annotations from inline styles if this is enabled
+     *
+     * @var bool
+     */
+    private $isRemoveImportantAnnotationFromAllInlineStylesEnabled = true;
+
+    /**
      * Inlines the given CSS into the existing HTML.
      *
      * @param string $css the CSS to inline, must be UTF-8-encoded
@@ -207,7 +214,9 @@ class CssInliner extends AbstractHtmlProcessor
             $this->fillStyleAttributesWithMergedStyles();
         }
 
-        $this->removeImportantAnnotationFromAllInlineStyles();
+        if ($this->isRemoveImportantAnnotationFromAllInlineStylesEnabled) {
+            $this->removeImportantAnnotationFromAllInlineStyles();
+        }
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
         $this->copyUninlinableCssToStyleNode($parsedCss);
@@ -311,6 +320,20 @@ class CssInliner extends AbstractHtmlProcessor
     public function setDebug(bool $debug): self
     {
         $this->debug = $debug;
+
+        return $this;
+    }
+
+    /**
+     * Configure whether to remove the !important annotation from inline styles or not.
+     * Must be used before inlineCss is called.
+     *
+     * @param bool $removeImportantAnnotationFromAllInlineStyles set to true to remove the !important annotation
+     * @return self
+     */
+    public function setRemoveImportantAnnotationFromAllInlineStyles(bool $removeImportantAnnotationFromAllInlineStyles): self
+    {
+        $this->isRemoveImportantAnnotationFromAllInlineStylesEnabled = $removeImportantAnnotationFromAllInlineStyles;
 
         return $this;
     }
