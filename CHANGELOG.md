@@ -6,16 +6,22 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Add support for PHP 8.3 (#1218)
 
 ### Changed
-- Disable HTML formatting by default (#1214)
 
 ### Deprecated
 
 ### Removed
 
 ### Fixed
+
+## 7.1.0: Add support for PHP 8.3
+
+### Added
+- Add support for PHP 8.3 (#1218)
+
+### Changed
+- Disable HTML formatting by default (#1214)
 
 ## 7.0.0
 
