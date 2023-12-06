@@ -6,7 +6,6 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
-- Add support for Symfony 7 (#1243)
 
 ### Changed
 
@@ -15,6 +14,11 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+
+## 7.2.0: Add support for Symfony 7
+
+### Added
+- Add support for Symfony 7 (#1243)
 
 ## 7.1.0: Add support for PHP 8.3
 
