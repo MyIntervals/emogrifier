@@ -60,6 +60,7 @@
         }
     },
     "config": {
+        "lock": false,
         "preferred-install": {
             "*": "dist"
         },
