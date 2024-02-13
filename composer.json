@@ -83,11 +83,9 @@
         "ci:php:lint": "\"./vendor/bin/parallel-lint\" config src tests",
         "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
         "ci:php:psalm": "\"./.phive/psalm\" --show-info=false",
-        "ci:php:sniff": "\"./.phive/phpcs\" config src tests",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
-            "@ci:php:sniff",
             "@ci:php:fixer",
             "@ci:php:md",
             "@ci:php:psalm"
@@ -111,7 +109,6 @@
         "ci:php:lint": "Lints the PHP files for syntax errors.",
         "ci:php:md": "Checks the code complexity with PHPMD.",
         "ci:php:psalm": "Checks the types with Psalm.",
-        "ci:php:sniff": "Checks the code style with PHP_CodeSniffer.",
         "ci:static": "Runs all static code analysis checks for the code and the composer.json.",
         "ci:tests": "Runs all dynamic tests (i.e., currently, the unit tests).",
         "ci:tests:sof": "Runs the unit tests and stops at the first failure.",
