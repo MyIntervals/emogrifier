@@ -136,12 +136,12 @@ and final approval, it may be required that you rebase your changes against the
 latest `main` branch.
 
 There are potential pitfalls here if you follow the suggestions from `git`,
-which could leave your banch in an unrecoverable mess,
+which could leave your branch in an unrecoverable mess,
 and you having to start over with a new branch and new PR.
 
 The procedure below is tried and tested, and will help you avoid frustration.
 
-To rebase a ‘feature’ branch to the latest `main`:
+To rebase a feature branch to the latest `main`:
 
 1. Make sure that your local copy of the repository has the most up-to-date
   revisions of `main` (this is important, otherwise you may end up rebasing to
@@ -164,7 +164,7 @@ To rebase a ‘feature’ branch to the latest `main`:
    ```
 1. Resolve the conflicts in the reported files.  (This will typically require
   reversing the order of the new entries in `CHANGELOG.md`.)  You may use a
-  folder ‘diff’ against the copy taken at step 3 to assist, but bear in mind
+  folder `diff` against the copy taken at step 3 to assist, but bear in mind
   that at this stage `git` is partway through rebasing, so some files will have
   been merged and include the latest changes from `main`, whilst others might
   not.  In any case, you should ignore changes to files not reported as having
@@ -176,7 +176,7 @@ To rebase a ‘feature’ branch to the latest `main`:
    git add *.*
    git rebase --continue
    ```
-   (You can alternartively use more specific wildcards or specify individual
+   (You can alternatively use more specific wildcards or specify individual
    files with a full relative path.)
 
    If there were no conflicts reported in the previous step, skip this step.
@@ -187,7 +187,7 @@ To rebase a ‘feature’ branch to the latest `main`:
    ```sh
    git push --force
    ```
-   The `--force` option is important.  Without it, you’ll get an error with a
+   The `--force` option is important.  Without it, you'll get an error with a
    hint suggesting a `git pull` is required:
    ```
    hint: Updates were rejected because the tip of your current branch is behind
@@ -196,5 +196,5 @@ To rebase a ‘feature’ branch to the latest `main`:
    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
    ```
    ***DO NOT*** follow the hint and execute `git pull`.  This will result in the
-   set of all commits on the feature branch being duplicated, and the ‘patching
-   base’ not being moved at all.
+   set of all commits on the feature branch being duplicated, and the "patching
+   base" not being moved at all.
