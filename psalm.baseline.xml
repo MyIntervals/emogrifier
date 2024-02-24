@@ -1,8 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.15.0@5c774aca4746caf3d239d9c8cadb9f882ca29352">
+<files psalm-version="5.22.2@d768d914152dbbf3486c36398802f74e80cfde48">
+  <file src="src/CssInliner.php">
+    <MixedAssignment>
+      <code><![CDATA[$path]]></code>
+    </MixedAssignment>
+    <MixedOperand>
+      <code><![CDATA[$path]]></code>
+    </MixedOperand>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$styleNode]]></code>
+    </PossiblyInvalidArgument>
+    <PossiblyUndefinedMethod>
+      <code><![CDATA[getNodePath]]></code>
+    </PossiblyUndefinedMethod>
+  </file>
+  <file src="src/HtmlProcessor/HtmlPruner.php">
+    <InvalidArgument>
+      <code><![CDATA[$elementsWithClassAttribute]]></code>
+      <code><![CDATA[$elementsWithClassAttribute]]></code>
+    </InvalidArgument>
+    <PossiblyInvalidArgument>
+      <code><![CDATA[$element]]></code>
+    </PossiblyInvalidArgument>
+  </file>
   <file src="tests/Support/Constraint/CssConstraint.php">
     <DirectConstructorCall>
-      <code>parent::__construct()</code>
+      <code><![CDATA[parent::__construct()]]></code>
     </DirectConstructorCall>
   </file>
 </files>

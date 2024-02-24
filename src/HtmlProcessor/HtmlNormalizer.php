@@ -11,6 +11,4 @@ namespace Pelago\Emogrifier\HtmlProcessor;
  * - add HEAD and BODY elements (if they are missing)
  * - reformat the HTML
  */
-class HtmlNormalizer extends AbstractHtmlProcessor
-{
-}
+class HtmlNormalizer extends AbstractHtmlProcessor {}
