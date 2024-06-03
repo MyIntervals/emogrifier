@@ -629,7 +629,7 @@ class CssInliner extends AbstractHtmlProcessor
             if (\count($this->excludedCssSelectors) > 0) {
                 // Normalize spaces, line breaks & tabs
                 $selectorsNormalized = \array_map(static function (string $selector): string {
-                    return (string) \preg_replace('@\\s++@u', ' ', $selector);
+                    return (string)\preg_replace('@\\s++@u', ' ', $selector);
                 }, $selectors);
 
                 $selectors = \array_filter($selectorsNormalized, function (string $selector): bool {
