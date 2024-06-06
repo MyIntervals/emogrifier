@@ -1779,12 +1779,12 @@ final class CssInlinerTest extends TestCase
             'non-matching CSS with pseudo-component' => 'h6:hover { color: #f00; }',
         ];
         $possibleCssBefore = $possibleSurroundingCss + [
-                '@import' => '@import "foo.css";',
-                '@charset' => '@charset "UTF-8";',
-                'invalid @charset (uppercase identifier)' => '@CHARSET "UTF-8";',
-                'invalid @charset (extra space)' => '@charset  "UTF-8";',
-                // broken: invalid @charset (unquoted value)
-            ];
+            '@import' => '@import "foo.css";',
+            '@charset' => '@charset "UTF-8";',
+            'invalid @charset (uppercase identifier)' => '@CHARSET "UTF-8";',
+            'invalid @charset (extra space)' => '@charset  "UTF-8";',
+            // broken: invalid @charset (unquoted value)
+        ];
 
         /** @var array<string, array<int, string>> $datasetsSurroundingCss */
         $datasetsSurroundingCss = [];
