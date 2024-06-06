@@ -89,7 +89,7 @@ class CssConcatenator
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->declarationsBlock), ';');
                 $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
             } else {
-                $mediaRule->ruleBlocks[] = (object)\compact('selectorsAsKeys', 'declarationsBlock');
+                $mediaRule->ruleBlocks[] = (object) \compact('selectorsAsKeys', 'declarationsBlock');
             }
         }
     }
@@ -121,7 +121,7 @@ class CssConcatenator
             return $lastMediaRule;
         }
 
-        $newMediaRule = (object)[
+        $newMediaRule = (object) [
             'media' => $media,
             'ruleBlocks' => [],
         ];

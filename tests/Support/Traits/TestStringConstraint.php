@@ -24,7 +24,7 @@ trait TestStringConstraint
             'int' => [0],
             'float' => [0.0],
             'array' => [[]],
-            'object' => [(object)[]],
+            'object' => [(object) []],
             'resource' => [\fopen('php://temp', 'r')],
             'callable' => [
                 static function (): void {},

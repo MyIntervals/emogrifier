@@ -45,7 +45,7 @@ final class StringContainsCssCount extends CssConstraint
      */
     public function toString(): string
     {
-        return 'contains exactly ' . (string)$this->count . ' occurrence(s) of CSS `' . $this->css . '`';
+        return 'contains exactly ' . (string) $this->count . ' occurrence(s) of CSS `' . $this->css . '`';
     }
 
     /**
