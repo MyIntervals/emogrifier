@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<files psalm-version="5.22.2@d768d914152dbbf3486c36398802f74e80cfde48">
+<files psalm-version="5.24.0@462c80e31c34e58cc4f750c656be3927e80e550e">
   <file src="src/CssInliner.php">
     <MixedAssignment>
       <code><![CDATA[$path]]></code>
@@ -23,9 +23,18 @@
       <code><![CDATA[$element]]></code>
     </PossiblyInvalidArgument>
   </file>
+  <file src="src/Utilities/CssConcatenator.php">
+    <InvalidArgument>
+      <code><![CDATA[[self::class, 'getMediaRuleCss']]]></code>
+      <code><![CDATA[[self::class, 'getRuleBlockCss']]]></code>
+    </InvalidArgument>
+  </file>
   <file src="tests/Support/Constraint/CssConstraint.php">
     <DirectConstructorCall>
       <code><![CDATA[parent::__construct()]]></code>
     </DirectConstructorCall>
+    <InvalidArgument>
+      <code><![CDATA[[self::class, 'getCssRegularExpressionReplacement']]]></code>
+    </InvalidArgument>
   </file>
 </files>
