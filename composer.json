@@ -80,7 +80,7 @@
             "@ci:tests"
         ],
         "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
-        "ci:php:lint": "\"./vendor/bin/parallel-lint\" config src tests",
+        "ci:php:lint": "parallel-lint config src tests",
         "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
         "ci:php:psalm": "\"./.phive/psalm\" --show-info=false",
         "ci:static": [
@@ -93,8 +93,8 @@
         "ci:tests": [
             "@ci:tests:unit"
         ],
-        "ci:tests:sof": "@php \"./vendor/bin/phpunit\" --stop-on-failure --do-not-cache-result",
-        "ci:tests:unit": "@php \"./vendor/bin/phpunit\" --do-not-cache-result",
+        "ci:tests:sof": "phpunit --stop-on-failure --do-not-cache-result",
+        "ci:tests:unit": "phpunit --do-not-cache-result",
         "composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
         "php:fix": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
