@@ -5,13 +5,11 @@ clean-up to Emogrifier are more than welcome.
 
 When you contribute, please take the following things into account:
 
-
 ## Contributor Code of Conduct
 
 Please note that this project is released with a
 [Contributor Code of Conduct](../CODE_OF_CONDUCT.md). By participating in this
 project, you agree to abide by its terms.
-
 
 ## General workflow
 
@@ -37,7 +35,6 @@ This is the workflow for contributing changes to Emogrifier:
     from @oliverklee.
 11. Together with him, polish your changes until they are ready to be merged.
 
-
 ## About code reviews
 
 After you have submitted a pull request, the Emogrifier team will review your
@@ -55,7 +52,6 @@ the Emogrifier project or would like to get feedback on the best architecture
 for your ideas, we propose you open a ticket first and discuss your ideas there
 first before investing a lot of time in writing code.
 
-
 ## Install the development dependencies
 
 To install the development dependencies (PHPUnit and PHP_CodeSniffer), please
@@ -71,7 +67,6 @@ require PHP 7.0 or later.  The second command installs the PHP_CodeSniffer
 dependencies and should be omitted if specifically testing against an earlier
 version of PHP, however you will not be able to run the static code analysis.
 
-
 ## Unit-test your changes
 
 Please cover all changes with unit tests and make sure that your code does not
@@ -83,7 +78,6 @@ To run the existing PHPUnit tests, run this command:
 ```shell
 composer ci:tests:unit
 ```
-
 
 ## Coding Style
 
@@ -110,7 +104,6 @@ You can autoformat your code using the following command:
 composer php:fix
 ```
 
-
 ## Git commits
 
 Commit message should have a <= 50 character summary, optionally followed by a
@@ -122,12 +115,10 @@ Also, please prefix the subject line of the commit message with either
 [FEATURE], [TASK], [BUGFIX] OR [CLEANUP]. This makes it faster to see what
 a commit is about.
 
-
 ## Creating pull requests (PRs)
 
 When you create a pull request, please
 [make your PR editable](https://github.com/blog/2247-improving-collaboration-with-forks).
-
 
 ## Rebasing
 
