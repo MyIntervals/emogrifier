@@ -37,7 +37,6 @@ return (new \PhpCsFixer\Config())
             'no_empty_comment' => true,
 
             // control structure
-            'no_superfluous_elseif' => true,
             'yoda_style' => ['equal' => false, 'identical' => false, 'less_and_greater' => false],
 
             // function notation
