@@ -629,7 +629,7 @@ class CssInliner extends AbstractHtmlProcessor
             if (\count($this->excludedCssSelectors) > 0) {
                 // Normalize spaces, line breaks & tabs
                 $selectorsNormalized = \array_map(static function (string $selector): string {
-                    return (string)\preg_replace('@\\s++@u', ' ', $selector);
+                    return (string) \preg_replace('@\\s++@u', ' ', $selector);
                 }, $selectors);
 
                 $selectors = \array_filter($selectorsNormalized, function (string $selector): bool {
@@ -714,7 +714,7 @@ class CssInliner extends AbstractHtmlProcessor
             return false;
         }
 
-        return (bool)\preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selectorPart);
+        return (bool) \preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selectorPart);
     }
 
     /**
@@ -754,7 +754,7 @@ class CssInliner extends AbstractHtmlProcessor
             }
             $number = 0;
             $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $number);
-            $precedence += ($value * (int)$number);
+            $precedence += ($value * (int) $number);
         }
         $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
 
@@ -853,7 +853,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function attributeValueIsImportant(string $attributeValue): bool
     {
-        return (bool)\preg_match('/!\\s*+important$/i', $attributeValue);
+        return (bool) \preg_match('/!\\s*+important$/i', $attributeValue);
     }
 
     /**
@@ -1236,7 +1236,7 @@ class CssInliner extends AbstractHtmlProcessor
         ));
 
         $pregLastError = \preg_last_error();
-        $message = 'PCRE regex execution error `' . (string)($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
+        $message = 'PCRE regex execution error `' . (string) ($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
             . '`';
 
         if ($this->debug) {

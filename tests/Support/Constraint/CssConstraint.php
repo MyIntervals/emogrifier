@@ -186,7 +186,7 @@ abstract class CssConstraint extends Constraint
                 $regularExpressionEquivalent = \preg_replace_callback(
                     '/\\$(\\d++)/',
                     static function (array $referenceMatches) use ($matches): string {
-                        return \preg_quote($matches[(int)$referenceMatches[1]] ?? '', '/');
+                        return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
                     },
                     $replacement
                 );

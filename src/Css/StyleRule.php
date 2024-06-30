@@ -43,7 +43,7 @@ class StyleRule
         $selectors = $this->declarationBlock->getSelectors();
         return \array_map(
             static function (Selector $selector): string {
-                return (string)$selector;
+                return (string) $selector;
             },
             $selectors
         );
