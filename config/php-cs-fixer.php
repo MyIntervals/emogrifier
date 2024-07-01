@@ -89,6 +89,7 @@ return (new \PhpCsFixer\Config())
 
             // strict
             'declare_strict_types' => true,
+            'strict_param' => true,
 
             // string notation
             'string_implicit_backslashes' => ['single_quoted' => 'escape'],
