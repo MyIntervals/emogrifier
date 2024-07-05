@@ -742,7 +742,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssSelectorPrecedence(string $selector): int
     {
-        $selectorKey = \md5($selector);
+        $selectorKey = $selector;
         if (isset($this->caches[self::CACHE_KEY_SELECTOR][$selectorKey])) {
             return $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey];
         }
