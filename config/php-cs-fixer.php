@@ -41,6 +41,7 @@ return (new \PhpCsFixer\Config())
 
             // function notation
             'native_function_invocation' => ['include' => ['@all']],
+            'nullable_type_declaration_for_default_null_value' => true,
 
             // import
             'no_unused_imports' => true,
@@ -50,6 +51,7 @@ return (new \PhpCsFixer\Config())
             'combine_consecutive_unsets' => true,
             'dir_constant' => true,
             'is_null' => true,
+            'nullable_type_declaration' => true,
 
             // namespace notation
             'no_leading_namespace_whitespace' => true,
