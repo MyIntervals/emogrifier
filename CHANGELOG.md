@@ -9,7 +9,7 @@ Please also have a look at our
 ## x.y.z
 
 ### Added
-
+- Add support for PHP 8.4 (#1278)
 - Support CSS custom properties (variables) (#1336)
 - Support `:root` pseudo-class (#1306)
 - Add CSS selectors exclusion feature (#1236)
