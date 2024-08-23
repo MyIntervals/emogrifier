@@ -58,7 +58,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - '8.2'
+          - '8.3'
 
     steps:
       - name: Checkout
@@ -89,7 +89,7 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - '8.2'
+          - '8.3'
 
     steps:
       - name: Checkout
@@ -130,7 +130,7 @@ jobs:
           - md
           - stan
         php-version:
-          - '8.2'
+          - '8.3'
 
     steps:
       - name: Checkout
