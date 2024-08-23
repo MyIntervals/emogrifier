@@ -13,13 +13,13 @@ project, you agree to abide by its terms.
 
 ## General workflow
 
-This is the workflow for contributing changes to Emogrifier:
+This is the workflow for contributing changes to this project::
 
-1. [Fork the Emogrifier Git repository](https://guides.github.com/activities/forking/).
-2. Clone your forked repository and
+1. [Fork the git repository](https://docs.github.com/en/get-started/exploring-projects-on-github/contributing-to-a-project).
+2. Clone your forked repository locally and
    [install the development dependencies](#install-the-development-dependencies).
 3. Add a local remote "upstream" so you will be able to
-   [synchronize your fork with the original Emogrifier repository](https://help.github.com/articles/syncing-a-fork/).
+   [synchronize your fork with the original repository](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/working-with-forks/syncing-a-fork).
 4. Create a local branch for your changes.
 5. [Add unit tests for your changes](#unit-test-your-changes).
    These tests should fail without your changes.
@@ -28,12 +28,11 @@ This is the workflow for contributing changes to Emogrifier:
    [coding style](#coding-style) as the rest of the project.
 7. Add a changelog entry.
 8. [Commit](#git-commits) and push your changes.
-9. [Create a pull request](https://help.github.com/articles/about-pull-requests/)
-   for your changes. Check that the Travis build is green. (If it is not, fix
-   the problems listed by Travis.)
-10. [Request a review](https://help.github.com/articles/about-pull-request-reviews/)
-    from @oliverklee.
-11. Together with him, polish your changes until they are ready to be merged.
+9. [Create a pull request](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+   for your changes. Check that the CI build is green. (If it is not, fix the
+   problems listed.)
+10. Wait for a review by the maintainers.
+11. Polish your changes as needed until they are ready to be merged.
 
 ## About code reviews
 
