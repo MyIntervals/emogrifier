@@ -1,0 +1,216 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Argument of an invalid type DOMNodeList\\<DOMNode\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/CssInliner.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 2
+			path: src/CssInliner.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:getAllNodesWithStyleAttribute\\(\\) return type with generic class DOMNodeList does not specify its types\\: TNode$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:removeSelectorComponents\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#1 \\$cssDeclarationsBlock of method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:parseCssDeclarationsBlock\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function ltrim expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function array_map expects array, array\\<int, string\\>\\|false given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method DOMElement\\:\\:setAttribute\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
+			count: 1
+			path: src/CssInliner.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:addContentTypeMetaTag\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:ensurePhpUnrecognizedSelfClosingTagsAreXml\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:normalizeDocumentType\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:removeSelfClosingTagsClosingTags\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:renderBodyContent\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Parameter \\#1 \\$html of method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:removeSelfClosingTagsClosingTags\\(\\) expects string, string\\|false given\\.$#"
+			count: 2
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 2
+			path: src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: "#^Argument of an invalid type array\\<int, string\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: src/HtmlProcessor/CssToAttributeConverter.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\CssToAttributeConverter\\:\\:getAllNodesWithStyleAttribute\\(\\) return type with generic class DOMNodeList does not specify its types\\: TNode$#"
+			count: 1
+			path: src/HtmlProcessor/CssToAttributeConverter.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\CssToAttributeConverter\\:\\:getAllNodesWithStyleAttribute\\(\\) should return DOMNodeList but returns DOMNodeList\\<DOMNode\\>\\|false\\.$#"
+			count: 1
+			path: src/HtmlProcessor/CssToAttributeConverter.php
+
+		-
+			message: "#^Parameter \\#2 \\$value of method DOMElement\\:\\:setAttribute\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: src/HtmlProcessor/CssToAttributeConverter.php
+
+		-
+			message: "#^Argument of an invalid type DOMNodeList\\<DOMNode\\>\\|false supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Cannot access property \\$length on DOMNodeList\\<DOMNode\\>\\|false\\.$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlPruner\\:\\:removeClassAttributeFromElements\\(\\) has parameter \\$elements with generic class DOMNodeList but does not specify its types\\: TNode$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlPruner\\:\\:removeClassesFromElements\\(\\) has parameter \\$elements with generic class DOMNodeList but does not specify its types\\: TNode$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Parameter \\#1 \\$array of method Pelago\\\\Emogrifier\\\\Utilities\\\\ArrayIntersector\\:\\:intersectWith\\(\\) expects array\\<\\(int\\|string\\)\\>, array\\<int, string\\>\\|false given\\.$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Parameter \\#1 \\$elements of method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlPruner\\:\\:removeClassAttributeFromElements\\(\\) expects DOMNodeList, DOMNodeList\\<DOMNode\\>\\|false given\\.$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Parameter \\#1 \\$elements of method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlPruner\\:\\:removeClassesFromElements\\(\\) expects DOMNodeList, DOMNodeList\\<DOMNode\\>\\|false given\\.$#"
+			count: 1
+			path: src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: "#^Property object\\{media\\: string, ruleBlocks\\: array\\<int, object\\{selectorsAsKeys\\: array\\<string, \\(int\\|string\\)\\>, declarationsBlock\\: string\\}\\>\\}\\:\\:\\$ruleBlocks is not writable\\.$#"
+			count: 1
+			path: src/Utilities/CssConcatenator.php
+
+		-
+			message: "#^Property object\\{selectorsAsKeys\\: array\\<string, \\(int\\|string\\)\\>, declarationsBlock\\: string\\}\\:\\:\\$declarationsBlock is not writable\\.$#"
+			count: 1
+			path: src/Utilities/CssConcatenator.php
+
+		-
+			message: "#^Property object\\{selectorsAsKeys\\: array\\<string, \\(int\\|string\\)\\>, declarationsBlock\\: string\\}\\:\\:\\$selectorsAsKeys is not writable\\.$#"
+			count: 1
+			path: src/Utilities/CssConcatenator.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\Tests\\\\Support\\\\Constraint\\\\CssConstraint\\:\\:getCssMatcherAllowingOptionalTrailingSemicolon\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: tests/Support/Constraint/CssConstraint.php
+
+		-
+			message: "#^Parameter \\#1 \\$matcher of static method Pelago\\\\Emogrifier\\\\Tests\\\\Support\\\\Constraint\\\\CssConstraint\\:\\:getCssMatcherAllowingOptionalTrailingSemicolon\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: tests/Support/Constraint/CssConstraint.php
+
+		-
+			message: "#^Parameter \\#1 \\$css of method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:inlineCss\\(\\) expects string, string\\|null given\\.$#"
+			count: 1
+			path: tests/Unit/CssInlinerTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|false given\\.$#"
+			count: 1
+			path: tests/Unit/CssInlinerTest.php
+
+		-
+			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
+			count: 2
+			path: tests/Unit/CssInlinerTest.php
+
+		-
+			message: "#^Method Pelago\\\\Emogrifier\\\\Tests\\\\Unit\\\\HtmlProcessor\\\\AbstractHtmlProcessorTest\\:\\:normalizeHtmlElement\\(\\) should return string but returns string\\|null\\.$#"
+			count: 1
+			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
+
+		-
+			message: "#^Parameter \\#1 \\$string of function strtolower expects string, string\\|false given\\.$#"
+			count: 1
+			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$actual of static method Pelago\\\\Emogrifier\\\\Tests\\\\Unit\\\\HtmlProcessor\\\\AbstractHtmlProcessorTest\\:\\:assertEqualsHtml\\(\\) expects string, string\\|false given\\.$#"
+			count: 1
+			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
+
+		-
+			message: "#^Variable \\$classAttributeMatches in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$classAttributeValue$#"
+			count: 1
+			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Unit/Support/Constraint/IsEquivalentCssTest.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Unit/Support/Constraint/StringContainsCssCountTest.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
+			count: 1
+			path: tests/Unit/Support/Constraint/StringContainsCssTest.php

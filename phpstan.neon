@@ -1,0 +1,12 @@
+includes:
+  - phpstan-baseline.neon
+
+parameters:
+  level: 9
+
+  paths:
+    - src
+    - tests
+
+  # Allow instanceof checks, particularly in tests
+  checkAlwaysTrueCheckTypeFunctionCall: false
