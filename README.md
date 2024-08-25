@@ -31,6 +31,7 @@ into inline style attributes in your HTML code.
 - [Usage](#usage)
 - [Supported CSS selectors](#supported-css-selectors)
 - [Caveats](#caveats)
+- [Contributing](#contributing)
 - [Steps to release a new version](#steps-to-release-a-new-version)
 - [Maintainers](#maintainers)
 
@@ -416,6 +417,13 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
 * Emogrifier automatically converts the provided (X)HTML into HTML5, i.e.,
   self-closing tags will lose their slash. To keep your HTML valid, it is
   recommended to use HTML5 instead of one of the XHTML variants.
+
+## Contributing
+
+Contributions in the form of bug reports, feature requests, or pull requests are
+more than welcome. :pray: Please have a look at our
+[contribution guidelines](.github/CONTRIBUTING.md) to learn more about how to
+contribute to Emogrifier.
 
 ## Steps to release a new version
 
