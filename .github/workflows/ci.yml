@@ -128,7 +128,7 @@ jobs:
         command:
           - fixer
           - md
-          - psalm
+          - stan
         php-version:
           - '8.2'
 

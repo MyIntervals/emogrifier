@@ -45,6 +45,9 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "1.4.0",
+        "phpstan/extension-installer": "1.4.1",
+        "phpstan/phpstan": "1.11.11",
+        "phpstan/phpstan-phpunit": "1.4.0",
         "phpunit/phpunit": "9.6.20",
         "rawr/cross-data-providers": "2.4.0"
     },
@@ -60,6 +63,9 @@
         }
     },
     "config": {
+        "allow-plugins": {
+            "phpstan/extension-installer": true
+        },
         "preferred-install": {
             "*": "dist"
         },
@@ -82,13 +88,13 @@
         "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "parallel-lint config src tests",
         "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
-        "ci:php:psalm": "\"./.phive/psalm\" --show-info=false",
+        "ci:php:stan": "phpstan --no-progress  --error-format=github",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
             "@ci:php:fixer",
             "@ci:php:md",
-            "@ci:php:psalm"
+            "@ci:php:stan"
         ],
         "ci:tests": [
             "@ci:tests:unit"
@@ -98,8 +104,7 @@
         "composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
         "php:fix": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "psalm:baseline": "\"./.phive/psalm\" --set-baseline=psalm.baseline.xml",
-        "psalm:cc": "\"./.phive/psalm\" --clear-cache"
+        "phpstan:baseline": "phpstan --generate-baseline --allow-empty-baseline"
     },
     "scripts-descriptions": {
         "ci": "Runs all dynamic and static code checks.",
@@ -108,7 +113,7 @@
         "ci:php:fixer": "Checks the code style with PHP CS Fixer.",
         "ci:php:lint": "Lints the PHP files for syntax errors.",
         "ci:php:md": "Checks the code complexity with PHPMD.",
-        "ci:php:psalm": "Checks the types with Psalm.",
+        "ci:php:stan": "Checks the PHP types using PHPStan.",
         "ci:static": "Runs all static code analysis checks for the code and the composer.json.",
         "ci:tests": "Runs all dynamic tests (i.e., currently, the unit tests).",
         "ci:tests:sof": "Runs the unit tests and stops at the first failure.",
@@ -116,7 +121,6 @@
         "composer:normalize": "Reformats and sorts the composer.json file.",
         "php:fix": "Reformats the code with php-cs-fixer.",
         "php:version": "Outputs the installed PHP version.",
-        "psalm:baseline": "Updates the Psalm baseline file to match the code.",
-        "psalm:cc": "Clears the Psalm cache."
+        "phpstan:baseline": "Updates the PHPStan baseline file to match the code."
     }
 }
