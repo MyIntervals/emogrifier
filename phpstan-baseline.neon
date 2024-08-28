@@ -11,11 +11,6 @@ parameters:
 			path: src/CssInliner.php
 
 		-
-			message: "#^Casting to int something that's already int\\<0, max\\>\\.$#"
-			count: 1
-			path: src/CssInliner.php
-
-		-
 			message: "#^Method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:getAllNodesWithStyleAttribute\\(\\) return type with generic class DOMNodeList does not specify its types\\: TNode$#"
 			count: 1
 			path: src/CssInliner.php
