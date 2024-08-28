@@ -1,6 +1,6 @@
 # Emogrifier
 
-[![Build Status](https://github.com/MyIntervals/emogrifier/workflows/CI/badge.svg?branch=main)](https://github.com/MyIntervals/emogrifier/actions/)
+[![Build Status](https://github.com/MyIntervals/emogrifier/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/MyIntervals/emogrifier/actions/)
 [![Latest Stable Version](https://poser.pugx.org/pelago/emogrifier/v/stable.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![Total Downloads](https://poser.pugx.org/pelago/emogrifier/downloads.svg)](https://packagist.org/packages/pelago/emogrifier)
 [![License](https://poser.pugx.org/pelago/emogrifier/license.svg)](https://packagist.org/packages/pelago/emogrifier)
