@@ -100,6 +100,7 @@
         "ci:tests": [
             "@ci:tests:unit"
         ],
+        "ci:tests:coverage": "phpunit --do-not-cache-result --coverage-clover=coverage.xml",
         "ci:tests:sof": "phpunit --stop-on-failure --do-not-cache-result",
         "ci:tests:unit": "phpunit --do-not-cache-result",
         "composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
@@ -117,6 +118,7 @@
         "ci:php:stan": "Checks the PHP types using PHPStan.",
         "ci:static": "Runs all static code analysis checks for the code and the composer.json.",
         "ci:tests": "Runs all dynamic tests (i.e., currently, the unit tests).",
+        "ci:tests:coverage": "Runs the unit tests with code coverage.",
         "ci:tests:sof": "Runs the unit tests and stops at the first failure.",
         "ci:tests:unit": "Runs all unit tests.",
         "composer:normalize": "Reformats and sorts the composer.json file.",
