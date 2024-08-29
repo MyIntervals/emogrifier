@@ -423,7 +423,7 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
 
 Contributions in the form of bug reports, feature requests, or pull requests are
 more than welcome. :pray: Please have a look at our
-[contribution guidelines](.github/CONTRIBUTING.md) to learn more about how to
+[contribution guidelines](CONTRIBUTING.md) to learn more about how to
 contribute to Emogrifier.
 
 ## Steps to release a new version
