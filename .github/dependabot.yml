@@ -6,6 +6,7 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    milestone: 15
 
   - package-ecosystem: "composer"
     directory: "/"
@@ -18,3 +19,4 @@ updates:
         versions: [ ">= 10.0.0" ]
       - dependency-name: "rawr/cross-data-providers"
     versioning-strategy: "increase"
+    milestone: 15
