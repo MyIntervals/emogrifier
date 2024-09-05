@@ -186,6 +186,11 @@ parameters:
 			path: tests/Support/Constraint/CssConstraint.php
 
 		-
+			message: "#^Offset 0 does not exist on array\\{0\\?\\: string\\}\\.$#"
+			count: 1
+			path: tests/Unit/Css/CssDocumentTest.php
+
+		-
 			message: "#^Parameter \\#1 \\$css of method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:inlineCss\\(\\) expects string, string\\|null given\\.$#"
 			count: 1
 			path: tests/Unit/CssInlinerTest.php
