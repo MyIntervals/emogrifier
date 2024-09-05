@@ -50,7 +50,7 @@
         "phpstan/phpstan-phpunit": "1.4.0",
         "phpstan/phpstan-strict-rules": "1.6.0",
         "phpunit/phpunit": "9.6.20",
-        "rawr/cross-data-providers": "2.4.0"
+        "rawr/cross-data-providers": "3.0.0"
     },
     "prefer-stable": true,
     "autoload": {
