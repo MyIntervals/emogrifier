@@ -135,14 +135,6 @@ jobs:
       - name: Show the Composer configuration
         run: composer config --global --list
 
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/composer
-          key: php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-
-
       - name: Install Composer dependencies
         run: composer install --no-progress
 
@@ -197,14 +189,6 @@ jobs:
 
       - name: Show the Composer configuration
         run: composer config --global --list
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
-        with:
-          path: ~/.cache/composer
-          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
       - name: Install Composer dependencies
         run: |
