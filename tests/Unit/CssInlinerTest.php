@@ -272,6 +272,7 @@ final class CssInlinerTest extends TestCase
             'universal => HTML' => ['* { %1$s }', '<html style="%1$s">'],
             'universal => element with parent and children' => ['* { %1$s }', '<p class="p-1" style="%1$s">'],
             'universal => leaf element' => ['* { %1$s }', '<span style="%1$s">'],
+            ':root => HTML' => [':root { %1$s }', '<html style="%1$s">'],
             'attribute presence => with attribute' => ['[title] { %1$s }', '<span title="bonjour" style="%1$s">'],
             'attribute exact value, double quotes => with exact attribute match' => [
                 '[title="bonjour"] { %1$s }',
@@ -831,6 +832,8 @@ final class CssInlinerTest extends TestCase
             'ID => not without ID' => ['#yeah { %1$s }', '<span>'],
             'type & ID => not other type with that ID' => ['html#p4 { %1$s }', '<p class="p-4" id="p4">'],
             'type & ID => not that type with other ID' => ['p#p5 { %1$s }', '<p class="p-4" id="p4">'],
+            ':root => not BODY' => [':root { %1$s }', '<body>'],
+            ':root => not P' => [':root { %1$s }', '<p class="p-1">'],
             'attribute presence => not element without that attribute' => ['[title] { %1$s }', '<span>'],
             'attribute exact value => not element without that attribute' => ['[title="bonjour"] { %1$s }', '<span>'],
             'attribute exact value => not element with different attribute value' => [
@@ -1181,10 +1184,17 @@ final class CssInlinerTest extends TestCase
         }
 
         // broken: class more specific than 69 types (requires support for chaining `:not(h1):not(h1)...`)
-        $datasets['ID more specific than 69 classes'] = [
-            '<p class="p-4" id="p4"',
-            \str_repeat('.p-4', 69),
-            '#p4',
+        $datasets += [
+            ':root more specific than html' => [
+                '<html',
+                'html',
+                ':root',
+            ],
+            'ID more specific than 69 classes' => [
+                '<p class="p-4" id="p4"',
+                \str_repeat('.p-4', 69),
+                '#p4',
+            ],
         ];
 
         return $datasets;

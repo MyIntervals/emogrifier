@@ -39,7 +39,7 @@ class CssInliner extends AbstractHtmlProcessor
      * @var string
      */
     private const PSEUDO_CLASS_MATCHER
-        = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)';
+        = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)|root';
 
     /**
      * This regular expression componenet matches an `...of-type` pseudo class name, without the preceding ":".  These
