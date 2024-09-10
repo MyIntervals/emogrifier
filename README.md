@@ -337,6 +337,7 @@ Emogrifier currently supports the following
    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
    * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
      (with a type)
+   * [root](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)
 
 The following selectors are not implemented yet:
 

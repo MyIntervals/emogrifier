@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ## x.y.z
 
 ### Added
+- Support `:root` pseudo-class (#1306)
 - Add CSS selectors exclusion feature (#1236)
 
 ### Changed
