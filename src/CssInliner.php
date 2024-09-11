@@ -452,7 +452,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
-        $normalizedOriginalStyle = \preg_replace_callback(
+        $normalizedOriginalStyle = $this->pregReplaceCallback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
             /** @param array<array-key, string> $propertyNameMatches */
             static function (array $propertyNameMatches): string {
@@ -1208,6 +1208,33 @@ class CssInliner extends AbstractHtmlProcessor
     private function pregReplace(string $pattern, string $replacement, string $subject): string
     {
         $result = \preg_replace($pattern, $replacement, $subject);
+
+        if (!\is_string($result)) {
+            $this->logOrThrowPregLastError();
+            $result = $subject;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Wraps `preg_replace_callback`.
+     * If an error occurs (which is highly unlikely), either it is logged and the original `$subject` is returned,
+     * or in debug mode an exception is thrown.
+     *
+     * This method only supports strings, not arrays of strings.
+     *
+     * @param non-empty-string $pattern
+     * @param callable $callback
+     * @param string $subject
+     *
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    private function pregReplaceCallback(string $pattern, callable $callback, string $subject): string
+    {
+        $result = \preg_replace_callback($pattern, $callback, $subject);
 
         if (!\is_string($result)) {
             $this->logOrThrowPregLastError();

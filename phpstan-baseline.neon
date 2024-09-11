@@ -51,11 +51,6 @@ parameters:
 			path: src/CssInliner.php
 
 		-
-			message: "#^Parameter \\#2 \\$value of method DOMElement\\:\\:setAttribute\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/CssInliner.php
-
-		-
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|null given\\.$#"
 			count: 1
 			path: src/CssInliner.php
