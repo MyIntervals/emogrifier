@@ -31,11 +31,6 @@ parameters:
 			path: src/CssInliner.php
 
 		-
-			message: "#^Parameter \\#1 \\$cssDeclarationsBlock of method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:parseCssDeclarationsBlock\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/CssInliner.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function ltrim expects string, string\\|null given\\.$#"
 			count: 1
 			path: src/CssInliner.php
