@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\Utilities\Preg;
+
 /**
  * This HtmlProcessor can convert style HTML attributes to the corresponding other visual HTML attributes,
  * e.g. it converts style="width: 100px" to width="100".
@@ -233,7 +235,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
             return;
         }
 
-        $number = \preg_replace('/[^0-9.%]/', '', $value);
+        $number = (new Preg())->replace('/[^0-9.%]/', '', $value);
         $node->setAttribute($property, $number);
     }
 

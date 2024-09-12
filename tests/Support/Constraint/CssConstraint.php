@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
+use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\Constraint\Constraint;
 
 /**
@@ -163,9 +164,9 @@ abstract class CssConstraint extends Constraint
      */
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
-        $matcher = \preg_replace_callback(
+        $matcher = (new Preg())->replaceCallback(
             self::CSS_REGULAR_EXPRESSION_PATTERN,
-            [self::class, 'getCssRegularExpressionReplacement'],
+            \Closure::fromCallable([self::class, 'getCssRegularExpressionReplacement']),
             $css
         );
 
@@ -183,7 +184,7 @@ abstract class CssConstraint extends Constraint
 
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {
-                $regularExpressionEquivalent = \preg_replace_callback(
+                $regularExpressionEquivalent = (new Preg())->replaceCallback(
                     '/\\$(\\d++)/',
                     static function (array $referenceMatches) use ($matches): string {
                         return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
@@ -216,7 +217,7 @@ abstract class CssConstraint extends Constraint
         $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && \preg_match('/[@\\{\\}]/', $css) === 0;
 
         if ($isPropertyDeclarationsOnly) {
-            return \preg_replace(
+            return (new Preg())->replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
                 $matcher

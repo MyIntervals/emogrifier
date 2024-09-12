@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\Utilities\Preg;
+
 /**
  * Base class for HTML processor that e.g., can remove, add or modify nodes or attributes.
  *
@@ -180,7 +182,7 @@ abstract class AbstractHtmlProcessor
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
-        return \preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
+        return (new Preg())->replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
     }
 
     /**
@@ -192,7 +194,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeSelfClosingTagsClosingTags(string $html): string
     {
-        return \preg_replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
+        return (new Preg())->replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
     }
 
     /**
@@ -288,7 +290,7 @@ abstract class AbstractHtmlProcessor
     private function normalizeDocumentType(string $html): string
     {
         // Limit to replacing the first occurrence: as an optimization; and in case an example exists as unescaped text.
-        return \preg_replace(
+        return (new Preg())->replace(
             '/<!DOCTYPE\\s++html(?=[\\s>])/i',
             '<!DOCTYPE html',
             $html,
@@ -317,13 +319,13 @@ abstract class AbstractHtmlProcessor
         $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = \preg_replace(
+            $reworkedHtml = (new Preg())->replace(
                 '/<head(?=[\\s>])([^>]*+)>/i',
                 '<head$1>' . self::CONTENT_TYPE_META_TAG,
                 $html
             );
         } elseif ($hasHtmlTag) {
-            $reworkedHtml = \preg_replace(
+            $reworkedHtml = (new Preg())->replace(
                 '/<html(.*?)>/is',
                 '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
                 $html
@@ -403,12 +405,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlComments(string $html): string
     {
-        $result = \preg_replace(self::HTML_COMMENT_PATTERN, '', $html);
-        if (!\is_string($result)) {
-            throw new \RuntimeException('Internal PCRE error', 1616521475);
-        }
-
-        return $result;
+        return (new Preg())->throwExceptions(true)->replace(self::HTML_COMMENT_PATTERN, '', $html);
     }
 
     /**
@@ -423,12 +420,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlTemplateElements(string $html): string
     {
-        $result = \preg_replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
-        if (!\is_string($result)) {
-            throw new \RuntimeException('Internal PCRE error', 1616519652);
-        }
-
-        return $result;
+        return (new Preg())->throwExceptions(true)->replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
     }
 
     /**
@@ -441,7 +433,7 @@ abstract class AbstractHtmlProcessor
      */
     private function ensurePhpUnrecognizedSelfClosingTagsAreXml(string $html): string
     {
-        return \preg_replace(
+        return (new Preg())->replace(
             '%<' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
             '$0/',
             $html
