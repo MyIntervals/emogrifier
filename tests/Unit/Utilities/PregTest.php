@@ -13,6 +13,21 @@ use PHPUnit\Framework\TestCase;
 final class PregTest extends TestCase
 {
     /**
+     * @var string|array<string>
+     */
+    private $replaceCallbackReplacement;
+
+    /**
+     * @var ?string
+     */
+    private $lastReplaceCallbackMatch;
+
+    /**
+     * @var int
+     */
+    private $replaceCallbackReplacementIndex;
+
+    /**
      * @test
      */
     public function throwExceptionsProvidesFluentInterface(): void
@@ -25,9 +40,36 @@ final class PregTest extends TestCase
     }
 
     /**
-     * @test
+     * @return array<non-empty-string, array{0: callable}>
      */
-    public function exceptionNotThrownByDefault(): void
+    public function provideCallableToCallMethodErroneously(): array
+    {
+        return [
+            'replace' => [
+                static function (Preg $testSubject): void {
+                    $testSubject->replace('/', '', '');
+                },
+            ],
+            'replaceCallback' => [
+                static function (Preg $testSubject): void {
+                    $testSubject->replaceCallback(
+                        '/',
+                        static function (string $matches): string {
+                            return '';
+                        },
+                        ''
+                    );
+                },
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideCallableToCallMethodErroneously
+     */
+    public function exceptionIsNotThrownByDefault(callable $methodCaller): void
     {
         $this->expectNotToPerformAssertions();
         $subject = new Preg();
@@ -38,36 +80,46 @@ final class PregTest extends TestCase
         // Version 10 allows use of the #[WithoutErrorHandler] attribute, but this requires PHP 8.0 anyway.
         // So we must `@` to suppress the triggered error.
         // This also means we can't test for our own triggered error, since `preg_*` also triggers an error.
-        @$subject->replace('/', '', '');
+        @$methodCaller($subject);
     }
 
     /**
      * @test
+     *
+     * @dataProvider provideCallableToCallMethodErroneously
      */
-    public function exceptionThrownAfterThrowExceptionsTurnedOn(): void
+    public function exceptionIsThrownAfterThrowExceptionsTurnedOn(callable $methodCaller): void
     {
         $this->expectException(\RuntimeException::class);
         $subject = new Preg();
 
         $subject->throwExceptions(true);
-        @$subject->replace('/', '', '');
+        @$methodCaller($subject);
     }
 
     /**
      * @test
+     *
+     * @dataProvider provideCallableToCallMethodErroneously
      */
-    public function exceptionNotThrownAfterThrowExceptionsTurnedOff(): void
+    public function exceptionIsNotThrownAfterThrowExceptionsTurnedOff(callable $methodCaller): void
     {
         $this->expectNotToPerformAssertions();
         $subject = new Preg();
 
         $subject->throwExceptions(true);
         $subject->throwExceptions(false);
-        @$subject->replace('/', '', '');
+        @$methodCaller($subject);
     }
 
     /**
-     * @return array<array<array-key, string|non-empty-array<string>|int>>
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string|array<non-empty-string>,
+     *             replacement: string|array<string>,
+     *             subject: string,
+     *             limit: int,
+     *             expect: string,
+     *         }>
      */
     public function providePregReplaceArgumentsAndExpectedResult(): array
     {
@@ -135,22 +187,17 @@ final class PregTest extends TestCase
         int $limit,
         string $expectedResult
     ): void {
-        $callback = static function (array $matches) use ($replacement): string {
-            if (\is_array($replacement)) {
-                static $lastMatch;
-                static $replacementIndex = -1;
-                if ($matches[0] !== $lastMatch) {
-                    ++$replacementIndex;
-                    $lastMatch = $matches[0];
-                }
-                return $replacement[$replacementIndex];
-            } else {
-                return $replacement;
-            }
-        };
+        $this->replaceCallbackReplacement = $replacement;
+        $this->lastReplaceCallbackMatch = null;
+        $this->replaceCallbackReplacementIndex = -1;
         $testSubject = new Preg();
 
-        $result = $testSubject->replaceCallback($pattern, $callback, $subject, $limit);
+        $result = $testSubject->replaceCallback(
+            $pattern,
+            \Closure::fromCallable([$this, 'callbackForReplaceCallback']),
+            $subject,
+            $limit
+        );
 
         self::assertSame($expectedResult, $result);
     }
@@ -215,5 +262,21 @@ final class PregTest extends TestCase
         );
 
         self::assertSame('abba', $result);
+    }
+
+    /**
+     * @param array<int, string> $matches
+     */
+    private function callbackForReplaceCallback(array $matches): string
+    {
+        if (\is_array($this->replaceCallbackReplacement)) {
+            if ($matches[0] !== $this->lastReplaceCallbackMatch) {
+                ++$this->replaceCallbackReplacementIndex;
+                $this->lastReplaceCallbackMatch = $matches[0];
+            }
+            return $this->replaceCallbackReplacement[$this->replaceCallbackReplacementIndex];
+        } else {
+            return $this->replaceCallbackReplacement;
+        }
     }
 }
