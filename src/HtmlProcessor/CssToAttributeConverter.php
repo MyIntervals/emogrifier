@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
+use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Utilities\Preg;
 
 /**
@@ -45,20 +46,16 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     ];
 
     /**
-     * @var array<string, array<string, string>>
-     */
-    private static $parsedCssCache = [];
-
-    /**
      * Maps the CSS from the style nodes to visual HTML attributes.
      *
      * @return $this
      */
     public function convertCssToVisualAttributes(): self
     {
+        $declarationBlockParser = new DeclarationBlockParser();
         /** @var \DOMElement $node */
         foreach ($this->getAllNodesWithStyleAttribute() as $node) {
-            $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+            $inlineStyleDeclarations = $declarationBlockParser->parse($node->getAttribute('style'));
             $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
         }
 
@@ -73,48 +70,6 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
         return $this->getXPath()->query('//*[@style]');
-    }
-
-    /**
-     * Parses a CSS declaration block into property name/value pairs.
-     *
-     * Example:
-     *
-     * The declaration block
-     *
-     *   "color: #000; font-weight: bold;"
-     *
-     * will be parsed into the following array:
-     *
-     *   "color" => "#000"
-     *   "font-weight" => "bold"
-     *
-     * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
-     *
-     * @return array<string, string>
-     *         the CSS declarations with the property names as array keys and the property values as array values
-     */
-    private function parseCssDeclarationsBlock(string $cssDeclarationsBlock): array
-    {
-        if (isset(self::$parsedCssCache[$cssDeclarationsBlock])) {
-            return self::$parsedCssCache[$cssDeclarationsBlock];
-        }
-
-        $properties = [];
-        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
-            /** @var array<int, string> $matches */
-            $matches = [];
-            if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
-                continue;
-            }
-
-            $propertyName = \strtolower($matches[1]);
-            $propertyValue = $matches[2];
-            $properties[$propertyName] = $propertyValue;
-        }
-        self::$parsedCssCache[$cssDeclarationsBlock] = $properties;
-
-        return $properties;
     }
 
     /**
