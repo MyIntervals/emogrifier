@@ -15,7 +15,7 @@ final class PregTest extends TestCase
     /**
      * @var string|array<string>
      */
-    private $replaceCallbackReplacement;
+    private $replaceCallbackReplacement = '';
 
     /**
      * @var ?string
@@ -25,7 +25,7 @@ final class PregTest extends TestCase
     /**
      * @var int
      */
-    private $replaceCallbackReplacementIndex;
+    private $replaceCallbackReplacementIndex = 0;
 
     /**
      * @test
