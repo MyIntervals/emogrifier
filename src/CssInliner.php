@@ -7,6 +7,7 @@ namespace Pelago\Emogrifier;
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Utilities\CssConcatenator;
+use Pelago\Emogrifier\Utilities\Preg;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 
@@ -452,7 +453,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
-        $normalizedOriginalStyle = \preg_replace_callback(
+        $normalizedOriginalStyle = (new Preg())->throwExceptions($this->debug)->replaceCallback(
             '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
             /** @param array<array-key, string> $propertyNameMatches */
             static function (array $propertyNameMatches): string {
@@ -612,6 +613,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $matches = $parsedCss->getStyleRulesData(\array_keys($this->allowedMediaTypes));
 
+        $preg = (new Preg())->throwExceptions($this->debug);
         $cssRules = [
             'inlinable' => [],
             'uninlinable' => [],
@@ -628,8 +630,8 @@ class CssInliner extends AbstractHtmlProcessor
             // Maybe exclude CSS selectors
             if (\count($this->excludedCssSelectors) > 0) {
                 // Normalize spaces, line breaks & tabs
-                $selectorsNormalized = \array_map(static function (string $selector): string {
-                    return (string) \preg_replace('@\\s++@u', ' ', $selector);
+                $selectorsNormalized = \array_map(static function (string $selector) use ($preg): string {
+                    return $preg->replace('@\\s++@u', ' ', $selector);
                 }, $selectors);
 
                 $selectors = \array_filter($selectorsNormalized, function (string $selector): bool {
@@ -747,13 +749,14 @@ class CssInliner extends AbstractHtmlProcessor
             return $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey];
         }
 
+        $preg = (new Preg())->throwExceptions($this->debug);
         $precedence = 0;
         foreach ($this->selectorPrecedenceMatchers as $matcher => $value) {
             if (\trim($selector) === '') {
                 break;
             }
             $count = 0;
-            $selector = \preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $count);
+            $selector = $preg->replace('/' . $matcher . '\\w+/', '', $selector, -1, $count);
             $precedence += ($value * $count);
         }
         $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
@@ -909,7 +912,8 @@ class CssInliner extends AbstractHtmlProcessor
         $importantStyleDeclarations = [];
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
-                $importantStyleDeclarations[$property] = $this->pregReplace('/\\s*+!\\s*+important$/i', '', $value);
+                $importantStyleDeclarations[$property]
+                    = (new Preg())->throwExceptions($this->debug)->replace('/\\s*+!\\s*+important$/i', '', $value);
             } else {
                 $regularStyleDeclarations[$property] = $value;
             }
@@ -1023,7 +1027,7 @@ class CssInliner extends AbstractHtmlProcessor
     {
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
-        $selectorWithoutNots = \ltrim(\preg_replace_callback(
+        $selectorWithoutNots = \ltrim((new Preg())->throwExceptions($this->debug)->replaceCallback(
             '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
             /** @param array<array-key, string> $matches */
             function (array $matches): string {
@@ -1090,7 +1094,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeSelectorComponents(string $matcher, string $selector): string
     {
-        return \preg_replace(
+        return (new Preg())->throwExceptions($this->debug)->replace(
             ['/([\\s>+~]|^)' . $matcher . '/i', '/' . $matcher . '/i'],
             ['$1*', ''],
             $selector
@@ -1189,59 +1193,5 @@ class CssInliner extends AbstractHtmlProcessor
         }
 
         return $node;
-    }
-
-    /**
-     * Wraps `preg_replace`.  If an error occurs (which is highly unlikely), either it is logged and the original
-     * `$subject` is returned, or in debug mode an exception is thrown.
-     *
-     * This method only supports strings, not arrays of strings.
-     *
-     * @param non-empty-string $pattern
-     * @param string $replacement
-     * @param string $subject
-     *
-     * @return string
-     *
-     * @throws \RuntimeException
-     */
-    private function pregReplace(string $pattern, string $replacement, string $subject): string
-    {
-        $result = \preg_replace($pattern, $replacement, $subject);
-
-        if (!\is_string($result)) {
-            $this->logOrThrowPregLastError();
-            $result = $subject;
-        }
-
-        return $result;
-    }
-
-    /**
-     * Obtains the name of the error constant for `preg_last_error` (based on code posted at
-     * {@see https://www.php.net/manual/en/function.preg-last-error.php#124124}) and puts it into an error message
-     * which is either passed to `trigger_error` (in non-debug mode) or an exception which is thrown (in debug mode).
-     *
-     * @throws \RuntimeException
-     */
-    private function logOrThrowPregLastError(): void
-    {
-        $pcreConstants = \get_defined_constants(true)['pcre'];
-        $pcreErrorConstantNames = \array_flip(\array_filter(
-            $pcreConstants,
-            static function (string $key): bool {
-                return \substr($key, -6) === '_ERROR';
-            },
-            ARRAY_FILTER_USE_KEY
-        ));
-
-        $pregLastError = \preg_last_error();
-        $message = 'PCRE regex execution error `' . (string) ($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
-            . '`';
-
-        if ($this->debug) {
-            throw new \RuntimeException($message, 1592870147);
-        }
-        \trigger_error($message);
     }
 }

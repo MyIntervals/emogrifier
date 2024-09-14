@@ -6,6 +6,7 @@ namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
+use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\TestCase;
 use TRegx\DataProvider\DataProviders;
 
@@ -1251,7 +1252,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     private static function assertContainsHtml(string $needle, string $haystack, string $message = ''): void
     {
         $needleMatcher = \preg_quote($needle, '%');
-        $needleMatcherWithNewlines = \preg_replace(
+        $needleMatcherWithNewlines = (new Preg())->replace(
             '%\\\\<(?:body|ul|dl|optgroup|table|tr|hr'
                 . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
                 . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
@@ -1288,7 +1289,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     private static function normalizeHtmlElement(string $html): string
     {
-        return \preg_replace(
+        return (new Preg())->replace(
             [
                 '%(<html(?=[\\s>])[^>]*+>)\\s*+(<head[\\s>])%',
                 '%(</head>)\\s*+(<body[\\s>])%',
