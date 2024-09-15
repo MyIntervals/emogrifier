@@ -87,6 +87,37 @@ final class Preg
     }
 
     /**
+     * Wraps `preg_split`.
+     * If an error occurs, and exceptions are not being thrown,
+     * a single-element array containing the original `$subject` is returned -
+     * or if the `PREG_SPLIT_OFFSET_CAPTURE` flag was specified,
+     * the fallback return array would comprise a single element which is an array
+     * with `$subject` at index 0 and the string offset `0` at index 1.
+     *
+     * @param non-empty-string $pattern
+     *
+     * @return array<int, string>|array<int, array{0: string, 1: int}>
+     *
+     * @throws \RuntimeException
+     */
+    public function split(string $pattern, string $subject, int $limit = -1, int $flags = 0): array
+    {
+        $result = \preg_split($pattern, $subject, $limit, $flags);
+
+        if ($result === false) {
+            $this->logOrThrowPregLastError();
+            if (($flags & PREG_SPLIT_OFFSET_CAPTURE) !== 0) {
+                $result = [[$subject, 0]];
+            } else {
+                $result = [$subject];
+            }
+        }
+
+        return $result;
+    }
+
+
+    /**
      * Obtains the name of the error constant for `preg_last_error`
      * (based on code posted at {@see https://www.php.net/manual/en/function.preg-last-error.php#124124})
      * and puts it into an error message which is either passed to `trigger_error`
