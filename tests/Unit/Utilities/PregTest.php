@@ -61,6 +61,11 @@ final class PregTest extends TestCase
                     );
                 },
             ],
+            'split' => [
+                static function (Preg $testSubject): void {
+                    $testSubject->split('/', '');
+                },
+            ],
         ];
     }
 
@@ -235,6 +240,68 @@ final class PregTest extends TestCase
     }
 
     /**
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subject: string,
+     *             limit: int,
+     *             flags: int,
+     *             expect: array<int, string>|array<int, array{0: string, 1: int}>,
+     *         }>
+     */
+    public function providePregSplitArgumentsAndExpectedResult(): array
+    {
+        return [
+            'simple arguments' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'limit' => -1,
+                'flags' => 0,
+                'expect' => ['', 'bb', ''],
+            ],
+            'with limit' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'limit' => 2,
+                'flags' => 0,
+                'expect' => ['', 'bba'],
+            ],
+            // It is only necessary to test that the `$flags` parameter is passed on...
+            'with PREG_SPLIT_NO_EMPTY' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'limit' => -1,
+                'flags' => PREG_SPLIT_NO_EMPTY,
+                'expect' => ['bb'],
+            ],
+            // ...but worth testing `PREG_SPLIT_OFFSET_CAPTURE` because that changes the return type
+            'with PREG_SPLIT_OFFSET_CAPTURE' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'limit' => -1,
+                'flags' => PREG_SPLIT_OFFSET_CAPTURE,
+                'expect' => [['', 0], ['bb', 1], ['', 4]],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     * @param array<int, string>|array<int, array{0: string, 1: int}> $expectedResult
+     *
+     * @dataProvider providePregSplitArgumentsAndExpectedResult
+     */
+    public function splitSplits(string $pattern, string $subject, int $limit, int $flags, array $expectedResult): void
+    {
+        $testSubject = new Preg();
+
+        $result = $testSubject->split($pattern, $subject, $limit, $flags);
+
+        self::assertSame($expectedResult, $result);
+    }
+
+    /**
      * @test
      */
     public function replaceReturnsSubjectOnError(): void
@@ -262,6 +329,30 @@ final class PregTest extends TestCase
         );
 
         self::assertSame('abba', $result);
+    }
+
+    /**
+     * @test
+     */
+    public function splitReturnsArrayContainingSubjectOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->split('/', 'abba');
+
+        self::assertSame(['abba'], $result);
+    }
+
+    /**
+     * @test
+     */
+    public function splitWithOffsetCaptureReturnsArrayContainingArrayWithSubjectAndZeroOffsetOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->split('/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);
+
+        self::assertSame([['abba', 0]], $result);
     }
 
     /**
