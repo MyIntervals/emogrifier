@@ -341,6 +341,8 @@ final class PregTest extends TestCase
     public function splitWithOffsetCaptureIsNotSupported(): void
     {
         $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(1726506348);
+        $this->expectExceptionMessage('PREG_SPLIT_OFFSET_CAPTURE');
         $subject = new Preg();
 
         $result = @$subject->split('/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);

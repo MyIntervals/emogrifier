@@ -101,7 +101,7 @@ final class Preg
     public function split(string $pattern, string $subject, int $limit = -1, int $flags = 0): array
     {
         if (($flags & PREG_SPLIT_OFFSET_CAPTURE) !== 0) {
-            throw new \RuntimeException('PREG_SPLIT_OFFSET_CAPTURE is not supported by Preg::split');
+            throw new \RuntimeException('PREG_SPLIT_OFFSET_CAPTURE is not supported by Preg::split', 1726506348);
         }
 
         $result = \preg_split($pattern, $subject, $limit, $flags);
