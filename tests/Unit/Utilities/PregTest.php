@@ -265,21 +265,13 @@ final class PregTest extends TestCase
                 'flags' => 0,
                 'expect' => ['', 'bba'],
             ],
-            // It is only necessary to test that the `$flags` parameter is passed on...
+            // It is only necessary to test that the `$flags` parameter is passed on.
             'with PREG_SPLIT_NO_EMPTY' => [
                 'pattern' => '/a/',
                 'subject' => 'abba',
                 'limit' => -1,
                 'flags' => PREG_SPLIT_NO_EMPTY,
                 'expect' => ['bb'],
-            ],
-            // ...but worth testing `PREG_SPLIT_OFFSET_CAPTURE` because that changes the return type
-            'with PREG_SPLIT_OFFSET_CAPTURE' => [
-                'pattern' => '/a/',
-                'subject' => 'abba',
-                'limit' => -1,
-                'flags' => PREG_SPLIT_OFFSET_CAPTURE,
-                'expect' => [['', 0], ['bb', 1], ['', 4]],
             ],
         ];
     }
@@ -346,13 +338,12 @@ final class PregTest extends TestCase
     /**
      * @test
      */
-    public function splitWithOffsetCaptureReturnsArrayContainingArrayWithSubjectAndZeroOffsetOnError(): void
+    public function splitWithOffsetCaptureIsNotSupported(): void
     {
+        $this->expectException(\RuntimeException::class);
         $subject = new Preg();
 
         $result = @$subject->split('/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);
-
-        self::assertSame([['abba', 0]], $result);
     }
 
     /**
