@@ -89,28 +89,26 @@ final class Preg
     /**
      * Wraps `preg_split`.
      * If an error occurs, and exceptions are not being thrown,
-     * a single-element array containing the original `$subject` is returned -
-     * or if the `PREG_SPLIT_OFFSET_CAPTURE` flag was specified,
-     * the fallback return array would comprise a single element which is an array
-     * with `$subject` at index 0 and the string offset `0` at index 1.
+     * a single-element array containing the original `$subject` is returned.
+     * This method does not support the `PREG_SPLIT_OFFSET_CAPTURE` flag and will throw an excpetion if it is specified.
      *
      * @param non-empty-string $pattern
      *
-     * @return array<int, string>|array<int, array{0: string, 1: int}>
+     * @return array<int, string>
      *
      * @throws \RuntimeException
      */
     public function split(string $pattern, string $subject, int $limit = -1, int $flags = 0): array
     {
+        if (($flags & PREG_SPLIT_OFFSET_CAPTURE) !== 0) {
+            throw new \RuntimeException('PREG_SPLIT_OFFSET_CAPTURE is not supported by Preg::split', 1726506348);
+        }
+
         $result = \preg_split($pattern, $subject, $limit, $flags);
 
         if ($result === false) {
             $this->logOrThrowPregLastError();
-            if (($flags & PREG_SPLIT_OFFSET_CAPTURE) !== 0) {
-                $result = [[$subject, 0]];
-            } else {
-                $result = [$subject];
-            }
+            $result = [$subject];
         }
 
         return $result;
