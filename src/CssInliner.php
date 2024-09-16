@@ -693,7 +693,8 @@ class CssInliner extends AbstractHtmlProcessor
             return false;
         }
 
-        foreach (\preg_split('/' . self::COMBINATOR_MATCHER . '/', $selector) as $selectorPart) {
+        $preg = (new Preg())->throwExceptions($this->debug);
+        foreach ($preg->split('/' . self::COMBINATOR_MATCHER . '/', $selector) as $selectorPart) {
             if ($this->selectorPartHasUnsupportedOfTypePseudoClass($selectorPart)) {
                 return true;
             }
@@ -1053,7 +1054,7 @@ class CssInliner extends AbstractHtmlProcessor
             function (string $selectorPart): string {
                 return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
             },
-            \preg_split(
+            (new Preg())->throwExceptions($this->debug)->split(
                 '/(' . self::COMBINATOR_MATCHER . ')/',
                 $selectorWithoutUnmatchablePseudoComponents,
                 -1,

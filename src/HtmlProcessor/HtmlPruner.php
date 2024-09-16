@@ -6,6 +6,7 @@ namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\Utilities\ArrayIntersector;
+use Pelago\Emogrifier\Utilities\Preg;
 
 /**
  * This class can remove things from HTML.
@@ -84,9 +85,10 @@ class HtmlPruner extends AbstractHtmlProcessor
     {
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
+        $preg = new Preg();
         /** @var \DOMElement $element */
         foreach ($elements as $element) {
-            $elementClasses = \preg_split('/\\s++/', \trim($element->getAttribute('class')));
+            $elementClasses = $preg->split('/\\s++/', \trim($element->getAttribute('class')));
             $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
             if ($elementClassesToKeep !== []) {
                 $element->setAttribute('class', \implode(' ', $elementClassesToKeep));

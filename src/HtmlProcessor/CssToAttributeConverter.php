@@ -291,8 +291,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     private function parseCssShorthandValue(string $value): array
     {
-        /** @var array<int, string> $values */
-        $values = \preg_split('/\\s+/', $value);
+        $values = (new Preg())->split('/\\s+/', $value);
 
         $css = [];
         $css['top'] = $values[0];
