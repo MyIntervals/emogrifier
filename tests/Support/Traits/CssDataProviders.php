@@ -354,17 +354,9 @@ trait CssDataProviders
      * @param array<string, T> $array
      *
      * @return array<string, T>
-     *
-     * @throws \RuntimeException
      */
     private static function arrayMapKeys(callable $callback, array $array): array
     {
-        $result = \array_combine(\array_map($callback, \array_keys($array)), \array_values($array));
-
-        if ($result === false) {
-            throw new \RuntimeException('`array_keys` and `array_values` did not give equal-length arrays', 1619201107);
-        }
-
-        return $result;
+        return \array_combine(\array_map($callback, \array_keys($array)), \array_values($array));
     }
 }

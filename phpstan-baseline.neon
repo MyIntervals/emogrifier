@@ -129,18 +129,3 @@ parameters:
 			message: "#^Variable \\$classAttributeMatches in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$classAttributeValue$#"
 			count: 1
 			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Unit/Support/Constraint/IsEquivalentCssTest.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Unit/Support/Constraint/StringContainsCssCountTest.php
-
-		-
-			message: "#^Strict comparison using \\=\\=\\= between array\\<string, T\\> and false will always evaluate to false\\.$#"
-			count: 1
-			path: tests/Unit/Support/Constraint/StringContainsCssTest.php
