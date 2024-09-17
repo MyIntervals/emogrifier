@@ -7,6 +7,7 @@ namespace Pelago\Emogrifier;
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Utilities\CssConcatenator;
+use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Utilities\Preg;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
@@ -24,12 +25,7 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var int
      */
-    private const CACHE_KEY_CSS_DECLARATIONS_BLOCK = 1;
-
-    /**
-     * @var int
-     */
-    private const CACHE_KEY_COMBINED_STYLES = 2;
+    private const CACHE_KEY_COMBINED_STYLES = 1;
 
     /**
      * Regular expression component matching a static pseudo class in a selector, without the preceding ":",
@@ -75,13 +71,11 @@ class CssInliner extends AbstractHtmlProcessor
     /**
      * @var array{
      *         0: array<string, int>,
-     *         1: array<string, array<string, string>>,
-     *         2: array<string, string>
+     *         1: array<string, string>
      *      }
      */
     private $caches = [
         self::CACHE_KEY_SELECTOR => [],
-        self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
         self::CACHE_KEY_COMBINED_STYLES => [],
     ];
 
@@ -393,7 +387,6 @@ class CssInliner extends AbstractHtmlProcessor
     {
         $this->caches = [
             self::CACHE_KEY_SELECTOR => [],
-            self::CACHE_KEY_CSS_DECLARATIONS_BLOCK => [],
             self::CACHE_KEY_COMBINED_STYLES => [],
         ];
     }
@@ -465,53 +458,11 @@ class CssInliner extends AbstractHtmlProcessor
         // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
         $nodePath = $node->getNodePath();
         if (\is_string($nodePath) && !isset($this->styleAttributesForNodes[$nodePath])) {
-            $this->styleAttributesForNodes[$nodePath] = $this->parseCssDeclarationsBlock($normalizedOriginalStyle);
+            $this->styleAttributesForNodes[$nodePath] = (new DeclarationBlockParser())->parse($normalizedOriginalStyle);
             $this->visitedNodes[$nodePath] = $node;
         }
 
         $node->setAttribute('style', $normalizedOriginalStyle);
-    }
-
-    /**
-     * Parses a CSS declaration block into property name/value pairs.
-     *
-     * Example:
-     *
-     * The declaration block
-     *
-     *   "color: #000; font-weight: bold;"
-     *
-     * will be parsed into the following array:
-     *
-     *   "color" => "#000"
-     *   "font-weight" => "bold"
-     *
-     * @param string $cssDeclarationsBlock the CSS declarations block without the curly braces, may be empty
-     *
-     * @return array<string, string>
-     *         the CSS declarations with the property names as array keys and the property values as array values
-     */
-    private function parseCssDeclarationsBlock(string $cssDeclarationsBlock): array
-    {
-        if (isset($this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock])) {
-            return $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock];
-        }
-
-        $properties = [];
-        foreach (\preg_split('/;(?!base64|charset)/', $cssDeclarationsBlock) as $declaration) {
-            /** @var list<string> $matches */
-            $matches = [];
-            if (!\preg_match('/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s', \trim($declaration), $matches)) {
-                continue;
-            }
-
-            $propertyName = \strtolower($matches[1]);
-            $propertyValue = $matches[2];
-            $properties[$propertyName] = $propertyValue;
-        }
-        $this->caches[self::CACHE_KEY_CSS_DECLARATIONS_BLOCK][$cssDeclarationsBlock] = $properties;
-
-        return $properties;
     }
 
     /**
@@ -782,7 +733,8 @@ class CssInliner extends AbstractHtmlProcessor
     private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule): void
     {
         $declarationsBlock = $cssRule['declarationsBlock'];
-        $newStyleDeclarations = $this->parseCssDeclarationsBlock($declarationsBlock);
+        $declarationBlockParser = new DeclarationBlockParser();
+        $newStyleDeclarations = $declarationBlockParser->parse($declarationsBlock);
         if ($newStyleDeclarations === []) {
             return;
         }
@@ -790,7 +742,7 @@ class CssInliner extends AbstractHtmlProcessor
         // if it has a style attribute, get it, process it, and append (overwrite) new stuff
         if ($node->hasAttribute('style')) {
             // break it up into an associative array
-            $oldStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+            $oldStyleDeclarations = $declarationBlockParser->parse($node->getAttribute('style'));
         } else {
             $oldStyleDeclarations = [];
         }
@@ -865,9 +817,10 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function fillStyleAttributesWithMergedStyles(): void
     {
+        $declarationBlockParser = new DeclarationBlockParser();
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
-            $currentStyleAttributes = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+            $currentStyleAttributes = $declarationBlockParser->parse($node->getAttribute('style'));
             $node->setAttribute(
                 'style',
                 $this->generateStyleStringFromDeclarationsArrays(
@@ -906,7 +859,8 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
-        $inlineStyleDeclarations = $this->parseCssDeclarationsBlock($node->getAttribute('style'));
+        $style = $node->getAttribute('style');
+        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool) $style ? $style : '');
         /** @var array<string, string> $regularStyleDeclarations */
         $regularStyleDeclarations = [];
         /** @var array<string, string> $importantStyleDeclarations */
