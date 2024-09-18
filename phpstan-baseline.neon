@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Argument of an invalid type DOMNodeList\\<DOMNode\\>\\|false supplied for foreach, only iterables are supported\\.$#"
-			count: 2
-			path: src/CssInliner.php
-
-		-
 			message: "#^Method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:getAllNodesWithStyleAttribute\\(\\) return type with generic class DOMNodeList does not specify its types\\: TNode$#"
 			count: 1
 			path: src/CssInliner.php

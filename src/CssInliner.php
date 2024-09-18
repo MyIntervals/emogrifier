@@ -54,6 +54,13 @@ class CssInliner extends AbstractHtmlProcessor
     private const COMBINATOR_MATCHER = '(?:\\s++|\\s*+[>+~]\\s*+)(?=[[:alpha:]_\\-.#*:\\[])';
 
     /**
+     * options array key for `querySelectorAll`
+     *
+     * @var string
+     */
+    private const QSA_ALWAYS_THROW_PARSE_EXCEPTION = 'alwaysThrowParseException';
+
+    /**
      * @var array<string, bool>
      */
     private $excludedSelectors = [];
@@ -164,7 +171,11 @@ class CssInliner extends AbstractHtmlProcessor
      * @return $this
      *
      * @throws ParseException in debug mode, if an invalid selector is encountered
-     * @throws \RuntimeException in debug mode, if an internal PCRE error occurs
+     * @throws \RuntimeException
+     *         in debug mode, if an internal PCRE error occurs
+     *         or `CssSelectorConverter::toXPath` returns an invalid XPath expression
+     * @throws \UnexpectedValueException
+     *         if a selector query result includes a node which is not a `DOMElement`
      */
     public function inlineCss(string $css = ''): self
     {
@@ -183,23 +194,12 @@ class CssInliner extends AbstractHtmlProcessor
 
         $excludedNodes = $this->getNodesToExclude();
         $cssRules = $this->collateCssRules($parsedCss);
-        $cssSelectorConverter = $this->getCssSelectorConverter();
         foreach ($cssRules['inlinable'] as $cssRule) {
-            try {
-                $nodesMatchingCssSelectors = $this->getXPath()
-                    ->query($cssSelectorConverter->toXPath($cssRule['selector']));
-
-                /** @var \DOMElement $node */
-                foreach ($nodesMatchingCssSelectors as $node) {
-                    if (\in_array($node, $excludedNodes, true)) {
-                        continue;
-                    }
-                    $this->copyInlinableCssToStyleAttribute($node, $cssRule);
+            foreach ($this->querySelectorAll($cssRule['selector']) as $node) {
+                if (\in_array($node, $excludedNodes, true)) {
+                    continue;
                 }
-            } catch (ParseException $e) {
-                if ($this->debug) {
-                    throw $e;
-                }
+                $this->copyInlinableCssToStyleAttribute($this->ensureNodeIsElement($node), $cssRule);
             }
         }
 
@@ -496,32 +496,72 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return list<\DOMElement>
      *
-     * @throws ParseException
-     * @throws \UnexpectedValueException
+     * @throws ParseException in debug mode, if an invalid selector is encountered
+     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
+     * @throws \UnexpectedValueException if the selector query result includes a node which is not a `DOMElement`
      */
     private function getNodesToExclude(): array
     {
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
-            try {
-                $matchingNodes = $this->getXPath()
-                    ->query($this->getCssSelectorConverter()->toXPath($selectorToExclude));
-
-                foreach ($matchingNodes as $node) {
-                    if (!$node instanceof \DOMElement) {
-                        $path = $node->getNodePath() ?? '$node';
-                        throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
-                    }
-                    $excludedNodes[] = $node;
-                }
-            } catch (ParseException $e) {
-                if ($this->debug) {
-                    throw $e;
-                }
+            foreach ($this->querySelectorAll($selectorToExclude) as $node) {
+                $excludedNodes[] = $this->ensureNodeIsElement($node);
             }
         }
 
         return $excludedNodes;
+    }
+
+    /**
+     * @param array{}|array{alwaysThrowParseException: bool} $options
+     *        This is an array of option values to control behaviour:
+     *        - `QSA_ALWAYS_THROW_PARSE_EXCEPTION` - `bool` - throw any `ParseException` regardless of debug setting.
+     *
+     * @return \DOMNodeList<\DOMNode> the HTML elements that match the provided CSS `$selectors`
+     *
+     * @throws ParseException
+     *         in debug mode (or with `QSA_ALWAYS_THROW_PARSE_EXCEPTION` option), if an invalid selector is encountered
+     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
+     */
+    private function querySelectorAll(string $selectors, array $options = []): \DOMNodeList
+    {
+        try {
+            $result = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectors));
+
+            if ($result === false) {
+                throw new \RuntimeException('query failed with selector \'' . $selectors . '\'', 1726533051);
+            }
+
+            return $result;
+        } catch (ParseException $exception) {
+            $alwaysThrowParseException = $options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false;
+            if ($this->debug || $alwaysThrowParseException) {
+                throw $exception;
+            }
+            return new \DOMNodeList();
+        } catch (\RuntimeException $exception) {
+            if (
+                $this->debug
+            ) {
+                throw $exception;
+            }
+            // `RuntimeException` indicates a bug in CssSelector so pass the message to the error handler.
+            \trigger_error($exception->getMessage());
+            return new \DOMNodeList();
+        }
+    }
+
+    /**
+     * @throws \UnexpectedValueException if `$node` is not a `DOMElement`
+     */
+    private function ensureNodeIsElement(\DOMNode $node): \DOMElement
+    {
+        if (!$node instanceof \DOMElement) {
+            $path = $node->getNodePath() ?? '$node';
+            throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
+        }
+
+        return $node;
     }
 
     /**
@@ -952,12 +992,14 @@ class CssInliner extends AbstractHtmlProcessor
      *
      * @return bool
      *
-     * @throws ParseException
+     * @throws ParseException in debug mode, if an invalid selector is encountered
+     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
      */
     private function existsMatchForCssSelector(string $cssSelector): bool
     {
         try {
-            $nodesMatchingSelector = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($cssSelector));
+            $nodesMatchingSelector
+                = $this->querySelectorAll($cssSelector, [self::QSA_ALWAYS_THROW_PARSE_EXCEPTION => true]);
         } catch (ParseException $e) {
             if ($this->debug) {
                 throw $e;
@@ -965,7 +1007,7 @@ class CssInliner extends AbstractHtmlProcessor
             return true;
         }
 
-        return $nodesMatchingSelector !== false && $nodesMatchingSelector->length !== 0;
+        return $nodesMatchingSelector->length !== 0;
     }
 
     /**
