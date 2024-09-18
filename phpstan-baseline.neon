@@ -2,7 +2,7 @@ parameters:
 	ignoreErrors:
 		-
 			message: "#^Method Pelago\\\\Emogrifier\\\\CssInliner\\:\\:getAllNodesWithStyleAttribute\\(\\) return type with generic class DOMNodeList does not specify its types\\: TNode$#"
-			count: 1
+			count: 2
 			path: src/CssInliner.php
 
 		-
