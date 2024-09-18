@@ -533,18 +533,20 @@ class CssInliner extends AbstractHtmlProcessor
             }
 
             return $result;
-        } catch (ParseException|\RuntimeException $exception) {
+        } catch (ParseException $exception) {
+            $alwaysThrowParseException = $options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false;
+            if ($this->debug || $alwaysThrowParseException) {
+                throw $exception;
+            }
+            return new \DOMNodeList();
+        } catch (\RuntimeException $exception) {
             if (
                 $this->debug
-                || ($options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false) && $exception instanceof ParseException
             ) {
                 throw $exception;
             }
-            // In non-debug mode, `ParseException`s are silently ignored, whereas `RuntimeException`s (indicating a bug
-            // in CssSelector) have their message passed to the error handler (for logging or custom handling).
-            if ($exception instanceof \RuntimeException) {
-                \trigger_error($exception->getMessage());
-            }
+            // `RuntimeException` indicates a bug in CssSelector so pass the message to the error handler.
+            \trigger_error($exception->getMessage());
             return new \DOMNodeList();
         }
     }
