@@ -90,7 +90,7 @@ final class Preg
      * Wraps `preg_split`.
      * If an error occurs, and exceptions are not being thrown,
      * a single-element array containing the original `$subject` is returned.
-     * This method does not support the `PREG_SPLIT_OFFSET_CAPTURE` flag and will throw an excpetion if it is specified.
+     * This method does not support the `PREG_SPLIT_OFFSET_CAPTURE` flag and will throw an exception if it is specified.
      *
      * @param non-empty-string $pattern
      *
