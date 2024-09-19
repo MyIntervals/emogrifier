@@ -184,6 +184,46 @@ final class PregTest extends TestCase
 
     /**
      * @test
+     */
+    public function replaceSetsCount(): void
+    {
+        $subject = new Preg();
+
+        $subject->replace('/a/', 'fab', 'abba', -1, $count);
+
+        self::assertSame(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function replaceReturnsSubjectOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->replace('/', 'fab', 'abba');
+
+        self::assertSame('abba', $result);
+    }
+
+    /**
+     * @param array<int, string> $matches
+     */
+    private function callbackForReplaceCallback(array $matches): string
+    {
+        if (\is_array($this->replaceCallbackReplacement)) {
+            if ($matches[0] !== $this->lastReplaceCallbackMatch) {
+                ++$this->replaceCallbackReplacementIndex;
+                $this->lastReplaceCallbackMatch = $matches[0];
+            }
+            return $this->replaceCallbackReplacement[$this->replaceCallbackReplacementIndex];
+        } else {
+            return $this->replaceCallbackReplacement;
+        }
+    }
+
+    /**
+     * @test
      *
      * @param non-empty-string|non-empty-array<non-empty-string> $pattern
      * @param string|non-empty-array<string> $replacement
@@ -215,18 +255,6 @@ final class PregTest extends TestCase
     /**
      * @test
      */
-    public function replaceSetsCount(): void
-    {
-        $subject = new Preg();
-
-        $subject->replace('/a/', 'fab', 'abba', -1, $count);
-
-        self::assertSame(2, $count);
-    }
-
-    /**
-     * @test
-     */
     public function replaceCallbackSetsCount(): void
     {
         $subject = new Preg();
@@ -242,6 +270,24 @@ final class PregTest extends TestCase
         );
 
         self::assertSame(2, $count);
+    }
+
+    /**
+     * @test
+     */
+    public function replaceCallbackReturnsSubjectOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->replaceCallback(
+            '/',
+            static function (array $matches): string {
+                return 'fab';
+            },
+            'abba'
+        );
+
+        self::assertSame('abba', $result);
     }
 
     /**
@@ -296,6 +342,31 @@ final class PregTest extends TestCase
         $result = $testSubject->split($pattern, $subject, $limit, $flags);
 
         self::assertSame($expectedResult, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function splitReturnsArrayContainingSubjectOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->split('/', 'abba');
+
+        self::assertSame(['abba'], $result);
+    }
+
+    /**
+     * @test
+     */
+    public function splitWithOffsetCaptureIsNotSupported(): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionCode(1726506348);
+        $this->expectExceptionMessage('PREG_SPLIT_OFFSET_CAPTURE');
+        $subject = new Preg();
+
+        $result = $subject->split('/a/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);
     }
 
     /**
@@ -385,61 +456,6 @@ final class PregTest extends TestCase
     /**
      * @test
      */
-    public function replaceReturnsSubjectOnError(): void
-    {
-        $subject = new Preg();
-
-        $result = @$subject->replace('/', 'fab', 'abba');
-
-        self::assertSame('abba', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function replaceCallbackReturnsSubjectOnError(): void
-    {
-        $subject = new Preg();
-
-        $result = @$subject->replaceCallback(
-            '/',
-            static function (array $matches): string {
-                return 'fab';
-            },
-            'abba'
-        );
-
-        self::assertSame('abba', $result);
-    }
-
-    /**
-     * @test
-     */
-    public function splitReturnsArrayContainingSubjectOnError(): void
-    {
-        $subject = new Preg();
-
-        $result = @$subject->split('/', 'abba');
-
-        self::assertSame(['abba'], $result);
-    }
-
-    /**
-     * @test
-     */
-    public function splitWithOffsetCaptureIsNotSupported(): void
-    {
-        $this->expectException(\RuntimeException::class);
-        $this->expectExceptionCode(1726506348);
-        $this->expectExceptionMessage('PREG_SPLIT_OFFSET_CAPTURE');
-        $subject = new Preg();
-
-        $result = $subject->split('/a/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);
-    }
-
-    /**
-     * @test
-     */
     public function matchReturnsZeroOnError(): void
     {
         $subject = new Preg();
@@ -459,21 +475,5 @@ final class PregTest extends TestCase
         @$subject->match('/', 'abba', $matches);
 
         self::assertSame([], $matches);
-    }
-
-    /**
-     * @param array<int, string> $matches
-     */
-    private function callbackForReplaceCallback(array $matches): string
-    {
-        if (\is_array($this->replaceCallbackReplacement)) {
-            if ($matches[0] !== $this->lastReplaceCallbackMatch) {
-                ++$this->replaceCallbackReplacementIndex;
-                $this->lastReplaceCallbackMatch = $matches[0];
-            }
-            return $this->replaceCallbackReplacement[$this->replaceCallbackReplacementIndex];
-        } else {
-            return $this->replaceCallbackReplacement;
-        }
     }
 }
