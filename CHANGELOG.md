@@ -3,6 +3,9 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
+Please also have a look at our
+[API and deprecation policy](docs/API-and-deprecation-policy.md).
+
 ## x.y.z
 
 ### Added
@@ -17,6 +20,10 @@ This project adheres to [Semantic Versioning](https://semver.org/).
 ### Removed
 
 ### Fixed
+
+### Documentation
+
+- Add an API and deprecation policy (#1323)
 
 ## 7.2.0: Add support for Symfony 7
 

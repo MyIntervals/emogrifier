@@ -420,6 +420,11 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
   self-closing tags will lose their slash. To keep your HTML valid, it is
   recommended to use HTML5 instead of one of the XHTML variants.
 
+## API and deprecation policy
+
+Please have a look at our
+[API and deprecation policy](docs/API-and-deprecation-policy.md).
+
 ## Contributing
 
 Contributions in the form of bug reports, feature requests, or pull requests are
