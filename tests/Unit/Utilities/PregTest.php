@@ -66,6 +66,11 @@ final class PregTest extends TestCase
                     $testSubject->split('/', '');
                 },
             ],
+            'match' => [
+                static function (Preg $testSubject): void {
+                    $testSubject->match('/', '');
+                },
+            ],
         ];
     }
 
@@ -294,6 +299,90 @@ final class PregTest extends TestCase
     }
 
     /**
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subject: string,
+     *             expect: int,
+     *         }>
+     */
+    public function providePregMatchArgumentsAndExpectedMatchCount(): array
+    {
+        return [
+            'no match' => [
+                'pattern' => '/fab/',
+                'subject' => 'abba',
+                'expect' => 0,
+            ],
+            'with match' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'expect' => 1,
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     *
+     * @dataProvider providePregMatchArgumentsAndExpectedMatchCount
+     */
+    public function matchReturnsMatchCount(string $pattern, string $subject, int $expectedMatchCount): void
+    {
+        $testSubject = new Preg();
+
+        $result = $testSubject->match($pattern, $subject);
+
+        self::assertSame($expectedMatchCount, $result);
+    }
+
+    /**
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subject: string,
+     *             expect: array<int, string>,
+     *         }>
+     */
+    public function providePregMatchArgumentsAndExpectedMatches(): array
+    {
+        return [
+            'no match' => [
+                'pattern' => '/fab/',
+                'subject' => 'abba',
+                'expect' => [],
+            ],
+            'with match' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'expect' => ['a'],
+            ],
+            'with subpattern match' => [
+                'pattern' => '/a(b)/',
+                'subject' => 'abba',
+                'expect' => ['ab', 'b'],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     * @param array<int, string> $expectedMatches
+     *
+     * @dataProvider providePregMatchArgumentsAndExpectedMatches
+     */
+    public function matchSetsMatches(string $pattern, string $subject, array $expectedMatches): void
+    {
+        $testSubject = new Preg();
+
+        $testSubject->match($pattern, $subject, $matches);
+
+        self::assertSame($expectedMatches, $matches);
+    }
+
+    /**
      * @test
      */
     public function replaceReturnsSubjectOnError(): void
@@ -346,6 +435,30 @@ final class PregTest extends TestCase
         $subject = new Preg();
 
         $result = @$subject->split('/', 'abba', -1, PREG_SPLIT_OFFSET_CAPTURE);
+    }
+
+    /**
+     * @test
+     */
+    public function matchReturnsZeroOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->match('/', 'abba');
+
+        self::assertSame(0, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function matchSetsMatchesToEmptyArrayOnError(): void
+    {
+        $subject = new Preg();
+
+        @$subject->match('/', 'abba', $matches);
+
+        self::assertSame([], $matches);
     }
 
     /**

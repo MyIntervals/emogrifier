@@ -114,6 +114,31 @@ final class Preg
         return $result;
     }
 
+    /**
+     * Wraps `preg_match`.
+     * If an error occurs, and exceptions are not being thrown,
+     * zero (`0`) is returned, and if the `$matches` parameter is provided, it is set to an empty array.
+     * This method does not currently support the `$flags` or `$offset` parameters.
+     *
+     * @param non-empty-string $pattern
+     * @param array<int, string> $matches
+     *
+     * @return 0|1
+     *
+     * @throws \RuntimeException
+     */
+    public function match(string $pattern, string $subject, ?array &$matches = null): int
+    {
+        $result = \preg_match($pattern, $subject, $matches);
+
+        if ($result === false) {
+            $this->logOrThrowPregLastError();
+            $result = 0;
+            $matches = [];
+        }
+
+        return $result;
+    }
 
     /**
      * Obtains the name of the error constant for `preg_last_error`
