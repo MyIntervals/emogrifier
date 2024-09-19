@@ -177,10 +177,10 @@ $prunedHtml = HtmlPruner::fromHtml($html)->removeElementsWithDisplayNone()
 ```
 
 The `removeRedundantClasses` method accepts a whitelist of names of classes that
-should be retained.  If this is a post-processing step after inlining CSS, you
+should be retained. If this is a post-processing step after inlining CSS, you
 can alternatively use `removeRedundantClassesAfterCssInlined`, passing it the
 `CssInliner` instance that has inlined the CSS (and having the `HtmlPruner` work
-on the `DOMDocument`).  This will use information from the `CssInliner` to
+on the `DOMDocument`). This will use information from the `CssInliner` to
 determine which classes are still required (namely, those used in uninlinable
 rules that have been copied to a `<style>` element):
 
@@ -191,16 +191,16 @@ $prunedHtml = HtmlPruner::fromDomDocument($cssInliner->getDomDocument())
 ```
 
 The `removeElementsWithDisplayNone` method will not remove any elements which
-have the class `-emogrifier-keep`.  So if, for example, there are elements which
+have the class `-emogrifier-keep`. So if, for example, there are elements which
 by default have `display: none` but are revealed by an `@media` rule, or which
-are intended as a preheader, you can add that class to those elements.  The
+are intended as a preheader, you can add that class to those elements. The
 paragraph in this HTML snippet will not be removed even though it has
 `display: none` (which has presumably been applied by `CssInliner::inlineCss()`
 from a CSS rule `.preheader { display: none; }`):
 
 ```html
 <p class="preheader -emogrifier-keep" style="display: none;">
-  Hello World!
+    Hello World!
 </p>
 ```
 
@@ -231,27 +231,29 @@ calling the `inlineCss` method:
 * `->removeAllowedMediaType(string $mediaName)` - You can use this
   method to remove media types that Emogrifier keeps.
 * `->addExcludedSelector(string $selector)` - Keeps elements from
-  being affected by CSS inlining.  Note that only elements matching the supplied
+  being affected by CSS inlining. Note that only elements matching the supplied
   selector(s) will be excluded from CSS inlining, not necessarily their
-  descendants.  If you wish to exclude an entire subtree, you should provide
+  descendants. If you wish to exclude an entire subtree, you should provide
   selector(s) which will match all elements in the subtree, for example by using
   the universal selector:
   ```php
   $cssInliner->addExcludedSelector('.message-preview');
   $cssInliner->addExcludedSelector('.message-preview *');
   ```
-* `->addExcludedCssSelector(string $selector)` - Contrary to `addExcludedSelector`
-  which excludes HTML nodes, this method excludes CSS selectors from
-  being inlined. This is for example useful if you don't want your CSS reset rules
-  to be inlined on each HTML node (e.g. `* { margin: 0; padding: 0; font-size: 100% }`).
-  Note that these selectors must precisely match the selectors you wish to exclude.
+* `->addExcludedCssSelector(string $selector)` - Contrary to
+  `addExcludedSelector`, which excludes HTML nodes, this method excludes CSS
+  selectors from being inlined. This is for example useful if you don't want
+  your CSS reset rules to be inlined on each HTML node (e.g.
+  `* { margin: 0; padding: 0; font-size: 100% }`).
+  Note that these selectors must precisely match the selectors you wish to
+  exclude.
   Meaning that excluding `.example` will not exclude `p .example`.
   ```php
   $cssInliner->addExcludedCssSelector('*');
   $cssInliner->addExcludedCssSelector('form');
   ```
-* `->removeExcludedCssSelector(string $selector)` - Removes previously added excluded
-  selectors, if any.
+* `->removeExcludedCssSelector(string $selector)` - Removes previously added
+  excluded selectors, if any.
   ```php
   $cssInliner->removeExcludedCssSelector('form');
   ```
@@ -303,11 +305,11 @@ $html = CssToAttributeConverter::fromDomDocument($domDocument)
 Emogrifier currently supports the following
 [CSS selectors](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors):
 
- * [type](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors)
- * [class](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)
- * [ID](https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors)
- * [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors)
- * [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
+* [type](https://developer.mozilla.org/en-US/docs/Web/CSS/Type_selectors)
+* [class](https://developer.mozilla.org/en-US/docs/Web/CSS/Class_selectors)
+* [ID](https://developer.mozilla.org/en-US/docs/Web/CSS/ID_selectors)
+* [universal](https://developer.mozilla.org/en-US/docs/Web/CSS/Universal_selectors)
+* [attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors):
     * presence
     * exact value match
     * value with `~` (one word within a whitespace-separated list of words)
@@ -315,69 +317,71 @@ Emogrifier currently supports the following
     * value with `^` (prefix match)
     * value with `$` (suffix match)
     * value with `*` (substring match)
- * [adjacent](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors)
- * [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_combinator)
- * [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
- * [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
- * [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
-   * [empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)
-   * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
-   * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
-     (with a type, e.g. `p:first-of-type` but not `*:first-of-type`)
-   * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
-   * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     (with a type)
-   * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
-   * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
-   * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
-   * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     (with a type)
-   * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
-     (with a type)
-   * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
-   * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     (with a type)
-   * [root](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)
+* [adjacent](https://developer.mozilla.org/en-US/docs/Web/CSS/Adjacent_sibling_selectors)
+* [general sibling](https://developer.mozilla.org/en-US/docs/Web/CSS/General_sibling_combinator)
+* [child](https://developer.mozilla.org/en-US/docs/Web/CSS/Child_selectors)
+* [descendant](https://developer.mozilla.org/en-US/docs/Web/CSS/Descendant_selectors)
+* [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes):
+    * [empty](https://developer.mozilla.org/en-US/docs/Web/CSS/:empty)
+    * [first-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-child)
+    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
+      (with a type, e.g. `p:first-of-type` but not `*:first-of-type`)
+    * [last-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-child)
+    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
+      (with a type)
+    * [not()](https://developer.mozilla.org/en-US/docs/Web/CSS/:not)
+    * [nth-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-child)
+    * [nth-last-child()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-child)
+    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
+      (with a type)
+    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
+      (with a type)
+    * [only-child](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-child)
+    * [only-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
+      (with a type)
+    * [root](https://developer.mozilla.org/en-US/docs/Web/CSS/:root)
 
 The following selectors are not implemented yet:
 
- * [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
- * static [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
-   not listed above as supported – rules involving them will nonetheless be
-   preserved and copied to a `<style>` element in the HTML – including (but not
-   necessarily limited to) the following:
-   * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
-   * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
-     without a type
-   * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
-     without a type
-   * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
-     without a type
-   * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
-     without a type
-   * [only-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
-     without a type
-   * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
-   * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
+* [case-insensitive attribute value](https://developer.mozilla.org/en-US/docs/Web/CSS/Attribute_selectors#case-insensitive)
+* static
+  [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
+  not listed above as supported – rules involving them will nonetheless be
+  preserved and copied to a `<style>` element in the HTML – including (but not
+  necessarily limited to) the following:
+    * [any-link](https://developer.mozilla.org/en-US/docs/Web/CSS/:any-link)
+    * [first-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:first-of-type)
+      without a type
+    * [last-of-type](https://developer.mozilla.org/en-US/docs/Web/CSS/:last-of-type)
+      without a type
+    * [nth-last-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-last-of-type)
+      without a type
+    * [nth-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:nth-of-type)
+      without a type
+    * [only-of-type()](https://developer.mozilla.org/en-US/docs/Web/CSS/:only-of-type)
+      without a type
+    * [optional](https://developer.mozilla.org/en-US/docs/Web/CSS/:optional)
+    * [required](https://developer.mozilla.org/en-US/docs/Web/CSS/:required)
 
 Rules involving the following selectors cannot be applied as inline styles.
 They will, however, be preserved and copied to a `<style>` element in the HTML:
 
- * dynamic [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes)
-   (such as `:hover`)
- * [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
-   (such as `::after`)
+* dynamic
+  [pseudo-classes](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-classes) (
+  such as `:hover`)
+* [pseudo-elements](https://developer.mozilla.org/en-US/docs/Web/CSS/Pseudo-elements)
+  (such as `::after`)
 
 ## Caveats
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like
   ISO8859-1 or ISO8859-15 are not supported.
-* Emogrifier preserves all valuable `@media` rules.  Media queries can be very
-  useful in responsive email design.  See
+* Emogrifier preserves all valuable `@media` rules. Media queries can be very
+  useful in responsive email design. See
   [media query support](https://litmus.com/help/email-clients/media-query-support/).
   However, in order for them to be effective, you may need to add `!important`
   to some of the declarations within them so that they will override CSS styles
-  that have been inlined.  For example, with the following CSS, the `font-size`
+  that have been inlined. For example, with the following CSS, the `font-size`
   declaration in the `@media` rule would not override the font size for `p`
   elements from the preceding rule after that has been inlined as
   `<p style="font-size: 16px;">` in the HTML, without the `!important` directive
@@ -394,8 +398,8 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
   ```
 * Emogrifier cannot inline CSS rules involving selectors with pseudo-elements
   (such as `::after`) or dynamic pseudo-classes (such as `:hover`) – it is
-  impossible.  However, such rules will be preserved and copied to a `<style>`
-  element, as for `@media` rules.  The same caveat about the possible need for
+  impossible. However, such rules will be preserved and copied to a `<style>`
+  element, as for `@media` rules. The same caveat about the possible need for
   the `!important` directive also applies with pseudo-classes.
 * Emogrifier will grab existing inline style attributes _and_ will
   grab `<style>` blocks from your HTML, but it will not grab CSS files
