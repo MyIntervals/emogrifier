@@ -315,7 +315,7 @@ abstract class AbstractHtmlProcessor
 
         // We are trying to insert the meta tag to the right spot in the DOM.
         // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
-        $hasHeadTag = \preg_match('/<head[\\s>]/i', $html);
+        $hasHeadTag = (new Preg())->match('/<head[\\s>]/i', $html) !== 0;
         $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
@@ -348,7 +348,11 @@ abstract class AbstractHtmlProcessor
      */
     private function hasContentTypeMetaTagInHead(string $html): bool
     {
-        \preg_match('%^.*?(?=<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>])%is', $html, $matches);
+        (new Preg())->match(
+            '%^.*?(?=<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>])%is',
+            $html,
+            $matches
+        );
         if (isset($matches[0])) {
             $htmlBefore = $matches[0];
             try {
@@ -378,9 +382,10 @@ abstract class AbstractHtmlProcessor
      */
     private function hasEndOfHeadElement(string $html): bool
     {
-        $headEndTagMatchCount
-            = \preg_match('%<(?!' . self::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html);
-        if (\is_int($headEndTagMatchCount) && $headEndTagMatchCount > 0) {
+        if (
+            (new Preg())->match('%<(?!' . self::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html)
+            !== 0
+        ) {
             // An exception to the implicit end of the `<head>` is any content within a `<template>` element, as well in
             // comments.  As an optimization, this is only checked for if a potential `<head>` end tag is found.
             $htmlWithoutCommentsOrTemplates = $this->removeHtmlTemplateElements($this->removeHtmlComments($html));

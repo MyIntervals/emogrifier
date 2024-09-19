@@ -6,21 +6,6 @@ parameters:
 			path: src/CssInliner.php
 
 		-
-			message: "#^Only booleans are allowed in a negated boolean, int\\|false given\\.$#"
-			count: 2
-			path: src/CssInliner.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
-			count: 2
-			path: src/CssInliner.php
-
-		-
-			message: "#^Only booleans are allowed in an if condition, int\\|false given\\.$#"
-			count: 1
-			path: src/HtmlProcessor/AbstractHtmlProcessor.php
-
-		-
 			message: "#^Parameter \\#1 \\$html of method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor\\:\\:removeSelfClosingTagsClosingTags\\(\\) expects string, string\\|false given\\.$#"
 			count: 2
 			path: src/HtmlProcessor/AbstractHtmlProcessor.php
@@ -37,11 +22,6 @@ parameters:
 
 		-
 			message: "#^Method Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\CssToAttributeConverter\\:\\:getAllNodesWithStyleAttribute\\(\\) should return DOMNodeList but returns DOMNodeList\\<DOMNode\\>\\|false\\.$#"
-			count: 1
-			path: src/HtmlProcessor/CssToAttributeConverter.php
-
-		-
-			message: "#^Only booleans are allowed in a negated boolean, int\\|false given\\.$#"
 			count: 1
 			path: src/HtmlProcessor/CssToAttributeConverter.php
 
@@ -89,11 +69,6 @@ parameters:
 			message: "#^Property object\\{selectorsAsKeys\\: array\\<string, \\(int\\|string\\)\\>, declarationsBlock\\: string\\}\\:\\:\\$selectorsAsKeys is not writable\\.$#"
 			count: 1
 			path: src/Utilities/CssConcatenator.php
-
-		-
-			message: "#^Offset 0 does not exist on array\\{0\\?\\: string\\}\\.$#"
-			count: 1
-			path: tests/Unit/Css/CssDocumentTest.php
 
 		-
 			message: "#^Parameter \\#1 \\$string of function trim expects string, string\\|false given\\.$#"
