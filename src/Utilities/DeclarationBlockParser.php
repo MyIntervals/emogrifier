@@ -52,8 +52,6 @@ class DeclarationBlockParser
             if (
                 \preg_match(
                     '/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s',
-                    // `$declaration` would only be an array if `PREG_SPLIT_OFFSET_CAPTURE` was used with `preg_split`,
-                    // which isn't the case
                     \trim($declaration),
                     $matches
                 )
