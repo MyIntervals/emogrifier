@@ -44,18 +44,20 @@ class DeclarationBlockParser
             return self::$cache[$declarationBlock];
         }
 
-        $declarations = (new Preg())->split('/;(?!base64|charset)/', $declarationBlock);
+        $preg = new Preg();
+
+        $declarations = $preg->split('/;(?!base64|charset)/', $declarationBlock);
 
         $properties = [];
         foreach ($declarations as $declaration) {
             $matches = [];
             if (
-                \preg_match(
+                $preg->match(
                     '/^([A-Za-z\\-]+)\\s*:\\s*(.+)$/s',
                     \trim($declaration),
                     $matches
                 )
-                !== 1
+                === 0
             ) {
                 continue;
             }

@@ -676,15 +676,16 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function hasUnsupportedPseudoClass(string $selector): bool
     {
-        if (\preg_match('/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i', $selector)) {
+        $preg = (new Preg())->throwExceptions($this->debug);
+
+        if ($preg->match('/:(?!' . self::PSEUDO_CLASS_MATCHER . ')[\\w\\-]/i', $selector) !== 0) {
             return true;
         }
 
-        if (!\preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selector)) {
+        if ($preg->match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selector) === 0) {
             return false;
         }
 
-        $preg = (new Preg())->throwExceptions($this->debug);
         foreach ($preg->split('/' . self::COMBINATOR_MATCHER . '/', $selector) as $selectorPart) {
             if ($this->selectorPartHasUnsupportedOfTypePseudoClass($selectorPart)) {
                 return true;
@@ -704,11 +705,13 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function selectorPartHasUnsupportedOfTypePseudoClass(string $selectorPart): bool
     {
-        if (\preg_match('/^[\\w\\-]/', $selectorPart)) {
+        $preg = (new Preg())->throwExceptions($this->debug);
+
+        if ($preg->match('/^[\\w\\-]/', $selectorPart) !== 0) {
             return false;
         }
 
-        return (bool) \preg_match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selectorPart);
+        return $preg->match('/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i', $selectorPart) !== 0;
     }
 
     /**
@@ -849,7 +852,7 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function attributeValueIsImportant(string $attributeValue): bool
     {
-        return (bool) \preg_match('/!\\s*+important$/i', $attributeValue);
+        return (new Preg())->throwExceptions($this->debug)->match('/!\\s*+important$/i', $attributeValue) !== 0;
     }
 
     /**
@@ -1022,6 +1025,8 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function removeUnmatchablePseudoComponents(string $selector): string
     {
+        $preg = (new Preg())->throwExceptions($this->debug);
+
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $selectorWithoutNots = \ltrim((new Preg())->throwExceptions($this->debug)->replaceCallback(
@@ -1039,10 +1044,11 @@ class CssInliner extends AbstractHtmlProcessor
         );
 
         if (
-            !\preg_match(
+            $preg->match(
                 '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
                 $selectorWithoutUnmatchablePseudoComponents
             )
+            === 0
         ) {
             return $selectorWithoutUnmatchablePseudoComponents;
         }
@@ -1050,7 +1056,7 @@ class CssInliner extends AbstractHtmlProcessor
             function (string $selectorPart): string {
                 return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
             },
-            (new Preg())->throwExceptions($this->debug)->split(
+            $preg->split(
                 '/(' . self::COMBINATOR_MATCHER . ')/',
                 $selectorWithoutUnmatchablePseudoComponents,
                 -1,

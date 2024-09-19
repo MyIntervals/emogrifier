@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
+use Pelago\Emogrifier\Utilities\Preg;
+
 /**
  * This constraint asserts that the string it is evaluated for is equivalent to some specific CSS, allowing for cosmetic
  * whitespace differences.
@@ -54,6 +56,6 @@ final class IsEquivalentCss extends CssConstraint
             return false;
         }
 
-        return \preg_match($this->cssPattern, $other) > 0;
+        return (new Preg())->match($this->cssPattern, $other) !== 0;
     }
 }

@@ -185,12 +185,14 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property): void
     {
+        $preg = new Preg();
+
         // only parse values in px and %, but not values like "auto"
-        if (!\preg_match('/^(\\d+)(\\.(\\d+))?(px|%)$/', $value)) {
+        if ($preg->match('/^(\\d+)(\\.(\\d+))?(px|%)$/', $value) === 0) {
             return;
         }
 
-        $number = (new Preg())->replace('/[^0-9.%]/', '', $value);
+        $number = $preg->replace('/[^0-9.%]/', '', $value);
         $node->setAttribute($property, $number);
     }
 

@@ -214,10 +214,11 @@ abstract class CssConstraint extends Constraint
      */
     private static function getCssMatcherAllowingOptionalTrailingSemicolon(string $matcher, string $css): string
     {
-        $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && \preg_match('/[@\\{\\}]/', $css) === 0;
+        $preg = new Preg();
 
+        $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && $preg->match('/[@\\{\\}]/', $css) === 0;
         if ($isPropertyDeclarationsOnly) {
-            return (new Preg())->replace(
+            return $preg->replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
                 $matcher
