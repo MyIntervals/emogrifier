@@ -71,6 +71,11 @@ final class PregTest extends TestCase
                     $testSubject->match('/', '');
                 },
             ],
+            'matchAll' => [
+                static function (Preg $testSubject): void {
+                    $testSubject->matchAll('/', '');
+                },
+            ],
         ];
     }
 
@@ -475,5 +480,174 @@ final class PregTest extends TestCase
         @$subject->match('/', 'abba', $matches);
 
         self::assertSame([], $matches);
+    }
+
+    /**
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subject: string,
+     *             expect: int,
+     *         }>
+     */
+    public function providePregMatchAllArgumentsAndExpectedMatchCount(): array
+    {
+        return [
+            'no match' => [
+                'pattern' => '/fab/',
+                'subject' => 'abba',
+                'expect' => 0,
+            ],
+            'one match' => [
+                'pattern' => '/ab/',
+                'subject' => 'abba',
+                'expect' => 1,
+            ],
+            'two matches' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'expect' => 2,
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     *
+     * @dataProvider providePregMatchAllArgumentsAndExpectedMatchCount
+     */
+    public function matchAllReturnsMatchCount(string $pattern, string $subject, int $expectedMatchCount): void
+    {
+        $testSubject = new Preg();
+
+        $result = $testSubject->matchAll($pattern, $subject);
+
+        self::assertSame($expectedMatchCount, $result);
+    }
+
+    /**
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subject: string,
+     *             expect: array<int, array<int, string>>,
+     *         }>
+     */
+    public function providePregMatchAllArgumentsAndExpectedMatches(): array
+    {
+        return [
+            'no match' => [
+                'pattern' => '/fab/',
+                'subject' => 'abba',
+                'expect' => [[]],
+            ],
+            'one match' => [
+                'pattern' => '/ab/',
+                'subject' => 'abba',
+                'expect' => [['ab']],
+            ],
+            'two matches' => [
+                'pattern' => '/a/',
+                'subject' => 'abba',
+                'expect' => [['a', 'a']],
+            ],
+            'with subpattern match' => [
+                'pattern' => '/a(b)/',
+                'subject' => 'abba',
+                'expect' => [['ab'], ['b']],
+            ],
+            'with two subpattern matches' => [
+                'pattern' => '/a(b|$)/',
+                'subject' => 'abba',
+                'expect' => [['ab', 'a'], ['b', '']],
+            ],
+            'with matches for two subpatterns' => [
+                'pattern' => '/a(b(b))/',
+                'subject' => 'abba',
+                'expect' => [['abb'], ['bb'], ['b']],
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     * @param array<int, array<int, string>> $expectedMatches
+     *
+     * @dataProvider providePregMatchAllArgumentsAndExpectedMatches
+     */
+    public function matchAllSetsMatches(string $pattern, string $subject, array $expectedMatches): void
+    {
+        $testSubject = new Preg();
+
+        $testSubject->matchAll($pattern, $subject, $matches);
+
+        self::assertSame($expectedMatches, $matches);
+    }
+
+    /**
+     * @test
+     */
+    public function matchAllReturnsZeroOnError(): void
+    {
+        $subject = new Preg();
+
+        $result = @$subject->matchAll('/', 'abba');
+
+        self::assertSame(0, $result);
+    }
+
+    /**
+     * In the real world it will be valid but complex patterns that fail, but that is impossible to reliably simulate.
+     *
+     * @return array<non-empty-string, array{
+     *             pattern: non-empty-string,
+     *             subpatternCount: int,
+     *         }>
+     */
+    public function provideFailingPatternAndSubpatternCount(): array
+    {
+        return [
+            'no subpatterns' => [
+                'pattern' => '/',
+                'subpatternCount' => 0,
+            ],
+            'one subpattern' => [
+                'pattern' => '/(a)',
+                'subpatternCount' => 1,
+            ],
+            'two subpattern' => [
+                'pattern' => '/(a)(b)',
+                'subpatternCount' => 2,
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $pattern
+     *
+     * @dataProvider provideFailingPatternAndSubpatternCount
+     */
+    public function matchAllSetsMatchesToSufficientLengthArrayOfEmptyArraysOnError(
+        string $pattern,
+        int $subpatternCount
+    ): void {
+        $subject = new Preg();
+
+        @$subject->matchAll($pattern, 'abba', $matches);
+
+        // `assertCountAtLeast` would be more ideal to test the looser documented contract.
+        self::assertCount($subpatternCount + 1, $matches);
+
+        $matchesWithoutEmptyArrays = \array_filter(
+            $matches,
+            static function (array $patternOrSubpatternMatches): bool {
+                return $patternOrSubpatternMatches !== [];
+            }
+        );
+        self::assertCount(0, $matchesWithoutEmptyArrays);
     }
 }
