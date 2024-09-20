@@ -141,6 +141,37 @@ final class Preg
     }
 
     /**
+     * Wraps `preg_match_all`.
+     *
+     * If an error occurs, and exceptions are not being thrown, zero (`0`) is returned.
+     *
+     * In the error case, if the `$matches` parameter is provided, it is set to an array containing empty arrays for the
+     * full pattern match and any possible subpattern match that might be expected.
+     * The algorithm to determine the length of this array simply counts the number of opening parentheses in the
+     * `$pattern`, which may result in a longer array than expected, but guarantees that it is at least as long as
+     * expected.
+     *
+     * This method does not currently support the `$flags` or `$offset` parameters.
+     *
+     * @param non-empty-string $pattern
+     * @param array<int, array<int, string>> $matches
+     *
+     * @throws \RuntimeException
+     */
+    public function matchAll(string $pattern, string $subject, ?array &$matches = null): int
+    {
+        $result = \preg_match_all($pattern, $subject, $matches);
+
+        if ($result === false) {
+            $this->logOrThrowPregLastError();
+            $result = 0;
+            $matches = \array_fill(0, \substr_count($pattern, '(') + 1, []);
+        }
+
+        return $result;
+    }
+
+    /**
      * Obtains the name of the error constant for `preg_last_error`
      * (based on code posted at {@see https://www.php.net/manual/en/function.preg-last-error.php#124124})
      * and puts it into an error message which is either passed to `trigger_error`
