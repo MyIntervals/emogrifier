@@ -487,7 +487,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $htmlTagCount = \preg_match_all('%<html[\\s/>]%', $result);
+        $htmlTagCount = (new Preg())->matchAll('%<html[\\s/>]%', $result);
         self::assertSame(1, $htmlTagCount);
     }
 
@@ -556,7 +556,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $headTagCount = \preg_match_all('%<head[\\s/>]%', $result);
+        $headTagCount = (new Preg())->matchAll('%<head[\\s/>]%', $result);
         self::assertSame(1, $headTagCount);
     }
 
@@ -604,7 +604,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $headTagCount = \preg_match_all('%<head[\\s/>]%', $result);
+        $headTagCount = (new Preg())->matchAll('%<head[\\s/>]%', $result);
         self::assertSame(1, $headTagCount);
     }
 
