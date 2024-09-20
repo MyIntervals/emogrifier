@@ -84,8 +84,3 @@ parameters:
 			message: "#^Parameter \\#2 \\$actual of static method Pelago\\\\Emogrifier\\\\Tests\\\\Unit\\\\HtmlProcessor\\\\AbstractHtmlProcessorTest\\:\\:assertEqualsHtml\\(\\) expects string, string\\|false given\\.$#"
 			count: 1
 			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
-
-		-
-			message: "#^Variable \\$classAttributeMatches in PHPDoc tag @var does not match any variable in the foreach loop\\: \\$classAttributeValue$#"
-			count: 1
-			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php

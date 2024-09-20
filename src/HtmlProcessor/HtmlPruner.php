@@ -126,9 +126,11 @@ class HtmlPruner extends AbstractHtmlProcessor
      */
     public function removeRedundantClassesAfterCssInlined(CssInliner $cssInliner): self
     {
+        $preg = new Preg();
+
         $classesToKeepAsKeys = [];
         foreach ($cssInliner->getMatchingUninlinableSelectors() as $selector) {
-            \preg_match_all('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
+            $preg->matchAll('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
             $classesToKeepAsKeys += \array_fill_keys($matches[1], true);
         }
 

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
+use Pelago\Emogrifier\Utilities\Preg;
+
 /**
  * This constraint asserts that the string it is evaluated for contains some specific CSS a specific number of times,
  * allowing for cosmetic whitespace differences.
@@ -61,6 +63,6 @@ final class StringContainsCssCount extends CssConstraint
             return false;
         }
 
-        return \preg_match_all($this->cssPattern, $other) === $this->count;
+        return (new Preg())->matchAll($this->cssPattern, $other) === $this->count;
     }
 }
