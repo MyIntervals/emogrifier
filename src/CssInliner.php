@@ -446,11 +446,13 @@ class CssInliner extends AbstractHtmlProcessor
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
+        $declarationBlockParser = new DeclarationBlockParser();
+
         $normalizedOriginalStyle = (new Preg())->throwExceptions($this->debug)->replaceCallback(
-            '/-?+[_a-zA-Z][\\w\\-]*+(?=:)/S',
+            '/-{0,2}+[_a-zA-Z][\\w\\-]*+(?=:)/S',
             /** @param array<array-key, string> $propertyNameMatches */
-            static function (array $propertyNameMatches): string {
-                return \strtolower($propertyNameMatches[0]);
+            static function (array $propertyNameMatches) use ($declarationBlockParser): string {
+                return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
             },
             $node->getAttribute('style')
         );
@@ -458,7 +460,7 @@ class CssInliner extends AbstractHtmlProcessor
         // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
         $nodePath = $node->getNodePath();
         if (\is_string($nodePath) && !isset($this->styleAttributesForNodes[$nodePath])) {
-            $this->styleAttributesForNodes[$nodePath] = (new DeclarationBlockParser())->parse($normalizedOriginalStyle);
+            $this->styleAttributesForNodes[$nodePath] = $declarationBlockParser->parse($normalizedOriginalStyle);
             $this->visitedNodes[$nodePath] = $node;
         }
 
@@ -805,6 +807,8 @@ class CssInliner extends AbstractHtmlProcessor
      * @param array<string, string> $newStyles
      *
      * @return string
+     *
+     * @throws \UnexpectedValueException if an empty property name is encountered (which should not happen)
      */
     private function generateStyleStringFromDeclarationsArrays(array $oldStyles, array $newStyles): string
     {
@@ -832,9 +836,16 @@ class CssInliner extends AbstractHtmlProcessor
 
         $combinedStyles = \array_merge($oldStyles, $newStyles);
 
+        $declarationBlockParser = new DeclarationBlockParser();
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
-            $style .= \strtolower(\trim($attributeName)) . ': ' . \trim($attributeValue) . '; ';
+            $trimmedAttributeName = \trim($attributeName);
+            if ($trimmedAttributeName === '') {
+                throw new \UnexpectedValueException('An empty property name was encountered.', 1727046078);
+            }
+            $propertyName = $declarationBlockParser->normalizePropertyName($trimmedAttributeName);
+            $propertyValue = \trim($attributeValue);
+            $style .= $propertyName . ': ' . $propertyValue . '; ';
         }
         $trimmedStyle = \rtrim($style);
 

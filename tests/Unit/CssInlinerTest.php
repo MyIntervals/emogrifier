@@ -1549,6 +1549,30 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      */
+    public function inlineCssPreservesCaseForVariableNamesFromStyleAttributes(): void
+    {
+        $subject = $this->buildDebugSubject('<html style="--Text-Color:#ccc;"></html>');
+
+        $subject->inlineCss();
+
+        self::assertStringContainsString('style="--Text-Color: #ccc;"', $subject->render());
+    }
+
+    /**
+     * @test
+     */
+    public function inlineCssPreservesCaseForVariableNamesFromPassedInCss(): void
+    {
+        $subject = $this->buildDebugSubject('<html></html>');
+
+        $subject->inlineCss('html {--Text-Color: #ccc;}');
+
+        self::assertStringContainsString('style="--Text-Color: #ccc;"', $subject->render());
+    }
+
+    /**
+     * @test
+     */
     public function inlineCssPreservesCaseForAttributeValuesFromPassedInCss(): void
     {
         $cssDeclaration = "content: 'Hello World';";

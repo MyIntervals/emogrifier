@@ -13,6 +13,56 @@ use PHPUnit\Framework\TestCase;
 final class DeclarationBlockParserTest extends TestCase
 {
     /**
+     * @return array<non-empty-string, array{name: non-empty-string, expect: non-empty-string}>
+     */
+    public function providePropertyNameAndExpectedNormalization(): array
+    {
+        return [
+            'standard property' => [
+                'name' => 'color',
+                'expect' => 'color',
+            ],
+            'vendor property' => [
+                'name' => '-moz-box-sizing',
+                'expect' => '-moz-box-sizing',
+            ],
+            'custom property' => [
+                'name' => '--text-color',
+                'expect' => '--text-color',
+            ],
+            'standard property with some uppercase' => [
+                'name' => 'cOlOr',
+                'expect' => 'color',
+            ],
+            'vendor property with some uppercase' => [
+                'name' => '-MOZ-box-Sizing',
+                'expect' => '-moz-box-sizing',
+            ],
+            'custom property with some uppercase' => [
+                'name' => '--TEXT-Color',
+                'expect' => '--TEXT-Color',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param non-empty-string $name
+     * @param non-empty-string $expectedNormalization
+     *
+     * @dataProvider providePropertyNameAndExpectedNormalization
+     */
+    public function normalizesPropertyName(string $name, string $expectedNormalization): void
+    {
+        $subject = new DeclarationBlockParser();
+
+        $result = $subject->normalizePropertyName($name);
+
+        self::assertSame($expectedNormalization, $result);
+    }
+
+    /**
      * @return array<non-empty-string, array{string: string, array: array<non-empty-string, non-empty-string>}>
      */
     public function provideDeclratationBlockAsStringAndArray(): array
@@ -93,6 +143,26 @@ final class DeclarationBlockParserTest extends TestCase
             'declaration using custom property' => [
                 'string' => 'color: var(--text-color);',
                 'array' => ['color' => 'var(--text-color)'],
+            ],
+            'declaration with uppercase in property name' => [
+                'string' => 'CoLoR: green;',
+                'array' => ['color' => 'green'],
+            ],
+            'vendor property declaration with uppercase in property name' => [
+                'string' => '-Moz-Box-Sizing: border-box;',
+                'array' => ['-moz-box-sizing' => 'border-box'],
+            ],
+            'custom property definition with uppercase in property name' => [
+                'string' => '--Text-Color: green;',
+                'array' => ['--Text-Color' => 'green'],
+            ],
+            'declaration using custom property with uppercase in its name' => [
+                'string' => 'color: var(--Text-Color);',
+                'array' => ['color' => 'var(--Text-Color)'],
+            ],
+            'declaration with uppercase in property value' => [
+                'string' => 'font-family: Courier;',
+                'array' => ['font-family' => 'Courier'],
             ],
             'declaration using CSS function' => [
                 'string' => 'width: calc(50% + 10vw + 10rem);',
