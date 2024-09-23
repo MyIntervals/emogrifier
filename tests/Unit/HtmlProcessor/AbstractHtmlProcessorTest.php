@@ -62,6 +62,18 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      */
+    public function getHtmlElementReturnsHtmlElement(): void
+    {
+        $subject = TestingHtmlProcessor::fromHtml('<html><head></head><body><p></p></body></html>');
+
+        $result = $subject->callGetHtmlElement();
+
+        self::assertSame('html', $result->tagName);
+    }
+
+    /**
+     * @test
+     */
     public function renderRendersDocumentProvidedToFromDomDocument(): void
     {
         $innerHtml = '<p>Hello world!</p>';

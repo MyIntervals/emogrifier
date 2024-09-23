@@ -9,4 +9,10 @@ use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 /**
  * Fixture class for AbstractHtmlProcessor.
  */
-final class TestingHtmlProcessor extends AbstractHtmlProcessor {}
+final class TestingHtmlProcessor extends AbstractHtmlProcessor
+{
+    public function callGetHtmlElement(): \DOMElement
+    {
+        return $this->getHtmlElement();
+    }
+}
