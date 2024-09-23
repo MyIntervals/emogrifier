@@ -10,6 +10,7 @@ Please also have a look at our
 
 ### Added
 
+- Support CSS custom properties (variables) (#1336)
 - Support `:root` pseudo-class (#1306)
 - Add CSS selectors exclusion feature (#1236)
 
