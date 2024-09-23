@@ -162,8 +162,8 @@ $visualHtml = CssToAttributeConverter::fromDomDocument($domDocument)
 ### Evaluating CSS custom properties (variables)
 
 The `CssVariableEvaluator` class can be used to apply the values of CSS
-variables which are defined in inline style attributes to inline style
-properties which use them.
+variables defined in inline style attributes to inline style properties which
+use them.
 
 For example, the following CSS defines and uses a custom property:
 
@@ -189,7 +189,7 @@ After `CssInliner` has inlined that CSS on the (contrived) HTML
 ```
 
 The `CssVariableEvaluator` method `evaluateVariables` will apply the value of
-`--text-color` so that the paragraph `style` attribute becomes `color: green`.
+`--text-color` so that the paragraph `style` attribute becomes `color: green;`.
 
 It can be used like this:
 
@@ -199,14 +199,14 @@ use Pelago\Emogrifier\HtmlProcessor\CssVariableEvaluator;
 …
 
 $evaluatedHtml = CssVariableEvaluator::fromHtml($html)
-  ->evaluateVariables ->render();
+  ->evaluateVariables()->render();
 ```
 
 You can also have the ` CssVariableEvaluator ` work on a `DOMDocument`:
 
 ```php
 $evaluatedHtml = CssVariableEvaluator::fromDomDocument($domDocument)
-  ->evaluateVariables ()->render();
+  ->evaluateVariables()->render();
 ```
 
 ### Removing redundant content and attributes from the HTML
@@ -446,8 +446,11 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
     }
   }
   ```
-  Any CSS variables defined in `@media` rules will not be applied to CSS
-  property values that have been inlined and evaluated.
+  Any CSS custom properties (variables) defined in `@media` rules cannot be
+  applied to CSS property values that have been inlined and evaluated. However,
+  `@media` rules using custom properties (with `var()`) would still be able to
+  obtain their values (from the inlined definitions or `@media` rules) in email
+  clients that support custom properties.
 * Emogrifier cannot inline CSS rules involving selectors with pseudo-elements
   (such as `::after`) or dynamic pseudo-classes (such as `:hover`) – it is
   impossible. However, such rules will be preserved and copied to a `<style>`
