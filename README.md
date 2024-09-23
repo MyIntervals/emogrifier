@@ -176,11 +176,11 @@ $prunedHtml = HtmlPruner::fromHtml($html)->removeElementsWithDisplayNone()
   ->removeRedundantClasses($classesToKeep)->render();
 ```
 
-The `removeRedundantClasses` method accepts a whitelist of names of classes that
-should be retained. If this is a post-processing step after inlining CSS, you
-can alternatively use `removeRedundantClassesAfterCssInlined`, passing it the
-`CssInliner` instance that has inlined the CSS (and having the `HtmlPruner` work
-on the `DOMDocument`). This will use information from the `CssInliner` to
+The `removeRedundantClasses` method accepts an allowlist of names of classes
+that should be retained. If this is a post-processing step after inlining CSS,
+you can alternatively use `removeRedundantClassesAfterCssInlined`, passing it
+the `CssInliner` instance that has inlined the CSS (and having the `HtmlPruner`
+work on the `DOMDocument`). This will use information from the `CssInliner` to
 determine which classes are still required (namely, those used in uninlinable
 rules that have been copied to a `<style>` element):
 
