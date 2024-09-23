@@ -21,6 +21,8 @@ Please also have a look at our
 
 ### Fixed
 
+- Preserve case of CSS custom property (varible) names (#1332)
+
 ### Documentation
 
 - Add an API and deprecation policy (#1323)

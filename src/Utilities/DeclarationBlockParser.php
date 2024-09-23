@@ -15,9 +15,26 @@ namespace Pelago\Emogrifier\Utilities;
 class DeclarationBlockParser
 {
     /**
-     * @var array<string, array<string, string>>
+     * @var array<string, array<non-empty-string, string>>
      */
     private static $cache = [];
+
+    /**
+     * CSS custom properties (variables) have case-sensitive names, so their case must be preserved.
+     * Standard CSS properties have case-insensitive names, which are converted to lowercase.
+     *
+     * @param non-empty-string $name
+     *
+     * @return non-empty-string
+     */
+    public function normalizePropertyName(string $name): string
+    {
+        if (\substr($name, 0, 2) === '--') {
+            return $name;
+        } else {
+            return \strtolower($name);
+        }
+    }
 
     /**
      * Parses a CSS declaration block into property name/value pairs.
@@ -35,8 +52,10 @@ class DeclarationBlockParser
      *
      * @param string $declarationBlock the CSS declarations block without the curly braces, may be empty
      *
-     * @return array<string, string>
+     * @return array<non-empty-string, string>
      *         the CSS declarations with the property names as array keys and the property values as array values
+     *
+     * @throws \UnexpectedValueException if an empty property name is encountered (which cannot happen)
      */
     public function parse(string $declarationBlock): array
     {
@@ -62,9 +81,13 @@ class DeclarationBlockParser
                 continue;
             }
 
-            $propertyName = \strtolower($matches[1]);
+            $propertyName = $matches[1];
+            if ($propertyName === '') {
+                // This cannot happen since the regular epression matches one or more characters.
+                throw new \UnexpectedValueException('An empty property name was encountered.', 1727046409);
+            }
             $propertyValue = $matches[2];
-            $properties[$propertyName] = $propertyValue;
+            $properties[$this->normalizePropertyName($propertyName)] = $propertyValue;
         }
         self::$cache[$declarationBlock] = $properties;
 
