@@ -198,6 +198,23 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
+     * Returns the HTML element.
+     *
+     * This method assumes that there always is an HTML element, throwing an exception otherwise.
+     *
+     * @throws \UnexpectedValueException
+     */
+    protected function getHtmlElement(): \DOMElement
+    {
+        $htmlElement = $this->getDomDocument()->getElementsByTagName('html')->item(0);
+        if (!$htmlElement instanceof \DOMElement) {
+            throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
+        }
+
+        return $htmlElement;
+    }
+
+    /**
      * Returns the BODY element.
      *
      * This method assumes that there always is a BODY element.
@@ -456,10 +473,6 @@ abstract class AbstractHtmlProcessor
             return;
         }
 
-        $htmlElement = $this->getDomDocument()->getElementsByTagName('html')->item(0);
-        if (!$htmlElement instanceof \DOMElement) {
-            throw new \UnexpectedValueException('There is no HTML element although there should be one.', 1569930853);
-        }
-        $htmlElement->appendChild($this->getDomDocument()->createElement('body'));
+        $this->getHtmlElement()->appendChild($this->getDomDocument()->createElement('body'));
     }
 }
