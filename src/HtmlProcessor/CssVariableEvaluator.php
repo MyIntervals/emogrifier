@@ -186,8 +186,10 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
             $variableDefinitions = $ancestorVariableDefinitions;
         }
 
-        for ($child = $element->firstElementChild; $child !== null; $child = $child->nextElementSibling) {
-            $this->evaluateVaraiblesInElementAndDescendants($child, $variableDefinitions);
+        foreach ($element->childNodes as $child) {
+            if ($child instanceof \DOMElement) {
+                $this->evaluateVaraiblesInElementAndDescendants($child, $variableDefinitions);
+            }
         }
 
         return $this;
