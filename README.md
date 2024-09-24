@@ -376,7 +376,7 @@ They will, however, be preserved and copied to a `<style>` element in the HTML:
 
 * Emogrifier requires the HTML and the CSS to be UTF-8. Encodings like
   ISO8859-1 or ISO8859-15 are not supported.
-* Emogrifier preserves all valuable `@media` rules. Media queries can be very
+* Emogrifier preserves all applicable `@media` rules. Media queries can be very
   useful in responsive email design. See
   [media query support](https://litmus.com/help/email-clients/media-query-support/).
   However, in order for them to be effective, you may need to add `!important`
