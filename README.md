@@ -187,7 +187,7 @@ After `CssInliner` has inlined that CSS on the (contrived) HTML
         <p style="color: var(--text-color);">
         <p>
     </body>
-    </htm>
+</html>
 ```
 
 The `CssVariableEvaluator` method `evaluateVariables` will apply the value of
