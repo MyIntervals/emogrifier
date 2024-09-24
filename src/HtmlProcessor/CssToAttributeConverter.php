@@ -20,7 +20,7 @@ class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * This multi-level array contains simple mappings of CSS properties to
      * HTML attributes. If a mapping only applies to certain HTML nodes or
-     * only for certain values, the mapping is an object with a whitelist
+     * only for certain values, the mapping is an object with an allowlist
      * of nodes and values.
      *
      * @var array<string, array{attribute: string, nodes?: array<int, string>, values?: array<int, string>}>
