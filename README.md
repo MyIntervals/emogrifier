@@ -169,10 +169,11 @@ For example, the following CSS defines and uses a custom property:
 
 ```css
 :root {
-  --text-color: green;
+    --text-color: green;
 }
+
 p {
-  color: var(--text-color);
+    color: var(--text-color);
 }
 ```
 
@@ -180,12 +181,13 @@ After `CssInliner` has inlined that CSS on the (contrived) HTML
 `<html><body><p></p></body></html>`, it will look like this:
 
 ```html
+
 <html style="--text-color: green;">
-  <body>
-    <p style="color: var(--text-color);">
-    <p>
-  </body>
-</htm>
+    <body>
+        <p style="color: var(--text-color);">
+        <p>
+    </body>
+    </htm>
 ```
 
 The `CssVariableEvaluator` method `evaluateVariables` will apply the value of
