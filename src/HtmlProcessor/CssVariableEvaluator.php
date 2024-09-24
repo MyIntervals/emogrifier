@@ -29,7 +29,7 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
      */
     public function evaluateVariables(): self
     {
-        return $this->evaluateVaraiblesInElementAndDescendants($this->getHtmlElement(), []);
+        return $this->evaluateVariablesInElementAndDescendants($this->getHtmlElement(), []);
     }
 
     /**
@@ -37,7 +37,7 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
      *
      * @return array<non-empty-string, string>
      */
-    private function getVaraibleDefinitionsFromDeclarations(array $declarations): array
+    private function getVariableDefinitionsFromDeclarations(array $declarations): array
     {
         return \array_filter(
             $declarations,
@@ -56,18 +56,21 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
     private function getPropertyValueReplacement(array $matches): string
     {
         $variableName = $matches[1];
+
         if (isset($this->currentVariableDefinitions[$variableName])) {
-            return $this->currentVariableDefinitions[$variableName];
+            $variableValue = $this->currentVariableDefinitions[$variableName];
         } else {
             $fallbackValueSeparator = $matches[2] ?? '';
             if ($fallbackValueSeparator !== '') {
                 $fallbackValue = $matches[3];
                 // The fallback value may use other CSS variables, so recurse
-                return $this->replaceVariablesInPropertyValue($fallbackValue);
+                $variableValue = $this->replaceVariablesInPropertyValue($fallbackValue);
             } else {
-                return $matches[0];
+                $variableValue = $matches[0];
             }
         }
+
+        return $variableValue;
     }
 
     /**
@@ -126,9 +129,9 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
     /**
      * @param array<non-empty-string, string> $declarations
      *
-     * @return array<non-empty-string, string>|false `false` is returned if no substitutions were made.
+     * @return ?array<non-empty-string, string> `null` is returned if no substitutions were made.
      */
-    private function replaceVariablesInDeclarations(array $declarations)
+    private function replaceVariablesInDeclarations(array $declarations): ?array
     {
         $substitutionsMade = false;
         $result = \array_map(
@@ -142,7 +145,7 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
             $declarations
         );
 
-        return $substitutionsMade ? $result : false;
+        return $substitutionsMade ? $result : null;
     }
 
     /**
@@ -166,7 +169,7 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
      *
      * @return $this
      */
-    private function evaluateVaraiblesInElementAndDescendants(
+    private function evaluateVariablesInElementAndDescendants(
         \DOMElement $element,
         array $ancestorVariableDefinitions
     ): self {
@@ -176,10 +179,10 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
         if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
             $declarations = (new DeclarationBlockParser())->parse($style);
             $variableDefinitions = $this->currentVariableDefinitions
-                = $this->getVaraibleDefinitionsFromDeclarations($declarations) + $ancestorVariableDefinitions;
+                = $this->getVariableDefinitionsFromDeclarations($declarations) + $ancestorVariableDefinitions;
 
             $newDeclarations = $this->replaceVariablesInDeclarations($declarations);
-            if ($newDeclarations !== false) {
+            if ($newDeclarations !== null) {
                 $element->setAttribute('style', $this->getDeclarationsAsString($newDeclarations));
             }
         } else {
@@ -188,7 +191,7 @@ class CssVariableEvaluator extends AbstractHtmlProcessor
 
         foreach ($element->childNodes as $child) {
             if ($child instanceof \DOMElement) {
-                $this->evaluateVaraiblesInElementAndDescendants($child, $variableDefinitions);
+                $this->evaluateVariablesInElementAndDescendants($child, $variableDefinitions);
             }
         }
 

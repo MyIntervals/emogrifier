@@ -57,7 +57,7 @@ final class CssVariableEvaluatorTest extends TestCase
     /**
      * @return array<non-empty-string, array{css: non-empty-string, expect: non-empty-string}>
      */
-    public function provideCssUsingVaraiblesAndExpectedHtmlFragmentAfterInliningAndEvaluation(): array
+    public function provideCssUsingVariablesAndExpectedHtmlFragmentAfterInliningAndEvaluation(): array
     {
         return [
             'undefined variable' => [
@@ -316,7 +316,7 @@ final class CssVariableEvaluatorTest extends TestCase
      * @param non-empty-string $css
      * @param non-empty-string $expectedHtmlFragment
      *
-     * @dataProvider provideCssUsingVaraiblesAndExpectedHtmlFragmentAfterInliningAndEvaluation
+     * @dataProvider provideCssUsingVariablesAndExpectedHtmlFragmentAfterInliningAndEvaluation
      */
     public function replacesReferencedVariableIfDefinedOrNotOtherwise(string $css, string $expectedHtmlFragment): void
     {
@@ -330,7 +330,7 @@ final class CssVariableEvaluatorTest extends TestCase
     /**
      * @return array<non-empty-string, array{html: non-empty-string, expect: non-empty-string}>
      */
-    public function provideHtmlUsingVaraiblesAndExpectedHtmlFragmentAfterInliningAndEvaluation(): array
+    public function provideHtmlUsingVariablesAndExpectedHtmlFragmentAfterInliningAndEvaluation(): array
     {
         return [
             // The `CssInliner` step in the test with CSS data might strip whitespace.
@@ -379,7 +379,7 @@ final class CssVariableEvaluatorTest extends TestCase
      * @param non-empty-string $html
      * @param non-empty-string $expectedHtmlFragment
      *
-     * @dataProvider provideHtmlUsingVaraiblesAndExpectedHtmlFragmentAfterInliningAndEvaluation
+     * @dataProvider provideHtmlUsingVariablesAndExpectedHtmlFragmentAfterInliningAndEvaluation
      */
     public function replacesReferencedVariableIfDefinedOrNotOtherwiseInHtml(
         string $html,
