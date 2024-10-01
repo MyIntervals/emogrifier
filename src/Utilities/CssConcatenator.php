@@ -37,7 +37,7 @@ namespace Pelago\Emogrifier\Utilities;
  *
  * @internal
  */
-class CssConcatenator
+final class CssConcatenator
 {
     /**
      * Array of media rules in order.  Each element is an object with the following properties:
