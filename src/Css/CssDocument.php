@@ -22,7 +22,7 @@ use Sabberworm\CSS\Settings as ParserSettings;
  *
  * @internal
  */
-class CssDocument
+final class CssDocument
 {
     /**
      * @var SabberwormCssDocument
