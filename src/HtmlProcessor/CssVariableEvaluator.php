@@ -10,7 +10,7 @@ use Pelago\Emogrifier\Utilities\Preg;
 /**
  * This class can evaluate CSS custom properties that are defined and used in inline style attributes.
  */
-class CssVariableEvaluator extends AbstractHtmlProcessor
+final class CssVariableEvaluator extends AbstractHtmlProcessor
 {
     /**
      * temporary collection used by {@see replaceVariablesInDeclarations} and callee methods
