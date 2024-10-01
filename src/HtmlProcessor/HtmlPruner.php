@@ -11,7 +11,7 @@ use Pelago\Emogrifier\Utilities\Preg;
 /**
  * This class can remove things from HTML.
  */
-class HtmlPruner extends AbstractHtmlProcessor
+final class HtmlPruner extends AbstractHtmlProcessor
 {
     /**
      * We need to look for display:none, but we need to do a case-insensitive search. Since DOMDocument only
