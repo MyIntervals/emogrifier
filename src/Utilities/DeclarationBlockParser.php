@@ -12,7 +12,7 @@ namespace Pelago\Emogrifier\Utilities;
  *
  * @internal
  */
-class DeclarationBlockParser
+final class DeclarationBlockParser
 {
     /**
      * @var array<string, array<non-empty-string, string>>
