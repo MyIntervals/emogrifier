@@ -15,7 +15,7 @@ use Pelago\Emogrifier\Utilities\Preg;
  *
  * To trigger the conversion, call the convertCssToVisualAttributes method.
  */
-class CssToAttributeConverter extends AbstractHtmlProcessor
+final class CssToAttributeConverter extends AbstractHtmlProcessor
 {
     /**
      * This multi-level array contains simple mappings of CSS properties to
