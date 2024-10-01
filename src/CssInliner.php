@@ -15,7 +15,7 @@ use Symfony\Component\CssSelector\Exception\ParseException;
 /**
  * This class provides functions for converting CSS styles into inline style attributes in your HTML code.
  */
-class CssInliner extends AbstractHtmlProcessor
+final class CssInliner extends AbstractHtmlProcessor
 {
     /**
      * @var int
