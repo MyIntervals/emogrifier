@@ -4,7 +4,6 @@
          beStrictAboutChangesToGlobalState="true"
          beStrictAboutOutputDuringTests="true"
          beStrictAboutTodoAnnotatedTests="true"
-         bootstrap="vendor/autoload.php"
          cacheResult="false"
          colors="true"
          convertDeprecationsToExceptions="true"
