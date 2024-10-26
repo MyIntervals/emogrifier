@@ -62,7 +62,7 @@ composer require --dev slevomat/coding-standard:^4.0
 ```
 
 Note that the development dependencies (in particular, for PHP_CodeSniffer)
-require PHP 7.0 or later.  The second command installs the PHP_CodeSniffer
+require PHP 7.0 or later. The second command installs the PHP_CodeSniffer
 dependencies and should be omitted if specifically testing against an earlier
 version of PHP, however you will not be able to run the static code analysis.
 
@@ -134,31 +134,31 @@ The procedure below is tried and tested, and will help you avoid frustration.
 To rebase a feature branch to the latest `main`:
 
 1. Make sure that your local copy of the repository has the most up-to-date
-  revisions of `main` (this is important, otherwise you may end up rebasing to
-  an older base point):
+   revisions of `main` (this is important, otherwise you may end up rebasing to
+   an older base point):
    ```sh
    git checkout main
    git pull
    ```
 1. Switch to the (feature) branch to be rebased and make sure your copy is up to
-  date:
+   date:
    ```sh
    git checkout feature/something-cool
    git pull
    ```
 1. Consider taking a copy of the folder tree at this stage; this may help when
-  resolving conflicts in the next step.
+   resolving conflicts in the next step.
 1. Begin the rebasing process
    ```sh
    git rebase main
    ```
 1. Resolve the conflicts in the reported files.  (This will typically require
-  reversing the order of the new entries in `CHANGELOG.md`.)  You may use a
-  folder `diff` against the copy taken at step 3 to assist, but bear in mind
-  that at this stage `git` is partway through rebasing, so some files will have
-  been merged and include the latest changes from `main`, whilst others might
-  not.  In any case, you should ignore changes to files not reported as having
-  conflicts.
+   reversing the order of the new entries in `CHANGELOG.md`.)  You may use a
+   folder `diff` against the copy taken at step 3 to assist, but bear in mind
+   that at this stage `git` is partway through rebasing, so some files will have
+   been merged and include the latest changes from `main`, whilst others might
+   not. In any case, you should ignore changes to files not reported as having
+   conflicts.
 
    If there were no conflicts, skip this and the next step.
 1. Mark the conflicting files as resolved and continue the rebase
@@ -177,7 +177,7 @@ To rebase a feature branch to the latest `main`:
    ```sh
    git push --force
    ```
-   The `--force` option is important.  Without it, you'll get an error with a
+   The `--force` option is important. Without it, you'll get an error with a
    hint suggesting a `git pull` is required:
    ```
    hint: Updates were rejected because the tip of your current branch is behind
@@ -185,6 +185,6 @@ To rebase a feature branch to the latest `main`:
    hint: 'git pull ...') before pushing again.
    hint: See the 'Note about fast-forwards' in 'git push --help' for details.
    ```
-   ***DO NOT*** follow the hint and execute `git pull`.  This will result in the
+   ***DO NOT*** follow the hint and execute `git pull`. This will result in the
    set of all commits on the feature branch being duplicated, and the "patching
    base" not being moved at all.
