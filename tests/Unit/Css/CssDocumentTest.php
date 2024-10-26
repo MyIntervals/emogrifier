@@ -570,16 +570,20 @@ final class CssDocumentTest extends TestCase
     public function provideInvalidNonConditionalAtRuleWhichDoesNotCauseException(): array
     {
         return [
-            '`@font-face` without `font-family`' => ['
+            '`@font-face` without `font-family`' => [
+                '
                 @font-face {
                   src: url("/foo-sans.woff2") format("woff2");
                 }
-            '],
-            '`@font-face` without `src`' => ['
+            ',
+            ],
+            '`@font-face` without `src`' => [
+                '
                 @font-face {
                   font-family: "Foo Sans";
                 }
-            '],
+            ',
+            ],
             '`@import` after style rule' => ['@import "foo.css";', 'p { color: red; }'],
             '`@import` after `@font-face` rule' => ['@import "foo.css";', self::VALID_AT_FONT_FACE_RULE],
         ];
