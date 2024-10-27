@@ -61,7 +61,7 @@ composer install
 ```
 
 We also have some optional development dependencies that require higher PHP
-versions that the lowest PHP version this project supports. Hence they are not
+versions than the lowest PHP version this project supports. Hence they are not
 installed by default.
 
 To install these, you will need to have [PHIVE](https://phar.io/) installed.
