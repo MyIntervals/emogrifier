@@ -575,7 +575,7 @@ final class CssDocumentTest extends TestCase
                     @font-face {
                       src: url("/foo-sans.woff2") format("woff2");
                     }
-            ',
+                ',
             ],
             '`@font-face` without `src`' => [
                 '
