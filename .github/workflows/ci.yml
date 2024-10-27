@@ -151,7 +151,6 @@ jobs:
           - '8.4'
           - '8.5'
         dependencies:
-          - lowest
           - highest
 
     steps:
