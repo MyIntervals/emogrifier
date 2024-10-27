@@ -572,16 +572,16 @@ final class CssDocumentTest extends TestCase
         return [
             '`@font-face` without `font-family`' => [
                 '
-                @font-face {
-                  src: url("/foo-sans.woff2") format("woff2");
-                }
+                    @font-face {
+                      src: url("/foo-sans.woff2") format("woff2");
+                    }
             ',
             ],
             '`@font-face` without `src`' => [
                 '
-                @font-face {
-                  font-family: "Foo Sans";
-                }
+                    @font-face {
+                      font-family: "Foo Sans";
+                    }
             ',
             ],
             '`@import` after style rule' => ['@import "foo.css";', 'p { color: red; }'],

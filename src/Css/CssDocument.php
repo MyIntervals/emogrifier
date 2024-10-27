@@ -63,7 +63,7 @@ final class CssDocument
     private function hasNestedAtRule(string $css): bool
     {
         return (new Preg())
-                ->match('/@(?:media|supports|(?:-webkit-|-moz-|-ms-|-o-)?+(keyframes|document))\\b/', $css) !== 0;
+            ->match('/@(?:media|supports|(?:-webkit-|-moz-|-ms-|-o-)?+(keyframes|document))\\b/', $css) !== 0;
     }
 
     /**
