@@ -16,6 +16,8 @@ Please also have a look at our
 
 ### Changed
 
+- Require `sabberworm/php-css-parser:^8.7.0` (#1355)
+
 ### Deprecated
 
 ### Removed
