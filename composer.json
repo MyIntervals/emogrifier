@@ -40,7 +40,7 @@
         "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0",
         "ext-dom": "*",
         "ext-libxml": "*",
-        "sabberworm/php-css-parser": "^8.4.0",
+        "sabberworm/php-css-parser": "^8.7.0",
         "symfony/css-selector": "^4.4.23 || ^5.4.0 || ^6.0.0 || ^7.0.0"
     },
     "require-dev": {
