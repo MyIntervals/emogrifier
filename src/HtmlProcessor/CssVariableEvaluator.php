@@ -23,9 +23,9 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
      * Replaces all CSS custom property references in inline style attributes with their corresponding values where
      * defined in inline style attributes (either from the element itself or the nearest ancestor).
      *
-     * @throws \UnexpectedValueException
-     *
      * @return $this
+     *
+     * @throws \UnexpectedValueException
      */
     public function evaluateVariables(): self
     {
@@ -149,7 +149,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
     }
 
     /**
-     * @param array<non-empty-string, string> $declarations;
+     * @param array<non-empty-string, string> $declarations
      */
     private function getDeclarationsAsString(array $declarations): string
     {
