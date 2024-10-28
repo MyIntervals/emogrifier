@@ -10,6 +10,18 @@ Please also have a look at our
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 7.3.0: Add support for PHP 8.4 and CSS custom properties
+
+### Added
+
 - Add support for PHP 8.4 (#1278)
 - Support CSS custom properties (variables) (#1336)
 - Support `:root` pseudo-class (#1306)
@@ -18,10 +30,6 @@ Please also have a look at our
 ### Changed
 
 - Require `sabberworm/php-css-parser:^8.7.0` (#1355)
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
