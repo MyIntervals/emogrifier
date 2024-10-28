@@ -189,6 +189,9 @@ jobs:
         dependencies:
           - lowest
           - highest
+        exclude:
+          - php-version: '8.4'
+            dependencies: lowest
 
     steps:
       - name: Checkout
