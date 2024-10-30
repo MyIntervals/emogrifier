@@ -16,6 +16,8 @@ Please also have a look at our
 
 ### Removed
 
+- Drop support for Symfony 4.4 (#1358)
+
 ### Fixed
 
 ## 7.3.0: Add support for PHP 8.4 and CSS custom properties
