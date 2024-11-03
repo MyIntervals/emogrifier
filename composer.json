@@ -103,8 +103,12 @@
         "ci:tests:coverage": "phpunit --do-not-cache-result --coverage-clover=coverage.xml",
         "ci:tests:sof": "phpunit --stop-on-failure --do-not-cache-result",
         "ci:tests:unit": "phpunit --do-not-cache-result",
-        "composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
-        "php:fix": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "fix": [
+            "@fix:composer:normalize",
+            "@fix:php"
+        ],
+        "fix:composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
+        "fix:php": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "phpstan:baseline": "phpstan --generate-baseline --allow-empty-baseline"
     },
@@ -121,8 +125,9 @@
         "ci:tests:coverage": "Runs the unit tests with code coverage.",
         "ci:tests:sof": "Runs the unit tests and stops at the first failure.",
         "ci:tests:unit": "Runs all unit tests.",
-        "composer:normalize": "Reformats and sorts the composer.json file.",
-        "php:fix": "Reformats the code with php-cs-fixer.",
+        "fix": "Runs all fixers",
+        "fix:composer:normalize": "Reformats and sorts the composer.json file.",
+        "fix:php": "Reformats the code with php-cs-fixer.",
         "php:version": "Outputs the installed PHP version.",
         "phpstan:baseline": "Updates the PHPStan baseline file to match the code."
     }

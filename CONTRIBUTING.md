@@ -105,7 +105,7 @@ code documentation.
 You can autoformat your code using the following command:
 
 ```shell
-composer php:fix
+composer fix
 ```
 
 ## Git commits
