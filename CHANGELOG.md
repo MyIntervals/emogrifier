@@ -12,11 +12,13 @@ Please also have a look at our
 
 ### Changed
 
+- Raise the minimum required Symfony bugfix versions (#1361)
+
 ### Deprecated
 
 ### Removed
 
-- Drop support for Symfony 4.4 (#1358)
+- Drop support for Symfony 4.4, 6.0, 6.1, 6.2 (#1358, #1361)
 
 ### Fixed
 

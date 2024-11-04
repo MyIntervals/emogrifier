@@ -41,7 +41,7 @@
         "ext-dom": "*",
         "ext-libxml": "*",
         "sabberworm/php-css-parser": "^8.7.0",
-        "symfony/css-selector": "^5.4.0 || ^6.0.0 || ^7.0.0"
+        "symfony/css-selector": "^5.4.35 || ~6.3.12 || ^6.4.3 || ^7.0.3"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "1.4.0",
