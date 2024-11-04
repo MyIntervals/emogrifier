@@ -18,7 +18,7 @@ Please also have a look at our
 
 ### Removed
 
-- Drop support for Symfony 4.4, 6.0., 6.1, 6.2 (#1358, #1361)
+- Drop support for Symfony 4.4, 6.0, 6.1, 6.2 (#1358, #1361)
 
 ### Fixed
 
