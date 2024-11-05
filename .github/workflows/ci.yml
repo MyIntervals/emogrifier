@@ -82,40 +82,6 @@ jobs:
       - name: Composer Validate
         run: composer validate --no-check-all --no-check-lock --strict
 
-  composer-normalize:
-    name: Composer Normalize
-
-    runs-on: ubuntu-22.04
-
-    strategy:
-      matrix:
-        php-version:
-          - '8.3'
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install PHP
-        uses: shivammathur/setup-php@v2
-        with:
-          php-version: ${{ matrix.php-version }}
-          ini-file: development
-          tools: composer:v2, phive
-          coverage: none
-
-      - name: Show the Composer version
-        run: composer --version
-
-      - name: Show the Composer configuration
-        run: composer config --global --list
-
-      - name: Install development tools
-        run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,E7A745102ECC980F7338B3079093F8B32E4815AA,2DE50EB60C013FFFA831040D12CE0F1D262429A5
-
-      - name: Composer Normalize
-        run: composer ci:composer:normalize
-
   static-analysis:
     name: Static Analysis
 
@@ -127,9 +93,10 @@ jobs:
       fail-fast: false
       matrix:
         command:
-          - fixer
-          - md
-          - stan
+          - composer:normalize
+          - php:fixer
+          - php:md
+          - php:stan
         php-version:
           - '8.3'
 
@@ -166,7 +133,7 @@ jobs:
         run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,E7A745102ECC980F7338B3079093F8B32E4815AA,2DE50EB60C013FFFA831040D12CE0F1D262429A5
 
       - name: Run Command
-        run: composer ci:php:${{ matrix.command }}
+        run: composer ci:${{ matrix.command }}
 
   unit-tests:
     name: Unit tests
