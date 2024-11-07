@@ -96,6 +96,7 @@ jobs:
           - composer:normalize
           - php:fixer
           - php:md
+          - php:rector
           - php:stan
         php-version:
           - '8.3'
