@@ -50,7 +50,8 @@
         "phpstan/phpstan-phpunit": "1.4.0",
         "phpstan/phpstan-strict-rules": "1.6.1",
         "phpunit/phpunit": "9.6.21",
-        "rawr/cross-data-providers": "2.4.0"
+        "rawr/cross-data-providers": "2.4.0",
+        "rector/rector": "1.2.9"
     },
     "prefer-stable": true,
     "autoload": {
@@ -89,12 +90,14 @@
         "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "parallel-lint config src tests",
         "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
+        "ci:php:rector": "rector --no-progress-bar --dry-run --config=config/rector.php",
         "ci:php:stan": "phpstan --no-progress  --error-format=github",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
             "@ci:php:fixer",
             "@ci:php:md",
+            "@ci:php:rector",
             "@ci:php:stan"
         ],
         "ci:tests": [
@@ -105,10 +108,12 @@
         "ci:tests:unit": "phpunit --do-not-cache-result",
         "fix": [
             "@fix:composer:normalize",
-            "@fix:php"
+            "@fix:php:rector",
+            "@fix:php:fixer"
         ],
         "fix:composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
-        "fix:php": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "fix:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
+        "fix:php:rector": "rector --config=config/rector.php",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
         "phpstan:baseline": "phpstan --generate-baseline --allow-empty-baseline"
     },
@@ -119,6 +124,7 @@
         "ci:php:fixer": "Checks the code style with PHP CS Fixer.",
         "ci:php:lint": "Lints the PHP files for syntax errors.",
         "ci:php:md": "Checks the code complexity with PHPMD.",
+        "ci:php:rector": "Checks the code for possible code updates and refactoring.",
         "ci:php:stan": "Checks the PHP types using PHPStan.",
         "ci:static": "Runs all static code analysis checks for the code and the composer.json.",
         "ci:tests": "Runs all dynamic tests (i.e., currently, the unit tests).",
@@ -127,7 +133,8 @@
         "ci:tests:unit": "Runs all unit tests.",
         "fix": "Runs all fixers",
         "fix:composer:normalize": "Reformats and sorts the composer.json file.",
-        "fix:php": "Reformats the code with php-cs-fixer.",
+        "fix:php:fixer": "Reformats the code with php-cs-fixer.",
+        "fix:php:rector": "Fixes autofixable issues found by Rector.",
         "php:version": "Outputs the installed PHP version.",
         "phpstan:baseline": "Updates the PHPStan baseline file to match the code."
     }
