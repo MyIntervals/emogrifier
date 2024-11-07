@@ -79,7 +79,7 @@ code coverage of the fixed bugs and the new features.
 
 To run the existing PHPUnit tests, run this command:
 
-```shell
+```bash
 composer ci:tests:unit
 ```
 
@@ -92,7 +92,7 @@ We will only merge pull requests that follow the project's coding style.
 
 Please check your code with the provided static code analysis tools:
 
-```shell
+```bash
 composer ci:static
 ```
 
@@ -104,7 +104,7 @@ code documentation.
 
 You can autoformat your code using the following command:
 
-```shell
+```bash
 composer fix
 ```
 
