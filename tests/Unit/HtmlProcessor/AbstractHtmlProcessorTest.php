@@ -980,7 +980,7 @@ final class AbstractHtmlProcessorTest extends TestCase
              *
              * @return array{0:string, 1:string}
              */
-            static function (array $dataset) {
+            static function (array $dataset): array {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
                 return $dataset;
             },

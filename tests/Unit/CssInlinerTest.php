@@ -3828,7 +3828,7 @@ final class CssInlinerTest extends TestCase
     public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors): void
     {
         $css = \implode(' ', \array_map(
-            static function ($selector) {
+            static function (string $selector): string {
                 return $selector . ' { color: green; }';
             },
             $selectors
