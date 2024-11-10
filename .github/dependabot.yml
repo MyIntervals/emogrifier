@@ -6,6 +6,8 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    commit-message:
+      prefix: "[Dependabot] "
     milestone: 15
 
   - package-ecosystem: "composer"
@@ -19,4 +21,6 @@ updates:
         versions: [ ">= 10.0.0" ]
       - dependency-name: "rawr/cross-data-providers"
     versioning-strategy: "increase"
+    commit-message:
+      prefix: "[Dependabot] "
     milestone: 15
