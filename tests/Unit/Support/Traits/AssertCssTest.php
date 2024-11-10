@@ -101,7 +101,7 @@ final class AssertCssTest extends TestCase
     /**
      * @return array<string, array{0: int, 1: string, 2: string}>
      */
-    public function providePassingCssCountData()
+    public function providePassingCssCountData(): array
     {
         return [
             'not finding needle when asked not to' => [0, 'a', 'b'],
@@ -125,7 +125,7 @@ final class AssertCssTest extends TestCase
     /**
      * @return array<string, array{0: int, 1: string, 2: string}>
      */
-    public function provideFailingCssCountData()
+    public function provideFailingCssCountData(): array
     {
         return [
             'expecting none but finding some' => [0, 'a', 'a'],

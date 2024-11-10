@@ -173,7 +173,7 @@ trait CssDataProviders
     /**
      * @return array<string, array{0: string, 1: string}>
      */
-    public function provideCssNeedleFoundInLargerHaystack()
+    public function provideCssNeedleFoundInLargerHaystack(): array
     {
         return [
             'needle at start of haystack' => ['p { color: green; }', 'p { color: green; } a { color: blue; }'],
