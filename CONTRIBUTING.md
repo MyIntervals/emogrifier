@@ -85,8 +85,9 @@ composer ci:tests:unit
 
 ## Coding Style
 
-Please use the same coding style (PSR-2) as the rest of the code. Indentation
-is four spaces.
+Please use the same coding style
+([PER 2.0](https://www.php-fig.org/per/coding-style/)) as the rest of the code.
+Indentation is four spaces.
 
 We will only merge pull requests that follow the project's coding style.
 
