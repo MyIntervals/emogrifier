@@ -49,7 +49,7 @@
         "phpstan/phpstan": "1.12.9",
         "phpstan/phpstan-phpunit": "1.4.0",
         "phpstan/phpstan-strict-rules": "1.6.1",
-        "phpunit/phpunit": "9.6.21",
+        "phpunit/phpunit": "9.6.22",
         "rawr/cross-data-providers": "2.4.0",
         "rawr/phpunit-data-provider": "3.3.0",
         "rector/rector": "1.2.10"
