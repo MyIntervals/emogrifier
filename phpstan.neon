@@ -7,6 +7,3 @@ parameters:
   paths:
     - src
     - tests
-
-  # Allow instanceof checks, particularly in tests
-  checkAlwaysTrueCheckTypeFunctionCall: false
