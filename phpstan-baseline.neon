@@ -189,40 +189,10 @@ parameters:
 			path: tests/Unit/Css/CssDocumentTest.php
 
 		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\CssInliner'' and Pelago\\Emogrifier\\CssInliner will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/CssInlinerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor'' and Pelago\\Emogrifier\\CssInliner will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/CssInlinerTest.php
-
-		-
 			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: tests/Unit/CssInlinerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''DOMDocument'' and DOMDocument will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor'' and Pelago\\Emogrifier\\Tests\\Unit\\HtmlProcessor\\Fixtures\\TestingHtmlProcessor will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 2
-			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\Tests\\\\Unit\\\\HtmlProcessor\\\\Fixtures\\\\TestingHtmlProcessor'' and Pelago\\Emogrifier\\Tests\\Unit\\HtmlProcessor\\Fixtures\\TestingHtmlProcessor will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 2
-			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
 
 		-
 			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|false given\.$#'
@@ -237,64 +207,10 @@ parameters:
 			path: tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
 
 		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor'' and Pelago\\Emogrifier\\HtmlProcessor\\CssToAttributeConverter will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\CssToAttributeConverter'' and Pelago\\Emogrifier\\HtmlProcessor\\CssToAttributeConverter will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 2
-			path: tests/Unit/HtmlProcessor/CssToAttributeConverterTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor'' and Pelago\\Emogrifier\\HtmlProcessor\\HtmlNormalizer will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/HtmlProcessor/HtmlNormalizerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlNormalizer'' and Pelago\\Emogrifier\\HtmlProcessor\\HtmlNormalizer will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 2
-			path: tests/Unit/HtmlProcessor/HtmlNormalizerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\AbstractHtmlProcessor'' and Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''Pelago\\\\Emogrifier\\\\HtmlProcessor\\\\HtmlPruner'' and Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 2
-			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php
-
-		-
 			message: '#^Offset 1 might not exist on array\<int, array\<int, string\>\>\|null\.$#'
 			identifier: offsetAccess.notFound
 			count: 1
 			path: tests/Unit/HtmlProcessor/HtmlPrunerTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''PHPUnit\\\\Framework\\\\Constraint\\\\Constraint'' and Pelago\\Emogrifier\\Tests\\Support\\Constraint\\IsEquivalentCss will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/Support/Traits/AssertCssTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''PHPUnit\\\\Framework\\\\Constraint\\\\Constraint'' and Pelago\\Emogrifier\\Tests\\Support\\Constraint\\StringContainsCss will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/Support/Traits/AssertCssTest.php
-
-		-
-			message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) with ''PHPUnit\\\\Framework\\\\Constraint\\\\Constraint'' and Pelago\\Emogrifier\\Tests\\Support\\Constraint\\StringContainsCssCount will always evaluate to true\.$#'
-			identifier: staticMethod.alreadyNarrowedType
-			count: 1
-			path: tests/Unit/Support/Traits/AssertCssTest.php
 
 		-
 			message: '#^Parameter \#1 \$array of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
