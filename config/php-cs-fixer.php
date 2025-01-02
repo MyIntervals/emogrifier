@@ -71,9 +71,7 @@ return (new \PhpCsFixer\Config())
             'php_unit_mock_short_will_return' => true,
             'php_unit_set_up_tear_down_visibility' => true,
             'php_unit_test_annotation' => ['style' => 'annotation'],
-            // `'methods' => ['createStub' => 'this']` is required as long as we are not on PHPUnit 10.x yet
-            // (where that method was made static).
-            'php_unit_test_case_static_method_calls' => ['call_type' => 'self', 'methods' => ['createStub' => 'this']],
+            'php_unit_test_case_static_method_calls' => ['call_type' => 'self'],
 
             // PHPDoc
             'no_blank_lines_after_phpdoc' => true,
