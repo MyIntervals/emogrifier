@@ -8,7 +8,7 @@ use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
 use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\TestCase;
-use TRegx\DataProvider\DataProviders;
+use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
  * @covers \Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor
@@ -912,15 +912,9 @@ final class AbstractHtmlProcessorTest extends TestCase
         ];
     }
 
-    /**
-     * @return array<string, array<int, string>>
-     */
-    public function provideContentTypeTagAndSurroundingHtml(): array
+    public function provideContentTypeTagAndSurroundingHtml(): DataProvider
     {
-        /** @var array<string, array<int, string>> $datasets */
-        $datasets = DataProviders::cross($this->provideContentTypeMetaTag(), $this->provideHtmlAroundContentType());
-
-        return $datasets;
+        return DataProvider::cross($this->provideContentTypeMetaTag(), $this->provideHtmlAroundContentType());
     }
 
     /**
