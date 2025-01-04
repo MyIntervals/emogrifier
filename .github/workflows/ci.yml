@@ -131,7 +131,7 @@ jobs:
         run: composer install --no-progress
 
       - name: Install development tools
-        run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,E7A745102ECC980F7338B3079093F8B32E4815AA,2DE50EB60C013FFFA831040D12CE0F1D262429A5
+        run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E,E7A745102ECC980F7338B3079093F8B32E4815AA
 
       - name: Run Command
         run: composer ci:${{ matrix.command }}
