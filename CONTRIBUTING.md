@@ -142,20 +142,20 @@ To rebase a feature branch to the latest `main`:
 1. Make sure that your local copy of the repository has the most up-to-date
    revisions of `main` (this is important, otherwise you may end up rebasing to
    an older base point):
-   ```sh
-   git checkout main
+   ```bash
+   git switch main
    git pull
    ```
 1. Switch to the (feature) branch to be rebased and make sure your copy is up to
    date:
-   ```sh
-   git checkout feature/something-cool
+   ```bash
+   git switch feature/something-cool
    git pull
    ```
 1. Consider taking a copy of the folder tree at this stage; this may help when
    resolving conflicts in the next step.
 1. Begin the rebasing process
-   ```sh
+   ```bash
    git rebase main
    ```
 1. Resolve the conflicts in the reported files.  (This will typically require
@@ -168,8 +168,8 @@ To rebase a feature branch to the latest `main`:
 
    If there were no conflicts, skip this and the next step.
 1. Mark the conflicting files as resolved and continue the rebase
-   ```sh
-   git add *.*
+   ```bash
+   git add .
    git rebase --continue
    ```
    (You can alternatively use more specific wildcards or specify individual
@@ -180,7 +180,7 @@ To rebase a feature branch to the latest `main`:
    If there are more conflicts to resolve, repeat the previous step then this
    step again.
 1. Force-push the rebased (feature) branch to the remote repository
-   ```sh
+   ```bash
    git push --force
    ```
    The `--force` option is important. Without it, you'll get an error with a
