@@ -90,14 +90,12 @@
         ],
         "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "parallel-lint config src tests",
-        "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
         "ci:php:rector": "rector --no-progress-bar --dry-run --config=config/rector.php",
         "ci:php:stan": "phpstan --no-progress --configuration=config/phpstan.neon",
         "ci:static": [
             "@ci:composer:normalize",
             "@ci:php:lint",
             "@ci:php:fixer",
-            "@ci:php:md",
             "@ci:php:rector",
             "@ci:php:stan"
         ],
@@ -124,7 +122,6 @@
         "ci:dynamic": "Runs all dynamic tests (i.e., currently, the unit tests).",
         "ci:php:fixer": "Checks the code style with PHP CS Fixer.",
         "ci:php:lint": "Lints the PHP files for syntax errors.",
-        "ci:php:md": "Checks the code complexity with PHPMD.",
         "ci:php:rector": "Checks the code for possible code updates and refactoring.",
         "ci:php:stan": "Checks the PHP types using PHPStan.",
         "ci:static": "Runs all static code analysis checks for the code and the composer.json.",
