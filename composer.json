@@ -45,6 +45,7 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "1.4.0",
+        "phpmd/phpmd": "2.15.0",
         "phpstan/extension-installer": "1.4.3",
         "phpstan/phpstan": "1.12.13 || 2.0.4",
         "phpstan/phpstan-phpunit": "1.4.2 || 2.0.2",
@@ -90,7 +91,7 @@
         ],
         "ci:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "ci:php:lint": "parallel-lint config src tests",
-        "ci:php:md": "\"./.phive/phpmd\" src text config/phpmd.xml",
+        "ci:php:md": "phpmd src text config/phpmd.xml",
         "ci:php:rector": "rector --no-progress-bar --dry-run --config=config/rector.php",
         "ci:php:stan": "phpstan --no-progress --configuration=config/phpstan.neon",
         "ci:static": [
