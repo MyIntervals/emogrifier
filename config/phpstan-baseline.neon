@@ -25,6 +25,18 @@ parameters:
 			path: ../src/CssInliner.php
 
 		-
+			message: '#^Parameter \#1 \$matches of method Pelago\\Emogrifier\\CssInliner\:\:replaceUnmatchableNotComponent\(\) expects array\<string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/CssInliner.php
+
+		-
+			message: '#^Parameter \#1 \$name of method Pelago\\Emogrifier\\Utilities\\DeclarationBlockParser\:\:normalizePropertyName\(\) expects non\-empty\-string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/CssInliner.php
+
+		-
 			message: '#^Parameter \#1 \$html of method Pelago\\Emogrifier\\HtmlProcessor\\AbstractHtmlProcessor\:\:removeSelfClosingTagsClosingTags\(\) expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 2
@@ -161,6 +173,12 @@ parameters:
 			identifier: parameterByRef.type
 			count: 1
 			path: ../src/Utilities/Preg.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: ../tests/Support/Constraint/CssConstraint.php
 
 		-
 			message: '''
