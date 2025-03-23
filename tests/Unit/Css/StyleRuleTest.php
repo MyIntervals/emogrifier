@@ -65,7 +65,7 @@ final class StyleRuleTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: array<int, array{property: string, value: string}>, 1: string}>
+     * @return array<string, array{0: array<int, array{property: non-empty-string, value: string}>, 1: string}>
      */
     public function provideDeclarations(): array
     {
@@ -82,7 +82,7 @@ final class StyleRuleTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, array{property: string, value: string}> $declarations
+     * @param array<int, array{property: non-empty-string, value: string}> $declarations
      * @param string $expected
      *
      * @dataProvider provideDeclarations
