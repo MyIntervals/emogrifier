@@ -66,8 +66,9 @@ final class StyleRuleTest extends TestCase
 
     /**
      * @return array<string, array{
-     *     0: array<int, array{property: non-empty-string, value: non-empty-string}>, 1: string
-     * }>
+     *             0: array<int, array{property: non-empty-string, value: non-empty-string}>,
+     *             1: string,
+     *         }>
      */
     public function provideDeclarations(): array
     {
