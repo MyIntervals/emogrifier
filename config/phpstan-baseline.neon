@@ -61,6 +61,12 @@ parameters:
 			path: ../src/HtmlProcessor/CssToAttributeConverter.php
 
 		-
+			message: '#^PHPDoc tag @var with type array\<int, string\> is not subtype of native type list\<string\>\|false\.$#'
+			identifier: varTag.nativeType
+			count: 1
+			path: ../src/HtmlProcessor/CssToAttributeConverter.php
+
+		-
 			message: '#^Argument of an invalid type DOMNodeList\<DOMNode\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
@@ -145,6 +151,12 @@ parameters:
 			path: ../src/Utilities/Preg.php
 
 		-
+			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:matchAll\(\) should return int but returns int\<0, max\>\|null\.$#'
+			identifier: return.type
+			count: 1
+			path: ../src/Utilities/Preg.php
+
+		-
 			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:replace\(\) never assigns null to &\$count so it can be removed from the by\-ref type\.$#'
 			identifier: parameterByRef.unusedType
 			count: 1
@@ -157,7 +169,7 @@ parameters:
 			path: ../src/Utilities/Preg.php
 
 		-
-			message: '#^Parameter \#1 \$array of function array_flip expects array\<int\|string\>, array\<string, mixed\> given\.$#'
+			message: '#^Parameter \#1 \$input of function array_flip expects array\<int\|string\>, array\<string, mixed\> given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/Utilities/Preg.php
@@ -207,13 +219,13 @@ parameters:
 			path: ../tests/Unit/Css/CssDocumentTest.php
 
 		-
-			message: '#^Parameter \#1 \$string of function trim expects string, string\|false given\.$#'
+			message: '#^Parameter \#1 \$str of function trim expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../tests/Unit/CssInlinerTest.php
 
 		-
-			message: '#^Parameter \#1 \$string of function strtolower expects string, string\|false given\.$#'
+			message: '#^Parameter \#1 \$str of function strtolower expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
@@ -231,7 +243,25 @@ parameters:
 			path: ../tests/Unit/HtmlProcessor/HtmlPrunerTest.php
 
 		-
-			message: '#^Parameter \#1 \$array of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
+			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\IsEquivalentCssTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: ../tests/Unit/Support/Constraint/IsEquivalentCssTest.php
+
+		-
+			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\StringContainsCssCountTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: ../tests/Unit/Support/Constraint/StringContainsCssCountTest.php
+
+		-
+			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\StringContainsCssTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
+			identifier: return.type
+			count: 1
+			path: ../tests/Unit/Support/Constraint/StringContainsCssTest.php
+
+		-
+			message: '#^Parameter \#1 \$input of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../tests/Unit/Utilities/PregTest.php
