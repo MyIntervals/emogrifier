@@ -143,12 +143,10 @@ trait CssDataProviders
     {
         $datasetsWithoutStyleTags = $this->provideEquivalentCompleteCss();
 
-        $datasetsWithRenamedKeys = static::arrayMapKeys(
-            static function (string $description): string {
-                return $description . ' in <style> tag';
-            },
-            $datasetsWithoutStyleTags
-        );
+        $datasetsWithRenamedKeys = [];
+        foreach ($datasetsWithoutStyleTags as $description => $dataset) {
+            $datasetsWithRenamedKeys[$description . ' in <style> tag'] = $dataset;
+        }
 
         $datasets = \array_map(
             /**
@@ -345,18 +343,5 @@ trait CssDataProviders
         $result = DataProviders::cross($dataset, $dataset);
 
         return $result;
-    }
-
-    /**
-     * @template T
-     *
-     * @param callable(string):string $callback
-     * @param array<string, T> $array
-     *
-     * @return array<string, T>
-     */
-    private static function arrayMapKeys(callable $callback, array $array): array
-    {
-        return \array_combine(\array_map($callback, \array_keys($array)), \array_values($array));
     }
 }

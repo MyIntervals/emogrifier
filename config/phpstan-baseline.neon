@@ -243,24 +243,6 @@ parameters:
 			path: ../tests/Unit/HtmlProcessor/HtmlPrunerTest.php
 
 		-
-			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\IsEquivalentCssTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: ../tests/Unit/Support/Constraint/IsEquivalentCssTest.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\StringContainsCssCountTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: ../tests/Unit/Support/Constraint/StringContainsCssCountTest.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Tests\\Unit\\Support\\Constraint\\StringContainsCssTest\:\:arrayMapKeys\(\) should return array\<string, T\> but returns array\<string, T\>\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: ../tests/Unit/Support/Constraint/StringContainsCssTest.php
-
-		-
 			message: '#^Parameter \#1 \$input of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
 			identifier: argument.type
 			count: 1

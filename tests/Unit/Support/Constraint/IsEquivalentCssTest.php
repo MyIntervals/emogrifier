@@ -59,22 +59,10 @@ final class IsEquivalentCssTest extends TestCase
     {
         $datasets = $this->provideCssNeedleNotFoundInHaystack() + $this->provideCssNeedleFoundInLargerHaystack();
 
-        $transposedDatasets = \array_map(
-            /**
-             * @param array{0: string, 1: string} $dataset
-             *
-             * @return array{0: string, 1: string}
-             */
-            static function (array $dataset): array {
-                return [$dataset[1], $dataset[0]];
-            },
-            static::arrayMapKeys(
-                static function (string $description): string {
-                    return $description . ' (transposed)';
-                },
-                $datasets
-            )
-        );
+        $transposedDatasets = [];
+        foreach ($datasets as $description => $dataset) {
+            $transposedDatasets[$description . ' (transposed)'] = [$dataset[1], $dataset[0]];
+        }
 
         return $datasets + $transposedDatasets;
     }
