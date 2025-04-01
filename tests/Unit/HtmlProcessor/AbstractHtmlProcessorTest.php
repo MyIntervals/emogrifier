@@ -224,9 +224,9 @@ final class AbstractHtmlProcessorTest extends TestCase
             // broken: OPTGROUP end tag omission with OPTGROUP element following
             'OPTGROUP end tag omission at end of list' => [
                 '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
-                    . '<optgroup><option> A </option><option> B </option></select>',
+                . '<optgroup><option> A </option><option> B </option></select>',
                 '<select><optgroup><option> 1 </option><option> 2 </option></optgroup>'
-                    . '<optgroup><option> A </option><option> B </option></optgroup></select>',
+                . '<optgroup><option> A </option><option> B </option></optgroup></select>',
             ],
             'OPTION end tag omission with OPTION element following' => [
                 '<select><option> 1 <option> 2 </option></select>',
@@ -432,9 +432,9 @@ final class AbstractHtmlProcessorTest extends TestCase
             'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
             'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
             'BODY element containing Content-Type META tag'
-                => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
             'body content only with Content-Type META tag'
-                => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -535,22 +535,22 @@ final class AbstractHtmlProcessorTest extends TestCase
             'BODY element' => ['<body></body>'],
             'HEADER element' => ['<header></header>'],
             'http-equiv META element (implicit HEAD)'
-                => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'viewport META element (implicit HEAD)'
-                => ['<meta name="viewport" content="width=device-width, initial-scale=1.0">'],
+            => ['<meta name="viewport" content="width=device-width, initial-scale=1.0">'],
             'META element with Content-Type as a value' => ['<meta name="description" content="Content-Type">'],
             'BODY element with Content-Type in text' => ['<body>Content-Type</body>'],
             'body content only with Content-Type in text' => ['<p>Content-Type</p>'],
             'http-equiv META element within BODY (not allowed)'
-                => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            => ['<body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
             'http-equiv META element after P (implicit BODY, not allowed)'
-                => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'http-equiv META element within P (not allowed)'
-                => ['<p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></p>'],
+            => ['<p><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></p>'],
             'viewport META element within P (allowed)'
-                => ['<p><meta name="viewport" content="width=device-width, initial-scale=1.0"></p>'],
+            => ['<p><meta name="viewport" content="width=device-width, initial-scale=1.0"></p>'],
             'http-equiv META element within HEADER (not allowed)'
-                => ['<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></header>'],
+            => ['<header><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></header>'],
         ];
     }
 
@@ -585,21 +585,21 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element and HEADER element' => ['<head></head><header></header>'],
             'HEAD element with Content-Type in comment' => ['<head><!-- Content-Type --></head>'],
             'HEAD element with Content-Type as META value'
-                => ['<head><meta name="description" content="Content-Type"></head>'],
+            => ['<head><meta name="description" content="Content-Type"></head>'],
             'with BODY element with Content-Type in text' => ['<head></head><body>Content-Type</body>'],
             'with implicit body content with Content-Type in text' => ['<head></head><p>Content-Type</p>'],
             'with BODY element containing Content-Type META tag'
-                => ['<head></head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            => ['<head></head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
             'with implicit body content with Content-Type META tag'
-                => ['<head></head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<head></head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'with end tag omitted and BODY element containing Content-Type META tag'
-                => ['<head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
+            => ['<head><body><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></body>'],
             'with end tag omitted and implicit body content with Content-Type META tag'
-                => ['<head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<head><p>hello</p><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'with Content-Type META tag after end tag'
-                => ['<head></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<head></head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'with Content-Type META tag after uppercase end tag'
-                => ['<HEAD></HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<HEAD></HEAD><meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -766,15 +766,15 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HTML5, extra whitespace' => ['<!DOCTYPE  html  >', '<!DOCTYPE html>'],
             'HTML 4 transitional, uppercase' => [
                 '<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
-                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
-                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
             ],
             'HTML 4 transitional, lowercase' => [
                 '<!doctype html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
-                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
                 '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
-                    . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
             ],
         ];
     }
@@ -806,13 +806,13 @@ final class AbstractHtmlProcessorTest extends TestCase
             'extra character before META' => ['<xmeta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'extra character after META' => ['<metax http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'extra character before HTTP-EQUIV'
-                => ['<meta xhttp-equiv="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<meta xhttp-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'extra character after HTTP-EQUIV'
-                => ['<meta http-equivx="Content-Type" content="text/html; charset=utf-8">'],
+            => ['<meta http-equivx="Content-Type" content="text/html; charset=utf-8">'],
             'extra character before CONTENT-TYPE'
-                => ['<meta http-equiv=xContent-Type content="text/html; charset=utf-8">'],
+            => ['<meta http-equiv=xContent-Type content="text/html; charset=utf-8">'],
             'extra character after CONTENT-TYPE'
-                => ['<meta http-equiv=Content-Typex content="text/html; charset=utf-8">'],
+            => ['<meta http-equiv=Content-Typex content="text/html; charset=utf-8">'],
         ];
     }
 
@@ -854,7 +854,7 @@ final class AbstractHtmlProcessorTest extends TestCase
         return [
             'double-quoted attribute values' => ['<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'],
             'single-quoted attribute values'
-                => ['<meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'>'],
+            => ['<meta http-equiv=\'Content-Type\' content=\'text/html; charset=utf-8\'>'],
             'unquoted attribute values' => ['<meta http-equiv=Content-Type content=text/html;charset=utf-8>'],
             'reverse order attributes' => ['<meta content="text/html; charset=utf-8" http-equiv="Content-Type">'],
             'without charset' => ['<meta http-equiv="Content-Type" content="text/html">'],
@@ -887,23 +887,23 @@ final class AbstractHtmlProcessorTest extends TestCase
             'HEAD element with TAB after start tag' => ["<head>\t", '</head>'],
             'HEAD element with attribute' => ['<head lang="en">', '</head>'],
             'HTML, HEAD, and BODY with HEADER elements'
-                => ['<html><head>', '</head><body><header></header></body></html>'],
+            => ['<html><head>', '</head><body><header></header></body></html>'],
             'HEAD element with comment' => ['<head><!--Test-->', '</head>'],
             'HEAD element with commented-out BODY start tag' => ['<head><!--<body>-->', '</head>'],
             'HEAD element with BASE element' => ['<head><base href="https://example.com"/>', '</head>'],
             'HEAD element with COMMAND element' => ['<head><command type="command"/>', '</head>'],
             'HEAD element with LINK element'
-                => ['<head><link rel="stylesheet" href="https://example.org/css.css"/>', '</head>'],
+            => ['<head><link rel="stylesheet" href="https://example.org/css.css"/>', '</head>'],
             'HEAD element with another META element' => ['<head><meta name="title" content="Test"/>', '</head>'],
             'HEAD element with NOSCRIPT element'
-                => ['<head><noscript><style>p{color:green}</style></noscript>', '</head>'],
+            => ['<head><noscript><style>p{color:green}</style></noscript>', '</head>'],
             'HEAD element with SCRIPT element' => ['<head><script>console.log("Test");</script>', '</head>'],
             'HEAD element with STYLE element' => ['<head><style>p{color:green}</style>', '</head>'],
             'HEAD element with TEMPLATE element'
-                => ['<head><template id="test"><p>Test</p></template></title>', '</head>'],
+            => ['<head><template id="test"><p>Test</p></template></title>', '</head>'],
             'HEAD element with TITLE element' => ['<head><title>Test</title>', '</head>'],
             'HEAD element with uppercase TEMPLATE element'
-                => ['<head><TEMPLATE id="test"><p>Test</p></TEMPLATE></title>', '</head>'],
+            => ['<head><TEMPLATE id="test"><p>Test</p></TEMPLATE></title>', '</head>'],
             'HEAD element with uppercase TITLE element' => ['<head><TITLE>Test</TITLE>', '</head>'],
             'Second valid(ish) Content-Type in BODY' => [
                 '<head>',
@@ -1260,8 +1260,8 @@ final class AbstractHtmlProcessorTest extends TestCase
         $needleMatcher = \preg_quote($needle, '%');
         $needleMatcherWithNewlines = (new Preg())->replace(
             '%\\\\<(?:body|ul|dl|optgroup|table|tr|hr'
-                . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
-                . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
+            . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
+            . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
             '$0\\n?+',
             $needleMatcher
         );

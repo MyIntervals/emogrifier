@@ -29,19 +29,19 @@ trait CssDataProviders
     {
         $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = self::crossDatasetWithItself([
             'unminified CSS with `@media` rule, selector list, and property declaration'
-                => ['@media screen { html, body { color: green; } }'],
+            => ['@media screen { html, body { color: green; } }'],
             'minified CSS with `@media` rule, selector list, and property declaration'
-                => ['@media screen{html,body{color:green}}'],
+            => ['@media screen{html,body{color:green}}'],
             'CSS with `@media` rule, selector list, and property declaration, with extra spaces'
-                => ['  @media  screen  {  html  ,  body  {  color  :  green  ;  }  }  '],
+            => ['  @media  screen  {  html  ,  body  {  color  :  green  ;  }  }  '],
             'CSS with `@media` rule, selector list, and property declaration, with linefeeds'
-                => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
+            => ["\n@media\nscreen\n{\nhtml\n,\nbody\n{\ncolor\n:\ngreen\n;\n}\n}\n"],
             'CSS with `@media` rule, selector list, and property declaration, with Windows line endings'
-                => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
+            => ["\r\n@media\r\nscreen\r\n{\r\nhtml\r\n,\r\nbody\r\n{\r\ncolor\r\n:\r\ngreen\r\n;\r\n}\r\n}\r\n"],
             'CSS with `@media` rule, selector list, and property declaration, with uppercase at-rule name'
-                => ['@MEDIA screen { html, body { color: green; } }'],
+            => ['@MEDIA screen { html, body { color: green; } }'],
             'CSS with `@media` rule, selector list, and property declaration, with mixed-case at-rule name'
-                => ['@MeDiA screen { html, body { color: green; } }'],
+            => ['@MeDiA screen { html, body { color: green; } }'],
         ]);
 
         $datasetsWithUrlPropertyValue = self::crossDatasetWithItself([
@@ -53,7 +53,7 @@ trait CssDataProviders
             'CSS with single-quoted string in property value' => ['.new::before { content: \'New Entry! \'; }'],
             'CSS with double-quoted string in property value' => ['.new::before { content: "New Entry! "; }'],
             'CSS with quoted string in property value without trailing semicolon'
-                => ['.new::before { content: "New Entry! " }'],
+            => ['.new::before { content: "New Entry! " }'],
             'minified CSS with quoted string in property value' => ['.new::before{content:"New Entry! "}'],
         ]);
 
