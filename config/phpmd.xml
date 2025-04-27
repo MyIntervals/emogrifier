@@ -10,7 +10,7 @@
     <rule ref="rulesets/cleancode.xml/StaticAccess">
         <properties>
             <!-- Avoid false positives when calling factory methods -->
-            <property name="ignorepattern" value="/^from/" />
+            <property name="ignorepattern" value="/^(from|create)/" />
         </properties>
     </rule>
 
