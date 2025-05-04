@@ -6,6 +6,7 @@ namespace Pelago\Emogrifier\Tests\Support\Traits;
 
 use PHPUnit\Framework\TestCase;
 use TRegx\DataProvider\DataProviders;
+use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
  * Adds common data providers to a test case for a `Constraint` which matches CSS.
@@ -15,11 +16,11 @@ use TRegx\DataProvider\DataProviders;
 trait CssDataProviders
 {
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return \IteratorAggregate<string, array{0: string, 1: string}>
      */
-    public function provideEquivalentCss(): array
+    public function provideEquivalentCss(): \IteratorAggregate
     {
-        return $this->provideEquivalentCompleteCss() + $this->provideEquivalentCssComponents();
+        return DataProvider::join($this->provideEquivalentCompleteCss(), $this->provideEquivalentCssComponents());
     }
 
     /**
