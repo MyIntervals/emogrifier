@@ -137,33 +137,18 @@ trait CssDataProviders
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideEquivalentCssInStyleTags(): array
     {
-        $datasetsWithoutStyleTags = $this->provideEquivalentCompleteCss();
+        $datasets = [];
 
-        $datasetsWithRenamedKeys = [];
-        foreach ($datasetsWithoutStyleTags as $description => $dataset) {
-            $datasetsWithRenamedKeys[$description . ' in <style> tag'] = $dataset;
+        foreach ($this->provideEquivalentCompleteCss() as $description => $dataset) {
+            $datasets[$description . ' in <style> tag'] = [
+                '<style>' . $dataset[0] . '</style>',
+                '<style>' . $dataset[1] . '</style>',
+            ];
         }
-
-        $datasets = \array_map(
-            /**
-             * @param array{0: string, 1: string} $dataset
-             *
-             * @return array{0: string, 1: string}
-             */
-            static function (array $dataset): array {
-                return \array_map(
-                    static function (string $css): string {
-                        return '<style>' . $css . '</style>';
-                    },
-                    $dataset
-                );
-            },
-            $datasetsWithRenamedKeys
-        );
 
         return $datasets;
     }
