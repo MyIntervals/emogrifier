@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Tests\Support\Traits;
 
 use PHPUnit\Framework\TestCase;
-use TRegx\DataProvider\DataProviders;
 use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
@@ -321,13 +320,10 @@ trait CssDataProviders
      *
      * @param array<string, array{0: T}> $dataset
      *
-     * @return array<string, array{0: T, 1: T}>
+     * @return DataProvider<string, array{0: T, 1: T}>
      */
-    private static function crossDatasetWithItself(array $dataset): array
+    private static function crossDatasetWithItself(array $dataset): DataProvider
     {
-        /** @var array<string, array{0: T, 1: T}> $result */
-        $result = DataProviders::cross($dataset, $dataset);
-
-        return $result;
+        return DataProvider::cross($dataset, $dataset);
     }
 }
