@@ -24,9 +24,9 @@ trait CssDataProviders
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return DataProvider<string, array{0: string, 1: string}>
      */
-    public function provideEquivalentCompleteCss(): array
+    public function provideEquivalentCompleteCss(): DataProvider
     {
         $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration = self::crossDatasetWithItself([
             'unminified CSS with `@media` rule, selector list, and property declaration'
@@ -74,7 +74,7 @@ trait CssDataProviders
             '`@import` with mixed-case at-rule name' => ['@ImPoRt foo/bar.css;'],
         ]);
 
-        return \array_merge(
+        return DataProvider::join(
             $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration,
             $datasetsWithUrlPropertyValue,
             $datasetsWithQuotedPropertyValue,
@@ -83,9 +83,9 @@ trait CssDataProviders
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return DataProvider<string, array{0: string, 1: string}>
      */
-    public function provideEquivalentCssComponents(): array
+    public function provideEquivalentCssComponents(): DataProvider
     {
         $datasetsWithPropertyDeclaration = self::crossDatasetWithItself([
             'property declaration' => ['color: green;'],
@@ -127,7 +127,7 @@ trait CssDataProviders
             'property declaration with space after URL' => ['background-image: url(images/foo.jpeg) ;'],
         ]);
 
-        return \array_merge(
+        return DataProvider::join(
             $datasetsWithPropertyDeclaration,
             $datasetsWithPropertyDeclarationWithDecimalValueLessThanOne,
             $datasetsWithPropertyDeclarationWithNegativeDecimalValueLessThanOne,

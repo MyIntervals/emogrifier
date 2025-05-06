@@ -15,6 +15,7 @@ use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use TRegx\DataProvider\DataProviders;
+use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
  * @covers \Pelago\Emogrifier\CssInliner
@@ -2313,9 +2314,9 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return DataProvider<string, array{0: string}>
      */
-    public function matchingSelectorWithPseudoComponentCssRuleDataProvider(): array
+    public function matchingSelectorWithPseudoComponentCssRuleDataProvider(): DataProvider
     {
         $datasetsWithSelectorPseudoComponents = $this->getCssRuleDatasetsWithSelectorPseudoComponents(
             [
@@ -2385,7 +2386,7 @@ final class CssInlinerTest extends TestCase
             ':only-of-type without type' => [':only-of-type { color: green; }'],
         ];
 
-        return \array_merge(
+        return DataProvider::join(
             $datasetsWithSelectorPseudoComponents,
             $datasetsWithCombinedPseudoSelectors,
             $datasetsWithUnsupportedStaticPseudoClasses
@@ -2411,9 +2412,9 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return DataProvider<string, array{0: string}>
      */
-    public function nonMatchingSelectorWithPseudoComponentCssRuleDataProvider(): array
+    public function nonMatchingSelectorWithPseudoComponentCssRuleDataProvider(): DataProvider
     {
         $datasetsWithSelectorPseudoComponents = $this->getCssRuleDatasetsWithSelectorPseudoComponents(
             [
@@ -2474,7 +2475,7 @@ final class CssInlinerTest extends TestCase
             ':only-of-type without type with class' => ['.b:only-of-type { color: red; }'],
         ];
 
-        return \array_merge(
+        return DataProvider::join(
             $datasetsWithSelectorPseudoComponents,
             $datasetsWithCombinedPseudoSelectors,
             $datasetsWithUnsupportedStaticPseudoClasses
