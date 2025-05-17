@@ -76,12 +76,10 @@ final class CssDocument
     public function getStyleRulesData(array $allowedMediaTypes): array
     {
         $ruleMatches = [];
-        /** @var CssRenderable $rule */
         foreach ($this->sabberwormCssDocument->getContents() as $rule) {
             if ($rule instanceof CssAtRuleBlockList) {
                 $containingAtRule = $this->getFilteredAtIdentifierAndRule($rule, $allowedMediaTypes);
                 if (\is_string($containingAtRule)) {
-                    /** @var CssRenderable $nestedRule */
                     foreach ($rule->getContents() as $nestedRule) {
                         if ($nestedRule instanceof CssDeclarationBlock) {
                             $ruleMatches[] = new StyleRule($nestedRule, $containingAtRule);

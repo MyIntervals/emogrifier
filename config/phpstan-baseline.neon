@@ -7,12 +7,6 @@ parameters:
 			path: ../src/Caching/SimpleStringCache.php
 
 		-
-			message: '#^PHPDoc tag @var with type Sabberworm\\CSS\\Renderable is not subtype of type Sabberworm\\CSS\\CSSList\\CSSList\|Sabberworm\\CSS\\Property\\Charset\|Sabberworm\\CSS\\Property\\Import\|Sabberworm\\CSS\\RuleSet\\RuleSet\.$#'
-			identifier: varTag.type
-			count: 2
-			path: ../src/Css/CssDocument.php
-
-		-
 			message: '#^Method Pelago\\Emogrifier\\CssInliner\:\:getAllNodesWithStyleAttribute\(\) return type with generic class DOMNodeList does not specify its types\: TNode$#'
 			identifier: missingType.generics
 			count: 1
