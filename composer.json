@@ -47,7 +47,7 @@
         "php-parallel-lint/php-parallel-lint": "1.4.0",
         "phpmd/phpmd": "2.15.0",
         "phpstan/extension-installer": "1.4.3",
-        "phpstan/phpstan": "1.12.26 || 2.1.16",
+        "phpstan/phpstan": "1.12.27 || 2.1.17",
         "phpstan/phpstan-phpunit": "1.4.2 || 2.0.6",
         "phpstan/phpstan-strict-rules": "1.6.2 || 2.0.4",
         "phpunit/phpunit": "9.6.23",
