@@ -1798,9 +1798,9 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return DataProvider<string, array<int, string>>
      */
-    public function orderedRulesAndSurroundingCssDataProvider(): array
+    public function orderedRulesAndSurroundingCssDataProvider(): DataProvider
     {
         $possibleSurroundingCss = [
             'nothing' => '',
@@ -1847,24 +1847,20 @@ final class CssInlinerTest extends TestCase
             }
         }
 
-        /** @var array<string, array<int, string>> $datasets */
-        $datasets = DataProviders::cross(
-            [
-                'two media rules' => ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
-                'two rules involving pseudo-components' => ['a:hover { color: blue; }', 'a:active { color: green; }'],
-                'media rule followed by rule involving pseudo-components' => [
-                    '@media screen { p { color: #000; } }',
-                    'a:hover { color: green; }',
-                ],
-                'rule involving pseudo-components followed by media rule' => [
-                    'a:hover { color: green; }',
-                    '@media screen { p { color: #000; } }',
-                ],
+        $additionalDatasets = [
+            'two media rules' => ['@media all { p { color: #333; } }', '@media print { p { color: #000; } }'],
+            'two rules involving pseudo-components' => ['a:hover { color: blue; }', 'a:active { color: green; }'],
+            'media rule followed by rule involving pseudo-components' => [
+                '@media screen { p { color: #000; } }',
+                'a:hover { color: green; }',
             ],
-            $datasetsSurroundingCss
-        );
+            'rule involving pseudo-components followed by media rule' => [
+                'a:hover { color: green; }',
+                '@media screen { p { color: #000; } }',
+            ],
+        ];
 
-        return $datasets;
+        return DataProvider::cross($additionalDatasets, $datasetsSurroundingCss);
     }
 
     /**
