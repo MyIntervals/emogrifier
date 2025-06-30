@@ -3690,7 +3690,7 @@ final class CssInlinerTest extends TestCase
             ['alone' => ['', '']]
         );
 
-        return DataProvider::cross($datasets1, $datasets2);
+        return DataProvider::join($datasets1, $datasets2);
     }
 
     /**
