@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
-use TRegx\DataProvider\DataProviders;
 use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
