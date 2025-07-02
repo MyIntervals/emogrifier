@@ -3650,7 +3650,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, array<int, string>>
+     * @return DataProvider<string, array{0: string, 1: string, 2: string}>
      */
     public function provideValidAtRulesWithSurroundingCss(): DataProvider
     {
