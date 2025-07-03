@@ -14,7 +14,6 @@ use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
-use TRegx\DataProvider\DataProviders;
 use TRegx\PhpUnit\DataProviders\DataProvider;
 
 /**
@@ -3651,12 +3650,11 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return DataProvider<string, array{0: string, 1: string, 2: string}>
      */
-    public function provideValidAtRulesWithSurroundingCss(): array
+    public function provideValidAtRulesWithSurroundingCss(): DataProvider
     {
-        /** @var array<string, array<int, string>> $datasets */
-        $datasets = DataProviders::cross(
+        $datasets1 = DataProvider::cross(
             $this->provideValidAtRules(),
             [
                 'alone' => ['', ''],
@@ -3670,7 +3668,8 @@ final class CssInlinerTest extends TestCase
                 'preceded by matching uninlinable rule' => ["p:hover { color: green; }\n", ''],
                 'preceded by matching @media rule' => ["@media (max-width: 640px) { p { color: green; } }\n", ''],
             ]
-        ) + DataProviders::cross(
+        );
+        $datasets2 = DataProvider::cross(
             [
                 'uppercase @FONT-FACE' => [
                     '@FONT-FACE { font-family: "Foo Sans"; src: url("/foo-sans.woff2") format("woff2"); }',
@@ -3690,7 +3689,7 @@ final class CssInlinerTest extends TestCase
             ['alone' => ['', '']]
         );
 
-        return $datasets;
+        return DataProvider::join($datasets1, $datasets2);
     }
 
     /**
