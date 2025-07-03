@@ -51,7 +51,6 @@
         "phpstan/phpstan-phpunit": "1.4.2 || 2.0.6",
         "phpstan/phpstan-strict-rules": "1.6.2 || 2.0.4",
         "phpunit/phpunit": "9.6.23",
-        "rawr/cross-data-providers": "2.4.0",
         "rawr/phpunit-data-provider": "3.3.1",
         "rector/rector": "1.2.10 || 2.0.16",
         "rector/type-perfect": "1.0.0 || 2.1.0"
