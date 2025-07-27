@@ -37,10 +37,10 @@
         "source": "https://github.com/MyIntervals/emogrifier"
     },
     "require": {
-        "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
+        "php": "~7.3.0 || ~7.4.0 || ~8.0.0 || ~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0 || ~8.5.0",
         "ext-dom": "*",
         "ext-libxml": "*",
-        "sabberworm/php-css-parser": "^9.0.0",
+        "sabberworm/php-css-parser": "dev-feature/php-85",
         "symfony/css-selector": "^5.4.35 || ~6.3.12 || ^6.4.3 || ^7.0.3",
         "thecodingmachine/safe": "^1.3 || ^2.5 || ^3.3"
     },
