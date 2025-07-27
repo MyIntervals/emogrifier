@@ -27,6 +27,7 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+          - '8.5'
 
     steps:
       - name: Checkout
@@ -156,6 +157,7 @@ jobs:
           - '8.2'
           - '8.3'
           - '8.4'
+          - '8.5'
         dependencies:
           - lowest
           - highest
@@ -177,14 +179,6 @@ jobs:
 
       - name: Show the Composer configuration
         run: composer config --global --list
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/composer
-          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
       - name: Install Composer dependencies
         run: |
