@@ -12,7 +12,8 @@ Please also have a look at our
 
 ### Changed
 
-- Require `sabberworm/php-css-parser` version 8.9.0 or higher (#1399, #1418)
+- Require `sabberworm/php-css-parser` version 9.0.0 or higher
+  (#1399, #1418, #1421)
 - Raise the minimum required Symfony bugfix versions (#1361)
 
 ### Deprecated
