@@ -149,7 +149,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Builds a subject with the given HTML and debug mode enabled.
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @return CssInliner
      */
@@ -206,7 +206,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function wbrTagDataProvider(): array
     {
@@ -220,7 +220,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider wbrTagDataProvider
      */

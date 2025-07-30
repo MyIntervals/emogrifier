@@ -76,7 +76,7 @@ abstract class AbstractHtmlProcessor
     /**
      * Builds a new instance from the given HTML.
      *
-     * @param string $unprocessedHtml raw HTML, must be UTF-encoded, must not be empty
+     * @param non-empty-string $unprocessedHtml raw HTML, must be UTF-encoded
      *
      * @return static
      *
@@ -84,6 +84,7 @@ abstract class AbstractHtmlProcessor
      */
     public static function fromHtml(string $unprocessedHtml): self
     {
+        // @phpstan-ignore-next-line argument.type We're checking for a contract violation here.
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }

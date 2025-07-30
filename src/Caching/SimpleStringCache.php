@@ -30,7 +30,7 @@ final class SimpleStringCache
     /**
      * Checks whether there is an entry stored for the given key.
      *
-     * @param string $key the key to check; must not be empty
+     * @param non-empty-string $key
      *
      * @throws \InvalidArgumentException
      */
@@ -45,9 +45,7 @@ final class SimpleStringCache
      * Returns the entry stored for the given key, and throws an exception if the value does not exist
      * (which helps keep the return type simple).
      *
-     * @param string $key the key to of the item to retrieve; must not be empty
-     *
-     * @return string the retrieved value; may be empty
+     * @param non-empty-string $key
      *
      * @throws \BadMethodCallException
      */
@@ -63,8 +61,7 @@ final class SimpleStringCache
     /**
      * Sets or overwrites an entry.
      *
-     * @param string $key the key to of the item to set; must not be empty
-     * @param string $value the value to set; can be empty
+     * @param non-empty-string $key
      *
      * @throws \InvalidArgumentException
      */

@@ -404,8 +404,7 @@ final class HtmlPrunerTest extends TestCase
      * Builds a `CssInliner` fixture with the given HTML in a state where the given CSS has been inlined, and an
      * `HtmlPruner` subject sharing the same `DOMDocument`.
      *
-     * @param string $html
-     * @param string $css
+     * @param non-empty-string $html
      *
      * @return array{0: HtmlPruner, 1: CssInliner}
      */
