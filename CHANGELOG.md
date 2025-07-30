@@ -18,6 +18,8 @@ Please also have a look at our
 
 ### Fixed
 
+- Make some type annotations more specific (#1428)
+
 ## 8.0.0: Dependency updates and dropped support for old Symfony versions
 
 ### Changed

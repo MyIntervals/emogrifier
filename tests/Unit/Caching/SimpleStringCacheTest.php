@@ -31,6 +31,7 @@ final class SimpleStringCacheTest extends TestCase
         $this->expectExceptionCode(1625995840);
         $this->expectExceptionMessage('Please provide a non-empty key.');
 
+        // @phpstan-ignore-next-line argument.type We're explicitly testing with an invalid value here.
         $this->subject->has('');
     }
 
@@ -84,6 +85,7 @@ final class SimpleStringCacheTest extends TestCase
         $this->expectExceptionCode(1625995840);
         $this->expectExceptionMessage('Please provide a non-empty key.');
 
+        // @phpstan-ignore-next-line argument.type We're explicitly testing with an invalid value here.
         $this->subject->get('');
     }
 
@@ -96,6 +98,7 @@ final class SimpleStringCacheTest extends TestCase
         $this->expectExceptionCode(1625995840);
         $this->expectExceptionMessage('Please provide a non-empty key.');
 
+        // @phpstan-ignore-next-line argument.type We're explicitly testing with an invalid value here.
         $this->subject->set('', 'some value');
     }
 

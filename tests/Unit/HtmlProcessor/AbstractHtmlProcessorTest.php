@@ -149,11 +149,12 @@ final class AbstractHtmlProcessorTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
+        // @phpstan-ignore-next-line argument.type We're explicitly testing with an invalid value here.
         TestingHtmlProcessor::fromHtml('');
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function invalidHtmlDataProvider(): array
     {
@@ -168,8 +169,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $input
-     * @param string $expectedHtml
+     * @param non-empty-string $input
+     * @param non-empty-string $expectedHtml
      *
      * @dataProvider invalidHtmlDataProvider
      */
@@ -417,7 +418,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideContentWithoutHtmlTag(): array
     {
@@ -441,7 +442,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider provideContentWithoutHtmlTag
      */
@@ -455,7 +456,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideContentWithHtmlTag(): array
     {
@@ -471,7 +472,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>> The second element of each dataset is optional, and is the expected
+     * @return array<string, list<non-empty-string>> The second element of each dataset is optional, and is the expected
      * normalization of the `<html>` tag, if different.
      */
     public function provideHtmlTagWithAttributes(): array
@@ -488,7 +489,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider provideContentWithHtmlTag
      * @dataProvider provideHtmlTagWithAttributes
@@ -506,8 +507,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
-     * @param ?string $normalizedHtmlTag
+     * @param non-empty-string $html
+     * @param non-empty-string|null $normalizedHtmlTag
      *
      * @dataProvider provideHtmlTagWithAttributes
      */
@@ -524,7 +525,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideContentWithoutHeadTag(): array
     {
@@ -557,7 +558,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider provideContentWithoutHeadTag
      * @dataProvider provideHtmlTagWithAttributes
@@ -573,7 +574,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideContentWithHeadTag(): array
     {
@@ -606,7 +607,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider provideContentWithHeadTag
      */
@@ -633,7 +634,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function contentWithoutBodyTagDataProvider(): array
     {
@@ -647,7 +648,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider contentWithoutBodyTagDataProvider
      */
@@ -798,7 +799,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideMalformedContentTypeMetaTag(): array
     {
@@ -819,7 +820,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
+     * @param non-empty-string $html
      *
      * @dataProvider provideContentWithoutHeadTag
      * @dataProvider provideContentWithHeadTag
@@ -847,7 +848,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string}>
+     * @return array<string, array{0: non-empty-string}>
      */
     public function provideContentTypeMetaTag(): array
     {
@@ -873,7 +874,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideHtmlAroundContentType(): array
     {
@@ -920,9 +921,9 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $contentTypeTag
-     * @param string $htmlBefore
-     * @param string $htmlAfter
+     * @param non-empty-string $contentTypeTag
+     * @param non-empty-string $htmlBefore
+     * @param non-empty-string $htmlAfter
      *
      * @dataProvider provideContentTypeTagAndSurroundingHtml
      */

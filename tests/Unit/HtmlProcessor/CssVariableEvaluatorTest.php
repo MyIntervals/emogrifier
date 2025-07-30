@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 final class CssVariableEvaluatorTest extends TestCase
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     private const COMMON_TEST_HTML = '
         <html>
@@ -45,6 +45,8 @@ final class CssVariableEvaluatorTest extends TestCase
     /**
      * Invokes `CssInliner` to provide a test subject wrapping a `DOMDocument` in which `$css` has been inlined into
      * `$html`.
+     *
+     * @param non-empty-string $html
      */
     private function buildSubjectWithCssInlined(string $html, string $css): CssVariableEvaluator
     {
