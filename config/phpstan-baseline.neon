@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Method Pelago\\Emogrifier\\Caching\\SimpleStringCache\:\:set\(\) has BadMethodCallException in PHPDoc @throws tag but it''s not thrown\.$#'
-			identifier: throws.unusedType
-			count: 1
-			path: ../src/Caching/SimpleStringCache.php
-
-		-
 			message: '#^Method Pelago\\Emogrifier\\CssInliner\:\:getAllNodesWithStyleAttribute\(\) return type with generic class DOMNodeList does not specify its types\: TNode$#'
 			identifier: missingType.generics
 			count: 1

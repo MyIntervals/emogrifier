@@ -66,7 +66,7 @@ final class SimpleStringCache
      * @param string $key the key to of the item to set; must not be empty
      * @param string $value the value to set; can be empty
      *
-     * @throws \BadMethodCallException
+     * @throws \InvalidArgumentException
      */
     public function set(string $key, string $value): void
     {
