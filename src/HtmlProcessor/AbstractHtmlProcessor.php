@@ -57,12 +57,12 @@ abstract class AbstractHtmlProcessor
         = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';
 
     /**
-     * @var ?\DOMDocument
+     * @var \DOMDocument|null
      */
     protected $domDocument = null;
 
     /**
-     * @var ?\DOMXPath
+     * @var \DOMXPath|null
      */
     private $xPath = null;
 

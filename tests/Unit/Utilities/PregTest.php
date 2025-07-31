@@ -18,7 +18,7 @@ final class PregTest extends TestCase
     private $replaceCallbackReplacement = '';
 
     /**
-     * @var ?string
+     * @var string|null
      */
     private $lastReplaceCallbackMatch;
 

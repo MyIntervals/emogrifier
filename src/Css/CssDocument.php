@@ -121,7 +121,7 @@ final class CssDocument
      * @param CssAtRuleBlockList $rule
      * @param array<array-key, string> $allowedMediaTypes
      *
-     * @return ?string
+     * @return string|null
      *         If the nested at-rule is supported, it's opening declaration (e.g. "@media (max-width: 768px)") is
      *         returned; otherwise the return value is null.
      */
