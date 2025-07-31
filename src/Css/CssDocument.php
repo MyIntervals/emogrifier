@@ -38,7 +38,6 @@ final class CssDocument
     private $isImportRuleAllowed = true;
 
     /**
-     * @param string $css
      * @param bool $debug
      *        If this is `true`, an exception will be thrown if invalid CSS is encountered.
      *        Otherwise the parser will try to do the best it can.
@@ -98,8 +97,6 @@ final class CssDocument
      * Renders at-rules from the parsed CSS that are valid and not conditional group rules (i.e. not rules such as
      * `@media` which contain style rules whose data is returned by {@see getStyleRulesData}).  Also does not render
      * `@charset` rules; these are discarded (only UTF-8 is supported).
-     *
-     * @return string
      */
     public function renderNonConditionalAtRules(): string
     {
@@ -118,7 +115,6 @@ final class CssDocument
     }
 
     /**
-     * @param CssAtRuleBlockList $rule
      * @param array<array-key, string> $allowedMediaTypes
      *
      * @return string|null
@@ -163,10 +159,6 @@ final class CssDocument
      * - `@media` rules are processed separately to see if their nested rules apply - `false` is returned;
      * - `@font-face` rules are checked for validity - they must contain both a `src` and `font-family` property;
      * - other at-rules are assumed to be valid and treated as a black box - `true` is returned.
-     *
-     * @param CssRenderable $rule
-     *
-     * @return bool
      */
     private function isValidAtRuleToRender(CssRenderable $rule): bool
     {
