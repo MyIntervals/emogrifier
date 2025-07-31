@@ -424,8 +424,6 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * Returns a list with all DOM nodes that have a style attribute.
      *
-     * @return \DOMNodeList
-     *
      * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
@@ -441,8 +439,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Normalizes the value of the "style" attribute and saves it.
-     *
-     * @param \DOMElement $node
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
@@ -469,8 +465,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Returns CSS content.
-     *
-     * @return string
      */
     private function getCssFromAllStyleNodes(): string
     {
@@ -566,9 +560,6 @@ final class CssInliner extends AbstractHtmlProcessor
         return $node;
     }
 
-    /**
-     * @return CssSelectorConverter
-     */
     private function getCssSelectorConverter(): CssSelectorConverter
     {
         if (!$this->cssSelectorConverter instanceof CssSelectorConverter) {
@@ -580,8 +571,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Collates the individual rules from a `CssDocument` object.
-     *
-     * @param CssDocument $parsedCss
      *
      * @return array<string, array<array-key, array{
      *           media: string,
@@ -671,10 +660,6 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * Any pseudo class that does not match {@see PSEUDO_CLASS_MATCHER} cannot be converted.  Additionally, `...of-type`
      * pseudo-classes cannot be converted if they are not associated with a type selector.
-     *
-     * @param string $selector
-     *
-     * @return bool
      */
     private function hasUnsupportedPseudoClass(string $selector): bool
     {
@@ -719,8 +704,6 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * @param array{selector: string, line: int, ...} $first
      * @param array{selector: string, line: int, ...} $second
-     *
-     * @return int
      */
     private function sortBySelectorPrecedence(array $first, array $second): int
     {
@@ -734,11 +717,6 @@ final class CssInliner extends AbstractHtmlProcessor
         return ($precedenceOfFirst === $precedenceOfSecond) ? $precedenceForEquals : $precedenceForNotEquals;
     }
 
-    /**
-     * @param string $selector
-     *
-     * @return int
-     */
     private function getCssSelectorPrecedence(string $selector): int
     {
         $selectorKey = $selector;
@@ -766,7 +744,6 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * Note: This method does not check whether $cssRule matches $node.
      *
-     * @param \DOMElement $node
      * @param array{
      *            media: string,
      *            selector: string,
@@ -805,8 +782,6 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @param array<string, string> $oldStyles
      * @param array<string, string> $newStyles
-     *
-     * @return string
      *
      * @throws \UnexpectedValueException if an empty property name is encountered (which should not happen)
      */
@@ -856,10 +831,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
     /**
      * Checks whether $attributeValue is marked as !important.
-     *
-     * @param string $attributeValue
-     *
-     * @return bool
      */
     private function attributeValueIsImportant(string $attributeValue): bool
     {
@@ -907,8 +878,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * For example "font: 12px serif !important; font-size: 13px;" must be reordered
      * to "font-size: 13px; font: 12px serif;" in order to remain correct.
      *
-     * @param \DOMElement $node
-     *
      * @throws \RuntimeException
      */
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
@@ -938,8 +907,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * Generates a CSS style string suitable to be used inline from the $styleDeclarations property => value array.
      *
      * @param array<string, string> $styleDeclarations
-     *
-     * @return string
      */
     private function generateStyleStringFromSingleDeclarationsArray(array $styleDeclarations): string
     {
@@ -984,8 +951,6 @@ final class CssInliner extends AbstractHtmlProcessor
      *            line: int
      *        } $cssRule
      *
-     * @return bool
-     *
      * @throws ParseException
      */
     private function existsMatchForSelectorInCssRule(array $cssRule): bool
@@ -1001,10 +966,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * Checks whether there is at least one matching element for $cssSelector.
      * When not in debug mode, it returns true also for invalid selectors (because they may be valid,
      * just not implemented/recognized yet by Emogrifier).
-     *
-     * @param string $cssSelector
-     *
-     * @return bool
      *
      * @throws ParseException in debug mode, if an invalid selector is encountered
      * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
@@ -1027,8 +988,6 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * Removes pseudo-elements and dynamic pseudo-classes from a CSS selector, replacing them with "*" if necessary.
      * If such a pseudo-component is within the argument of `:not`, the entire `:not` component is removed or replaced.
-     *
-     * @param string $selector
      *
      * @return string
      *         selector which will match the relevant DOM elements if the pseudo-classes are assumed to apply, or in the
@@ -1100,7 +1059,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * Removes components from a CSS selector, replacing them with "*" if necessary.
      *
      * @param string $matcher regular expression part to match the components to remove
-     * @param string $selector
      *
      * @return string
      *         selector which will match the relevant DOM elements if the removed components are assumed to apply (or in
@@ -1175,8 +1133,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * This method is protected to allow overriding.
      *
      * @see https://github.com/MyIntervals/emogrifier/issues/103
-     *
-     * @param string $css
      */
     protected function addStyleElementToDocument(string $css): void
     {
@@ -1194,8 +1150,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * Returns the HEAD element.
      *
      * This method assumes that there always is a HEAD element.
-     *
-     * @return \DOMElement
      *
      * @throws \UnexpectedValueException
      */
