@@ -129,7 +129,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
     /**
      * @param array<non-empty-string, string> $declarations
      *
-     * @return ?array<non-empty-string, string> `null` is returned if no substitutions were made.
+     * @return array<non-empty-string, string>|null `null` is returned if no substitutions were made.
      */
     private function replaceVariablesInDeclarations(array $declarations): ?array
     {
