@@ -26,7 +26,6 @@ final class StyleRule
     private $containingAtRule;
 
     /**
-     * @param DeclarationBlock $declarationBlock
      * @param string $containingAtRule e.g. `@media screen and (max-width: 480px)`
      */
     public function __construct(DeclarationBlock $declarationBlock, string $containingAtRule = '')
