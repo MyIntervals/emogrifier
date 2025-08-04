@@ -112,6 +112,8 @@ final class HtmlPruner extends AbstractHtmlProcessor
      * Note that it does not inspect the remaining CSS, but uses information readily available from the `CssInliner`
      * instance about the CSS rules that could not be inlined.
      *
+     * @param CssInliner $cssInliner object instance that performed the CSS inlining
+     *
      * @return $this
      *
      * @throws \BadMethodCallException if `inlineCss` has not first been called on `$cssInliner`
