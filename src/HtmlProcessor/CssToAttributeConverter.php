@@ -13,7 +13,7 @@ use Pelago\Emogrifier\Utilities\Preg;
  *
  * It will only add attributes, but leaves the style attribute untouched.
  *
- * To trigger the conversion, call the convertCssToVisualAttributes method.
+ * To trigger the conversion, call the `convertCssToVisualAttributes` method.
  */
 final class CssToAttributeConverter extends AbstractHtmlProcessor
 {
@@ -73,7 +73,7 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
     }
 
     /**
-     * Applies $styles to $node.
+     * Applies `$styles` to `$node`.
      *
      * This method maps CSS styles to HTML attributes and adds those to the
      * node.
@@ -91,7 +91,7 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
     }
 
     /**
-     * Tries to apply the CSS style to $node as an attribute.
+     * Tries to apply the CSS style to `$node` as an attribute.
      *
      * This method maps a CSS rule to HTML attributes and adds those to the node.
      *
