@@ -78,7 +78,6 @@ final class HtmlPruner extends AbstractHtmlProcessor
      * Removes classes from the `class` attribute of each element in `$elements`, except any in `$classesToKeep`,
      * removing the `class` attribute itself if the resultant list is empty.
      *
-     * @param \DOMNodeList $elements
      * @param array<array-key, string> $classesToKeep
      */
     private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep): void
@@ -98,11 +97,6 @@ final class HtmlPruner extends AbstractHtmlProcessor
         }
     }
 
-    /**
-     * Removes the `class` attribute from each element in `$elements`.
-     *
-     * @param \DOMNodeList $elements
-     */
     private function removeClassAttributeFromElements(\DOMNodeList $elements): void
     {
         /** @var \DOMElement $element */
