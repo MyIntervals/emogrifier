@@ -145,6 +145,10 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         }
     }
 
+    /**
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     */
     private function mapBackgroundProperty(\DOMElement $node, string $value): void
     {
         // parse out the color, if any
@@ -159,6 +163,11 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         $node->setAttribute('bgcolor', $first);
     }
 
+    /**
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     * @param string $property the name of the CSS property to map
+     */
     private function mapWidthOrHeightProperty(\DOMElement $node, string $value, string $property): void
     {
         $preg = new Preg();
@@ -172,6 +181,10 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         $node->setAttribute($property, $number);
     }
 
+    /**
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     */
     private function mapMarginProperty(\DOMElement $node, string $value): void
     {
         if (!$this->isTableOrImageNode($node)) {
@@ -184,6 +197,10 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         }
     }
 
+    /**
+     * @param \DOMElement $node node to apply styles to
+     * @param string $value the value of the style rule to map
+     */
     private function mapBorderProperty(\DOMElement $node, string $value): void
     {
         if (!$this->isTableOrImageNode($node)) {
@@ -203,6 +220,8 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * Parses a shorthand CSS value and splits it into individual values.  For example: `padding: 0 auto;` - `0 auto` is
      * split into top: 0, left: auto, bottom: 0, right: auto.
+     *
+     * @param string $value a CSS property value with 1, 2, 3 or 4 sizes
      *
      * @return array<string, string>
      *         an array of values for top, right, bottom and left (using these as associative array keys)
