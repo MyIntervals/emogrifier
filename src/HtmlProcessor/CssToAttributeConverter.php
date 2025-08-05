@@ -64,8 +64,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
 
     /**
      * Returns a list with all DOM nodes that have a style attribute.
-     *
-     * @return \DOMNodeList
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
@@ -79,7 +77,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      * node.
      *
      * @param array<string, string> $styles the new CSS styles taken from the global styles to be applied to this node
-     * @param \DOMElement $node node to apply styles to
      */
     private function mapCssToHtmlAttributes(array $styles, \DOMElement $node): void
     {
@@ -94,10 +91,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      * Tries to apply the CSS style to `$node` as an attribute.
      *
      * This method maps a CSS rule to HTML attributes and adds those to the node.
-     *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
      */
     private function mapCssToHtmlAttribute(string $property, string $value, \DOMElement $node): void
     {
@@ -109,11 +102,7 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
     /**
      * Looks up the CSS property in the mapping table and maps it if it matches the conditions.
      *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
-     *
-     * @return bool true if the property can be mapped using the simple mapping table
+     * @return bool whether the property can be mapped using the simple mapping table
      */
     private function mapSimpleCssProperty(string $property, string $value, \DOMElement $node): bool
     {
@@ -134,10 +123,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
 
     /**
      * Maps CSS properties that need special transformation to an HTML attribute.
-     *
-     * @param string $property the name of the CSS property to map
-     * @param string $value the value of the style rule to map
-     * @param \DOMElement $node node to apply styles to
      */
     private function mapComplexCssProperty(string $property, string $value, \DOMElement $node): void
     {
@@ -227,11 +212,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         }
     }
 
-    /**
-     * @param \DOMElement $node
-     *
-     * @return bool
-     */
     private function isTableOrImageNode(\DOMElement $node): bool
     {
         return $node->nodeName === 'table' || $node->nodeName === 'img';
