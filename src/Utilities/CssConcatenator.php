@@ -94,9 +94,6 @@ final class CssConcatenator
         }
     }
 
-    /**
-     * @return string
-     */
     public function getCss(): string
     {
         return \implode('', \array_map([self::class, 'getMediaRuleCss'], $this->mediaRules));
@@ -135,8 +132,6 @@ final class CssConcatenator
      * @param array<string, array-key> $selectorsAsKeys1
      *        array in which the selectors are the keys, and the values are of no significance
      * @param array<string, array-key> $selectorsAsKeys2 another such array
-     *
-     * @return bool
      */
     private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2): bool
     {
@@ -152,8 +147,6 @@ final class CssConcatenator
      *            declarationsBlock: string
      *          }>
      *        } $mediaRule
-     *
-     * @return string CSS for the media rule.
      */
     private static function getMediaRuleCss(object $mediaRule): string
     {
@@ -168,8 +161,6 @@ final class CssConcatenator
 
     /**
      * @param object{selectorsAsKeys: array<string, array-key>, declarationsBlock: string} $ruleBlock
-     *
-     * @return string CSS for the rule block.
      */
     private static function getRuleBlockCss(object $ruleBlock): string
     {
