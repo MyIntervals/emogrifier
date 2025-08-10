@@ -41,13 +41,13 @@ final class CssConcatenator
 {
     /**
      * Array of media rules in order.  Each element is an object with the following properties:
-     * - string `media` - The media query string, e.g. "@media screen and (max-width:639px)", or an empty string for
+     * - string `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
      *   rules not within a media query block;
      * - object[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
      *   properties:
      *   - mixed[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
      *     significance);
-     *   - string `declarationsBlock` - The property declarations, e.g. "margin-top: 0.5em; padding: 0".
+     *   - string `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
      *
      * @var array<int, object{
      *   media: string,
@@ -63,11 +63,11 @@ final class CssConcatenator
      * Appends a declaration block to the CSS.
      *
      * @param array<array-key, string> $selectors
-     *        array of selectors for the rule, e.g. ["ul", "ol", "p:first-child"]
+     *        array of selectors for the rule, e.g. `["ul", "ol", "p:first-child"]`
      * @param string $declarationsBlock
-     *        the property declarations, e.g. "margin-top: 0.5em; padding: 0"
+     *        the property declarations, e.g. `margin-top: 0.5em; padding: 0`
      * @param string $media
-     *        the media query for the rule, e.g. "@media screen and (max-width:639px)", or an empty string if none
+     *        the media query for the rule, e.g. `@media screen and (max-width:639px)`, or an empty string if none
      */
     public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
@@ -100,7 +100,7 @@ final class CssConcatenator
     }
 
     /**
-     * @param string $media The media query for rules to be appended, e.g. "@media screen and (max-width:639px)",
+     * @param string $media The media query for rules to be appended, e.g. `@media screen and (max-width:639px)`,
      *        or an empty string if none.
      *
      * @return object{
