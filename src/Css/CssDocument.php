@@ -123,31 +123,27 @@ final class CssDocument
      */
     private function getFilteredAtIdentifierAndRule(CssAtRuleBlockList $rule, array $allowedMediaTypes): ?string
     {
-        $result = null;
-
-        if ($rule->atRuleName() === 'media') {
-            $mediaQueryList = $rule->atRuleArgs();
-            [$mediaType] = \explode('(', $mediaQueryList, 2);
-            if (\trim($mediaType) !== '') {
-                $escapedAllowedMediaTypes = \array_map(
-                    static function (string $allowedMediaType): string {
-                        return \preg_quote($allowedMediaType, '/');
-                    },
-                    $allowedMediaTypes
-                );
-                $mediaTypesMatcher = \implode('|', $escapedAllowedMediaTypes);
-                $isAllowed
-                    = (new Preg())->match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesMatcher . ')/i', $mediaType) !== 0;
-            } else {
-                $isAllowed = true;
-            }
-
-            if ($isAllowed) {
-                $result = '@media ' . $mediaQueryList;
-            }
+        if ($rule->atRuleName() !== 'media') {
+            return null;
         }
 
-        return $result;
+        $mediaQueryList = $rule->atRuleArgs();
+        [$mediaType] = \explode('(', $mediaQueryList, 2);
+        if (\trim($mediaType) !== '') {
+            $escapedAllowedMediaTypes = \array_map(
+                static function (string $allowedMediaType): string {
+                    return \preg_quote($allowedMediaType, '/');
+                },
+                $allowedMediaTypes
+            );
+            $mediaTypesMatcher = \implode('|', $escapedAllowedMediaTypes);
+            $isAllowed
+                = (new Preg())->match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesMatcher . ')/i', $mediaType) !== 0;
+        } else {
+            $isAllowed = true;
+        }
+
+        return $isAllowed ? '@media ' . $mediaQueryList : null;
     }
 
     /**
