@@ -23,7 +23,7 @@ namespace Pelago\Emogrifier\Caching;
 final class SimpleStringCache
 {
     /**
-     * @var array<string, string>
+     * @var array<non-empty-string, string>
      */
     private $values = [];
 
