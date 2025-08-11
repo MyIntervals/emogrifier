@@ -43,12 +43,18 @@ final class DeclarationBlockParser
      *
      * The declaration block
      *
-     *   "color: #000; font-weight: bold;"
+     * ```css
+     *   color: #000; font-weight: bold;
+     * ```
      *
      * will be parsed into the following array:
      *
-     *   "color" => "#000"
-     *   "font-weight" => "bold"
+     * ```php
+     *   [
+     *     'color' => '#000',
+     *     'font-weight' => 'bold',
+     *   ]
+     * ```
      *
      * @param string $declarationBlock the CSS declarations block without the curly braces, may be empty
      *
@@ -83,7 +89,7 @@ final class DeclarationBlockParser
 
             $propertyName = $matches[1];
             if ($propertyName === '') {
-                // This cannot happen since the regular epression matches one or more characters.
+                // This cannot happen since the regular expression matches one or more characters.
                 throw new \UnexpectedValueException('An empty property name was encountered.', 1727046409);
             }
             $propertyValue = $matches[2];
