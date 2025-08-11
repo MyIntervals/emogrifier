@@ -43,12 +43,18 @@ final class DeclarationBlockParser
      *
      * The declaration block
      *
-     *   `color: #000; font-weight: bold;`
+     * ```css
+     *   color: #000; font-weight: bold;
+     * ```
      *
      * will be parsed into the following array:
      *
-     *   `"color" => "#000"`
-     *   `"font-weight" => "bold"`
+     * ```php
+     *   [
+     *     'color' => '#000',
+     *     'font-weight' => 'bold',
+     *   ]
+     * ```
      *
      * @param string $declarationBlock the CSS declarations block without the curly braces, may be empty
      *
