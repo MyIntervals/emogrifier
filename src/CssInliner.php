@@ -71,7 +71,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private $excludedCssSelectors = [];
 
     /**
-     * @var array<string, bool>
+     * @var array<non-empty-string, true>
      */
     private $allowedMediaTypes = ['all' => true, 'screen' => true, 'print' => true];
 
@@ -242,7 +242,7 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * Marks a media query type to keep.
      *
-     * @param string $mediaName the media type name, e.g., "braille"
+     * @param non-empty-string $mediaName the media type name, e.g., "braille"
      *
      * @return $this
      */
@@ -256,7 +256,7 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * Drops a media query type from the allowed list.
      *
-     * @param string $mediaName the tag name, e.g., "braille"
+     * @param non-empty-string $mediaName the tag name, e.g., "braille"
      *
      * @return $this
      */
