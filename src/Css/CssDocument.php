@@ -68,7 +68,7 @@ final class CssDocument
     /**
      * Collates the media query, selectors and declarations for individual rules from the parsed CSS, in order.
      *
-     * @param array<array-key, non-empty-string> $allowedMediaTypes
+     * @param list<non-empty-string> $allowedMediaTypes
      *
      * @return list<StyleRule>
      */
