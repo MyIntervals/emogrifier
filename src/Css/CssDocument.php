@@ -68,7 +68,7 @@ final class CssDocument
     /**
      * Collates the media query, selectors and declarations for individual rules from the parsed CSS, in order.
      *
-     * @param array<array-key, string> $allowedMediaTypes
+     * @param list<non-empty-string> $allowedMediaTypes
      *
      * @return list<StyleRule>
      */
@@ -115,7 +115,7 @@ final class CssDocument
     }
 
     /**
-     * @param array<array-key, string> $allowedMediaTypes
+     * @param list<non-empty-string> $allowedMediaTypes
      *
      * @return string|null
      *         If the nested at-rule is supported, it's opening declaration (e.g. "@media (max-width: 768px)") is
