@@ -115,7 +115,7 @@ final class CssDocument
     }
 
     /**
-     * @param array<array-key, non-empty-string> $allowedMediaTypes
+     * @param list<non-empty-string> $allowedMediaTypes
      *
      * @return string|null
      *         If the nested at-rule is supported, it's opening declaration (e.g. "@media (max-width: 768px)") is
