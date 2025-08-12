@@ -35,11 +35,10 @@ final class StyleRule
     }
 
     /**
-     * @return array<int, string> the selectors, e.g. `["h1", "p"]`
+     * @return array<array-key, string> the selectors, e.g. `["h1", "p"]`
      */
     public function getSelectors(): array
     {
-        /** @var array<int, Selector> $selectors */
         $selectors = $this->declarationBlock->getSelectors();
         return \array_map(
             static function (Selector $selector): string {
@@ -73,7 +72,7 @@ final class StyleRule
     }
 
     /**
-     * @returns string e.g. `@media screen and (max-width: 480px)`, or an empty string
+     * @return string e.g. `@media screen and (max-width: 480px)`, or an empty string
      */
     public function getContainingAtRule(): string
     {
