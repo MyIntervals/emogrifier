@@ -424,6 +424,8 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * Returns a list with all DOM nodes that have a style attribute.
      *
+     * @return \DOMNodeList<\DOMNode>
+     *
      * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
