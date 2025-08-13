@@ -35,7 +35,7 @@ final class StyleRule
     }
 
     /**
-     * @return array<array-key, string> the selectors, e.g. `["h1", "p"]`
+     * @return array<string> the selectors, e.g. `["h1", "p"]`
      */
     public function getSelectors(): array
     {
