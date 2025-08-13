@@ -14,19 +14,19 @@ use Pelago\Emogrifier\Utilities\Preg;
 abstract class AbstractHtmlProcessor
 {
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     protected const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
     /**
-     * @var string Regular expression part to match tag names that PHP's DOMDocument implementation is not aware are
-     *      self-closing. These are mostly HTML5 elements, but for completeness <command> (obsolete) and <keygen>
-     *      (deprecated) are also included.
+     * @var non-empty-string Regular expression part to match tag names that PHP's DOMDocument implementation is not
+     *      aware are self-closing. These are mostly HTML5 elements, but for completeness `<command>` (obsolete) and
+     *      `<keygen>` (deprecated) are also included.
      *
      * @see https://bugs.php.net/bug.php?id=73175
      */
@@ -36,7 +36,7 @@ abstract class AbstractHtmlProcessor
      * Regular expression part to match tag names that may appear before the start of the `<body>` element.  A start tag
      * for any other element would implicitly start the `<body>` element due to tag omission rules.
      *
-     * @var string
+     * @var non-empty-string
      */
     protected const TAGNAME_ALLOWED_BEFORE_BODY_MATCHER
         = '(?:html|head|base|command|link|meta|noscript|script|style|template|title)';
@@ -44,14 +44,14 @@ abstract class AbstractHtmlProcessor
     /**
      * regular expression pattern to match an HTML comment, including delimiters and modifiers
      *
-     * @var string
+     * @var non-empty-string
      */
     protected const HTML_COMMENT_PATTERN = '/<!--[^-]*+(?:-(?!->)[^-]*+)*+(?:-->|$)/';
 
     /**
      * regular expression pattern to match an HTML `<template>` element, including delimiters and modifiers
      *
-     * @var string
+     * @var non-empty-string
      */
     protected const HTML_TEMPLATE_ELEMENT_PATTERN
         = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';
@@ -259,7 +259,7 @@ abstract class AbstractHtmlProcessor
     /**
      * Makes sure that the passed HTML has a document type, with lowercase "html".
      *
-     * @return string HTML with document type
+     * @return non-empty-string HTML with document type
      */
     private function ensureDocumentType(string $html): string
     {
@@ -272,9 +272,9 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Makes sure the document type in the passed HTML has lowercase "html".
+     * Makes sure the document type in the passed HTML has lowercase `html`.
      *
-     * @return string HTML with normalized document type
+     * @return ($html is non-empty-string ? non-empty-string : string) HTML with normalized document type
      */
     private function normalizeDocumentType(string $html): string
     {
@@ -291,10 +291,13 @@ abstract class AbstractHtmlProcessor
      * Adds a Content-Type meta tag for the charset.
      *
      * This method also ensures that there is a HEAD element.
+     *
+     * @return non-empty-string
      */
     private function addContentTypeMetaTag(string $html): string
     {
         if ($this->hasContentTypeMetaTagInHead($html)) {
+            \assert($html !== '');
             return $html;
         }
 
@@ -318,6 +321,7 @@ abstract class AbstractHtmlProcessor
         } else {
             $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
         }
+        \assert($reworkedHtml !== '');
 
         return $reworkedHtml;
     }
