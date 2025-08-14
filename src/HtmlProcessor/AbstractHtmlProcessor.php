@@ -274,17 +274,22 @@ abstract class AbstractHtmlProcessor
     /**
      * Makes sure the document type in the passed HTML has lowercase `html`.
      *
-     * @return ($html is non-empty-string ? non-empty-string : string) HTML with normalized document type
+     * @param non-empty-string $html
+     *
+     * @return non-empty-string HTML with normalized document type
      */
     private function normalizeDocumentType(string $html): string
     {
         // Limit to replacing the first occurrence: as an optimization; and in case an example exists as unescaped text.
-        return (new Preg())->replace(
+        $result = (new Preg())->replace(
             '/<!DOCTYPE\\s++html(?=[\\s>])/i',
             '<!DOCTYPE html',
             $html,
             1
         );
+        \assert($result !== '');
+
+        return $result;
     }
 
     /**
@@ -292,12 +297,13 @@ abstract class AbstractHtmlProcessor
      *
      * This method also ensures that there is a HEAD element.
      *
+     * @param non-empty-string $html
+     *
      * @return non-empty-string
      */
     private function addContentTypeMetaTag(string $html): string
     {
         if ($this->hasContentTypeMetaTagInHead($html)) {
-            \assert($html !== '');
             return $html;
         }
 
