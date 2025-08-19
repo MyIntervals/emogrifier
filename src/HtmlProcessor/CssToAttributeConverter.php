@@ -24,7 +24,8 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      * of nodes and values.
      *
      * @var array<
-     *        non-empty-string, array{
+     *        non-empty-string,
+     *        array{
      *          attribute: non-empty-string,
      *          nodes?: list<non-empty-string>,
      *          values?: list<non-empty-string>
