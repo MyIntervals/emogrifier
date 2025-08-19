@@ -86,8 +86,8 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      *
      * This method maps CSS styles to HTML attributes and adds those to the node.
      *
-     * @param array<non-empty-string, string> $styles the new CSS styles taken from the global styles
-     *        to be applied to this node
+     * @param array<non-empty-string, string> $styles
+     *        the new CSS styles taken from the global styles to be applied to this node
      */
     private function mapCssToHtmlAttributes(array $styles, \DOMElement $node): void
     {
