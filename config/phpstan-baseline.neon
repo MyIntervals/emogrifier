@@ -55,32 +55,8 @@ parameters:
 			path: ../src/HtmlProcessor/HtmlPruner.php
 
 		-
-			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner\:\:removeClassAttributeFromElements\(\) has parameter \$elements with generic class DOMNodeList but does not specify its types\: TNode$#'
-			identifier: missingType.generics
-			count: 1
-			path: ../src/HtmlProcessor/HtmlPruner.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner\:\:removeClassesFromElements\(\) has parameter \$elements with generic class DOMNodeList but does not specify its types\: TNode$#'
-			identifier: missingType.generics
-			count: 1
-			path: ../src/HtmlProcessor/HtmlPruner.php
-
-		-
 			message: '#^Offset 1 might not exist on array\<int, array\<int, string\>\>\|null\.$#'
 			identifier: offsetAccess.notFound
-			count: 1
-			path: ../src/HtmlProcessor/HtmlPruner.php
-
-		-
-			message: '#^Parameter \#1 \$elements of method Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner\:\:removeClassAttributeFromElements\(\) expects DOMNodeList, DOMNodeList\<DOMNode\>\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../src/HtmlProcessor/HtmlPruner.php
-
-		-
-			message: '#^Parameter \#1 \$elements of method Pelago\\Emogrifier\\HtmlProcessor\\HtmlPruner\:\:removeClassesFromElements\(\) expects DOMNodeList, DOMNodeList\<DOMNode\>\|false given\.$#'
-			identifier: argument.type
 			count: 1
 			path: ../src/HtmlProcessor/HtmlPruner.php
 

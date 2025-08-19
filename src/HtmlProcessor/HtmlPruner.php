@@ -19,7 +19,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
      * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
      * to lowercase.
      *
-     * @var string
+     * @var non-empty-string
      */
     private const DISPLAY_NONE_MATCHER
         = '//*[@style and contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")'
@@ -62,6 +62,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
      */
     public function removeRedundantClasses(array $classesToKeep = []): self
     {
+        /** @var \DOMNodeList<\DOMElement> $elementsWithClassAttribute */
         $elementsWithClassAttribute = $this->getXPath()->query('//*[@class]');
 
         if ($classesToKeep !== []) {
@@ -78,6 +79,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
      * Removes classes from the `class` attribute of each element in `$elements`, except any in `$classesToKeep`,
      * removing the `class` attribute itself if the resultant list is empty.
      *
+     * @param \DOMNodeList<\DOMElement> $elements
      * @param array<array-key, string> $classesToKeep
      */
     private function removeClassesFromElements(\DOMNodeList $elements, array $classesToKeep): void
@@ -85,7 +87,6 @@ final class HtmlPruner extends AbstractHtmlProcessor
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
         $preg = new Preg();
-        /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $elementClasses = $preg->split('/\\s++/', \trim($element->getAttribute('class')));
             $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
@@ -97,9 +98,11 @@ final class HtmlPruner extends AbstractHtmlProcessor
         }
     }
 
+    /**
+     * @param \DOMNodeList<\DOMElement> $elements
+     */
     private function removeClassAttributeFromElements(\DOMNodeList $elements): void
     {
-        /** @var \DOMElement $element */
         foreach ($elements as $element) {
             $element->removeAttribute('class');
         }
