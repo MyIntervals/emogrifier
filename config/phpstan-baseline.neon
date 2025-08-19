@@ -37,18 +37,6 @@ parameters:
 			path: ../src/HtmlProcessor/AbstractHtmlProcessor.php
 
 		-
-			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\CssToAttributeConverter\:\:getAllNodesWithStyleAttribute\(\) return type with generic class DOMNodeList does not specify its types\: TNode$#'
-			identifier: missingType.generics
-			count: 1
-			path: ../src/HtmlProcessor/CssToAttributeConverter.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\CssToAttributeConverter\:\:getAllNodesWithStyleAttribute\(\) should return DOMNodeList but returns DOMNodeList\<DOMNode\>\|false\.$#'
-			identifier: return.type
-			count: 1
-			path: ../src/HtmlProcessor/CssToAttributeConverter.php
-
-		-
 			message: '#^PHPDoc tag @var with type array\<int, string\> is not subtype of native type list\<string\>\|false\.$#'
 			identifier: varTag.nativeType
 			count: 1
