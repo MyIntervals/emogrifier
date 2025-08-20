@@ -9,31 +9,38 @@ namespace Pelago\Emogrifier\Utilities;
  * selectors, or declarations block are the same as those from the preceding block and combining blocks in such cases.
  *
  * Example:
- *  $concatenator = new CssConcatenator();
- *  $concatenator->append(['body'], 'color: blue;');
- *  $concatenator->append(['body'], 'font-size: 16px;');
- *  $concatenator->append(['p'], 'margin: 1em 0;');
- *  $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
- *  $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
- *  $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
- *  $css = $concatenator->getCss();
+ *
+ * ```php
+ *   $concatenator = new CssConcatenator();
+ *   $concatenator->append(['body'], 'color: blue;');
+ *   $concatenator->append(['body'], 'font-size: 16px;');
+ *   $concatenator->append(['p'], 'margin: 1em 0;');
+ *   $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
+ *   $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
+ *   $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
+ *   $css = $concatenator->getCss();
+ * ```
  *
  * `$css` (if unminified) would contain the following CSS:
- * ` body {
- * `   color: blue;
- * `   font-size: 16px;
- * ` }
- * ` p, ul, ol {
- * `   margin: 1em 0;
- * ` }
- * ` @media screen and (max-width: 400px) {
- * `   body {
- * `     font-size: 14px;
- * `   }
- * `   ul, ol {
- * `     margin: 0.75em 0;
- * `   }
- * ` }
+ *
+ * ```css
+ *   body {
+ *     color: blue;
+ *     font-size: 16px;
+ *   }
+ *   p, ul, ol {
+ *     margin: 1em 0;
+ *   }
+ *
+ *   @media screen and (max-width: 400px) {
+ *     body {
+ *       font-size: 14px;
+ *     }
+ *     ul, ol {
+ *       margin: 0.75em 0;
+ *     }
+ *   }
+ * ```
  *
  * @internal
  */
@@ -41,18 +48,18 @@ final class CssConcatenator
 {
     /**
      * Array of media rules in order.  Each element is an object with the following properties:
-     * - string `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
+     * - `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
      *   rules not within a media query block;
-     * - object[] `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
+     * - `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following
      *   properties:
-     *   - mixed[] `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
+     *   - `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no
      *     significance);
-     *   - string `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
+     *   - `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
      *
-     * @var array<int, object{
+     * @var list<object{
      *   media: string,
-     *   ruleBlocks: array<int, object{
-     *     selectorsAsKeys: array<string, array-key>,
+     *   ruleBlocks: list<object{
+     *     selectorsAsKeys: array<non-empty-string, array-key>,
      *     declarationsBlock: string
      *   }>
      * }>
@@ -105,8 +112,8 @@ final class CssConcatenator
      *
      * @return object{
      *           media: string,
-     *           ruleBlocks: array<int, object{
-     *             selectorsAsKeys: array<string, array-key>,
+     *           ruleBlocks: list<object{
+     *             selectorsAsKeys: array<non-empty-string, array-key>,
      *             declarationsBlock: string
      *           }>
      *         }
@@ -123,6 +130,7 @@ final class CssConcatenator
             'ruleBlocks' => [],
         ];
         $this->mediaRules[] = $newMediaRule;
+
         return $newMediaRule;
     }
 
@@ -156,6 +164,7 @@ final class CssConcatenator
         if ($media !== '') {
             $css = $media . '{' . $css . '}';
         }
+
         return $css;
     }
 
@@ -167,6 +176,7 @@ final class CssConcatenator
         $selectorsAsKeys = $ruleBlock->selectorsAsKeys;
         $selectors = \array_keys($selectorsAsKeys);
         $declarationsBlock = $ruleBlock->declarationsBlock;
+
         return \implode(',', $selectors) . '{' . $declarationsBlock . '}';
     }
 }

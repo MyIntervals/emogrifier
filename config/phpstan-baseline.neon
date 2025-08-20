@@ -61,7 +61,7 @@ parameters:
 			path: ../src/HtmlProcessor/HtmlPruner.php
 
 		-
-			message: '#^Property object\{media\: string, ruleBlocks\: array\<int, object\{selectorsAsKeys\: array\<string, \(int\|string\)\>, declarationsBlock\: string\}\>\}\:\:\$ruleBlocks is not writable\.$#'
+			message: '#^Property object\{media\: string, ruleBlocks\: list\<object\{selectorsAsKeys\: array\<string, \(int\|string\)\>, declarationsBlock\: string\}\>\}\:\:\$ruleBlocks is not writable\.$#'
 			identifier: assign.propertyReadOnly
 			count: 1
 			path: ../src/Utilities/CssConcatenator.php
