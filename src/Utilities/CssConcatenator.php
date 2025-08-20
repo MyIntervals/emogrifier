@@ -51,8 +51,8 @@ final class CssConcatenator
      * - `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
      *   rules not within a media query block;
      * - `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following properties:
-     * - `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no significance);
-     * - `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
+     *   - `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no significance);
+     *   - `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
      *
      * @var list<object{
      *   media: string,
