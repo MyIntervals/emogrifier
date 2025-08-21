@@ -148,7 +148,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @var array<array-key, array{
      *          media: string,
-     *          selector: string,
+     *          selector: non-empty-string,
      *          hasUnmatchablePseudo: bool,
      *          declarationsBlock: string,
      *          line: int<0, max>
@@ -363,7 +363,7 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * @return array<array-key, array{
      *             media: string,
-     *             selector: string,
+     *             selector: non-empty-string,
      *             hasUnmatchablePseudo: bool,
      *             declarationsBlock: string,
      *             line: int<0, max>
@@ -581,7 +581,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @return array<string, array<array-key, array{
      *           media: string,
-     *           selector: string,
+     *           selector: non-empty-string,
      *           hasUnmatchablePseudo: bool,
      *           declarationsBlock: string,
      *           line: int<0, max>
@@ -759,7 +759,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @param array{
      *            media: string,
-     *            selector: string,
+     *            selector: non-empty-string,
      *            hasUnmatchablePseudo: bool,
      *            declarationsBlock: string,
      *            line: int<0, max>
@@ -932,7 +932,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @param array<array-key, array{
      *            media: string,
-     *            selector: string,
+     *            selector: non-empty-string,
      *            hasUnmatchablePseudo: bool,
      *            declarationsBlock: string,
      *            line: int<0, max>
@@ -958,7 +958,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @param array{
      *            media: string,
-     *            selector: string,
+     *            selector: non-empty-string,
      *            hasUnmatchablePseudo: bool,
      *            declarationsBlock: string,
      *            line: int<0, max>
