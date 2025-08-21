@@ -1,12 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Only numeric types are allowed in \*, int\|null given on the right side\.$#'
-			identifier: mul.rightNonNumeric
-			count: 1
-			path: ../src/CssInliner.php
-
-		-
 			message: '#^Parameter \#1 \$matches of method Pelago\\Emogrifier\\CssInliner\:\:replaceUnmatchableNotComponent\(\) expects array\<string\>, array given\.$#'
 			identifier: argument.type
 			count: 1
