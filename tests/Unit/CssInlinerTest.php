@@ -3895,11 +3895,15 @@ final class CssInlinerTest extends TestCase
             CssInliner::class,
             'matchingUninlinableCssRules'
         );
-        $matchingUninlinableCssRulesProperty->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $matchingUninlinableCssRulesProperty->setAccessible(true);
+        }
         $matchingUninlinableCssRulesProperty->setValue($subject, $uninlinableCssRules);
 
         $copyUninlinableCssToStyleNode = new \ReflectionMethod(CssInliner::class, 'copyUninlinableCssToStyleNode');
-        $copyUninlinableCssToStyleNode->setAccessible(true);
+        if (PHP_VERSION_ID < 80100) {
+            $copyUninlinableCssToStyleNode->setAccessible(true);
+        }
 
         $domDocument = $subject->getDomDocument();
         $cssDocument = new CssDocument('', true);
