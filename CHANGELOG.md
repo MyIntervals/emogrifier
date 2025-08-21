@@ -12,6 +12,8 @@ Please also have a look at our
 
 ### Changed
 
+- Improve declaration block parsing performance (#1452)
+
 ### Deprecated
 
 ### Removed
