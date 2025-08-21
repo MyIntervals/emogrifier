@@ -20,6 +20,7 @@ Please also have a look at our
 
 ### Fixed
 
+- Improve type safety in `CssInliner` (#1457)
 - Make some type annotations more specific (#1428)
 
 ## 8.0.0: Dependency updates and dropped support for old Symfony versions
