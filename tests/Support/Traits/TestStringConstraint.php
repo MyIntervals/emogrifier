@@ -7,6 +7,8 @@ namespace Pelago\Emogrifier\Tests\Support\Traits;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 
+use function Safe\fopen;
+
 /**
  * Adds common tests to a test case for a `Constraint` which is expected to only evaluate against strings.
  *
@@ -25,7 +27,7 @@ trait TestStringConstraint
             'float' => [0.0],
             'array' => [[]],
             'object' => [(object) []],
-            'resource' => [\fopen('php://temp', 'r')],
+            'resource' => [fopen('php://temp', 'r')],
             'callable' => [
                 static function (): void {},
             ],
