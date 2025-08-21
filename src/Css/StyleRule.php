@@ -35,14 +35,16 @@ final class StyleRule
     }
 
     /**
-     * @return array<string> the selectors, e.g. `["h1", "p"]`
+     * @return array<non-empty-string> the selectors, e.g. `["h1", "p"]`
      */
     public function getSelectors(): array
     {
         $selectors = $this->declarationBlock->getSelectors();
         return \array_map(
             static function (Selector $selector): string {
-                return $selector->getSelector();
+                $selectorAsString = $selector->getSelector();
+                \assert($selectorAsString !== '');
+                return $selectorAsString;
             },
             $selectors
         );
