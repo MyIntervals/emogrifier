@@ -151,7 +151,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *          selector: string,
      *          hasUnmatchablePseudo: bool,
      *          declarationsBlock: string,
-     *          line: int
+     *          line: int<0, max>
      *      }>|null
      */
     private $matchingUninlinableCssRules = null;
@@ -366,7 +366,7 @@ final class CssInliner extends AbstractHtmlProcessor
      *             selector: string,
      *             hasUnmatchablePseudo: bool,
      *             declarationsBlock: string,
-     *             line: int
+     *             line: int<0, max>
      *         }>
      *
      * @throws \BadMethodCallException if `inlineCss` has not been called first
@@ -650,8 +650,8 @@ final class CssInliner extends AbstractHtmlProcessor
         \usort(
             $cssRules['inlinable'],
             /**
-             * @param array{selector: non-empty-string, line: int} $first
-             * @param array{selector: non-empty-string, line: int} $second
+             * @param array{selector: non-empty-string, line: int<0, max>} $first
+             * @param array{selector: non-empty-string, line: int<0, max>} $second
              */
             function (array $first, array $second): int {
                 return $this->sortBySelectorPrecedence($first, $second);
