@@ -91,6 +91,8 @@ final class AssertCssTest extends TestCase
     /**
      * @test
      *
+     * @param int<0, max> $count
+     *
      * @dataProvider providePassingCssCountData
      */
     public function assertContainsCssCountPassesTestWhenExpected(int $count, string $needle, string $haystack): void
@@ -99,7 +101,7 @@ final class AssertCssTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: int, 1: string, 2: string}>
+     * @return array<non-empty-string, array{0: int<0, max>, 1: non-empty-string, 2: non-empty-string}>
      */
     public function providePassingCssCountData(): array
     {
@@ -113,6 +115,8 @@ final class AssertCssTest extends TestCase
     /**
      * @test
      *
+     * @param int<0, max> $count
+     *
      * @dataProvider provideFailingCssCountData
      */
     public function assertContainsCssCountFailsTestWhenExpected(int $count, string $needle, string $haystack): void
@@ -123,7 +127,7 @@ final class AssertCssTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: int, 1: string, 2: string}>
+     * @return array<non-empty-string, array{0: int<0, max>, 1: non-empty-string, 2: non-empty-string}>
      */
     public function provideFailingCssCountData(): array
     {
@@ -217,6 +221,8 @@ final class AssertCssTest extends TestCase
     /**
      * @test
      *
+     * @param int<0, max> $count
+     *
      * @dataProvider providePassingCssCountData
      */
     public function stringContainsCssCountReturnsConstraintMatchingExpectedNumberOfNeedles(
@@ -233,6 +239,8 @@ final class AssertCssTest extends TestCase
 
     /**
      * @test
+     *
+     * @param int<0, max> $count
      *
      * @dataProvider provideFailingCssCountData
      */
