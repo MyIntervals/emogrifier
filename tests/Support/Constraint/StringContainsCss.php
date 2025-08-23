@@ -24,9 +24,6 @@ final class StringContainsCss extends CssConstraint
      */
     private $cssPattern;
 
-    /**
-     * @param string $css
-     */
     public function __construct(string $css)
     {
         parent::__construct();
@@ -36,7 +33,7 @@ final class StringContainsCss extends CssConstraint
     }
 
     /**
-     * @return string a string representation of the constraint
+     * @return non-empty-string
      */
     public function toString(): string
     {
@@ -47,8 +44,6 @@ final class StringContainsCss extends CssConstraint
      * Evaluates the constraint for the parameter `$other`.
      *
      * @param mixed $other value or object to evaluate
-     *
-     * @return bool `true` if the constraint is met, `false` otherwise
      */
     protected function matches($other): bool
     {
