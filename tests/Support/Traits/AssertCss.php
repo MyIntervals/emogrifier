@@ -77,7 +77,7 @@ trait AssertCss
      * Asserts that a string of CSS occurs exactly a certain number of times in the result, allowing for removal of some
      * unnecessary whitespace.
      *
-     * @param int $expectedCount
+     * @param int<0, max> $expectedCount
      * @param string $needle
      * @param string $haystack
      * @param string $message
@@ -114,7 +114,7 @@ trait AssertCss
     }
 
     /**
-     * @param int $expectedCount
+     * @param int<0, max> $expectedCount
      * @param string $needle
      *
      * @return StringContainsCssCount

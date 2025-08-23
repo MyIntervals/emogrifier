@@ -15,7 +15,7 @@ use Pelago\Emogrifier\Utilities\Preg;
 final class StringContainsCssCount extends CssConstraint
 {
     /**
-     * @var int
+     * @var int<0, max>
      */
     private $count;
 
@@ -30,8 +30,7 @@ final class StringContainsCssCount extends CssConstraint
     private $cssPattern;
 
     /**
-     * @param int $count
-     * @param string $css
+     * @param int<0, max> $count
      */
     public function __construct(int $count, string $css)
     {
@@ -43,19 +42,17 @@ final class StringContainsCssCount extends CssConstraint
     }
 
     /**
-     * @return string a string representation of the constraint
+     * @return non-empty-string
      */
     public function toString(): string
     {
-        return 'contains exactly ' . (string) $this->count . ' occurrence(s) of CSS `' . $this->css . '`';
+        return 'contains exactly ' . $this->count . ' occurrence(s) of CSS `' . $this->css . '`';
     }
 
     /**
      * Evaluates the constraint for the parameter `$other`.
      *
      * @param mixed $other value or object to evaluate
-     *
-     * @return bool `true` if the constraint is met, `false` otherwise
      */
     protected function matches($other): bool
     {
