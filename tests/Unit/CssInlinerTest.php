@@ -1750,7 +1750,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Data provider for media rules.
      *
-     * @return string[][]
+     * @return array<non-empty-string, list<non-empty-string>>
      */
     public function mediaRulesDataProvider(): array
     {
@@ -1783,7 +1783,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param non-empty-string $css
      *
      * @dataProvider mediaRulesDataProvider
      */
@@ -1797,7 +1797,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, array<int, string>>
+     * @return DataProvider<string, list<string>>
      */
     public function orderedRulesAndSurroundingCssDataProvider(): DataProvider
     {
@@ -1884,7 +1884,9 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss($cssBefore . $rule1 . $cssBetween . $rule2 . $cssAfter);
 
-        self::assertContainsCss($rule1 . $rule2, $subject->render());
+        $expected = $rule1 . $rule2;
+        self::assertNotSame('', $expected);
+        self::assertContainsCss($expected, $subject->render());
     }
 
     /**
@@ -2103,7 +2105,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Invalid media query which need to be strip
      *
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function invalidMediaPreserveDataProvider(): array
     {
@@ -2121,7 +2123,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param non-empty-string $css
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
@@ -2153,7 +2155,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param non-empty-string $css
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
@@ -2257,7 +2259,7 @@ final class CssInlinerTest extends TestCase
      * @param array<string, string> $precedingSelectorComponents selectors to which each type of pseudo-component is
      *        appended to create a selector for a CSS rule. Keys are human-readable descriptions.
      *
-     * @return array<string, array<int, string>>
+     * @return array<string, array{0: non-empty-string}>
      */
     private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents): array
     {
@@ -2309,7 +2311,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, array{0: string}>
+     * @return DataProvider<non-empty-string, array{0: non-empty-string}>
      */
     public function matchingSelectorWithPseudoComponentCssRuleDataProvider(): DataProvider
     {
@@ -2391,7 +2393,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param non-empty-string $css
      *
      * @dataProvider matchingSelectorWithPseudoComponentCssRuleDataProvider
      */
@@ -2407,7 +2409,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, array{0: string}>
+     * @return DataProvider<non-empty-string, array{0: non-empty-string}>
      */
     public function nonMatchingSelectorWithPseudoComponentCssRuleDataProvider(): DataProvider
     {
@@ -2480,7 +2482,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
+     * @param non-empty-string $css
      *
      * @dataProvider nonMatchingSelectorWithPseudoComponentCssRuleDataProvider
      */
@@ -3175,18 +3177,18 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param array<non-empty-string> $exludedSelectors
+     * @param array<non-empty-string> $excludedSelectors
      *
      * @dataProvider excludedCssRuleDataProvider
      */
     public function addExcludedCssSelectorCanExcludeCssSelectors(
         string $css,
-        array $exludedSelectors,
+        array $excludedSelectors,
         string $expectedInlineCss
     ): void {
         $subject = $this->buildDebugSubject('<html><body><section><div class="green"></div></section></body></html>');
 
-        foreach ($exludedSelectors as $exludedSelector) {
+        foreach ($excludedSelectors as $exludedSelector) {
             $subject->addExcludedCssSelector($exludedSelector);
         }
         $subject->inlineCss($css);
@@ -3508,7 +3510,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{before: string, '@import': non-empty-string, after: string}>
      */
     public function provideValidImportRules(): array
     {
@@ -3576,7 +3578,7 @@ final class CssInlinerTest extends TestCase
      * @test
      *
      * @param string $cssBefore
-     * @param string $cssImports
+     * @param non-empty-string $cssImports
      * @param string $cssAfter
      *
      * @dataProvider provideValidImportRules
@@ -3650,7 +3652,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, array{0: string, 1: string, 2: string}>
+     * @return DataProvider<non-empty-string, array{0: non-empty-string, 1: string, 2: string}>
      */
     public function provideValidAtRulesWithSurroundingCss(): DataProvider
     {
@@ -3695,9 +3697,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $atRules
-     * @param string $cssBefore
-     * @param string $cssAfter
+     * @param non-empty-string $atRules
      *
      * @dataProvider provideValidAtRulesWithSurroundingCss
      */

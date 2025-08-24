@@ -92,6 +92,7 @@ final class AssertCssTest extends TestCase
      * @test
      *
      * @param int<0, max> $count
+     * @param non-empty-string $needle
      *
      * @dataProvider providePassingCssCountData
      */
@@ -116,6 +117,7 @@ final class AssertCssTest extends TestCase
      * @test
      *
      * @param int<0, max> $count
+     * @param non-empty-string $needle
      *
      * @dataProvider provideFailingCssCountData
      */
@@ -179,7 +181,7 @@ final class AssertCssTest extends TestCase
      */
     public function stringContainsCssReturnsConstraint(): void
     {
-        $subject = self::stringContainsCss('');
+        $subject = self::stringContainsCss('foo');
 
         self::assertInstanceOf(Constraint::class, $subject);
     }
@@ -213,7 +215,7 @@ final class AssertCssTest extends TestCase
      */
     public function stringContainsCssCountReturnsConstraint(): void
     {
-        $subject = self::stringContainsCssCount(0, '');
+        $subject = self::stringContainsCssCount(0, 'foo');
 
         self::assertInstanceOf(Constraint::class, $subject);
     }
@@ -222,6 +224,7 @@ final class AssertCssTest extends TestCase
      * @test
      *
      * @param int<0, max> $count
+     * @param non-empty-string $needle
      *
      * @dataProvider providePassingCssCountData
      */
@@ -241,6 +244,7 @@ final class AssertCssTest extends TestCase
      * @test
      *
      * @param int<0, max> $count
+     * @param non-empty-string $needle
      *
      * @dataProvider provideFailingCssCountData
      */
