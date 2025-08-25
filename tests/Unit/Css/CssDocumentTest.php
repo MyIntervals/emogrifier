@@ -366,7 +366,6 @@ final class CssDocumentTest extends TestCase
      * @test
      *
      * @param non-empty-string $atRuleCss
-     * @param string $cssBefore
      *
      * @dataProvider provideValidNonConditionalAtRule
      */
