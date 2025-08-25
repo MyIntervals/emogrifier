@@ -1750,7 +1750,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Data provider for media rules.
      *
-     * @return array<non-empty-string, list<non-empty-string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function mediaRulesDataProvider(): array
     {
