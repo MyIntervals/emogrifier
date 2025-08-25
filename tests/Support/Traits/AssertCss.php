@@ -18,10 +18,6 @@ trait AssertCss
 {
     /**
      * Like `assertSame` but allows for addition or removal of some unnecessary whitespace in the CSS.
-     *
-     * @param string $expected
-     * @param string $actual
-     * @param string $message
      */
     private static function assertEquivalentCss(string $expected, string $actual, string $message = ''): void
     {
@@ -32,10 +28,6 @@ trait AssertCss
 
     /**
      * Like `assertNotSame` but allows for addition or removal of some unnecessary whitespace in the CSS.
-     *
-     * @param string $expected
-     * @param string $actual
-     * @param string $message
      */
     private static function assertNotEquivalentCss(string $expected, string $actual, string $message = ''): void
     {
@@ -47,9 +39,7 @@ trait AssertCss
     /**
      * Like `assertContains` but allows for removal of some unnecessary whitespace from the CSS.
      *
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
+     * @param non-empty-string $needle
      */
     private static function assertContainsCss(string $needle, string $haystack, string $message = ''): void
     {
@@ -62,9 +52,7 @@ trait AssertCss
      * Like `assertNotContains` and also enforces the assertion with removal of some unnecessary whitespace from the
      * CSS.
      *
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
+     * @param non-empty-string $needle
      */
     private static function assertNotContainsCss(string $needle, string $haystack, string $message = ''): void
     {
@@ -78,9 +66,7 @@ trait AssertCss
      * unnecessary whitespace.
      *
      * @param int<0, max> $expectedCount
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
+     * @param non-empty-string $needle
      */
     private static function assertContainsCssCount(
         int $expectedCount,
@@ -93,20 +79,13 @@ trait AssertCss
         self::assertThat($haystack, $constraint, $message);
     }
 
-    /**
-     * @param string $css
-     *
-     * @return IsEquivalentCss
-     */
     private static function isEquivalentCss(string $css): IsEquivalentCss
     {
         return new IsEquivalentCss($css);
     }
 
     /**
-     * @param string $needle
-     *
-     * @return StringContainsCss
+     * @param non-empty-string $needle
      */
     private static function stringContainsCss(string $needle): StringContainsCss
     {
@@ -115,9 +94,7 @@ trait AssertCss
 
     /**
      * @param int<0, max> $expectedCount
-     * @param string $needle
-     *
-     * @return StringContainsCssCount
+     * @param non-empty-string $needle
      */
     private static function stringContainsCssCount(int $expectedCount, string $needle): StringContainsCssCount
     {

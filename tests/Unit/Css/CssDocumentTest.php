@@ -365,8 +365,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $atRuleCss
-     * @param string $cssBefore
+     * @param non-empty-string $atRuleCss
      *
      * @dataProvider provideValidNonConditionalAtRule
      */
@@ -380,7 +379,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, list<non-empty-string>>
      */
     public function provideValidNonConditionalAtRule(): array
     {
