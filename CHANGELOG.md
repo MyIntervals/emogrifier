@@ -10,6 +10,8 @@ Please also have a look at our
 
 ### Added
 
+- Add support for PHP 8.5 (#1470)
+
 ### Changed
 
 - Require `sabberworm/php-css-parser` version 9.1.0 or higher (#1465)
