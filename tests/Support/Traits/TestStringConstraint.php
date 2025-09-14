@@ -13,11 +13,13 @@ use function Safe\fopen;
  * Adds common tests to a test case for a `Constraint` which is expected to only evaluate against strings.
  *
  * @mixin TestCase
+ *
+ * @phpstan-type NonString bool|int|float|array{}|object|resource|callable
  */
 trait TestStringConstraint
 {
     /**
-     * @return mixed[][]
+     * @return array<non-empty-string, array{0: NonString}>
      */
     public function provideNonString(): array
     {
@@ -37,7 +39,7 @@ trait TestStringConstraint
     /**
      * @test
      *
-     * @param mixed $nonString
+     * @param NonString $nonString
      *
      * @dataProvider provideNonString
      */
