@@ -15,7 +15,7 @@ use TRegx\PhpUnit\DataProviders\DataProvider;
 trait CssDataProviders
 {
     /**
-     * @return \IteratorAggregate<string, array{0: string, 1: string}>
+     * @return \IteratorAggregate<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideEquivalentCss(): \IteratorAggregate
     {
@@ -23,7 +23,7 @@ trait CssDataProviders
     }
 
     /**
-     * @return DataProvider<string, array{0: string, 1: string}>
+     * @return DataProvider<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideEquivalentCompleteCss(): DataProvider
     {
@@ -82,7 +82,7 @@ trait CssDataProviders
     }
 
     /**
-     * @return DataProvider<string, array{0: string, 1: string}>
+     * @return DataProvider<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideEquivalentCssComponents(): DataProvider
     {
@@ -154,7 +154,7 @@ trait CssDataProviders
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideCssNeedleFoundInLargerHaystack(): array
     {
@@ -169,7 +169,7 @@ trait CssDataProviders
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideCssNeedleNotFoundInHaystack(): array
     {
@@ -318,9 +318,9 @@ trait CssDataProviders
     /**
      * @template T
      *
-     * @param array<string, array{0: T}> $dataset
+     * @param array<non-empty-string, array{0: T}> $dataset
      *
-     * @return DataProvider<string, array{0: T, 1: T}>
+     * @return DataProvider<non-empty-string, array{0: T, 1: T}>
      */
     private static function crossDatasetWithItself(array $dataset): DataProvider
     {
