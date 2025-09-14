@@ -115,7 +115,7 @@ final class SimpleStringCacheTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: string}>
      */
     public function provideValues(): array
     {
