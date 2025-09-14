@@ -12,6 +12,7 @@ Please also have a look at our
 
 ### Changed
 
+- Require `sabberworm/php-css-parser` version 9.1.0 or higher (#1465)
 - Improve declaration block parsing performance (#1452)
 
 ### Deprecated
