@@ -446,14 +446,13 @@ final class CssInliner extends AbstractHtmlProcessor
     {
         $declarationBlockParser = new DeclarationBlockParser();
 
-        $normalizedOriginalStyle = (new Preg())->throwExceptions($this->debug)->replaceCallback(
-            '/-{0,2}+[_a-zA-Z][\\w\\-]*+(?=:)/S',
-            /** @param array<array-key, string> $propertyNameMatches */
-            static function (array $propertyNameMatches) use ($declarationBlockParser): string {
-                return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
-            },
-            $node->getAttribute('style')
-        );
+        $pattern = '/-{0,2}+[_a-zA-Z][\\w\\-]*+(?=:)/S';
+        /** @param array<array-key, string> $propertyNameMatches */
+        $callback = static function (array $propertyNameMatches) use ($declarationBlockParser): string {
+            return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
+        };
+        $normalizedOriginalStyle = (new Preg())->throwExceptions($this->debug)
+            ->replaceCallback($pattern, $callback, $node->getAttribute('style'));
 
         // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
         $nodePath = $node->getNodePath();
@@ -1012,39 +1011,39 @@ final class CssInliner extends AbstractHtmlProcessor
 
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
-        $selectorWithoutNots = \ltrim((new Preg())->throwExceptions($this->debug)->replaceCallback(
-            '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i',
-            /** @param array<array-key, string> $matches */
-            function (array $matches): string {
-                return $this->replaceUnmatchableNotComponent($matches);
-            },
-            ' ' . $selector
-        ));
+        $pattern = '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i';
+        /** @param array<array-key, string> $matches */
+        $callback = function (array $matches): string {
+            return $this->replaceUnmatchableNotComponent($matches);
+        };
+        $untrimmedSelectorWithoutNots = (new Preg())->throwExceptions($this->debug)
+            ->replaceCallback($pattern, $callback, ' ' . $selector);
+        $selectorWithoutNots = \ltrim($untrimmedSelectorWithoutNots);
 
         $selectorWithoutUnmatchablePseudoComponents = $this->removeSelectorComponents(
             ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+',
             $selectorWithoutNots
         );
 
-        if (
-            $preg->match(
-                '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
-                $selectorWithoutUnmatchablePseudoComponents
-            )
-            === 0
-        ) {
+        if ($preg->match(
+            '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
+            $selectorWithoutUnmatchablePseudoComponents
+        ) === 0) {
             return $selectorWithoutUnmatchablePseudoComponents;
         }
+
+        $selectorParts = $preg->split(
+            '/(' . self::COMBINATOR_MATCHER . ')/',
+            $selectorWithoutUnmatchablePseudoComponents,
+            -1,
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+        );
+
         return \implode('', \array_map(
             function (string $selectorPart): string {
                 return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
             },
-            $preg->split(
-                '/(' . self::COMBINATOR_MATCHER . ')/',
-                $selectorWithoutUnmatchablePseudoComponents,
-                -1,
-                PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
-            )
+            $selectorParts
         ));
     }
 
