@@ -1016,13 +1016,13 @@ final class CssInliner extends AbstractHtmlProcessor
         $callback = function (array $matches): string {
             return $this->replaceUnmatchableNotComponent($matches);
         };
-        $selectorWithoutNots = (new Preg())->throwExceptions($this->debug)
+        $untrimmedSelectorWithoutNots = (new Preg())->throwExceptions($this->debug)
             ->replaceCallback($pattern, $callback, ' ' . $selector);
-        $trimmedSelectorWithoutNots = \ltrim($selectorWithoutNots);
+        $selectorWithoutNots = \ltrim($untrimmedSelectorWithoutNots);
 
         $selectorWithoutUnmatchablePseudoComponents = $this->removeSelectorComponents(
             ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+',
-            $trimmedSelectorWithoutNots
+            $selectorWithoutNots
         );
 
         if ($preg->match(
@@ -1038,7 +1038,6 @@ final class CssInliner extends AbstractHtmlProcessor
             -1,
             PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
         );
-        /** @var list<string> $selectorParts */
 
         return \implode('', \array_map(
             function (string $selectorPart): string {
