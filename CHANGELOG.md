@@ -10,16 +10,24 @@ Please also have a look at our
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 8.1.0: Add support for PHP 8.5
+
+### Added
+
 - Add support for PHP 8.5 (#1470)
 
 ### Changed
 
 - Require `sabberworm/php-css-parser` version 9.1.0 or higher (#1465)
 - Improve declaration block parsing performance (#1452)
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
