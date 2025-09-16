@@ -13,6 +13,12 @@ parameters:
 			path: ../src/CssInliner.php
 
 		-
+			message: '#^Parameter \#1 \$oldnode of method DOMNode\:\:removeChild\(\) expects TNode of DOMNode, DOMNameSpaceNode\|DOMNode given\.$#'
+			identifier: argument.type
+			count: 1
+			path: ../src/CssInliner.php
+
+		-
 			message: '#^Parameter \#1 \$html of method Pelago\\Emogrifier\\HtmlProcessor\\AbstractHtmlProcessor\:\:removeSelfClosingTagsClosingTags\(\) expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 2
@@ -31,14 +37,26 @@ parameters:
 			path: ../src/HtmlProcessor/CssToAttributeConverter.php
 
 		-
-			message: '#^Argument of an invalid type DOMNodeList\<DOMNode\>\|false supplied for foreach, only iterables are supported\.$#'
+			message: '#^Argument of an invalid type DOMNodeList\<DOMNameSpaceNode\|DOMNode\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1
 			path: ../src/HtmlProcessor/HtmlPruner.php
 
 		-
-			message: '#^Cannot access property \$length on DOMNodeList\<DOMNode\>\|false\.$#'
+			message: '#^Cannot access property \$length on DOMNodeList\<DOMNameSpaceNode\|DOMNode\>\|false\.$#'
 			identifier: property.nonObject
+			count: 1
+			path: ../src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: '#^Cannot call method removeChild\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: ../src/HtmlProcessor/HtmlPruner.php
+
+		-
+			message: '#^Mixed variable in a `\$parentNode\-\>\.\.\.\(\)` can skip important errors\. Make sure the type is known$#'
+			identifier: typePerfect.noMixedMethodCaller
 			count: 1
 			path: ../src/HtmlProcessor/HtmlPruner.php
 
