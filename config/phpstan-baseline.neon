@@ -183,12 +183,6 @@ parameters:
 			path: ../tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
 
 		-
-			message: '#^Offset 1 might not exist on array\<int, array\<int, string\>\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: ../tests/Unit/HtmlProcessor/HtmlPrunerTest.php
-
-		-
 			message: '#^Parameter \#1 \$input of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
 			identifier: argument.type
 			count: 1

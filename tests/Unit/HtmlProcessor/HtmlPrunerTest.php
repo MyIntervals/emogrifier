@@ -7,9 +7,10 @@ namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\HtmlProcessor\HtmlPruner;
-use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\ExpectationFailedException;
 use PHPUnit\Framework\TestCase;
+
+use function Safe\preg_match_all;
 
 /**
  * @covers \Pelago\Emogrifier\HtmlProcessor\HtmlPruner
@@ -394,8 +395,11 @@ final class HtmlPrunerTest extends TestCase
 
         $subject->removeRedundantClasses($classesToKeep);
 
-        (new Preg())->matchAll('/class="([^"]*+)"/', $subject->renderBodyContent(), $classAttributeMatches);
+        preg_match_all('/class="([^"]*+)"/', $subject->renderBodyContent(), $classAttributeMatches);
+        self::assertIsArray($classAttributeMatches);
+        self::assertIsArray($classAttributeMatches[1]);
         foreach ($classAttributeMatches[1] as $classAttributeValue) {
+            self::assertIsString($classAttributeValue);
             self::assertMinified($classAttributeValue);
         }
     }
