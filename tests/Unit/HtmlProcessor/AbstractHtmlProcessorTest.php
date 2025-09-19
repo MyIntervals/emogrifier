@@ -6,9 +6,11 @@ namespace Pelago\Emogrifier\Tests\Unit\HtmlProcessor;
 
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Unit\HtmlProcessor\Fixtures\TestingHtmlProcessor;
-use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\TestCase;
 use TRegx\PhpUnit\DataProviders\DataProvider;
+
+use function Safe\preg_match_all;
+use function Safe\preg_replace;
 
 /**
  * @covers \Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor
@@ -500,7 +502,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $htmlTagCount = (new Preg())->matchAll('%<html[\\s/>]%', $result);
+        $htmlTagCount = preg_match_all('%<html[\\s/>]%', $result);
         self::assertSame(1, $htmlTagCount);
     }
 
@@ -569,7 +571,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $headTagCount = (new Preg())->matchAll('%<head[\\s/>]%', $result);
+        $headTagCount = preg_match_all('%<head[\\s/>]%', $result);
         self::assertSame(1, $headTagCount);
     }
 
@@ -617,7 +619,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $result = $subject->render();
 
-        $headTagCount = (new Preg())->matchAll('%<head[\\s/>]%', $result);
+        $headTagCount = preg_match_all('%<head[\\s/>]%', $result);
         self::assertSame(1, $headTagCount);
     }
 
@@ -1259,13 +1261,14 @@ final class AbstractHtmlProcessorTest extends TestCase
     private static function assertContainsHtml(string $needle, string $haystack, string $message = ''): void
     {
         $needleMatcher = \preg_quote($needle, '%');
-        $needleMatcherWithNewlines = (new Preg())->replace(
+        $needleMatcherWithNewlines = preg_replace(
             '%\\\\<(?:body|ul|dl|optgroup|table|tr|hr'
             . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
             . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
             '$0\\n?+',
             $needleMatcher
         );
+        self::assertIsString($needleMatcherWithNewlines);
 
         self::assertMatchesRegularExpression('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
     }
@@ -1296,7 +1299,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     private static function normalizeHtmlElement(string $html): string
     {
-        return (new Preg())->replace(
+        $normalized = preg_replace(
             [
                 '%(<html(?=[\\s>])[^>]*+>)\\s*+(<head[\\s>])%',
                 '%(</head>)\\s*+(<body[\\s>])%',
@@ -1306,5 +1309,8 @@ final class AbstractHtmlProcessorTest extends TestCase
             "$1\n$2",
             $html
         );
+        self::assertIsString($normalized);
+
+        return $normalized;
     }
 }
