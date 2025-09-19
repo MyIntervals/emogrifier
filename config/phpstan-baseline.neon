@@ -159,12 +159,6 @@ parameters:
 			path: ../tests/Unit/Css/CssDocumentTest.php
 
 		-
-			message: '#^Offset 0 might not exist on array\<int, string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: ../tests/Unit/Css/CssDocumentTest.php
-
-		-
 			message: '#^Parameter \#1 \$str of function trim expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
