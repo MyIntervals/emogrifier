@@ -6,10 +6,11 @@ namespace Pelago\Emogrifier\Tests\Unit\Css;
 
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedEOFException;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
+
+use function Safe\preg_match;
 
 /**
  * @covers \Pelago\Emogrifier\Css\CssDocument
@@ -531,7 +532,8 @@ final class CssDocumentTest extends TestCase
 
         $result = $subject->renderNonConditionalAtRules();
 
-        (new Preg())->match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
+        preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
+        self::assertIsArray($atAndRuleNameMatches);
         $atAndRuleName = $atAndRuleNameMatches[0];
         self::assertStringNotContainsString($atAndRuleName, $result);
     }
