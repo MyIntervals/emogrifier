@@ -8,13 +8,14 @@ use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\SyntaxErrorException;
 use TRegx\PhpUnit\DataProviders\DataProvider;
+
+use function Safe\preg_replace;
 
 /**
  * @covers \Pelago\Emogrifier\CssInliner
@@ -2059,10 +2060,11 @@ final class CssInlinerTest extends TestCase
     public function inlineCssWithValidMinifiedMediaQueryContainsInnerCss(string $css): void
     {
         // Minify CSS by removing unnecessary whitespace.
-        $preg = new Preg();
-        $css = $preg->replace('/\\s*{\\s*/', '{', $css);
-        $css = $preg->replace('/;?\\s*}\\s*/', '}', $css);
-        $css = $preg->replace('/@media{/', '@media {', $css);
+        $css = preg_replace('/\\s*{\\s*/', '{', $css);
+        self::assertIsString($css);
+        $css = preg_replace('/;?\\s*}\\s*/', '}', $css);
+        self::assertIsString($css);
+        $css = \str_replace('@media{', '@media {', $css);
         $subject = $this->buildDebugSubject('<html><h1></h1><p></p></html>');
 
         $subject->inlineCss($css);
