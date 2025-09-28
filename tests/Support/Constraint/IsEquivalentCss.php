@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
-use Pelago\Emogrifier\Utilities\Preg;
+use function Safe\preg_match;
 
 /**
  * This constraint asserts that the string it is evaluated for is equivalent to some specific CSS, allowing for cosmetic
@@ -51,6 +51,6 @@ final class IsEquivalentCss extends CssConstraint
             return false;
         }
 
-        return (new Preg())->match($this->cssPattern, $other) !== 0;
+        return preg_match($this->cssPattern, $other) !== 0;
     }
 }
