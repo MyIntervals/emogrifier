@@ -213,8 +213,10 @@ final class PregTest extends TestCase
 
     /**
      * @param array<int, string> $matches
+     *
+     * @internal
      */
-    private function callbackForReplaceCallback(array $matches): string
+    public function callbackForReplaceCallback(array $matches): string
     {
         if (\is_array($this->replaceCallbackReplacement)) {
             if ($matches[0] !== $this->lastReplaceCallbackMatch) {
@@ -249,7 +251,7 @@ final class PregTest extends TestCase
 
         $result = $testSubject->replaceCallback(
             $pattern,
-            \Closure::fromCallable([$this, 'callbackForReplaceCallback']),
+            [$this, 'callbackForReplaceCallback'],
             $subject,
             $limit
         );

@@ -52,8 +52,10 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
      * Callback function for {@see replaceVariablesInPropertyValue} performing regular expression replacement.
      *
      * @param array<int, string> $matches
+     *
+     * @internal
      */
-    private function getPropertyValueReplacement(array $matches): string
+    public function getPropertyValueReplacement(array $matches): string
     {
         $variableName = $matches[1];
 
@@ -78,8 +80,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
      */
     private function replaceVariablesInPropertyValue(string $propertyValue): string
     {
-        return (new Preg())->replaceCallback(
-            '/
+        $pattern = '/
                 var\\(
                     \\s*+
                     # capture variable name including `--` prefix
@@ -120,10 +121,9 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                         )
                     )?+
                 \\)
-            /x',
-            \Closure::fromCallable([$this, 'getPropertyValueReplacement']),
-            $propertyValue
-        );
+            /x';
+        $callable = [$this, 'getPropertyValueReplacement'];
+        return (new Preg())->replaceCallback($pattern, $callable, $propertyValue);
     }
 
     /**

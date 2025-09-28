@@ -167,11 +167,8 @@ abstract class CssConstraint extends Constraint
      */
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
-        $matcher = (new Preg())->replaceCallback(
-            self::CSS_REGULAR_EXPRESSION_PATTERN,
-            \Closure::fromCallable([self::class, 'getCssRegularExpressionReplacement']),
-            $css
-        );
+        $callback = [self::class, 'getCssRegularExpressionReplacement'];
+        $matcher = (new Preg())->replaceCallback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
 
         return self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css);
     }
@@ -180,20 +177,20 @@ abstract class CssConstraint extends Constraint
      * @param array<int<0, max>, string> $matches matches for {@see CSS_REGULAR_EXPRESSION_PATTERN}
      *
      * @return string replacement string, which may be `$matches[0]` if no alteration is needed
+     *
+     * @internal
      */
-    private static function getCssRegularExpressionReplacement(array $matches): string
+    public static function getCssRegularExpressionReplacement(array $matches): string
     {
         $regularExpressionEquivalent = null;
 
+        $pattern = '/\\$(\\d++)/';
+        $callback = static function (array $referenceMatches) use ($matches): string {
+            return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
+        };
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {
-                $regularExpressionEquivalent = (new Preg())->replaceCallback(
-                    '/\\$(\\d++)/',
-                    static function (array $referenceMatches) use ($matches): string {
-                        return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
-                    },
-                    $replacement
-                );
+                $regularExpressionEquivalent = (new Preg())->replaceCallback($pattern, $callback, $replacement);
                 break;
             }
         }
