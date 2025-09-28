@@ -7,6 +7,9 @@ namespace Pelago\Emogrifier\Tests\Support\Constraint;
 use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\Constraint\Constraint;
 
+use function Safe\preg_match;
+use function Safe\preg_replace;
+
 /**
  * Provides a method for use in constraints making assertions about CSS content where whitespace may vary.
  *
@@ -214,15 +217,16 @@ abstract class CssConstraint extends Constraint
      */
     private static function getCssMatcherAllowingOptionalTrailingSemicolon(string $matcher, string $css): string
     {
-        $preg = new Preg();
-
-        $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && $preg->match('/[@\\{\\}]/', $css) === 0;
+        $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && preg_match('/[@\\{\\}]/', $css) === 0;
         if ($isPropertyDeclarationsOnly) {
-            return $preg->replace(
+            $result = preg_replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
                 $matcher
             );
+            \assert(\is_string($result));
+
+            return $result;
         }
 
         return $matcher;
