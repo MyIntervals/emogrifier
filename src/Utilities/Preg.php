@@ -61,6 +61,10 @@ final class Preg
      * Wraps `preg_replace_callback`, though does not support `$subject` being an array.
      * If an error occurs, and exceptions are not being thrown, the original `$subject` is returned.
      *
+     * Note that (unlike when calling `preg_replace_callback`), `$callback` cannot be a non-public method
+     * represented by an array comprising an object or class name and the method name.
+     * To circumvent that, use `\Closure::fromCallable([$objectOrClassName, 'method'])`.
+     *
      * @param non-empty-string|non-empty-array<non-empty-string> $pattern
      *
      * @throws \RuntimeException
