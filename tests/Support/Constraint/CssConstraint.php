@@ -167,11 +167,8 @@ abstract class CssConstraint extends Constraint
      */
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
-        $matcher = (new Preg())->replaceCallback(
-            self::CSS_REGULAR_EXPRESSION_PATTERN,
-            \Closure::fromCallable([self::class, 'getCssRegularExpressionReplacement']),
-            $css
-        );
+        $callback = \Closure::fromCallable([self::class, 'getCssRegularExpressionReplacement']);
+        $matcher = (new Preg())->replaceCallback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
 
         return self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css);
     }
@@ -185,15 +182,13 @@ abstract class CssConstraint extends Constraint
     {
         $regularExpressionEquivalent = null;
 
+        $pattern = '/\\$(\\d++)/';
+        $callback = static function (array $referenceMatches) use ($matches): string {
+            return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
+        };
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {
-                $regularExpressionEquivalent = (new Preg())->replaceCallback(
-                    '/\\$(\\d++)/',
-                    static function (array $referenceMatches) use ($matches): string {
-                        return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
-                    },
-                    $replacement
-                );
+                $regularExpressionEquivalent = (new Preg())->replaceCallback($pattern, $callback, $replacement);
                 break;
             }
         }
