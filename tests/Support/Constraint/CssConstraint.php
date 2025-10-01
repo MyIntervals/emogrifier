@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Support\Constraint;
 
-use Pelago\Emogrifier\Utilities\Preg;
 use PHPUnit\Framework\Constraint\Constraint;
 
 use function Safe\preg_match;
 use function Safe\preg_replace;
+use function Safe\preg_replace_callback;
 
 /**
  * Provides a method for use in constraints making assertions about CSS content where whitespace may vary.
@@ -168,7 +168,8 @@ abstract class CssConstraint extends Constraint
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
         $callback = \Closure::fromCallable([self::class, 'getCssRegularExpressionReplacement']);
-        $matcher = (new Preg())->replaceCallback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
+        $matcher = preg_replace_callback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
+        \assert(\is_string($matcher));
 
         return self::getCssMatcherAllowingOptionalTrailingSemicolon($matcher, $css);
     }
@@ -188,7 +189,8 @@ abstract class CssConstraint extends Constraint
         };
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {
-                $regularExpressionEquivalent = (new Preg())->replaceCallback($pattern, $callback, $replacement);
+                $regularExpressionEquivalent = preg_replace_callback($pattern, $callback, $replacement);
+                \assert(\is_string($regularExpressionEquivalent));
                 break;
             }
         }
