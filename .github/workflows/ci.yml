@@ -47,7 +47,7 @@ jobs:
         run: composer config --global --list
 
       - name: PHP Lint
-        # Note: Unlike the "ci:php:lint" Composer script, we do not use the
+        # Note: Unlike the "check:php:lint" Composer script, we do not use the
         # "parallel-lint" tool here. This allows us to lint the files without
         # depending on any Composer packages.
         run: find config src tests -name '*.php' -print0 | xargs -0 -n 1 -P 4 php -l
@@ -137,7 +137,7 @@ jobs:
         run: phive --no-progress install --trust-gpg-keys 0FDE18AE1D09E19F60F6B1CBC00543248C87FB13,BBAB5DF0A0D6672989CF1869E82B2FB314E9906E
 
       - name: Run Command
-        run: composer ci:${{ matrix.command }}
+        run: composer check:${{ matrix.command }}
 
   unit-tests:
     name: Unit tests
@@ -200,4 +200,4 @@ jobs:
           composer show;
 
       - name: Run Tests
-        run: composer ci:tests:unit
+        run: composer check:tests:unit
