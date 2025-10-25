@@ -473,19 +473,12 @@ final class CssDocumentTest extends TestCase
      * @test
      *
      * @dataProvider provideInvalidAtCharsetRuleWhichCausesException
-     *
-     * Invalid `@charset` rules which do not currently cause an exception not yet tested.
      */
     public function throwsExceptionForInvalidAtCharsetRuleInDebugMode(string $css): void
     {
         $this->expectException(UnexpectedEOFException::class);
 
         $this->createDebugSubject($css);
-
-        self::markTestSkipped(
-            'This test is disabled as currently the CSS parser does not throw an exception in all cases.'
-            . ' Discarding of invalid rules in non-debug mode is already covered by other tests.'
-        );
     }
 
     /**

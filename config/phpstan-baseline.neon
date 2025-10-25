@@ -158,16 +158,6 @@ parameters:
 
 		-
 			message: '''
-				#^@dataProvider provideInvalidAtCharsetRuleWhichCausesException
-
-				Invalid related method not found\.$#
-			'''
-			identifier: phpunit.dataProviderMethod
-			count: 1
-			path: ../tests/Unit/Css/CssDocumentTest.php
-
-		-
-			message: '''
 				#^@dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
 
 				Invalid related method not found\.$#
