@@ -168,7 +168,7 @@ abstract class CssConstraint extends Constraint
     protected static function getCssRegularExpressionMatcher(string $css): string
     {
         $callback = static function (array $matches): string {
-            /** @var array<int<0, max>, string> $matches $matches */
+            /** @var array<int<0, max>, string> $matches */
             return self::getCssRegularExpressionReplacement($matches);
         };
         // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
