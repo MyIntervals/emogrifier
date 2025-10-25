@@ -375,7 +375,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1?: non-empty-string}>
      */
     public function provideValidNonConditionalAtRule(): array
     {
@@ -564,7 +564,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1?: non-empty-string}>
      */
     public function provideInvalidNonConditionalAtRuleWhichDoesNotCauseException(): array
     {
