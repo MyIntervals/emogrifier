@@ -20,7 +20,7 @@ final class CssDocumentTest extends TestCase
     use AssertCss;
 
     /**
-     * @var string
+     * @var non-empty-string
      */
     private const VALID_AT_FONT_FACE_RULE = '@font-face {' . "\n"
         . '  font-family: "Foo Sans";' . "\n"
@@ -34,7 +34,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $selector
+     * @param non-empty-string $selector
      *
      * @dataProvider provideSelector
      * @dataProvider provideSelectorWithVariedWhitespace
@@ -65,7 +65,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideSelector(): array
     {
@@ -99,7 +99,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideSelectorWithVariedWhitespace(): array
     {
@@ -116,7 +116,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $declarations
+     * @param non-empty-string $declarations
      *
      * @dataProvider provideDeclarations
      * @dataProvider provideDeclarationsWithVariedWhitespace
@@ -133,7 +133,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideDeclarations(): array
     {
@@ -156,7 +156,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideDeclarationsWithVariedWhitespace(): array
     {
@@ -178,7 +178,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $mediaQuery
+     * @param non-empty-string $mediaQuery
      *
      * @dataProvider provideMediaQuery
      */
@@ -195,7 +195,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideMediaQuery(): array
     {
@@ -215,8 +215,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $whitespaceAfterAtMedia
-     * @param string $optionalWhitespaceWithinRule
+     * @param non-empty-string $whitespaceAfterAtMedia
      *
      * @dataProvider provideVariedWhitespaceForAtMediaRule
      */
@@ -236,7 +235,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: string}>
      */
     public function provideVariedWhitespaceForAtMediaRule(): array
     {
@@ -254,7 +253,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $mediaQuery
+     * @param non-empty-string $mediaQuery
      *
      * @dataProvider provideMediaQueryWithTvType
      * @dataProvider provideMediaQueryWithTvTypeAndVariedWhitespace
@@ -269,7 +268,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideMediaQueryWithTvType(): array
     {
@@ -285,7 +284,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideMediaQueryWithTvTypeAndVariedWhitespace(): array
     {
@@ -298,8 +297,6 @@ final class CssDocumentTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $cssBetween
      *
      * @dataProvider provideCssWithoutStyleRules
      */
@@ -318,8 +315,6 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssBefore
-     *
      * @dataProvider provideCssWithoutStyleRules
      * @dataProvider provideCssThatMustPrecedeStyleRules
      */
@@ -336,7 +331,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: string}>
      */
     public function provideCssWithoutStyleRules(): array
     {
@@ -353,7 +348,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideCssThatMustPrecedeStyleRules(): array
     {
@@ -380,7 +375,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, list<non-empty-string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideValidNonConditionalAtRule(): array
     {
@@ -407,7 +402,7 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssBetween
+     * @param non-empty-string $cssBetween
      *
      * @dataProvider provideCssWithoutNonConditionalAtRules
      */
@@ -422,7 +417,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: string}>
      */
     public function provideCssWithoutNonConditionalAtRules(): array
     {
@@ -442,6 +437,8 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider provideValidAtCharsetRule
      * @dataProvider provideInvalidAtCharsetRuleWhichCausesException
      * @dataProvider provideInvalidAtCharsetRuleWhichDoesNotCauseException
@@ -458,6 +455,8 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider provideValidAtCharsetRule
      */
     public function discardsValidAtCharsetRuleInDebugMode(string $css): void
@@ -472,6 +471,8 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider provideInvalidAtCharsetRuleWhichCausesException
      */
     public function throwsExceptionForInvalidAtCharsetRuleInDebugMode(string $css): void
@@ -482,7 +483,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideValidAtCharsetRule(): array
     {
@@ -493,7 +494,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidAtCharsetRuleWhichCausesException(): array
     {
@@ -503,7 +504,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidAtCharsetRuleWhichDoesNotCauseException(): array
     {
@@ -515,6 +516,8 @@ final class CssDocumentTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $atRuleCss
      *
      * @dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
      * @dataProvider provideInvalidNonConditionalAtRuleWhichDoesNotCauseException
@@ -534,6 +537,8 @@ final class CssDocumentTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $atRuleCss
+     *
      * @dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
      *
      * Invalid non-conditional at-rules which do not currently cause an exception not yet tested.
@@ -548,7 +553,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideInvalidNonConditionalAtRuleWhichCausesException(): array
     {
@@ -559,7 +564,7 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidNonConditionalAtRuleWhichDoesNotCauseException(): array
     {
@@ -597,9 +602,6 @@ final class CssDocumentTest extends TestCase
 
     /**
      * Asserts that two strings are the same after `trim`ming both of them.
-     *
-     * @param string $expected
-     * @param string $actual
      */
     private static function assertSameTrimmed(string $expected, string $actual): void
     {
