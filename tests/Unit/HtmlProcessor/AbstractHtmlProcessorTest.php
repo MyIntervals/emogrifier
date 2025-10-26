@@ -376,7 +376,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @return string[][]
      */
-    public function providePParentTagName(): array
+    public function provideParagraphParentTagName(): array
     {
         return [
             ['address'],
@@ -403,7 +403,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @param string $parentTagName
      *
-     * @dataProvider providePParentTagName
+     * @dataProvider provideParagraphParentTagName
      */
     public function insertsOptionallyOmittedClosingPTagAtEndOfParent(string $parentTagName): void
     {
