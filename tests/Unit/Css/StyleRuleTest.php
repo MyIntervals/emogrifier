@@ -16,7 +16,7 @@ use Sabberworm\CSS\Value\RuleValueList;
 final class StyleRuleTest extends TestCase
 {
     /**
-     * @return array<string, array{0: array<int, string>, 1: string}>
+     * @return array<non-empty-string, array{0: list<non-empty-string>, 1: non-empty-string}>
      */
     public function provideSelectors(): array
     {
@@ -29,7 +29,7 @@ final class StyleRuleTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $selectors
+     * @param list<non-empty-string> $selectors
      *
      * @dataProvider provideSelectors
      */
@@ -65,7 +65,7 @@ final class StyleRuleTest extends TestCase
     }
 
     /**
-     * @return array<string, array{
+     * @return array<non-empty-string, array{
      *             0: list<array{property: non-empty-string, value: non-empty-string}>,
      *             1: string,
      *         }>
@@ -86,7 +86,6 @@ final class StyleRuleTest extends TestCase
      * @test
      *
      * @param list<array{property: non-empty-string, value: non-empty-string}> $declarations
-     * @param string $expected
      *
      * @dataProvider provideDeclarations
      */
@@ -151,7 +150,7 @@ final class StyleRuleTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string}>
+     * @return array<non-empty-string, array{0: string}>
      */
     public function provideEmptyOrWhiteSpaceOnlyStrings(): array
     {
