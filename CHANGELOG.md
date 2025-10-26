@@ -18,7 +18,7 @@ Please also have a look at our
 
 ### Fixed
 
-- Use safe version of some PHP functions (#1457)
+- Use safe version of some PHP functions (#1457, #1492)
 
 ## 8.1.0: Add support for PHP 8.5
 
