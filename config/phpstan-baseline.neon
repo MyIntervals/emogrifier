@@ -85,18 +85,6 @@ parameters:
 			path: ../src/Utilities/CssConcatenator.php
 
 		-
-			message: '#^Offset 1 might not exist on array\<int, string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: ../src/Utilities/DeclarationBlockParser.php
-
-		-
-			message: '#^Offset 2 might not exist on array\<int, string\>\|null\.$#'
-			identifier: offsetAccess.notFound
-			count: 1
-			path: ../src/Utilities/DeclarationBlockParser.php
-
-		-
 			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:match\(\) never assigns null to &\$matches so it can be removed from the by\-ref type\.$#'
 			identifier: parameterByRef.unusedType
 			count: 1
