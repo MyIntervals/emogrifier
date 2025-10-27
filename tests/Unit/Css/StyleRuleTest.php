@@ -89,7 +89,7 @@ final class StyleRuleTest extends TestCase
      *
      * @dataProvider provideDeclarations
      */
-    public function getDeclarationAsTextReturnsConcatenatedDeclarationsFromRules(
+    public function getDeclarationsAsTextReturnsConcatenatedDeclarationsFromRules(
         array $declarations,
         string $expected
     ): void {
@@ -103,7 +103,7 @@ final class StyleRuleTest extends TestCase
         }
         $styleRule = new StyleRule($declarationBlock, '');
 
-        self::assertSame($expected, $styleRule->getDeclarationAsText());
+        self::assertSame($expected, $styleRule->getDeclarationsAsText());
     }
 
     /**

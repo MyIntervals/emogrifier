@@ -620,7 +620,7 @@ final class CssInliner extends AbstractHtmlProcessor
             }
 
             $mediaQuery = $cssRule->getContainingAtRule();
-            $declarationsBlock = $cssRule->getDeclarationAsText();
+            $declarationsBlock = $cssRule->getDeclarationsAsText();
             $selectors = $cssRule->getSelectors();
 
             // Maybe exclude CSS selectors

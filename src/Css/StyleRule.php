@@ -53,7 +53,7 @@ final class StyleRule
     /**
      * @return string the CSS declarations, separated and followed by a semicolon, e.g., `color: red; height: 4px;`
      */
-    public function getDeclarationAsText(): string
+    public function getDeclarationsAsText(): string
     {
         $rules = $this->declarationBlock->getRules();
         $renderedRules = [];
