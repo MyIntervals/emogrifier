@@ -16,13 +16,13 @@ use Sabberworm\CSS\Value\RuleValueList;
 final class StyleRuleTest extends TestCase
 {
     /**
-     * @return array<non-empty-string, array{0: list<non-empty-string>, 1: non-empty-string}>
+     * @return array<non-empty-string, array{0: list<non-empty-string>}>
      */
     public function provideSelectors(): array
     {
         return [
-            'single selector' => [['h1'], 'h1'],
-            'two selectors' => [['h1', 'p'], 'h1, p'],
+            'single selector' => [['h1']],
+            'two selectors' => [['h1', 'p']],
         ];
     }
 
