@@ -129,7 +129,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->getStyleRulesData([]);
 
         self::assertCount(1, $result);
-        self::assertEquivalentCss($declarations, $result[0]->getDeclarationAsText());
+        self::assertEquivalentCss($declarations, $result[0]->getDeclarationsAsText());
     }
 
     /**
