@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
-use Pelago\Emogrifier\Utilities\Preg;
+use function Safe\preg_match;
+use function Safe\preg_replace;
 
 /**
  * Base class for HTML processor that e.g., can remove, add or modify nodes or attributes.
@@ -172,7 +173,10 @@ abstract class AbstractHtmlProcessor
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
-        return (new Preg())->replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
+        $result = preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
@@ -180,7 +184,10 @@ abstract class AbstractHtmlProcessor
      */
     private function removeSelfClosingTagsClosingTags(string $html): string
     {
-        return (new Preg())->replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
+        $result = preg_replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
@@ -281,12 +288,13 @@ abstract class AbstractHtmlProcessor
     private function normalizeDocumentType(string $html): string
     {
         // Limit to replacing the first occurrence: as an optimization; and in case an example exists as unescaped text.
-        $result = (new Preg())->replace(
+        $result = preg_replace(
             '/<!DOCTYPE\\s++html(?=[\\s>])/i',
             '<!DOCTYPE html',
             $html,
             1
         );
+        \assert(\is_string($result));
         \assert($result !== '');
 
         return $result;
@@ -309,17 +317,17 @@ abstract class AbstractHtmlProcessor
 
         // We are trying to insert the meta tag to the right spot in the DOM.
         // If we just prepended it to the HTML, we would lose attributes set to the HTML tag.
-        $hasHeadTag = (new Preg())->match('/<head[\\s>]/i', $html) !== 0;
+        $hasHeadTag = preg_match('/<head[\\s>]/i', $html) !== 0;
         $hasHtmlTag = \stripos($html, '<html') !== false;
 
         if ($hasHeadTag) {
-            $reworkedHtml = (new Preg())->replace(
+            $reworkedHtml = preg_replace(
                 '/<head(?=[\\s>])([^>]*+)>/i',
                 '<head$1>' . self::CONTENT_TYPE_META_TAG,
                 $html
             );
         } elseif ($hasHtmlTag) {
-            $reworkedHtml = (new Preg())->replace(
+            $reworkedHtml = preg_replace(
                 '/<html(.*?)>/is',
                 '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
                 $html
@@ -327,6 +335,7 @@ abstract class AbstractHtmlProcessor
         } else {
             $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
         }
+        \assert(\is_string($reworkedHtml));
         \assert($reworkedHtml !== '');
 
         return $reworkedHtml;
@@ -339,7 +348,7 @@ abstract class AbstractHtmlProcessor
      */
     private function hasContentTypeMetaTagInHead(string $html): bool
     {
-        (new Preg())->match(
+        preg_match(
             '%^.*?(?=<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>])%is',
             $html,
             $matches
@@ -369,10 +378,7 @@ abstract class AbstractHtmlProcessor
      */
     private function hasEndOfHeadElement(string $html): bool
     {
-        if (
-            (new Preg())->match('%<(?!' . self::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html)
-            !== 0
-        ) {
+        if (preg_match('%<(?!' . self::TAGNAME_ALLOWED_BEFORE_BODY_MATCHER . '[\\s/>])\\w|</head>%i', $html) !== 0) {
             // An exception to the implicit end of the `<head>` is any content within a `<template>` element, as well in
             // comments.  As an optimization, this is only checked for if a potential `<head>` end tag is found.
             $htmlWithoutCommentsOrTemplates = $this->removeHtmlTemplateElements($this->removeHtmlComments($html));
@@ -388,23 +394,25 @@ abstract class AbstractHtmlProcessor
     /**
      * Removes comments from the given HTML, including any which are unterminated, for which the remainder of the string
      * is removed.
-     *
-     * @throws \RuntimeException
      */
     private function removeHtmlComments(string $html): string
     {
-        return (new Preg())->throwExceptions(true)->replace(self::HTML_COMMENT_PATTERN, '', $html);
+        $result = preg_replace(self::HTML_COMMENT_PATTERN, '', $html);
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
      * Removes `<template>` elements from the given HTML, including any without an end tag, for which the remainder of
      * the string is removed.
-     *
-     * @throws \RuntimeException
      */
     private function removeHtmlTemplateElements(string $html): string
     {
-        return (new Preg())->throwExceptions(true)->replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
+        $result = preg_replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
@@ -413,11 +421,14 @@ abstract class AbstractHtmlProcessor
      */
     private function ensurePhpUnrecognizedSelfClosingTagsAreXml(string $html): string
     {
-        return (new Preg())->replace(
+        $result = preg_replace(
             '%<' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
             '$0/',
             $html
         );
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
