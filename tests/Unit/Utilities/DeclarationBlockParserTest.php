@@ -30,6 +30,10 @@ final class DeclarationBlockParserTest extends TestCase
                 'name' => '--text-color',
                 'expect' => '--text-color',
             ],
+            'custom property with numbers' => [
+                'name' => '--base-size-16',
+                'expect' => '--base-size-16',
+            ],
             'standard property with some uppercase' => [
                 'name' => 'cOlOr',
                 'expect' => 'color',
@@ -139,6 +143,10 @@ final class DeclarationBlockParserTest extends TestCase
             'custom property definition' => [
                 'string' => '--text-color: green;',
                 'array' => ['--text-color' => 'green'],
+            ],
+            'custom property with numbers definition' => [
+                'string' => '--base-size-16: 1rem;',
+                'array' => ['--base-size-16' => '1rem'],
             ],
             'declaration using custom property' => [
                 'string' => 'color: var(--text-color);',
