@@ -156,6 +156,38 @@ final class DeclarationBlockParserTest extends TestCase
                 'string' => '--Base_size-4u: normal;',
                 'array' => ['--Base_size-4u' => 'normal'],
             ],
+            'specification test underscore allowed' => [
+                'string' => '_allowed: normal;',
+                'array' => ['_allowed' => 'normal'],
+            ],
+            'specification test hyphen underscore allowed' => [
+                'string' => '-_allowed: normal;',
+                'array' => ['-_allowed' => 'normal'],
+            ],
+            'specification test double hyphen underscore allowed' => [
+                'string' => '--_allowed: normal;',
+                'array' => ['--_allowed' => 'normal'],
+            ],
+            'specification test double underscore allowed' => [
+                'string' => '__allowed: normal;',
+                'array' => ['__allowed' => 'normal'],
+            ],
+            'specification test number not allowed' => [
+                'string' => '2not-allowed: unset;',
+                'array' => [],
+            ],
+            'specification test hyphen number not allowed' => [
+                'string' => '-2not-allowed: unset;',
+                'array' => [],
+            ],
+            'specification test double hyphen number allowed' => [
+                'string' => '--2allowed: normal;',
+                'array' => ['--2allowed' => 'normal'],
+            ],
+            'specification test backslash not allowed' => [
+                'string' => 'not\\allowed: unset;',
+                'array' => [],
+            ],
             'declaration using custom property' => [
                 'string' => 'color: var(--text-color);',
                 'array' => ['color' => 'var(--text-color)'],
