@@ -30,6 +30,14 @@ final class DeclarationBlockParserTest extends TestCase
                 'name' => '--text-color',
                 'expect' => '--text-color',
             ],
+            'custom property with numbers' => [
+                'name' => '--base-size-16',
+                'expect' => '--base-size-16',
+            ],
+            'custom property with everything' => [
+                'name' => '--Base_size-4u',
+                'expect' => '--Base_size-4u',
+            ],
             'standard property with some uppercase' => [
                 'name' => 'cOlOr',
                 'expect' => 'color',
@@ -139,6 +147,46 @@ final class DeclarationBlockParserTest extends TestCase
             'custom property definition' => [
                 'string' => '--text-color: green;',
                 'array' => ['--text-color' => 'green'],
+            ],
+            'custom property with numbers definition' => [
+                'string' => '--base-size-16: 1rem;',
+                'array' => ['--base-size-16' => '1rem'],
+            ],
+            'custom property with everything definition' => [
+                'string' => '--Base_size-4u: normal;',
+                'array' => ['--Base_size-4u' => 'normal'],
+            ],
+            'specification test underscore allowed' => [
+                'string' => '_allowed: normal;',
+                'array' => ['_allowed' => 'normal'],
+            ],
+            'specification test hyphen underscore allowed' => [
+                'string' => '-_allowed: normal;',
+                'array' => ['-_allowed' => 'normal'],
+            ],
+            'specification test double hyphen underscore allowed' => [
+                'string' => '--_allowed: normal;',
+                'array' => ['--_allowed' => 'normal'],
+            ],
+            'specification test double underscore allowed' => [
+                'string' => '__allowed: normal;',
+                'array' => ['__allowed' => 'normal'],
+            ],
+            'specification test number not allowed' => [
+                'string' => '2not-allowed: unset;',
+                'array' => [],
+            ],
+            'specification test hyphen number not allowed' => [
+                'string' => '-2not-allowed: unset;',
+                'array' => [],
+            ],
+            'specification test double hyphen number allowed' => [
+                'string' => '--2allowed: normal;',
+                'array' => ['--2allowed' => 'normal'],
+            ],
+            'specification test backslash not allowed' => [
+                'string' => 'not\\allowed: unset;',
+                'array' => [],
             ],
             'declaration using custom property' => [
                 'string' => 'color: var(--text-color);',
