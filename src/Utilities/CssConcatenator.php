@@ -11,35 +11,35 @@ namespace Pelago\Emogrifier\Utilities;
  * Example:
  *
  * ```php
- *   $concatenator = new CssConcatenator();
- *   $concatenator->append(['body'], 'color: blue;');
- *   $concatenator->append(['body'], 'font-size: 16px;');
- *   $concatenator->append(['p'], 'margin: 1em 0;');
- *   $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
- *   $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
- *   $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
- *   $css = $concatenator->getCss();
+ * $concatenator = new CssConcatenator();
+ * $concatenator->append(['body'], 'color: blue;');
+ * $concatenator->append(['body'], 'font-size: 16px;');
+ * $concatenator->append(['p'], 'margin: 1em 0;');
+ * $concatenator->append(['ul', 'ol'], 'margin: 1em 0;');
+ * $concatenator->append(['body'], 'font-size: 14px;', '@media screen and (max-width: 400px)');
+ * $concatenator->append(['ul', 'ol'], 'margin: 0.75em 0;', '@media screen and (max-width: 400px)');
+ * $css = $concatenator->getCss();
  * ```
  *
  * `$css` (if unminified) would contain the following CSS:
  *
  * ```css
- *   body {
- *     color: blue;
- *     font-size: 16px;
- *   }
- *   p, ul, ol {
- *     margin: 1em 0;
- *   }
+ * body {
+ *   color: blue;
+ *   font-size: 16px;
+ * }
+ * p, ul, ol {
+ *   margin: 1em 0;
+ * }
  *
- *   @media screen and (max-width: 400px) {
- *     body {
- *       font-size: 14px;
- *     }
- *     ul, ol {
- *       margin: 0.75em 0;
- *     }
+ * @media screen and (max-width: 400px) {
+ *   body {
+ *     font-size: 14px;
  *   }
+ *   ul, ol {
+ *     margin: 0.75em 0;
+ *   }
+ * }
  * ```
  *
  * @internal

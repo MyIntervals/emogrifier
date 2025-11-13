@@ -82,7 +82,11 @@ final class DeclarationBlockParser
         $properties = [];
         foreach ($declarations as $declaration) {
             $matches = [];
-            if (preg_match('/^(-?+[a-zA-Z_][a-zA-Z_0-9\\-]++|--[a-zA-Z_0-9\\-]++)\\s*+:\\s*(.++)$/s', \trim($declaration), $matches) === 0) {
+            if (preg_match(
+                '/^(-?+[a-zA-Z_][a-zA-Z_0-9\\-]++|--[a-zA-Z_0-9\\-]++)\\s*+:\\s*(.++)$/s',
+                \trim($declaration),
+                $matches
+            ) === 0) {
                 continue;
             }
 
