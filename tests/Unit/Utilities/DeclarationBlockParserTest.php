@@ -156,6 +156,14 @@ final class DeclarationBlockParserTest extends TestCase
                 'string' => '--Base_size-4u: normal;',
                 'array' => ['--Base_size-4u' => 'normal'],
             ],
+            'specification test single character allowed' => [
+                'string' => 'x: 0;',
+                'array' => ['x' => '0'],
+            ],
+            'specification test hyphen single character allowed' => [
+                'string' => '-o: normal;',
+                'array' => ['-o' => 'normal'],
+            ],
             'specification test underscore allowed' => [
                 'string' => '_allowed: normal;',
                 'array' => ['_allowed' => 'normal'],
