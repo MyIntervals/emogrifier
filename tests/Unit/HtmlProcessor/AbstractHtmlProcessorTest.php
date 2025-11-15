@@ -718,7 +718,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, array{0: non-empty-string, 1?: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function documentTypeDataProvider(): array
     {
