@@ -54,7 +54,8 @@
         "phpunit/phpunit": "9.6.29",
         "rawr/phpunit-data-provider": "3.3.1",
         "rector/rector": "1.2.10 || 2.2.2",
-        "rector/type-perfect": "1.0.0 || 2.1.0"
+        "rector/type-perfect": "1.0.0 || 2.1.0",
+        "squizlabs/php_codesniffer": "4.0.1"
     },
     "prefer-stable": true,
     "autoload": {
@@ -90,6 +91,7 @@
         "check:dynamic": [
             "@check:tests"
         ],
+        "check:php:codesniffer": "phpcs --standard=config/phpcs.xml config src tests",
         "check:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix --dry-run -v --show-progress=dots config/ src/ tests/",
         "check:php:lint": "parallel-lint config src tests",
         "check:php:md": "phpmd src text config/phpmd.xml",
@@ -99,6 +101,7 @@
             "@check:composer:normalize",
             "@check:php:lint",
             "@check:php:fixer",
+            "@check:php:codesniffer",
             "@check:php:md",
             "@check:php:rector",
             "@check:php:stan"
@@ -112,9 +115,11 @@
         "fix": [
             "@fix:composer:normalize",
             "@fix:php:rector",
+            "@fix:php:codesniffer",
             "@fix:php:fixer"
         ],
         "fix:composer:normalize": "\"./.phive/composer-normalize\" --no-check-lock",
+        "fix:php:codesniffer": "phpcbf --standard=config/phpcs.xml config src tests",
         "fix:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config/ src/ tests/",
         "fix:php:rector": "rector --config=config/rector.php",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
@@ -124,6 +129,7 @@
         "check": "Runs all dynamic and static code checks.",
         "check:composer:normalize": "Checks the formatting and structure of the composer.json.",
         "check:dynamic": "Runs all dynamic tests (i.e., currently, the unit tests).",
+        "check:php:codesniffer": "Checks the code style with PHP_CodeSniffer.",
         "check:php:fixer": "Checks the code style with PHP CS Fixer.",
         "check:php:lint": "Lints the PHP files for syntax errors.",
         "check:php:md": "Checks the code complexity with PHPMD.",
@@ -136,6 +142,7 @@
         "check:tests:unit": "Runs all unit tests.",
         "fix": "Runs all fixers",
         "fix:composer:normalize": "Reformats and sorts the composer.json file.",
+        "fix:php:codesniffer": "Reformats the code with PHP_CodeSniffer.",
         "fix:php:fixer": "Reformats the code with php-cs-fixer.",
         "fix:php:rector": "Fixes autofixable issues found by Rector.",
         "php:version": "Outputs the installed PHP version.",
