@@ -1004,7 +1004,7 @@ final class AbstractHtmlProcessorTest extends TestCase
                 $updatedDataset = $dataset;
                 \array_unshift($updatedDataset, \str_replace('/>', '>', $dataset[0]));
 
-                /** @var array{0: non-empty-string, 1: non-empty-string, 2:non-empty-string} $updatedDataset */
+                /** @var array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string} $updatedDataset */
                 return $updatedDataset;
             },
             $this->xmlSelfClosingTagDataProvider()
