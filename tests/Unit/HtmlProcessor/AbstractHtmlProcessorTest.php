@@ -156,7 +156,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string, 1: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function invalidHtmlDataProvider(): array
     {
@@ -185,7 +185,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideHtmlWithOptionalTagsOmitted(): array
     {
@@ -298,8 +298,8 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
      *
-     * @param string $htmlWithOptionalTagsOmitted
-     * @param string $equivalentHtml
+     * @param non-empty-string $htmlWithOptionalTagsOmitted
+     * @param non-empty-string $equivalentHtml
      *
      * @dataProvider provideHtmlWithOptionalTagsOmitted
      */
@@ -313,7 +313,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return list<array{0: non-empty-string}>
      */
     public function providePSiblingTagName(): array
     {
@@ -355,7 +355,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
      *
-     * @param string $siblingTagName
+     * @param non-empty-string $siblingTagName
      *
      * @dataProvider providePSiblingTagName
      */
@@ -374,7 +374,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return list<array{0: non-empty-string}>
      */
     public function provideParagraphParentTagName(): array
     {
@@ -401,7 +401,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      *
      * @see https://html.spec.whatwg.org/multipage/syntax.html#optional-tags
      *
-     * @param string $parentTagName
+     * @param non-empty-string $parentTagName
      *
      * @dataProvider provideParagraphParentTagName
      */
@@ -420,7 +420,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideContentWithoutHtmlTag(): array
     {
@@ -458,7 +458,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideContentWithHtmlTag(): array
     {
@@ -474,8 +474,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, list<non-empty-string>> The second element of each dataset is optional, and is the expected
-     * normalization of the `<html>` tag, if different.
+     * @return array<non-empty-string, array{0: non-empty-string, 1?: non-empty-string}> The second element of each
+     * dataset is optional, and is the expected normalization of the `<html>` tag, if different.
      */
     public function provideHtmlTagWithAttributes(): array
     {
@@ -527,7 +527,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideContentWithoutHeadTag(): array
     {
@@ -576,7 +576,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideContentWithHeadTag(): array
     {
@@ -636,7 +636,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function contentWithoutBodyTagDataProvider(): array
     {
@@ -676,7 +676,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function specialCharactersDataProvider(): array
     {
@@ -691,7 +691,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $codeNotToBeChanged
+     * @param non-empty-string $codeNotToBeChanged
      *
      * @dataProvider specialCharactersDataProvider
      */
@@ -718,7 +718,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function documentTypeDataProvider(): array
     {
@@ -743,7 +743,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $documentType
+     * @param non-empty-string $documentType
      *
      * @dataProvider documentTypeDataProvider
      */
@@ -758,7 +758,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function normalizedDocumentTypeDataProvider(): array
     {
@@ -785,8 +785,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $documentType
-     * @param string $normalizedDocumentType
+     * @param non-empty-string $documentType
+     * @param non-empty-string $normalizedDocumentType
      *
      * @dataProvider normalizedDocumentTypeDataProvider
      */
@@ -801,7 +801,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideMalformedContentTypeMetaTag(): array
     {
@@ -850,7 +850,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideContentTypeMetaTag(): array
     {
@@ -876,7 +876,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string, 1: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideHtmlAroundContentType(): array
     {
@@ -942,7 +942,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function xmlSelfClosingTagDataProvider(): array
     {
@@ -967,15 +967,15 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0:string, 1:string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function nonXmlSelfClosingTagDataProvider(): array
     {
         return \array_map(
             /**
-             * @param array{0:string, 1:string} $dataset
+             * @param array{0: non-empty-string, 1: non-empty-string} $dataset
              *
-             * @return array{0:string, 1:string}
+             * @return array{0: non-empty-string, 1: non-empty-string}
              */
             static function (array $dataset): array {
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
@@ -986,7 +986,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string, 2: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string}>
      *         Each dataset has three elements in the following order:
      *         - HTML with non-XML self-closing tags (e.g. "...<br>...");
      *         - The equivalent HTML with XML self-closing tags (e.g. "...<br/>...");
@@ -996,15 +996,15 @@ final class AbstractHtmlProcessorTest extends TestCase
     {
         return \array_map(
             /**
-             * @param array{0: string, 1: string} $dataset
+             * @param array{0: non-empty-string, 1: non-empty-string} $dataset
              *
-             * @return array{0: string, 1: string, 2:string}
+             * @return array{0: non-empty-string, 1: non-empty-string, 2:non-empty-string}
              */
             static function (array $dataset): array {
                 $updatedDataset = $dataset;
                 \array_unshift($updatedDataset, \str_replace('/>', '>', $dataset[0]));
 
-                /** @var array{0: string, 1: string, 2:string} $updatedDataset */
+                /** @var array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string} $updatedDataset */
                 return $updatedDataset;
             },
             $this->xmlSelfClosingTagDataProvider()
@@ -1015,12 +1015,12 @@ final class AbstractHtmlProcessorTest extends TestCase
      * Concatenates pairs of datasets (in a similar way to SQL `JOIN`) such that each new dataset consists of a 'row'
      * from a left-hand-side dataset joined with a 'row' from a right-hand-side dataset.
      *
-     * @param array<string, array<int, string>> $leftDatasets
-     * @param array<string, array<int, string>> $rightDatasets
+     * @param array<non-empty-string, list<non-empty-string>> $leftDatasets
+     * @param array<non-empty-string, list<non-empty-string>> $rightDatasets
      *
-     * @return string[][] The new datasets comprise the first dataset from the left-hand side with each of the datasets
-     *         from the right-hand side, and the each of the remaining datasets from the left-hand side with the first
-     *         dataset from the right-hand side.
+     * @return array<non-empty-string, list<non-empty-string>> The new datasets comprise the first dataset from the
+     *         left-hand side with each of the datasets from the right-hand side, and each of the remaining datasets
+     *         from the left-hand side with the first dataset from the right-hand side.
      */
     public static function joinDatasets(array $leftDatasets, array $rightDatasets): array
     {
@@ -1042,7 +1042,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, list<non-empty-string>>
      */
     public function documentTypeAndSelfClosingTagDataProvider(): array
     {
@@ -1052,9 +1052,9 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $documentType
-     * @param string $htmlWithNonXmlSelfClosingTags
-     * @param string $htmlWithXmlSelfClosingTags
+     * @param non-empty-string $documentType
+     * @param non-empty-string $htmlWithNonXmlSelfClosingTags
+     * @param non-empty-string $htmlWithXmlSelfClosingTags
      *
      * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
@@ -1075,8 +1075,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $documentType
-     * @param string $htmlWithNonXmlSelfClosingTags
+     * @param non-empty-string $documentType
+     * @param non-empty-string $htmlWithNonXmlSelfClosingTags
      *
      * @dataProvider documentTypeAndSelfClosingTagDataProvider
      */
@@ -1094,8 +1094,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $htmlWithNonXmlSelfClosingTags
-     * @param string $tagName
+     * @param non-empty-string $htmlWithNonXmlSelfClosingTags
+     * @param non-empty-string $tagName
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
@@ -1153,7 +1153,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $codeNotToBeChanged
+     * @param non-empty-string $codeNotToBeChanged
      *
      * @dataProvider specialCharactersDataProvider
      */
@@ -1170,8 +1170,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $htmlWithNonXmlSelfClosingTags
-     * @param string $tagName
+     * @param non-empty-string $htmlWithNonXmlSelfClosingTags
+     * @param non-empty-string $tagName
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
@@ -1228,8 +1228,8 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * @test
      *
-     * @param string $htmlWithNonXmlSelfClosingTags
-     * @param string $tagName
+     * @param non-empty-string $htmlWithNonXmlSelfClosingTags
+     * @param non-empty-string $tagName
      *
      * @dataProvider nonXmlSelfClosingTagDataProvider
      */
@@ -1253,10 +1253,6 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * Asserts that an HTML haystack contains an HTML needle, allowing for additional newlines in the haystack that may
      * have been inserted by the `formatOutput` option of `DOMDocument`.
-     *
-     * @param string $needle
-     * @param string $haystack
-     * @param string $message
      */
     private static function assertContainsHtml(string $needle, string $haystack, string $message = ''): void
     {
@@ -1276,10 +1272,6 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * Asserts that two HTML strings are equal, allowing for whitespace differences in the HTML element itself (but not
      * its descendants) and after its closing tag.
-     *
-     * @param string $expected
-     * @param string $actual
-     * @param string $message
      */
     private static function assertEqualsHtml(string $expected, string $actual, string $message = ''): void
     {
@@ -1292,10 +1284,6 @@ final class AbstractHtmlProcessorTest extends TestCase
     /**
      * Normalizes whitespace in the HTML element itself (but not its descendants) and after its closing tag, with a
      * single newline inserted or replacing whitespace at positions where whitespace may occur but is superfluous.
-     *
-     * @param string $html
-     *
-     * @return string
      */
     private static function normalizeHtmlElement(string $html): string
     {
