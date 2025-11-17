@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
-use Pelago\Emogrifier\Utilities\Preg;
+
+use function Safe\preg_match;
+use function Safe\preg_replace_callback;
 
 /**
  * This class can evaluate CSS custom properties that are defined and used in inline style attributes.
@@ -120,8 +122,17 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                     )?+
                 \\)
             /x';
+
         $callable = \Closure::fromCallable([$this, 'getPropertyValueReplacement']);
-        return (new Preg())->replaceCallback($pattern, $callable, $propertyValue);
+        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+        if (\function_exists('Safe\\preg_replace_callback')) {
+            $result = preg_replace_callback($pattern, $callable, $propertyValue);
+        } else {
+            $result = \preg_replace_callback($pattern, $callable, $propertyValue);
+        }
+        \assert(\is_string($result));
+
+        return $result;
     }
 
     /**
@@ -174,7 +185,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
         $style = $element->getAttribute('style');
 
         // Avoid parsing declarations if none use or define a variable
-        if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
+        if (preg_match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
             $declarations = (new DeclarationBlockParser())->parse($style);
             $variableDefinitions =
                 $this->getVariableDefinitionsFromDeclarations($declarations) + $ancestorVariableDefinitions;
