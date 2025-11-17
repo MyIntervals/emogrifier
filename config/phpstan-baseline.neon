@@ -37,13 +37,13 @@ parameters:
 			path: ../src/HtmlProcessor/CssToAttributeConverter.php
 
 		-
-			message: '#^Parameter \#2 \$callback of function Safe\\preg_replace_callback expects callable\(array\)\: string, array\{\$this\(Pelago\\Emogrifier\\HtmlProcessor\\CssVariableEvaluator\), ''getPropertyValueRep…''\} given\.$#'
+			message: '#^Parameter \#2 \$callback of function Safe\\preg_replace_callback expects callable\(array\)\: string, Closure\(array\<int, string\>\)\: string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/HtmlProcessor/CssVariableEvaluator.php
 
 		-
-			message: '#^Parameter \#2 \$callback of function preg_replace_callback expects callable\(array\<string\>\)\: string, array\{\$this\(Pelago\\Emogrifier\\HtmlProcessor\\CssVariableEvaluator\), ''getPropertyValueRep…''\} given\.$#'
+			message: '#^Parameter \#2 \$callback of function preg_replace_callback expects callable\(array\<string\>\)\: string, Closure\(array\<int, string\>\)\: string given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/HtmlProcessor/CssVariableEvaluator.php

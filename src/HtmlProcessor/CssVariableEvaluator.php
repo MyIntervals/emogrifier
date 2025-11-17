@@ -54,10 +54,8 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
      * Callback function for {@see replaceVariablesInPropertyValue} performing regular expression replacement.
      *
      * @param array<int, string> $matches
-     *
-     * @internal
      */
-    public function getPropertyValueReplacement(array $matches): string
+    private function getPropertyValueReplacement(array $matches): string
     {
         $variableName = $matches[1];
 
@@ -125,7 +123,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                 \\)
             /x';
 
-        $callable = [$this, 'getPropertyValueReplacement'];
+        $callable = \Closure::fromCallable([$this, 'getPropertyValueReplacement']);
         // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $result = preg_replace_callback($pattern, $callable, $propertyValue);
