@@ -10,6 +10,8 @@ Please also have a look at our
 
 ### Added
 
+- Add support for Symfony 8.0 (#1509)
+
 ### Changed
 
 ### Deprecated
