@@ -141,6 +141,9 @@ final class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $body the HTML
+     * @param non-empty-string $attributes the attributes that are expected on the element
+     *
      * @dataProvider matchingCssToHtmlMappingDataProvider
      */
     public function convertCssToVisualAttributesMapsSuitableCssToHtml(string $body, string $attributes): void
@@ -177,6 +180,8 @@ final class CssToAttributeConverterTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $body the HTML
      *
      * @dataProvider notMatchingCssToHtmlMappingDataProvider
      */
