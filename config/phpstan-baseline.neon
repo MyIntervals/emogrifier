@@ -97,60 +97,6 @@ parameters:
 			path: ../src/Utilities/CssConcatenator.php
 
 		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:match\(\) never assigns null to &\$matches so it can be removed from the by\-ref type\.$#'
-			identifier: parameterByRef.unusedType
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:matchAll\(\) never assigns null to &\$matches so it can be removed from the by\-ref type\.$#'
-			identifier: parameterByRef.unusedType
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:matchAll\(\) should return int but returns int\<0, max\>\|null\.$#'
-			identifier: return.type
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:replace\(\) never assigns null to &\$count so it can be removed from the by\-ref type\.$#'
-			identifier: parameterByRef.unusedType
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:replaceCallback\(\) never assigns null to &\$count so it can be removed from the by\-ref type\.$#'
-			identifier: parameterByRef.unusedType
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:split\(\) should return array\<int, string\> but returns list\<list\<int\|string\>\|string\>\.$#'
-			identifier: return.type
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Parameter \#1 \$input of function array_flip expects array\<int\|string\>, array\<string, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Parameter &\$matches by\-ref type of method Pelago\\Emogrifier\\Utilities\\Preg\:\:match\(\) expects array\<int, string\>\|null, array\<string\> given\.$#'
-			identifier: parameterByRef.type
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
-			message: '#^Parameter &\$matches by\-ref type of method Pelago\\Emogrifier\\Utilities\\Preg\:\:matchAll\(\) expects array\<int, array\<int, string\>\>\|null, array\<list\<string\>\> given\.$#'
-			identifier: parameterByRef.type
-			count: 1
-			path: ../src/Utilities/Preg.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
@@ -183,15 +129,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
-
-		-
-			message: '#^Parameter \#1 \$input of function array_filter expects array, array\<int, array\<int, string\>\>\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../tests/Unit/Utilities/PregTest.php
-
-		-
-			message: '#^Parameter \#2 \$haystack of static method PHPUnit\\Framework\\Assert\:\:assertCount\(\) expects Countable\|iterable, array\<int, array\<int, string\>\>\|null given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../tests/Unit/Utilities/PregTest.php
