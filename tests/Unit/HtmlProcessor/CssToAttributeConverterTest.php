@@ -68,7 +68,7 @@ final class CssToAttributeConverterTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function matchingCssToHtmlMappingDataProvider(): array
     {
@@ -141,8 +141,8 @@ final class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      *
-     * @param string $body The HTML
-     * @param string $attributes The attributes that are expected on the element
+     * @param non-empty-string $body the HTML
+     * @param non-empty-string $attributes the attributes that are expected on the element
      *
      * @dataProvider matchingCssToHtmlMappingDataProvider
      */
@@ -157,7 +157,7 @@ final class CssToAttributeConverterTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function notMatchingCssToHtmlMappingDataProvider(): array
     {
@@ -181,7 +181,7 @@ final class CssToAttributeConverterTest extends TestCase
     /**
      * @test
      *
-     * @param string $body the HTML
+     * @param non-empty-string $body the HTML
      *
      * @dataProvider notMatchingCssToHtmlMappingDataProvider
      */
