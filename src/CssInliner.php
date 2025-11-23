@@ -10,7 +10,6 @@ use Pelago\Emogrifier\Utilities\CssConcatenator;
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
-
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
@@ -455,10 +454,10 @@ final class CssInliner extends AbstractHtmlProcessor
         $callback = static function (array $propertyNameMatches) use ($declarationBlockParser): string {
             return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
         };
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $normalizedOriginalStyle = preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $normalizedOriginalStyle = \preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
             \assert(\is_string($normalizedOriginalStyle));
         }
@@ -899,7 +898,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
         $style = $node->getAttribute('style');
-        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool) $style ? $style : '');
+        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool)$style ? $style : '');
         /** @var array<string, string> $regularStyleDeclarations */
         $regularStyleDeclarations = [];
         /** @var array<string, string> $importantStyleDeclarations */
@@ -1018,10 +1017,10 @@ final class CssInliner extends AbstractHtmlProcessor
         $callback = function (array $matches): string {
             return $this->replaceUnmatchableNotComponent($matches);
         };
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $untrimmedSelectorWithoutNots = preg_replace_callback($pattern, $callback, ' ' . $selector);
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $untrimmedSelectorWithoutNots = \preg_replace_callback($pattern, $callback, ' ' . $selector);
             \assert(\is_string($untrimmedSelectorWithoutNots));
         }
@@ -1033,9 +1032,9 @@ final class CssInliner extends AbstractHtmlProcessor
         );
 
         if (preg_match(
-            '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
-            $selectorWithoutUnmatchablePseudoComponents
-        ) === 0) {
+                '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
+                $selectorWithoutUnmatchablePseudoComponents
+            ) === 0) {
             return $selectorWithoutUnmatchablePseudoComponents;
         }
 

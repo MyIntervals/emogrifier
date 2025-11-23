@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
-
 use function Safe\preg_match;
 use function Safe\preg_replace_callback;
 
@@ -124,10 +123,10 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
             /x';
 
         $callable = \Closure::fromCallable([$this, 'getPropertyValueReplacement']);
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $result = preg_replace_callback($pattern, $callable, $propertyValue);
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $result = \preg_replace_callback($pattern, $callable, $propertyValue);
         }
         \assert(\is_string($result));
