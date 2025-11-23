@@ -529,6 +529,7 @@ final class CssDocumentTest extends TestCase
         $result = $subject->renderNonConditionalAtRules();
 
         preg_match('/@[\\w\\-]++/', $atRuleCss, $atAndRuleNameMatches);
+        self::assertArrayHasKey(0, $atAndRuleNameMatches);
         $atAndRuleName = $atAndRuleNameMatches[0];
         self::assertStringNotContainsString($atAndRuleName, $result);
     }
