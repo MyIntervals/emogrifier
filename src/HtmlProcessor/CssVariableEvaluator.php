@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
+
 use function Safe\preg_match;
 use function Safe\preg_replace_callback;
 

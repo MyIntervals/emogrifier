@@ -10,6 +10,7 @@ use Pelago\Emogrifier\Utilities\CssConcatenator;
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
+
 use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
@@ -898,7 +899,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
         $style = $node->getAttribute('style');
-        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool)$style ? $style : '');
+        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool) $style ? $style : '');
         /** @var array<string, string> $regularStyleDeclarations */
         $regularStyleDeclarations = [];
         /** @var array<string, string> $importantStyleDeclarations */
@@ -1032,9 +1033,9 @@ final class CssInliner extends AbstractHtmlProcessor
         );
 
         if (preg_match(
-                '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
-                $selectorWithoutUnmatchablePseudoComponents
-            ) === 0) {
+            '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
+            $selectorWithoutUnmatchablePseudoComponents
+        ) === 0) {
             return $selectorWithoutUnmatchablePseudoComponents;
         }
 
