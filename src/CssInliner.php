@@ -11,6 +11,7 @@ use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Symfony\Component\CssSelector\CssSelectorConverter;
 use Symfony\Component\CssSelector\Exception\ParseException;
 
+use function Safe\preg_match;
 use function Safe\preg_replace;
 use function Safe\preg_replace_callback;
 use function Safe\preg_split;
