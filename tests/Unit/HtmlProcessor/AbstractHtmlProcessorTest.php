@@ -1264,7 +1264,6 @@ final class AbstractHtmlProcessorTest extends TestCase
             '$0\\n?+',
             $needleMatcher
         );
-        self::assertIsString($needleMatcherWithNewlines);
 
         self::assertMatchesRegularExpression('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
     }
@@ -1287,7 +1286,7 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     private static function normalizeHtmlElement(string $html): string
     {
-        $normalized = preg_replace(
+        return preg_replace(
             [
                 '%(<html(?=[\\s>])[^>]*+>)\\s*+(<head[\\s>])%',
                 '%(</head>)\\s*+(<body[\\s>])%',
@@ -1297,8 +1296,5 @@ final class AbstractHtmlProcessorTest extends TestCase
             "$1\n$2",
             $html
         );
-        self::assertIsString($normalized);
-
-        return $normalized;
     }
 }

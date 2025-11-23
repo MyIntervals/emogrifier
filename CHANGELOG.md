@@ -20,7 +20,7 @@ Please also have a look at our
 
 - Allow numbers and underscores in CSS property names (#1500)
 - Use safe version of some PHP functions
-  (#1457, #1492, #1495, #1496, #1499, #1503, #1513, #1515)
+  (#1457, #1492, #1495, #1496, #1499, #1503, #1513, #1515, #1517)
 
 ## 8.1.0: Add support for PHP 8.5
 

@@ -201,6 +201,7 @@ abstract class CssConstraint extends Constraint
                 if (\function_exists('Safe\\preg_replace_callback')) {
                     $regularExpressionEquivalent = preg_replace_callback($pattern, $callback, $replacement);
                 } else {
+                    // @phpstan-ignore-next-line The safe version in "thecodingmachine/safe" needs PHP >= 8.1.
                     $regularExpressionEquivalent = \preg_replace_callback($pattern, $callback, $replacement);
                 }
                 \assert(\is_string($regularExpressionEquivalent));
@@ -229,14 +230,11 @@ abstract class CssConstraint extends Constraint
     {
         $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && preg_match('/[@\\{\\}]/', $css) === 0;
         if ($isPropertyDeclarationsOnly) {
-            $result = preg_replace(
+            return preg_replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
                 $matcher
             );
-            \assert(\is_string($result));
-
-            return $result;
         }
 
         return $matcher;
