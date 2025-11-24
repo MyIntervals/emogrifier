@@ -455,11 +455,10 @@ final class CssInliner extends AbstractHtmlProcessor
         $callback = static function (array $propertyNameMatches) use ($declarationBlockParser): string {
             return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
         };
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $normalizedOriginalStyle = preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
-            \assert(\is_string($normalizedOriginalStyle));
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $normalizedOriginalStyle = \preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
             \assert(\is_string($normalizedOriginalStyle));
         }
@@ -628,9 +627,7 @@ final class CssInliner extends AbstractHtmlProcessor
             if (\count($this->excludedCssSelectors) > 0) {
                 // Normalize spaces, line breaks & tabs
                 $selectorsNormalized = \array_map(static function (string $selector): string {
-                    $result = preg_replace('@\\s++@u', ' ', $selector);
-                    \assert(\is_string($result));
-                    return $result;
+                    return preg_replace('@\\s++@u', ' ', $selector);
                 }, $selectors);
                 /** @var array<non-empty-string> $selectors */
                 $selectors = \array_filter($selectorsNormalized, function (string $selector): bool {
@@ -750,7 +747,6 @@ final class CssInliner extends AbstractHtmlProcessor
             }
             $count = 0;
             $selector = preg_replace('/' . $matcher . '\\w+/', '', $selector, -1, $count);
-            \assert(\is_string($selector));
             $precedence += ($value * $count);
             \assert($precedence >= 0);
         }
@@ -911,7 +907,6 @@ final class CssInliner extends AbstractHtmlProcessor
         foreach ($inlineStyleDeclarations as $property => $value) {
             if ($this->attributeValueIsImportant($value)) {
                 $declaration = preg_replace('/\\s*+!\\s*+important$/i', '', $value);
-                \assert(\is_string($declaration));
                 $importantStyleDeclarations[$property] = $declaration;
             } else {
                 $regularStyleDeclarations[$property] = $value;
@@ -1023,11 +1018,10 @@ final class CssInliner extends AbstractHtmlProcessor
         $callback = function (array $matches): string {
             return $this->replaceUnmatchableNotComponent($matches);
         };
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $untrimmedSelectorWithoutNots = preg_replace_callback($pattern, $callback, ' ' . $selector);
-            \assert(\is_string($untrimmedSelectorWithoutNots));
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $untrimmedSelectorWithoutNots = \preg_replace_callback($pattern, $callback, ' ' . $selector);
             \assert(\is_string($untrimmedSelectorWithoutNots));
         }
@@ -1092,14 +1086,11 @@ final class CssInliner extends AbstractHtmlProcessor
      */
     private function removeSelectorComponents(string $matcher, string $selector): string
     {
-        $result = preg_replace(
+        return preg_replace(
             ['/([\\s>+~]|^)' . $matcher . '/i', '/' . $matcher . '/i'],
             ['$1*', ''],
             $selector
         );
-        \assert(\is_string($result));
-
-        return $result;
     }
 
     /**

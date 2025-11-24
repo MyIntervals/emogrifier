@@ -2061,9 +2061,7 @@ final class CssInlinerTest extends TestCase
     {
         // Minify CSS by removing unnecessary whitespace.
         $css = preg_replace('/\\s*{\\s*/', '{', $css);
-        self::assertIsString($css);
         $css = preg_replace('/;?\\s*}\\s*/', '}', $css);
-        self::assertIsString($css);
         $css = \str_replace('@media{', '@media {', $css);
         $subject = $this->buildDebugSubject('<html><h1></h1><p></p></html>');
 

@@ -171,10 +171,10 @@ abstract class CssConstraint extends Constraint
             /** @var array<int<0, max>, string> $matches */
             return self::getCssRegularExpressionReplacement($matches);
         };
-        // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
         if (\function_exists('Safe\\preg_replace_callback')) {
             $matcher = preg_replace_callback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
         } else {
+            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
             $matcher = \preg_replace_callback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
         }
         \assert(\is_string($matcher));
@@ -197,10 +197,10 @@ abstract class CssConstraint extends Constraint
         };
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {
-                // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
                 if (\function_exists('Safe\\preg_replace_callback')) {
                     $regularExpressionEquivalent = preg_replace_callback($pattern, $callback, $replacement);
                 } else {
+                    // @phpstan-ignore-next-line The safe version in "thecodingmachine/safe" needs PHP >= 8.1.
                     $regularExpressionEquivalent = \preg_replace_callback($pattern, $callback, $replacement);
                 }
                 \assert(\is_string($regularExpressionEquivalent));
@@ -229,14 +229,11 @@ abstract class CssConstraint extends Constraint
     {
         $isPropertyDeclarationsOnly = \strpos($css, ':') !== false && preg_match('/[@\\{\\}]/', $css) === 0;
         if ($isPropertyDeclarationsOnly) {
-            $result = preg_replace(
+            return preg_replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
                 $matcher
             );
-            \assert(\is_string($result));
-
-            return $result;
         }
 
         return $matcher;

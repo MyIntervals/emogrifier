@@ -173,10 +173,7 @@ abstract class AbstractHtmlProcessor
         $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
         $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
 
-        $result = preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
-        \assert(\is_string($result));
-
-        return $result;
+        return preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
     }
 
     /**
@@ -184,10 +181,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeSelfClosingTagsClosingTags(string $html): string
     {
-        $result = preg_replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
-        \assert(\is_string($result));
-
-        return $result;
+        return preg_replace('%</' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '>%', '', $html);
     }
 
     /**
@@ -294,7 +288,6 @@ abstract class AbstractHtmlProcessor
             $html,
             1
         );
-        \assert(\is_string($result));
         \assert($result !== '');
 
         return $result;
@@ -335,7 +328,6 @@ abstract class AbstractHtmlProcessor
         } else {
             $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
         }
-        \assert(\is_string($reworkedHtml));
         \assert($reworkedHtml !== '');
 
         return $reworkedHtml;
@@ -397,10 +389,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlComments(string $html): string
     {
-        $result = preg_replace(self::HTML_COMMENT_PATTERN, '', $html);
-        \assert(\is_string($result));
-
-        return $result;
+        return preg_replace(self::HTML_COMMENT_PATTERN, '', $html);
     }
 
     /**
@@ -409,10 +398,7 @@ abstract class AbstractHtmlProcessor
      */
     private function removeHtmlTemplateElements(string $html): string
     {
-        $result = preg_replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
-        \assert(\is_string($result));
-
-        return $result;
+        return preg_replace(self::HTML_TEMPLATE_ELEMENT_PATTERN, '', $html);
     }
 
     /**
@@ -421,14 +407,11 @@ abstract class AbstractHtmlProcessor
      */
     private function ensurePhpUnrecognizedSelfClosingTagsAreXml(string $html): string
     {
-        $result = preg_replace(
+        return preg_replace(
             '%<' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
             '$0/',
             $html
         );
-        \assert(\is_string($result));
-
-        return $result;
     }
 
     /**

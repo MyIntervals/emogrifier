@@ -43,12 +43,6 @@ parameters:
 			path: ../src/HtmlProcessor/CssVariableEvaluator.php
 
 		-
-			message: '#^Parameter \#2 \$callback of function preg_replace_callback expects callable\(array\<string\>\)\: string, Closure\(array\<int, string\>\)\: string given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../src/HtmlProcessor/CssVariableEvaluator.php
-
-		-
 			message: '#^Argument of an invalid type DOMNodeList\<DOMNameSpaceNode\|DOMNode\>\|false supplied for foreach, only iterables are supported\.$#'
 			identifier: foreach.nonIterable
 			count: 1

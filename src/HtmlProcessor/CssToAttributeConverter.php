@@ -197,7 +197,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
         }
 
         $number = preg_replace('/[^0-9.%]/', '', $value);
-        \assert(\is_string($number));
         $node->setAttribute($property, $number);
     }
 
