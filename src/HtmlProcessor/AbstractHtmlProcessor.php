@@ -341,7 +341,29 @@ abstract class AbstractHtmlProcessor
     private function hasContentTypeMetaTagInHead(string $html): bool
     {
         preg_match(
-            '%^.*?(?=<meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>])%is',
+            '%
+                (?(DEFINE)
+                    # the target match without the opening `<`
+                    (?<target>
+                        # todo: this backtracks on `[^>]` which is not ideal
+                        meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]
+                    )
+                )
+                # start of `subject`
+                ^
+                # one or other of these
+                (?:
+                    # one or more characters other than `<`
+                    [^<]++
+                    |
+                    # `<` not followed by `target`
+                    <(?!(?&target))
+                )
+                # any number of times (including zero)
+                *+
+                # followed by the target, not captured
+                (?=<(?&target))
+            %isx',
             $html,
             $matches
         );

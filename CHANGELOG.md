@@ -18,6 +18,7 @@ Please also have a look at our
 
 ### Fixed
 
+- Support very large HTML files without a `Content-Type` (#1518)
 - Allow numbers and underscores in CSS property names (#1500)
 - Use safe version of some PHP functions
   (#1457, #1492, #1495, #1496, #1499, #1503, #1513, #1515, #1517)

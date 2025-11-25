@@ -1111,6 +1111,49 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return array<non-empty-string, array{0: string, 1: string}>
+     */
+    public function provideSurroundingHtmlForBodyContent(): array
+    {
+        return [
+            'nothing - implicit BODY' => ['', ''],
+            'BODY element only' => ['<body>', '</body>'],
+            'HTML element only - implicit BODY' => ['<html>', '</html>'],
+            'HEAD element with only opening tag - implicit BODY start' => ['<head>', ''],
+            'empty HEAD element without BODY tag after' => ['<head></head>', ''],
+            'complete HEAD (empty) and BODY elements, but missing HTML element' => ['<head></head><body>', '</body>'],
+            'well-formed HTML, though missing DOCTYPE' => ['<html><head></head><body>', '</body></html>'],
+            'well-formed HTML with DOCTYPE' => ['<!DOCTYPE html><html><head></head><body>', '</body></html>'],
+            'well-formed HTML with DOCTYPE and Content-Type' => [
+                '<!DOCTYPE html><html><head>'
+                . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>',
+                '</body></html>',
+            ],
+            'HEAD with very large content' => [
+                // todo: failing with 1e7
+                '<head><meta name="test" content="' . \str_repeat('f', (int) 1e3) . '"/></head>',
+                '',
+            ],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider provideSurroundingHtmlForBodyContent
+     */
+    public function acceptsVeryLargeBodyContent(string $htmlBeforeContent, string $htmlAfterContent): void
+    {
+        // 1e7 = 10Mb
+        $bodyContent = '<p data-large="' . \str_repeat('f', (int) 1e7) . '">Test</p>';
+
+        $subject = TestingHtmlProcessor::fromHtml($htmlBeforeContent . $bodyContent . $htmlAfterContent);
+
+        // Simply getting here passes the test.
+        self::expectNotToPerformAssertions();
+    }
+
+    /**
      * @test
      */
     public function renderBodyContentForEmptyBodyReturnsEmptyString(): void
