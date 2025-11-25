@@ -12,6 +12,8 @@ Please also have a look at our
 
 ### Changed
 
+- Improve performance of checking for existing `Content-Type` (#1518, #1519)
+
 ### Deprecated
 
 ### Removed

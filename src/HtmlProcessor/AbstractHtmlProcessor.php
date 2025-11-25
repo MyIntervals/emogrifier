@@ -343,10 +343,26 @@ abstract class AbstractHtmlProcessor
         preg_match(
             '%
                 (?(DEFINE)
-                    # the target match without the opening `<`
+                    # the target `http-equiv` attribute match
+                    (?<target_attribute>
+                        http-equiv=(["\']?+)Content-Type\\g{-1}
+                        # must be followed by one of these characters
+                        [\\s/>]
+                    )
+                    # the target `meta` element match without the opening `<`
                     (?<target>
-                        # todo: this backtracks on `[^>]` which is not ideal
-                        meta(?=\\s)[^>]*\\shttp-equiv=(["\']?+)Content-Type\\g{-1}[\\s/>]
+                        meta(?=\\s)
+                        # one or other of these
+                        (?:
+                            # one or more characters other than `>` or space
+                            [^>\\s]++
+                            |
+                            # space not followed by the target `http-equiv` attribute
+                            \\s(?!(?&target_attribute))
+                        )
+                        # any number of times (including zero)
+                        *+
+                        \\s(?&target_attribute)
                     )
                 )
                 # start of `subject`
