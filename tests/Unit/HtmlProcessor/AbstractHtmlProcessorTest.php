@@ -1130,8 +1130,7 @@ final class AbstractHtmlProcessorTest extends TestCase
                 '</body></html>',
             ],
             'HEAD with very large content' => [
-                // todo: failing with 1e7
-                '<head><meta name="test" content="' . \str_repeat('f', (int) 1e3) . '"/></head>',
+                '<head><meta name="test" content="' . \str_repeat('f', (int) 1e7) . '"/></head>',
                 '',
             ],
         ];

@@ -20,6 +20,7 @@ Please also have a look at our
 
 ### Fixed
 
+- Support very large content in `meta` element in `head` (#1519)
 - Support very large HTML files without a `Content-Type` (#1518)
 - Allow numbers and underscores in CSS property names (#1500)
 - Use safe version of some PHP functions
