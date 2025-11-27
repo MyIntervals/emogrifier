@@ -14,20 +14,13 @@ use function Safe\preg_replace;
  */
 abstract class AbstractHtmlProcessor
 {
-    /**
-     * @var non-empty-string
-     */
     protected const DEFAULT_DOCUMENT_TYPE = '<!DOCTYPE html>';
-
-    /**
-     * @var non-empty-string
-     */
     protected const CONTENT_TYPE_META_TAG = '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">';
 
     /**
-     * @var non-empty-string Regular expression part to match tag names that PHP's DOMDocument implementation is not
-     *      aware are self-closing. These are mostly HTML5 elements, but for completeness `<command>` (obsolete) and
-     *      `<keygen>` (deprecated) are also included.
+     * Regular expression part to match tag names that PHP's DOMDocument implementation is not
+     * aware are self-closing. These are mostly HTML5 elements, but for completeness `<command>` (obsolete) and
+     * `<keygen>` (deprecated) are also included.
      *
      * @see https://bugs.php.net/bug.php?id=73175
      */
@@ -36,23 +29,17 @@ abstract class AbstractHtmlProcessor
     /**
      * Regular expression part to match tag names that may appear before the start of the `<body>` element.  A start tag
      * for any other element would implicitly start the `<body>` element due to tag omission rules.
-     *
-     * @var non-empty-string
      */
     protected const TAGNAME_ALLOWED_BEFORE_BODY_MATCHER
         = '(?:html|head|base|command|link|meta|noscript|script|style|template|title)';
 
     /**
      * regular expression pattern to match an HTML comment, including delimiters and modifiers
-     *
-     * @var non-empty-string
      */
     protected const HTML_COMMENT_PATTERN = '/<!--[^-]*+(?:-(?!->)[^-]*+)*+(?:-->|$)/';
 
     /**
      * regular expression pattern to match an HTML `<template>` element, including delimiters and modifiers
-     *
-     * @var non-empty-string
      */
     protected const HTML_TEMPLATE_ELEMENT_PATTERN
         = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';

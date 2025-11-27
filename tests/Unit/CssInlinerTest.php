@@ -25,7 +25,7 @@ final class CssInlinerTest extends TestCase
     use AssertCss;
 
     /**
-     * @var string Common HTML markup with a variety of elements and attributes for testing with
+     * Common HTML markup with a variety of elements and attributes for testing with
      */
     private const COMMON_TEST_HTML = '
         <html>
@@ -54,8 +54,6 @@ final class CssInlinerTest extends TestCase
     ';
 
     /**
-     * @var array<string, string>
-     *
      * selection of at-rules which have no special handling by `CssInliner` but should be passed through and placed in a
      * `<style>` element unmodified, for testing that and testing around
      */

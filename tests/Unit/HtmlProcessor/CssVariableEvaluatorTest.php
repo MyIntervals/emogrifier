@@ -13,9 +13,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class CssVariableEvaluatorTest extends TestCase
 {
-    /**
-     * @var non-empty-string
-     */
     private const COMMON_TEST_HTML = '
         <html>
             <head>
