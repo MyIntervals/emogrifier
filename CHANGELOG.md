@@ -10,15 +10,23 @@ Please also have a look at our
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 8.2.0: Add support for Symfony 8.0
+
+### Added
+
 - Add support for Symfony 8.0 (#1509)
 
 ### Changed
 
 - Improve performance of checking for existing `Content-Type` (#1518, #1519)
-
-### Deprecated
-
-### Removed
 
 ### Fixed
 
