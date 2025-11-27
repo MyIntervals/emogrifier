@@ -21,14 +21,7 @@ use function Safe\preg_split;
  */
 final class CssInliner extends AbstractHtmlProcessor
 {
-    /**
-     * @var int<0, 1>
-     */
     private const CACHE_KEY_SELECTOR = 0;
-
-    /**
-     * @var int<0, 1>
-     */
     private const CACHE_KEY_COMBINED_STYLES = 1;
 
     /**
@@ -36,8 +29,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * for which the applicable elements can be determined (by converting the selector to an XPath expression).
      * (Contains alternation without a group and is intended to be placed within a capturing, non-capturing or lookahead
      * group, as appropriate for the usage context.)
-     *
-     * @var non-empty-string
      */
     private const PSEUDO_CLASS_MATCHER
         = 'empty|(?:first|last|nth(?:-last)?+|only)-(?:child|of-type)|not\\([[:ascii:]]*\\)|root';
@@ -45,22 +36,16 @@ final class CssInliner extends AbstractHtmlProcessor
     /**
      * This regular expression component matches an `...of-type` pseudo class name, without the preceding ":".  These
      * pseudo-classes can currently online be inlined if they have an associated type in the selector expression.
-     *
-     * @var non-empty-string
      */
     private const OF_TYPE_PSEUDO_CLASS_MATCHER = '(?:first|last|nth(?:-last)?+|only)-of-type';
 
     /**
      * regular expression component to match a selector combinator
-     *
-     * @var non-empty-string
      */
     private const COMBINATOR_MATCHER = '(?:\\s++|\\s*+[>+~]\\s*+)(?=[[:alpha:]_\\-.#*:\\[])';
 
     /**
      * options array key for `querySelectorAll`
-     *
-     * @var non-empty-string
      */
     private const QSA_ALWAYS_THROW_PARSE_EXCEPTION = 'alwaysThrowParseException';
 

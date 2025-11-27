@@ -20,8 +20,6 @@ final class HtmlPruner extends AbstractHtmlProcessor
      * supports XPath 1.0, lower-case() isn't available to us. We've thus far only set attributes to lowercase,
      * not attribute values. Consequently, we need to translate() the letters that would be in 'NONE' ("NOE")
      * to lowercase.
-     *
-     * @var non-empty-string
      */
     private const DISPLAY_NONE_MATCHER
         = '//*[@style and contains(translate(translate(@style," ",""),"NOE","noe"),"display:none")'

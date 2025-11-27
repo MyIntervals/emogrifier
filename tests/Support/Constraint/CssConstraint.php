@@ -21,8 +21,6 @@ abstract class CssConstraint extends Constraint
     /**
      * This regular expression pattern will match various parts of a string of CSS, and uses capturing groups to clarify
      * what, actually, has been matched.
-     *
-     * @var non-empty-string
      */
     private const CSS_REGULAR_EXPRESSION_PATTERN = '/
         (?<![\\s;}])                        # - `}` as end of declarations rule block, captured in group 1, with
@@ -102,22 +100,14 @@ abstract class CssConstraint extends Constraint
         )++                                 #
     /x';
 
-    /**
-     * @var non-empty-string
-     */
     private const URL_REPLACEMENT_MATCHER = '(?:([\'"]?+)$8$10\\g{-1})';
 
-    /**
-     * @var non-empty-string
-     */
     private const AT_IMPORT_URL_REPLACEMENT_MATCHER = '@(?i:import)\\s++(?:' . self::URL_REPLACEMENT_MATCHER
         . '|url\\(\\s*+' . self::URL_REPLACEMENT_MATCHER . '\\s*+\\))';
 
     /**
      * Regular expression replacements for parts of the CSS matched by {@see CSS_REGULAR_EXPRESSION_PATTERN}, indexed by
      * capturing group upon which capturing a non-empty string means the corresponding replacement should be selected.
-     *
-     * @var array<int<1, 16>, non-empty-string>
      */
     private const CSS_REGULAR_EXPRESSION_REPLACEMENTS = [
         1 => '(?:\\s*+;)?+\\s*+$1\\s*+',
@@ -140,8 +130,6 @@ abstract class CssConstraint extends Constraint
      * `\s++`.
      * It matches the end of the string, and optionally preceding whitespace or a semicolon surrounded by optional
      * whitespace, provided that what precedes is not a semicolon or whitespace.
-     *
-     * @var non-empty-string
      */
     private const OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN
         = '/(?<!;)(?<!\\\\s[\\+\\*]\\+)(?:\\\\s\\*\\+;\\\\s\\*\\+|\\\\s\\+\\+)?+$/';

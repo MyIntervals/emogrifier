@@ -19,9 +19,6 @@ final class CssDocumentTest extends TestCase
 {
     use AssertCss;
 
-    /**
-     * @var non-empty-string
-     */
     private const VALID_AT_FONT_FACE_RULE = '@font-face {' . "\n"
         . '  font-family: "Foo Sans";' . "\n"
         . '  src: url("/foo-sans.woff2") format("woff2");' . "\n}";
