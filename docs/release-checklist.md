@@ -8,7 +8,11 @@
 1. Update the target milestone in the Dependabot configuration.
 1. Create a pull request "Prepare release of version x.y.z" with those changes.
 1. Have the pull request reviewed and merged.
-1. Tag the new release.
 1. In the [Releases tab](https://github.com/MyIntervals/emogrifier/releases),
-   create a new release and copy the change log entries to the new release.
+   click 'Draft a new release'.
+1. Select to create a new tag, e.g. `v8.2.0`, and the branch to use (or `main`).
+1. Give the release a title, e.g. "V8.2.0: New features and bug fixes".
+1. Copy the change log entries to the 'Release notes' box.
+1. Check or uncheck 'Set as the latest release' accordingly.
+1. Double-check everything is correct before clicking 'Publish release'.
 1. Post about the new release on social media.
