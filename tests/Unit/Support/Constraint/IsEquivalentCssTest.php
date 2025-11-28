@@ -7,7 +7,6 @@ namespace Pelago\Emogrifier\Tests\Unit\Support\Constraint;
 use Pelago\Emogrifier\Tests\Support\Constraint\IsEquivalentCss;
 use Pelago\Emogrifier\Tests\Support\Traits\CssDataProviders;
 use Pelago\Emogrifier\Tests\Support\Traits\TestStringConstraint;
-use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -47,7 +46,7 @@ final class IsEquivalentCssTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideNonEquivalentCss(): array
     {
@@ -61,7 +60,7 @@ final class IsEquivalentCssTest extends TestCase
         return $datasets + $transposedDatasets;
     }
 
-    protected function createSubject(): Constraint
+    protected function createSubject(): IsEquivalentCss
     {
         return new IsEquivalentCss('');
     }

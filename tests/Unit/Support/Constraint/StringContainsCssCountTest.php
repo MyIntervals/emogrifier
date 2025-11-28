@@ -7,7 +7,6 @@ namespace Pelago\Emogrifier\Tests\Unit\Support\Constraint;
 use Pelago\Emogrifier\Tests\Support\Constraint\StringContainsCssCount;
 use Pelago\Emogrifier\Tests\Support\Traits\CssDataProviders;
 use Pelago\Emogrifier\Tests\Support\Traits\TestStringConstraint;
-use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -140,7 +139,7 @@ final class StringContainsCssCountTest extends TestCase
         self::assertFalse($result);
     }
 
-    protected function createSubject(): Constraint
+    protected function createSubject(): StringContainsCssCount
     {
         return new StringContainsCssCount(0, '');
     }
