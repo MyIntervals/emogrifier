@@ -65,9 +65,6 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      *
-     * @param string $contentToInsertAround
-     * @param string $otherContent
-     *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
     public function getCssRegularExpressionMatcherInsertsOptionalWhitespace(
@@ -112,8 +109,6 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider styleTagDataProvider
      */
     public function getCssRegularExpressionMatcherInsertsOptionalWhitespaceAfterStyleTag(string $css): void
@@ -139,8 +134,6 @@ final class CssConstraintTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider provideWhitespaceBetweenWords
      */

@@ -21,9 +21,6 @@ final class StringContainsCssTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -40,9 +37,6 @@ final class StringContainsCssTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function notMatchesHaystackNotContainingNeedle(string $needle, string $haystack): void
@@ -54,9 +48,6 @@ final class StringContainsCssTest extends TestCase
         self::assertFalse($result);
     }
 
-    /**
-     * @return Constraint
-     */
     protected function createSubject(): Constraint
     {
         return new StringContainsCss('');

@@ -77,8 +77,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $displayNone
-     *
      * @dataProvider displayNoneDataProvider
      */
     public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone(string $displayNone): void
@@ -104,8 +102,6 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $classAttributeValue
      *
      * @dataProvider provideEmogrifierKeepClassAttribute
      */
@@ -210,7 +206,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
      * @param array<int, string> $classesToKeep
      *
      * @dataProvider provideHtmlAndNonMatchedClasses
@@ -290,7 +285,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
      * @param array<int, string> $classesToKeep
      * @param array<int, string> $classesExpectedToBeRemoved
      *
@@ -359,7 +353,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
      * @param array<int, string> $classesToKeep
      *
      * @dataProvider provideHtmlAndSomeMatchedClasses
@@ -383,7 +376,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
      * @param array<int, string> $classesToKeep
      *
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
@@ -491,8 +483,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
-     * @param string $css
      * @param array<int, string> $classesExpectedToBeRemoved
      *
      * @dataProvider provideClassesNotInUninlinableRules
@@ -552,8 +542,6 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param string $html
-     * @param string $css
      * @param array<int, string> $classesToBeKept
      *
      * @dataProvider provideClassesInUninlinableRules
@@ -575,7 +563,6 @@ final class HtmlPrunerTest extends TestCase
      * Asserts that none of the `$needles` can be found within the string `$haystack`.
      *
      * @param array<int, string> $needles
-     * @param string $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -590,7 +577,6 @@ final class HtmlPrunerTest extends TestCase
      * Asserts that all of the `$needles` can be found within the string `$haystack`.
      *
      * @param array<int, string> $needles
-     * @param string $haystack
      *
      * @throws ExpectationFailedException
      */
@@ -603,10 +589,6 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * Asserts that the number of occurrences of `$needle` within the string `$haystack` is as expected.
-     *
-     * @param int $expectedCount
-     * @param string $haystack
-     * @param string $needle
      *
      * @throws ExpectationFailedException
      */
@@ -621,8 +603,6 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * Asserts that a string does not contain consecutive whitespace characters, or begin or end with whitespace.
-     *
-     * @param string $string
      *
      * @throws ExpectationFailedException
      */
