@@ -21,9 +21,6 @@ final class IsEquivalentCssTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     * @param string $otherCss
-     *
      * @dataProvider provideEquivalentCss
      */
     public function matchesEquivalentCss(string $css, string $otherCss): void
@@ -37,9 +34,6 @@ final class IsEquivalentCssTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
-     * @param string $otherCss
      *
      * @dataProvider provideNonEquivalentCss
      */
@@ -67,9 +61,6 @@ final class IsEquivalentCssTest extends TestCase
         return $datasets + $transposedDatasets;
     }
 
-    /**
-     * @return Constraint
-     */
     protected function createSubject(): Constraint
     {
         return new IsEquivalentCss('');

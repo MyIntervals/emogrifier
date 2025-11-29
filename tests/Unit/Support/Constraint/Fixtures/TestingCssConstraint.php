@@ -13,10 +13,6 @@ abstract class TestingCssConstraint extends CssConstraint
 {
     /**
      * Chains on to {@see getCssRegularExpressionMatcher} for testing the protected method.
-     *
-     * @param string $css
-     *
-     * @return string
      */
     public static function getCssRegularExpressionMatcherForTesting(string $css): string
     {

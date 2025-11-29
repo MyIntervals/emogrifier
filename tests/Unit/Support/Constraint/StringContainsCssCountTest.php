@@ -21,9 +21,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function matchesHaystackNotContainingNeedleWithZeroCount(string $needle, string $haystack): void
@@ -37,9 +34,6 @@ final class StringContainsCssCountTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $needle
-     * @param string $haystack
      *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
@@ -57,9 +51,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -76,9 +67,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function notMatchesHaystackNotContainingNeedleWithCountOfOne(string $needle, string $haystack): void
@@ -92,9 +80,6 @@ final class StringContainsCssCountTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $needle
-     * @param string $haystack
      *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
@@ -112,9 +97,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -131,9 +113,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function notMatchesHaystackNotContainingNeedleWithCountOfTwo(string $needle, string $haystack): void
@@ -148,9 +127,6 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
-     * @param string $needle
-     * @param string $haystack
-     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -164,9 +140,6 @@ final class StringContainsCssCountTest extends TestCase
         self::assertFalse($result);
     }
 
-    /**
-     * @return Constraint
-     */
     protected function createSubject(): Constraint
     {
         return new StringContainsCssCount(0, '');

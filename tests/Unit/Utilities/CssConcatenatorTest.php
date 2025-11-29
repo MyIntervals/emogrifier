@@ -287,10 +287,7 @@ final class CssConcatenatorTest extends TestCase
      * @test
      *
      * @param string[] $rule1Selectors
-     * @param string $rule1DeclarationsBlock
      * @param string[] $rule2Selectors
-     * @param string $rule2DeclarationsBlock
-     * @param string $media
      *
      * @dataProvider combinableRulesDataProvider
      */

@@ -149,8 +149,6 @@ final class CssInlinerTest extends TestCase
      * Builds a subject with the given HTML and debug mode enabled.
      *
      * @param non-empty-string $html
-     *
-     * @return CssInliner
      */
     private function buildDebugSubject(string $html): CssInliner
     {
@@ -1716,9 +1714,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $unneededCss
-     * @param string $markerNotExpectedInHtml
-     *
      * @dataProvider unneededCssThingsDataProvider
      */
     public function inlineCssFiltersUnneededCssThings(string $unneededCss, string $markerNotExpectedInHtml): void
@@ -1732,8 +1727,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $unneededCss
      *
      * @dataProvider unneededCssThingsDataProvider
      */
@@ -1864,8 +1857,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $rule1
-     * @param string $rule2
      * @param string $cssBefore CSS to insert before the first rule
      * @param string $cssBetween CSS to insert between the rules
      * @param string $cssAfter CSS to insert after the second rule
@@ -2035,8 +2026,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider validMediaPreserveDataProvider
      */
     public function inlineCssWithValidMediaQueryContainsInnerCss(string $css): void
@@ -2050,8 +2039,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider validMediaPreserveDataProvider
      */
@@ -2071,8 +2058,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider validMediaPreserveDataProvider
      */
     public function inlineCssForHtmlWithValidMediaQueryContainsInnerCss(string $css): void
@@ -2086,8 +2071,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider validMediaPreserveDataProvider
      */
@@ -2137,8 +2120,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css
-     *
      * @dataProvider invalidMediaPreserveDataProvider
      */
     public function inlineCssWithInvalidMediaQueryNotContainsInlineCss(string $css): void
@@ -2168,8 +2149,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
@@ -2586,9 +2565,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $emptyRuleMediaType
-     * @param string $mediaType
-     *
      * @dataProvider mediaTypesDataProvider
      */
     public function inlineCssAppliesCssBetweenEmptyMediaRuleAndMediaRule(
@@ -2607,9 +2583,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $emptyRuleMediaType
-     * @param string $mediaType
      *
      * @dataProvider mediaTypesDataProvider
      */
@@ -2802,8 +2775,6 @@ final class CssInlinerTest extends TestCase
      * Sets HTML of subject to boilerplate HTML with a single `<p>` in `<body>` and empty `<head>`
      *
      * @param string $style Optional value for the style attribute of the `<p>` element
-     *
-     * @return CssInliner
      */
     private function buildSubjectWithBoilerplateHtml(string $style = ''): CssInliner
     {
@@ -2833,8 +2804,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $importantMarker
-     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function inlineCssRemovesImportantFromStyleAttribute(string $importantMarker): void
@@ -2848,8 +2817,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $importantMarker
      *
      * @dataProvider provideImportantDeclarationMarker
      */
@@ -2865,8 +2832,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $importantMarker
-     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function importantInExternalCssOverwritesInlineCss(string $importantMarker): void
@@ -2881,8 +2846,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $importantMarker
-     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function importantInExternalCssNotOverwritesImportantInInlineCss(string $importantMarker): void
@@ -2896,8 +2859,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $importantMarker
      *
      * @dataProvider provideImportantDeclarationMarker
      */
@@ -3356,8 +3317,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $dataUriMediaType
-     *
      * @dataProvider dataUriMediaTypeDataProvider
      */
     public function dataUrisAreConserved(string $dataUriMediaType): void
@@ -3458,9 +3417,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $originalStyleAttributeContent
-     * @param string $expectedStyleAttributeContent
      *
      * @dataProvider cssForImportantRuleRemovalDataProvider
      */
@@ -3575,9 +3531,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssBefore
      * @param non-empty-string $cssImports
-     * @param string $cssAfter
      *
      * @dataProvider provideValidImportRules
      */
@@ -3621,8 +3575,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider provideInvalidImportRules
      */
@@ -3728,8 +3680,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $atRule
-     *
      * @dataProvider provideValidAtRules
      */
     public function inlineCssMatchesRuleAfterAtRule(string $atRule): void
@@ -3743,8 +3693,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $atRule
      *
      * @dataProvider provideValidAtRules
      */
@@ -3775,8 +3723,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $css
      *
      * @dataProvider provideInvalidFontFaceRules
      */
@@ -3851,8 +3797,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $selector
      *
      * @dataProvider nonMatchingOrInlinableSelectorDataProvider
      */
