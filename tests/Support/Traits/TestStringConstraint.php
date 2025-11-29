@@ -19,6 +19,11 @@ use function Safe\fopen;
 trait TestStringConstraint
 {
     /**
+     * @var Constraint
+     */
+    private $subject;
+
+    /**
      * @return array<non-empty-string, array{0: NonString}>
      */
     public function provideNonString(): array
@@ -45,20 +50,8 @@ trait TestStringConstraint
      */
     public function evaluatesFalseForNonString($nonString): void
     {
-        $constraint = $this->createSubject();
-
-        $result = $constraint->evaluate($nonString, '', true);
+        $result = $this->subject->evaluate($nonString, '', true);
 
         self::assertFalse($result);
-    }
-
-    /**
-     * This is a placeholder for a method that should be implemented by the class using this trait.
-     *
-     * @throws \Exception
-     */
-    protected function createSubject(): Constraint
-    {
-        throw new \Exception('`createSubject` method must be re-implemented');
     }
 }
