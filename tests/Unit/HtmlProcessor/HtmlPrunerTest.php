@@ -62,7 +62,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function displayNoneDataProvider(): array
     {
@@ -77,6 +77,8 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $displayNone
+     *
      * @dataProvider displayNoneDataProvider
      */
     public function removeElementsWithDisplayNoneRemovesElementsWithDisplayNone(string $displayNone): void
@@ -89,7 +91,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideEmogrifierKeepClassAttribute(): array
     {
@@ -102,6 +104,8 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $classAttributeValue
      *
      * @dataProvider provideEmogrifierKeepClassAttribute
      */
@@ -130,7 +134,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, array<int, string>>>
+     * @return array<non-empty-string, array{0: list<non-empty-string>}>
      */
     public function provideClassesToKeep(): array
     {
@@ -144,7 +148,7 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToKeep
+     * @param list<non-empty-string> $classesToKeep
      *
      * @dataProvider provideClassesToKeep
      */
@@ -159,7 +163,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{HTML: string, 'classes to keep': array<int, string>}>
+     * @return array<non-empty-string, array{HTML: non-empty-string, 'classes to keep': list<non-empty-string>}>
      */
     public function provideHtmlAndNonMatchedClasses(): array
     {
@@ -206,7 +210,8 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToKeep
+     * @param non-empty-string $html
+     * @param list<non-empty-string> $classesToKeep
      *
      * @dataProvider provideHtmlAndNonMatchedClasses
      */
@@ -222,10 +227,10 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{
-     *             HTML: string,
-     *             'classes to keep': array<int, string>,
-     *             'classes expected to be removed': array<int, string>
+     * @return array<non-empty-string, array{
+     *             HTML: non-empty-string,
+     *             'classes to keep': non-empty-list<non-empty-string>,
+     *             'classes expected to be removed': non-empty-list<non-empty-string>
      *         }>
      */
     public function provideHtmlAndSomeMatchedClasses(): array
@@ -260,9 +265,9 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{
-     *             HTML: string,
-     *             'classes to keep': array<int, string>,
+     * @return array<non-empty-string, array{
+     *             HTML: non-empty-string,
+     *             'classes to keep': list<non-empty-string>,
      *             'classes expected to be removed': array<int, string>
      *         }>
      */
@@ -285,8 +290,9 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToKeep
-     * @param array<int, string> $classesExpectedToBeRemoved
+     * @param non-empty-string $html
+     * @param list<non-empty-string> $classesToKeep
+     * @param list<non-empty-string> $classesExpectedToBeRemoved
      *
      * @dataProvider provideHtmlAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
@@ -305,7 +311,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{HTML: string, 'classes to keep': array<int, string>}>
+     * @return array<non-empty-string, array{HTML: non-empty-string, 'classes to keep': list<non-empty-string>}>
      */
     public function provideHtmlAndAllMatchedClasses(): array
     {
@@ -330,7 +336,7 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{HTML: string, 'classes to keep': array<int, string>}>
+     * @return array<non-empty-string, array{HTML: non-empty-string, 'classes to keep': list<non-empty-string>}>
      */
     public function provideHtmlWithExtraWhitespaceAndAllMatchedClasses(): array
     {
@@ -353,7 +359,8 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToKeep
+     * @param non-empty-string $html
+     * @param list<non-empty-string> $classesToKeep
      *
      * @dataProvider provideHtmlAndSomeMatchedClasses
      * @dataProvider provideHtmlAndAllMatchedClasses
@@ -376,7 +383,8 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToKeep
+     * @param non-empty-string $html
+     * @param list<non-empty-string> $classesToKeep
      *
      * @dataProvider provideHtmlWithExtraWhitespaceAndSomeMatchedClasses
      * @dataProvider provideHtmlWithExtraWhitespaceAndAllMatchedClasses
@@ -437,7 +445,11 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{HTML: string, CSS: string, 'classes expected to be removed': array<int, string>}>
+     * @return array<non-empty-string, array{
+     *           HTML: non-empty-string,
+     *           CSS: non-empty-string,
+     *           'classes expected to be removed': list<non-empty-string>
+     *         }>
      */
     public function provideClassesNotInUninlinableRules(): array
     {
@@ -483,7 +495,9 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesExpectedToBeRemoved
+     * @param non-empty-string $html
+     * @param non-empty-string $css
+     * @param list<non-empty-string> $classesExpectedToBeRemoved
      *
      * @dataProvider provideClassesNotInUninlinableRules
      */
@@ -501,7 +515,11 @@ final class HtmlPrunerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{HTML: string, CSS: string, 'classes to be kept': array<int, string>}>
+     * @return array<non-empty-string, array{
+     *           HTML: non-empty-string,
+     *           CSS: non-empty-string,
+     *           'classes to be kept': list<non-empty-string>
+     *         }>
      */
     public function provideClassesInUninlinableRules(): array
     {
@@ -542,7 +560,9 @@ final class HtmlPrunerTest extends TestCase
     /**
      * @test
      *
-     * @param array<int, string> $classesToBeKept
+     * @param non-empty-string $html
+     * @param non-empty-string $css
+     * @param list<non-empty-string> $classesToBeKept
      *
      * @dataProvider provideClassesInUninlinableRules
      */
@@ -562,7 +582,7 @@ final class HtmlPrunerTest extends TestCase
     /**
      * Asserts that none of the `$needles` can be found within the string `$haystack`.
      *
-     * @param array<int, string> $needles
+     * @param array<string> $needles
      *
      * @throws ExpectationFailedException
      */
@@ -576,7 +596,7 @@ final class HtmlPrunerTest extends TestCase
     /**
      * Asserts that all of the `$needles` can be found within the string `$haystack`.
      *
-     * @param array<int, string> $needles
+     * @param array<string> $needles
      *
      * @throws ExpectationFailedException
      */
@@ -589,6 +609,8 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * Asserts that the number of occurrences of `$needle` within the string `$haystack` is as expected.
+     *
+     * @param int<0, max> $expectedCount
      *
      * @throws ExpectationFailedException
      */
