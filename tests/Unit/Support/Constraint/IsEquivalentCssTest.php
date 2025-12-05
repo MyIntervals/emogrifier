@@ -51,7 +51,7 @@ final class IsEquivalentCssTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: string, 1: string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function provideNonEquivalentCss(): array
     {
