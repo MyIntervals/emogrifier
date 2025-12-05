@@ -446,9 +446,9 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * @return array<non-empty-string, array{
-     *           HTML: non-empty-string,
-     *           CSS: non-empty-string,
-     *           'classes expected to be removed': list<non-empty-string>
+     *             HTML: non-empty-string,
+     *             CSS: non-empty-string,
+     *             'classes expected to be removed': list<non-empty-string>
      *         }>
      */
     public function provideClassesNotInUninlinableRules(): array
@@ -516,9 +516,9 @@ final class HtmlPrunerTest extends TestCase
 
     /**
      * @return array<non-empty-string, array{
-     *           HTML: non-empty-string,
-     *           CSS: non-empty-string,
-     *           'classes to be kept': list<non-empty-string>
+     *             HTML: non-empty-string,
+     *             CSS: non-empty-string,
+     *             'classes to be kept': list<non-empty-string>
      *         }>
      */
     public function provideClassesInUninlinableRules(): array
@@ -582,7 +582,7 @@ final class HtmlPrunerTest extends TestCase
     /**
      * Asserts that none of the `$needles` can be found within the string `$haystack`.
      *
-     * @param array<string> $needles
+     * @param list<non-empty-string> $needles
      *
      * @throws ExpectationFailedException
      */
@@ -596,7 +596,7 @@ final class HtmlPrunerTest extends TestCase
     /**
      * Asserts that all of the `$needles` can be found within the string `$haystack`.
      *
-     * @param array<string> $needles
+     * @param list<non-empty-string> $needles
      *
      * @throws ExpectationFailedException
      */
