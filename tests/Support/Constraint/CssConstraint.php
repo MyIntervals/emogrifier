@@ -149,8 +149,6 @@ abstract class CssConstraint extends Constraint
      * away from the main tests, also allowing their test data to be written more humanly-readable with additional
      * whitespace.
      *
-     * @param string $css
-     *
      * @return string Slashes (`/`) should be used as delimiters in the pattern composed using this.
      */
     protected static function getCssRegularExpressionMatcher(string $css): string
