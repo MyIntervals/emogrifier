@@ -44,7 +44,7 @@ final class CssConstraintTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: string}>
      */
     public function contentWithOptionalWhitespaceDataProvider(): array
     {
@@ -64,6 +64,8 @@ final class CssConstraintTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $contentToInsertAround
      *
      * @dataProvider contentWithOptionalWhitespaceDataProvider
      */
@@ -93,7 +95,7 @@ final class CssConstraintTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function styleTagDataProvider(): array
     {
@@ -109,6 +111,8 @@ final class CssConstraintTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider styleTagDataProvider
      */
     public function getCssRegularExpressionMatcherInsertsOptionalWhitespaceAfterStyleTag(string $css): void
@@ -119,7 +123,7 @@ final class CssConstraintTest extends TestCase
     }
 
     /**
-     * @return array<string, array<string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideWhitespaceBetweenWords(): array
     {
@@ -134,6 +138,8 @@ final class CssConstraintTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider provideWhitespaceBetweenWords
      */
