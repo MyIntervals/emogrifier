@@ -2203,8 +2203,6 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $emptyRuleMediaType
-     *
      * @dataProvider mediaTypeDataProvider
      */
     public function inlineCssKeepsMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType): void
@@ -2218,8 +2216,6 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
-     *
-     * @param string $emptyRuleMediaType
      *
      * @dataProvider mediaTypeDataProvider
      */
