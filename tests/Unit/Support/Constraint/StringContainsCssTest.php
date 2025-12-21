@@ -25,6 +25,9 @@ final class StringContainsCssTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
+     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -40,6 +43,9 @@ final class StringContainsCssTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
