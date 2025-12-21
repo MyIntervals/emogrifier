@@ -25,6 +25,9 @@ final class IsEquivalentCssTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     * @param non-empty-string $otherCss
+     *
      * @dataProvider provideEquivalentCss
      */
     public function matchesEquivalentCss(string $css, string $otherCss): void
@@ -38,6 +41,9 @@ final class IsEquivalentCssTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
+     * @param non-empty-string $otherCss
      *
      * @dataProvider provideNonEquivalentCss
      */
