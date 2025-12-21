@@ -25,6 +25,9 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
+     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function matchesHaystackNotContainingNeedleWithZeroCount(string $needle, string $haystack): void
@@ -38,6 +41,9 @@ final class StringContainsCssCountTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
@@ -55,6 +61,9 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
+     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -71,6 +80,9 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
+     *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
     public function notMatchesHaystackNotContainingNeedleWithCountOfOne(string $needle, string $haystack): void
@@ -84,6 +96,9 @@ final class StringContainsCssCountTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
@@ -101,6 +116,9 @@ final class StringContainsCssCountTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
+     *
      * @dataProvider provideEquivalentCss
      * @dataProvider provideEquivalentCssInStyleTags
      * @dataProvider provideCssNeedleFoundInLargerHaystack
@@ -116,6 +134,9 @@ final class StringContainsCssCountTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideCssNeedleNotFoundInHaystack
      */
