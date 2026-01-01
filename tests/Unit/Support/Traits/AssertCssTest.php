@@ -93,6 +93,7 @@ final class AssertCssTest extends TestCase
      *
      * @param int<0, max> $count
      * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider providePassingCssCountData
      */
@@ -118,6 +119,7 @@ final class AssertCssTest extends TestCase
      *
      * @param int<0, max> $count
      * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideFailingCssCountData
      */
@@ -225,6 +227,7 @@ final class AssertCssTest extends TestCase
      *
      * @param int<0, max> $count
      * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider providePassingCssCountData
      */
@@ -245,6 +248,7 @@ final class AssertCssTest extends TestCase
      *
      * @param int<0, max> $count
      * @param non-empty-string $needle
+     * @param non-empty-string $haystack
      *
      * @dataProvider provideFailingCssCountData
      */
