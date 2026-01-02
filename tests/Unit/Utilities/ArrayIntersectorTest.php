@@ -13,7 +13,12 @@ use PHPUnit\Framework\TestCase;
 final class ArrayIntersectorTest extends TestCase
 {
     /**
-     * @return (int|string)[][][]
+     * @return array<
+     *             non-empty-string, array{
+     *                 0: array<array-key, non-empty-string|positive-int>,
+     *                 1: array<array-key, non-empty-string|positive-int>
+     *             }
+     *         >
      */
     public function arraysDataProvider(): array
     {
@@ -133,8 +138,8 @@ final class ArrayIntersectorTest extends TestCase
     /**
      * @test
      *
-     * @param (int|string)[] $array1
-     * @param (int|string)[] $array2
+     * @param array<array-key, non-empty-string|positive-int> $array1
+     * @param array<array-key, non-empty-string|positive-int> $array2
      *
      * @dataProvider arraysDataProvider
      */
