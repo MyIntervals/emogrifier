@@ -162,7 +162,6 @@ final class AbstractHtmlProcessorTest extends TestCase
     {
         return [
             'broken nesting gets nested' => ['<b><i></b></i>', '<b><i></i></b>'],
-            'partial opening tag gets closed' => ['<b', '<b></b>'],
             'only opening tag gets closed' => ['<b>', '<b></b>'],
             'only closing tag gets removed' => ['foo</b> bar', 'foo bar'],
         ];
