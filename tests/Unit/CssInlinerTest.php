@@ -203,7 +203,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function wbrTagDataProvider(): array
     {
@@ -234,7 +234,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function matchedCssDataProvider(): array
     {
@@ -789,8 +789,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
-     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param non-empty-string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param non-empty-string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
      *
      * @dataProvider matchedCssDataProvider
      */
@@ -812,7 +812,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function nonMatchedCssDataProvider(): array
     {
@@ -1098,8 +1098,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
-     * @param string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param non-empty-string $css CSS statements, potentially with %1$s and $2$s placeholders for a CSS declaration
+     * @param non-empty-string $expectedHtml HTML, potentially with %1$s and $2$s placeholders for a CSS declaration
      *
      * @dataProvider nonMatchedCssDataProvider
      */
@@ -1129,12 +1129,13 @@ final class CssInlinerTest extends TestCase
      * Specificity ordering for selectors involving pseudo-classes, attributes and `:not` is covered through the
      * combination of these tests and the equal specificity tests and thus does not require explicit separate testing.
      *
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string}>
      */
     public function differentCssSelectorSpecificityDataProvider(): array
     {
         /**
-         * @var array<string, string> Selectors targeting `<span id="text">` with increasing specificity
+         * @var array<non-empty-string, non-empty-string> $selectors
+         *      selectors targeting `<span id="text">` with increasing specificity
          */
         $selectors = [
             'universal' => '*',
@@ -1201,10 +1202,10 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
-     *                               e.g. '<p class="p-1"'
-     * @param string $lessSpecificSelector A selector expression
-     * @param string $moreSpecificSelector Some other, more specific selector expression
+     * @param non-empty-string $matchedTagPart tag expected to be matched by both selectors, without the closing '>',
+     *                                         e.g. '<p class="p-1"'
+     * @param non-empty-string $lessSpecificSelector a selector expression
+     * @param non-empty-string $moreSpecificSelector some other, more specific selector expression
      *
      * @dataProvider differentCssSelectorSpecificityDataProvider
      */
@@ -1229,7 +1230,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string}>
      */
     public function equalCssSelectorSpecificityDataProvider(): array
     {
@@ -1286,10 +1287,10 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $matchedTagPart Tag expected to be matched by both selectors, without the closing '>',
+     * @param non-empty-string $matchedTagPart tag expected to be matched by both selectors, without the closing '>',
      *                               e.g. '<p class="p-1"'
-     * @param string $selector1 A selector expression
-     * @param string $selector2 Some other, equally specific selector expression
+     * @param non-empty-string $selector1 a selector expression
+     * @param non-empty-string $selector2 some other, equally specific selector expression
      *
      * @dataProvider equalCssSelectorSpecificityDataProvider
      */
@@ -1314,7 +1315,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function cssDeclarationWhitespaceDroppingDataProvider(): array
     {
@@ -1339,7 +1340,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssDeclaration the CSS declaration block (without the curly braces)
+     * @param non-empty-string $cssDeclaration the CSS declaration block (without the curly braces)
      *
      * @dataProvider cssDeclarationWhitespaceDroppingDataProvider
      */
@@ -1353,7 +1354,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string, 2?: non-empty-string}>
      */
     public function formattedCssDeclarationDataProvider(): array
     {
@@ -1392,8 +1393,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
-     * @param string ...$expectedStyleAttributeContentPossibilities
+     * @param non-empty-string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     * @param non-empty-string ...$expectedStyleAttributeContentPossibilities
      *        possibilities for the expected value of the style attribute
      *
      * @dataProvider formattedCssDeclarationDataProvider
@@ -1416,7 +1417,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidDeclaration(): array
     {
@@ -1428,7 +1429,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideDeclarationWithInvalidPropertyName(): array
     {
@@ -1440,7 +1441,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     * @param non-empty-string $cssDeclarationBlock the CSS declaration block (without the curly braces)
      *
      * @dataProvider provideInvalidDeclaration
      * @dataProvider provideDeclarationWithInvalidPropertyName
@@ -1457,7 +1458,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string $cssDeclarationBlock the CSS declaration block (without the curly braces)
+     * @param non-empty-string $cssDeclarationBlock the CSS declaration block (without the curly braces)
      *
      * @dataProvider provideInvalidDeclaration
      */
@@ -1664,7 +1665,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Data provider for things that should be left out when applying the CSS.
      *
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function unneededCssThingsDataProvider(): array
     {
@@ -1714,6 +1715,9 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $unneededCss
+     * @param non-empty-string $markerNotExpectedInHtml
+     *
      * @dataProvider unneededCssThingsDataProvider
      */
     public function inlineCssFiltersUnneededCssThings(string $unneededCss, string $markerNotExpectedInHtml): void
@@ -1727,6 +1731,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $unneededCss
      *
      * @dataProvider unneededCssThingsDataProvider
      */
@@ -1789,7 +1795,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return DataProvider<string, list<string>>
+     * @return DataProvider<non-empty-string, non-empty-list<string>>
      */
     public function orderedRulesAndSurroundingCssDataProvider(): DataProvider
     {
@@ -1813,7 +1819,7 @@ final class CssInlinerTest extends TestCase
             // broken: invalid @charset (unquoted value)
         ];
 
-        /** @var array<string, array<int, string>> $datasetsSurroundingCss */
+        /** @var array<non-empty-string, non-empty-list<string>> $datasetsSurroundingCss */
         $datasetsSurroundingCss = [];
         foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
             foreach ($possibleSurroundingCss as $descriptionBetween => $cssBetween) {
@@ -1987,7 +1993,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Valid media query which need to be preserved
      *
-     * @return string[][]
+     * @return array<non-empty-string, non-empty-list<non-empty-string>>
      */
     public function validMediaPreserveDataProvider(): array
     {
@@ -2026,6 +2032,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider validMediaPreserveDataProvider
      */
     public function inlineCssWithValidMediaQueryContainsInnerCss(string $css): void
@@ -2039,6 +2047,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider validMediaPreserveDataProvider
      */
@@ -2058,6 +2068,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider validMediaPreserveDataProvider
      */
     public function inlineCssForHtmlWithValidMediaQueryContainsInnerCss(string $css): void
@@ -2071,6 +2083,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider validMediaPreserveDataProvider
      */
@@ -2120,6 +2134,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $css
+     *
      * @dataProvider invalidMediaPreserveDataProvider
      */
     public function inlineCssWithInvalidMediaQueryNotContainsInlineCss(string $css): void
@@ -2149,6 +2165,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider invalidMediaPreserveDataProvider
      */
@@ -2190,7 +2208,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function mediaTypeDataProvider(): array
     {
@@ -2202,6 +2220,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $emptyRuleMediaType
      *
      * @dataProvider mediaTypeDataProvider
      */
@@ -2217,6 +2237,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $emptyRuleMediaType
+     *
      * @dataProvider mediaTypeDataProvider
      */
     public function inlineCssNotKeepsUnneededMediaRuleAfterEmptyMediaRule(string $emptyRuleMediaType): void
@@ -2229,10 +2251,11 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @param array<string, string> $precedingSelectorComponents selectors to which each type of pseudo-component is
-     *        appended to create a selector for a CSS rule. Keys are human-readable descriptions.
+     * @param array<non-empty-string, string> $precedingSelectorComponents
+     *        selectors to which each type of pseudo-component is appended to create a selector for a CSS rule.
+     *        Keys are human-readable descriptions.
      *
-     * @return array<string, array{0: non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     private function getCssRuleDatasetsWithSelectorPseudoComponents(array $precedingSelectorComponents): array
     {
@@ -2546,7 +2569,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function mediaTypesDataProvider(): array
     {
@@ -2560,6 +2583,9 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $emptyRuleMediaType
+     * @param non-empty-string $mediaType
      *
      * @dataProvider mediaTypesDataProvider
      */
@@ -2579,6 +2605,9 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $emptyRuleMediaType
+     * @param non-empty-string $mediaType
      *
      * @dataProvider mediaTypesDataProvider
      */
@@ -2784,7 +2813,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideImportantDeclarationMarker(): array
     {
@@ -2800,6 +2829,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $importantMarker
+     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function inlineCssRemovesImportantFromStyleAttribute(string $importantMarker): void
@@ -2813,6 +2844,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $importantMarker
      *
      * @dataProvider provideImportantDeclarationMarker
      */
@@ -2828,6 +2861,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $importantMarker
+     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function importantInExternalCssOverwritesInlineCss(string $importantMarker): void
@@ -2842,6 +2877,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $importantMarker
+     *
      * @dataProvider provideImportantDeclarationMarker
      */
     public function importantInExternalCssNotOverwritesImportantInInlineCss(string $importantMarker): void
@@ -2855,6 +2892,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $importantMarker
      *
      * @dataProvider provideImportantDeclarationMarker
      */
@@ -3132,7 +3171,9 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param array<non-empty-string> $excludedSelectors
+     * @param non-empty-string $css
+     * @param array{0: non-empty-string} $excludedSelectors
+     * @param non-empty-string $expectedInlineCss
      *
      * @dataProvider excludedCssRuleDataProvider
      */
@@ -3155,7 +3196,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<array{non-empty-string, array<non-empty-string>, non-empty-string}>
+     * @return array<non-empty-string, array{0: non-empty-string, 1: array{0: non-empty-string}, 2: non-empty-string}>
      */
     public function excludedCssRuleDataProvider(): array
     {
@@ -3298,7 +3339,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: string}>
      */
     public function dataUriMediaTypeDataProvider(): array
     {
@@ -3363,7 +3404,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string, 1: non-empty-string}>
      */
     public function cssForImportantRuleRemovalDataProvider(): array
     {
@@ -3413,6 +3454,9 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $originalStyleAttributeContent
+     * @param non-empty-string $expectedStyleAttributeContent
      *
      * @dataProvider cssForImportantRuleRemovalDataProvider
      */
@@ -3541,7 +3585,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidImportRules(): array
     {
@@ -3571,6 +3615,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider provideInvalidImportRules
      */
@@ -3660,12 +3706,16 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideValidAtRules(): array
     {
         return \array_map(
-            /** @return array<int, string> */
+            /**
+             * @param non-empty-string $rule
+             *
+             * @return array{0: non-empty-string}
+             */
             static function (string $rule): array {
                 return [$rule];
             },
@@ -3675,6 +3725,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $atRule
      *
      * @dataProvider provideValidAtRules
      */
@@ -3690,6 +3742,8 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
+     * @param non-empty-string $atRule
+     *
      * @dataProvider provideValidAtRules
      */
     public function inlineCssKeepsUninlinableRulePositionAfterAtRule(string $atRule): void
@@ -3703,7 +3757,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function provideInvalidFontFaceRules(): array
     {
@@ -3719,6 +3773,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $css
      *
      * @dataProvider provideInvalidFontFaceRules
      */
@@ -3744,7 +3800,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][][]
+     * @return array<non-empty-string, array{0: array{0: non-empty-string, 1?: non-empty-string}}>
      */
     public function matchingUninlinableSelectorsDataProvider(): array
     {
@@ -3757,7 +3813,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param string[] $selectors
+     * @param array{0: non-empty-string, 1?: non-empty-string} $selectors
      *
      * @dataProvider matchingUninlinableSelectorsDataProvider
      */
@@ -3780,7 +3836,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return string[][]
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function nonMatchingOrInlinableSelectorDataProvider(): array
     {
@@ -3793,6 +3849,8 @@ final class CssInlinerTest extends TestCase
 
     /**
      * @test
+     *
+     * @param non-empty-string $selector
      *
      * @dataProvider nonMatchingOrInlinableSelectorDataProvider
      */
