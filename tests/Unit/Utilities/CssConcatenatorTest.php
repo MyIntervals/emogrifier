@@ -108,7 +108,11 @@ final class CssConcatenatorTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, array{0: non-empty-list<non-empty-string>, 1: non-empty-list<non-empty-string>, 2: non-empty-list<non-empty-string>}>
+     * @return array<non-empty-string, array{
+     *             0: non-empty-list<non-empty-string>,
+     *             1: non-empty-list<non-empty-string>,
+     *             2: non-empty-list<non-empty-string>
+     *         }>
      */
     public function differentSelectorsDataProvider(): array
     {
