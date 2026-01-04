@@ -107,12 +107,6 @@ parameters:
 			path: ../tests/Unit/Css/CssDocumentTest.php
 
 		-
-			message: '#^Parameter \#1 \$str of function trim expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../tests/Unit/CssInlinerTest.php
-
-		-
 			message: '#^Parameter \#1 \$str of function strtolower expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1
