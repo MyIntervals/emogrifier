@@ -73,7 +73,7 @@ final class DeclarationBlockParserTest extends TestCase
     /**
      * @return array<non-empty-string, array{string: string, array: array<non-empty-string, non-empty-string>}>
      */
-    public function provideDeclratationBlockAsStringAndArray(): array
+    public function provideDeclarationBlockAsStringAndArray(): array
     {
         return [
             'empty' => [
@@ -258,17 +258,17 @@ final class DeclarationBlockParserTest extends TestCase
     /**
      * @test
      *
-     * @param array<non-empty-string, non-empty-string> $declratationBlockAsArray
+     * @param array<non-empty-string, non-empty-string> $declarationBlockAsArray
      *
-     * @dataProvider provideDeclratationBlockAsStringAndArray
+     * @dataProvider provideDeclarationBlockAsStringAndArray
      */
-    public function parses(string $declratationBlockAsString, array $declratationBlockAsArray): void
+    public function parses(string $declarationBlockAsString, array $declarationBlockAsArray): void
     {
         $subject = new DeclarationBlockParser();
 
-        $result = $subject->parse($declratationBlockAsString);
+        $result = $subject->parse($declarationBlockAsString);
 
-        self::assertSame($declratationBlockAsArray, $result);
+        self::assertSame($declarationBlockAsArray, $result);
     }
 
     /**
