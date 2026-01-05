@@ -3800,7 +3800,7 @@ final class CssInlinerTest extends TestCase
     }
 
     /**
-     * @return array<non-empty-string, array{0: array{0: non-empty-string, 1?: non-empty-string}}>
+     * @return array<non-empty-string, array{0: non-empty-list<non-empty-string>}>
      */
     public function matchingUninlinableSelectorsDataProvider(): array
     {
