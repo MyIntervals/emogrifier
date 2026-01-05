@@ -3813,7 +3813,7 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      *
-     * @param array{0: non-empty-string, 1?: non-empty-string} $selectors
+     * @param non-empty-list<non-empty-string> $selectors
      *
      * @dataProvider matchingUninlinableSelectorsDataProvider
      */
