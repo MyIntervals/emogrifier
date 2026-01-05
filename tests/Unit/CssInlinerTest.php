@@ -1993,7 +1993,7 @@ final class CssInlinerTest extends TestCase
     /**
      * Valid media query which need to be preserved
      *
-     * @return array<non-empty-string, non-empty-list<non-empty-string>>
+     * @return array<non-empty-string, array{0: non-empty-string}>
      */
     public function validMediaPreserveDataProvider(): array
     {
