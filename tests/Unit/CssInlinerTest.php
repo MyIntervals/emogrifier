@@ -1819,7 +1819,6 @@ final class CssInlinerTest extends TestCase
             // broken: invalid @charset (unquoted value)
         ];
 
-        /** @var array<non-empty-string, non-empty-list<string>> $datasetsSurroundingCss */
         $datasetsSurroundingCss = [];
         foreach ($possibleCssBefore as $descriptionBefore => $cssBefore) {
             foreach ($possibleSurroundingCss as $descriptionBetween => $cssBetween) {
