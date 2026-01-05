@@ -97,16 +97,6 @@ parameters:
 			path: ../tests/Support/Constraint/CssConstraint.php
 
 		-
-			message: '''
-				#^@dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
-
-				Invalid related method not found\.$#
-			'''
-			identifier: phpunit.dataProviderMethod
-			count: 1
-			path: ../tests/Unit/Css/CssDocumentTest.php
-
-		-
 			message: '#^Parameter \#1 \$str of function strtolower expects string, string\|false given\.$#'
 			identifier: argument.type
 			count: 1

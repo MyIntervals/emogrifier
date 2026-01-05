@@ -532,13 +532,13 @@ final class CssDocumentTest extends TestCase
     }
 
     /**
+     * Note: Invalid non-conditional at-rules which do not currently cause an exception not yet tested.
+     *
      * @test
      *
      * @param non-empty-string $atRuleCss
      *
      * @dataProvider provideInvalidNonConditionalAtRuleWhichCausesException
-     *
-     * Invalid non-conditional at-rules which do not currently cause an exception not yet tested.
      */
     public function throwsExceptionForInvalidNonConditionalAtRuleInDebugMode(
         string $atRuleCss,
