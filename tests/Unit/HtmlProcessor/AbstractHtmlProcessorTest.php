@@ -1293,6 +1293,39 @@ final class AbstractHtmlProcessorTest extends TestCase
     }
 
     /**
+     * @return array<string, array{0: positive-int}>
+     */
+    public function provideNestingLevel(): array
+    {
+        return [
+            '12 deep' => [12],
+            '254 deep' => [254],
+            '255 deep' => [255],
+            '256 deep' => [256],
+            '257 deep' => [257],
+            '300 deep' => [300],
+            '1300 deep' => [1300],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param positive-int $nestingLevel
+     *
+     * @dataProvider provideNestingLevel
+     */
+    public function supportsDeeplyNestedHtml(int $nestingLevel): void
+    {
+        $html = \str_repeat('<div>', $nestingLevel) . \str_repeat('</div>', $nestingLevel);
+        $subject = TestingHtmlProcessor::fromHtml($html);
+
+        $result = $subject->render();
+
+        self::assertSame($nestingLevel, \substr_count($result, '<div>'));
+    }
+
+    /**
      * Asserts that an HTML haystack contains an HTML needle, allowing for additional newlines in the haystack that may
      * have been inserted by the `formatOutput` option of `DOMDocument`.
      */
