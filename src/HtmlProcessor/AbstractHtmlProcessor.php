@@ -225,7 +225,7 @@ abstract class AbstractHtmlProcessor
         $domDocument->strictErrorChecking = false;
         $domDocument->formatOutput = false;
         $libXmlState = \libxml_use_internal_errors(true);
-        $domDocument->loadHTML($this->prepareHtmlForDomConversion($html));
+        $domDocument->loadHTML($this->prepareHtmlForDomConversion($html), LIBXML_PARSEHUGE);
         \libxml_clear_errors();
         \libxml_use_internal_errors($libXmlState);
 
