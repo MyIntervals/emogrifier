@@ -202,3 +202,62 @@ jobs:
 
       - name: Run Tests
         run: composer check:tests:unit
+
+  unit-tests-xdebug:
+    name: Unit tests with Xdebug
+
+    runs-on: ubuntu-22.04
+
+    needs: [ php-lint, composer-validate ]
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version:
+          - '8.4'
+        dependencies:
+          - highest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          ini-file: development
+          tools: composer:v2
+          coverage: xdebug
+          ini-values: xdebug.mode=develop
+
+      - name: Show the Composer version
+        run: composer --version
+
+      - name: Show the Composer configuration
+        run: composer config --global --list
+
+      - name: Show the PHP version
+        run: php -v
+
+      - name: Cache dependencies installed with composer
+        uses: actions/cache@v5
+        with:
+          path: ~/.cache/composer
+          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: |
+            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
+
+      - name: Install Composer dependencies
+        run: |
+          if [[ "${{ matrix.dependencies }}" == 'lowest' ]]; then
+            DEPENDENCIES='--prefer-lowest';
+          else
+            DEPENDENCIES='';
+          fi;
+          composer install --no-progress;
+          composer update --with-dependencies --no-progress "${DEPENDENCIES}";
+          composer show;
+
+      - name: Run Tests
+        run: composer check:tests:unit
