@@ -399,9 +399,8 @@ final class CssVariableEvaluatorTest extends TestCase
         return [
             '12 deep' => [12],
             '257 deep' => [257],
-            // Temporarily disabled pending fix for #1555
-            //'513 deep' => [513],
-            //'1300 deep' => [1300],
+            '513 deep' => [513],
+            '1300 deep' => [1300],
         ];
     }
 
