@@ -18,7 +18,7 @@ Please also have a look at our
 
 ### Fixed
 
-- Allow very deeply-nested HTML (#1556)
+- Allow very deeply-nested HTML (#1556, #1560)
 
 ## 8.2.0: Add support for Symfony 8.0
 

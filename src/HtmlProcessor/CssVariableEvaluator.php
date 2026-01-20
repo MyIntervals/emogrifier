@@ -31,7 +31,41 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
      */
     public function evaluateVariables(): self
     {
-        return $this->evaluateVariablesInElementAndDescendants($this->getHtmlElement(), []);
+        /**
+         * @var list<array{element: \DOMElement, ancestorDefinitions: array<non-empty-string, string>}>
+         *      $elementsToEvaluate
+         */
+        $elementsToEvaluate = [['element' => $this->getHtmlElement(), 'ancestorDefinitions' => []]];
+
+        while (($currentElementData = \array_pop($elementsToEvaluate)) !== null) {
+            $currentElement = $currentElementData['element'];
+            $currentAncestorDefinitions = $currentElementData['ancestorDefinitions'];
+
+            $style = $currentElement->getAttribute('style');
+
+            // Avoid parsing declarations if none use or define a variable
+            if (preg_match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
+                $declarations = (new DeclarationBlockParser())->parse($style);
+                $variableDefinitions =
+                    $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
+                $this->currentVariableDefinitions = $variableDefinitions;
+
+                $newDeclarations = $this->replaceVariablesInDeclarations($declarations);
+                if ($newDeclarations !== null) {
+                    $currentElement->setAttribute('style', $this->getDeclarationsAsString($newDeclarations));
+                }
+            } else {
+                $variableDefinitions = $currentAncestorDefinitions;
+            }
+
+            foreach ($currentElement->childNodes as $child) {
+                if ($child instanceof \DOMElement) {
+                    $elementsToEvaluate[] = ['element' => $child, 'ancestorDefinitions' => $variableDefinitions];
+                }
+            }
+        }
+
+        return $this;
     }
 
     /**
@@ -171,40 +205,5 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
         );
 
         return \implode('; ', $declarationStrings) . ';';
-    }
-
-    /**
-     * @param array<non-empty-string, string> $ancestorVariableDefinitions
-     *
-     * @return $this
-     */
-    private function evaluateVariablesInElementAndDescendants(
-        \DOMElement $element,
-        array $ancestorVariableDefinitions
-    ): self {
-        $style = $element->getAttribute('style');
-
-        // Avoid parsing declarations if none use or define a variable
-        if (preg_match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
-            $declarations = (new DeclarationBlockParser())->parse($style);
-            $variableDefinitions =
-                $this->getVariableDefinitionsFromDeclarations($declarations) + $ancestorVariableDefinitions;
-            $this->currentVariableDefinitions = $variableDefinitions;
-
-            $newDeclarations = $this->replaceVariablesInDeclarations($declarations);
-            if ($newDeclarations !== null) {
-                $element->setAttribute('style', $this->getDeclarationsAsString($newDeclarations));
-            }
-        } else {
-            $variableDefinitions = $ancestorVariableDefinitions;
-        }
-
-        foreach ($element->childNodes as $child) {
-            if ($child instanceof \DOMElement) {
-                $this->evaluateVariablesInElementAndDescendants($child, $variableDefinitions);
-            }
-        }
-
-        return $this;
     }
 }
