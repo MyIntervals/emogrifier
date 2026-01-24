@@ -1265,9 +1265,9 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $domDocument = $subject->getDomDocument();
 
-        $normalizedHtml = $domDocument->saveHTML();
-        self::assertIsString($normalizedHtml);
-        self::assertEqualsHtml($html, $normalizedHtml);
+        $resultHtml = $domDocument->saveHTML();
+        self::assertIsString($resultHtml);
+        self::assertEqualsHtml($html, $resultHtml);
     }
 
     /**
