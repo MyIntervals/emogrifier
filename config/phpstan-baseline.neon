@@ -95,15 +95,3 @@ parameters:
 			identifier: cast.int
 			count: 1
 			path: ../tests/Support/Constraint/CssConstraint.php
-
-		-
-			message: '#^Parameter \#1 \$str of function strtolower expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php
-
-		-
-			message: '#^Parameter \#2 \$actual of static method Pelago\\Emogrifier\\Tests\\Unit\\HtmlProcessor\\AbstractHtmlProcessorTest\:\:assertEqualsHtml\(\) expects string, string\|false given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../tests/Unit/HtmlProcessor/AbstractHtmlProcessorTest.php

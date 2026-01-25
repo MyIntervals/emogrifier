@@ -936,6 +936,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $domDocument = $subject->getDomDocument();
         $resultHeadContent = $domDocument->saveHTML($domDocument->getElementsByTagName('head')->item(0));
+        self::assertIsString($resultHeadContent);
 
         $numberOfContentTypeMetaTags = \substr_count(\strtolower($resultHeadContent), 'content-type');
         self::assertSame(1, $numberOfContentTypeMetaTags);
@@ -1264,7 +1265,9 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $domDocument = $subject->getDomDocument();
 
-        self::assertEqualsHtml($html, $domDocument->saveHTML());
+        $resultHtml = $domDocument->saveHTML();
+        self::assertIsString($resultHtml);
+        self::assertEqualsHtml($html, $resultHtml);
     }
 
     /**
