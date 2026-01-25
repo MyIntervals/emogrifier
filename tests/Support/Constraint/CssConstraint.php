@@ -179,7 +179,10 @@ abstract class CssConstraint extends Constraint
 
         $pattern = '/\\$(\\d++)/';
         $callback = static function (array $referenceMatches) use ($matches): string {
-            return \preg_quote($matches[(int) $referenceMatches[1]] ?? '', '/');
+            $index = $referenceMatches[1];
+            \assert(\is_string($index));
+
+            return \preg_quote($matches[$index] ?? '', '/');
         };
         foreach (self::CSS_REGULAR_EXPRESSION_REPLACEMENTS as $index => $replacement) {
             if (($matches[$index] ?? '') !== '') {

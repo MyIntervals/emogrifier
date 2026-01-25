@@ -89,9 +89,3 @@ parameters:
 			identifier: assign.propertyReadOnly
 			count: 1
 			path: ../src/Utilities/CssConcatenator.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: ../tests/Support/Constraint/CssConstraint.php
