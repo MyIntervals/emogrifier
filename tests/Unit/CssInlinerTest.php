@@ -7,6 +7,7 @@ namespace Pelago\Emogrifer\Tests\Unit;
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
+use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
@@ -3914,5 +3915,24 @@ final class CssInlinerTest extends TestCase
         $copyUninlinableCssToStyleNode->invoke($subject, $cssDocument);
 
         self::assertSame($expectedHtml, $subject->render());
+    }
+
+    /**
+     * @test
+     */
+    public function inlineCssClearsDeclarationBlockParserCache(): void
+    {
+        $subject = new DeclarationBlockParser();
+        $subject->parse('color: green;');
+
+        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
+        if (\PHP_VERSION_ID < 80100) {
+            $cacheProperty->setAccessible(true);
+        }
+        self::assertNotSame([], $cacheProperty->getValue());
+
+        CssInliner::fromHtml('<html><body></body></html>')->inlineCss();
+
+        self::assertSame([], $cacheProperty->getValue());
     }
 }

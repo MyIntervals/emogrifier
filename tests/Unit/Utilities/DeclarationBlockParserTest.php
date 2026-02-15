@@ -299,4 +299,22 @@ final class DeclarationBlockParserTest extends TestCase
 
         self::assertSame($firstResult, $secondResult);
     }
+
+    /**
+     * @test
+     */
+    public function clearCacheEmptiesStaticCache(): void
+    {
+        $subject = new DeclarationBlockParser();
+        $subject->parse('color: green;');
+
+        DeclarationBlockParser::clearCache();
+
+        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
+        if (\PHP_VERSION_ID < 80100) {
+            $cacheProperty->setAccessible(true);
+        }
+        self::assertSame([], $cacheProperty->getValue());
+    }
+
 }
