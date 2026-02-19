@@ -37,7 +37,7 @@ final class StringContainsCss extends CssConstraint
      */
     public function toString(): string
     {
-        return 'contains CSS `' . $this->css . '`';
+        return 'contains CSS `' . $this->css . '` (using regex `' . $this->cssPattern . '`)';
     }
 
     /**
