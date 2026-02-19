@@ -31,8 +31,12 @@ abstract class CssConstraint extends Constraint
             |\\:(?![^\\{\\}]*+\\{)          #   followed later by `{` without a closing `}` first)
         )\\s*+                              #
         |(^\\s++)                           # - whitespace at the very start, captured in group 3
-        |(>)\\s*+                           # - `>` (e.g. closing a `<style>` element opening tag) with optional
-                                            #   whitespace following, captured in group 4
+        |\\s*+(                             # - selector combinator with optional whitespace around, captured in group
+            [>~+]                           #   4; this may also be a `>` closing a `<style>` tag; the regex is not
+            (?![^\\{\\}\\(\\)]*+\\))        #   sufficiently advanced to determine which, so for the latter case
+        )\\s*+                              #   whitespace before is also allowed; combinators are not matched if there
+                                            #   is a closing bracket coming, so that, e.g. the `+` operator in a
+                                            #   `calc()` function is not matched
         |(\\s++)                            # - whitespace, captured in group 5
         |(\\#[0-9A-Fa-f]++\\b)              # - RGB colour property value, captured in group 6, if in a declarations
             (?![^\\{\\}]*+\\{)              #   block (i.e. not followed later by `{` without a closing `}` first)
@@ -71,6 +75,10 @@ abstract class CssConstraint extends Constraint
                     |\\:(?![^\\{\\}]*+\\{)  #
                 )                           #
                 |\\s                        #
+                |\\s*+(                     #
+                    [>~+]                   #
+                    (?![^\\{\\}\\(\\)]*+\\))#
+                )\\s*+                      #
                 |(\\#[0-9A-Fa-f]++\\b)      #
                     (?![^\\{\\}]*+\\{)      #
                 |@(?i:import)\\s++          #
@@ -113,7 +121,7 @@ abstract class CssConstraint extends Constraint
         1 => '(?:\\s*+;)?+\\s*+$1\\s*+',
         2 => '\\s*+$2\\s*+',
         3 => '\\s*+',
-        4 => '$4\\s*+',
+        4 => '\\s*+$4\\s*+',
         5 => '\\s++',
         6 => '(?i:$6)',
         8 => self::AT_IMPORT_URL_REPLACEMENT_MATCHER,

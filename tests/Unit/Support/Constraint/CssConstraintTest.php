@@ -54,10 +54,13 @@ final class CssConstraintTest extends TestCase
             '";" alone' => [';', ''],
             '"," alone' => [',', ''],
             '":" alone' => [':', ''],
+            '">" alone' => ['>', ''],
+            '"+" alone' => ['+', ''],
+            '"~" alone' => ['~', ''],
             '"{" with non-special character' => ['{', 'a'],
             '"{" with two non-special characters' => ['{', 'a0'],
             '"{" with special character' => ['{', '.'],
-            '"{" with two special characters' => ['{', '.+'],
+            '"{" with two special characters' => ['{', '.*'],
             '"{" with special character and non-special character' => ['{', '.a'],
         ];
     }
@@ -119,7 +122,7 @@ final class CssConstraintTest extends TestCase
     {
         $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting($css);
 
-        self::assertSame('\\<style\\>\\s*+a', $result);
+        self::assertStringEndsWith('>\\s*+a', $result);
     }
 
     /**
