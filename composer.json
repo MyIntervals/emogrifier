@@ -124,7 +124,8 @@
         "fix:php:fixer": "\"./.phive/php-cs-fixer\" --config=config/php-cs-fixer.php fix config src tests",
         "fix:php:rector": "rector process --config=config/rector.php",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "phpstan:baseline": "phpstan --configuration=config/phpstan.neon --generate-baseline=config/phpstan-baseline.neon --allow-empty-baseline"
+        "phpstan:baseline": "phpstan --configuration=config/phpstan.neon --generate-baseline=config/phpstan-baseline.neon --allow-empty-baseline",
+        "phpstan:clearcache": "phpstan clear-result-cache"
     },
     "scripts-descriptions": {
         "check": "Runs all dynamic and static code checks.",
@@ -147,6 +148,7 @@
         "fix:php:fixer": "Reformats the code with php-cs-fixer.",
         "fix:php:rector": "Fixes autofixable issues found by Rector.",
         "php:version": "Outputs the installed PHP version.",
-        "phpstan:baseline": "Updates the PHPStan baseline file to match the code."
+        "phpstan:baseline": "Updates the PHPStan baseline file to match the code.",
+        "phpstan:clearcache": "Clears the PHPStan cache."
     }
 }
