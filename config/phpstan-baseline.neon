@@ -1,18 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Call to function assert\(\) with true will always evaluate to true\.$#'
-			identifier: function.alreadyNarrowedType
-			count: 1
-			path: ../src/Css/StyleRule.php
-
-		-
-			message: '#^Strict comparison using \!\=\= between non\-empty\-string and '''' will always evaluate to true\.$#'
-			identifier: notIdentical.alwaysTrue
-			count: 1
-			path: ../src/Css/StyleRule.php
-
-		-
 			message: '#^Parameter \#1 \$matches of method Pelago\\Emogrifier\\CssInliner\:\:replaceUnmatchableNotComponent\(\) expects array\<string\>, array given\.$#'
 			identifier: argument.type
 			count: 1
