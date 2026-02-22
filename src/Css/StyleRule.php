@@ -42,9 +42,7 @@ final class StyleRule
         $selectors = $this->declarationBlock->getSelectors();
         return \array_map(
             static function (Selector $selector): string {
-                $selectorAsString = $selector->getSelector();
-                \assert($selectorAsString !== '');
-                return $selectorAsString;
+                return $selector->getSelector();
             },
             $selectors
         );
