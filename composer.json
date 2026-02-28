@@ -49,6 +49,7 @@
         "phpmd/phpmd": "2.15.0",
         "phpstan/extension-installer": "1.4.3",
         "phpstan/phpstan": "1.12.32 || 2.1.39",
+        "phpstan/phpstan-deprecation-rules": "1.2.1 || 2.0.4",
         "phpstan/phpstan-phpunit": "1.4.2 || 2.0.16",
         "phpstan/phpstan-strict-rules": "1.6.2 || 2.0.10",
         "phpunit/phpunit": "9.6.34",
