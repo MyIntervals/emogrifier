@@ -1,33 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '''
-				#^Call to deprecated method getRules\(\) of class Sabberworm\\CSS\\RuleSet\\RuleSet\:
-				in v9\.2, will be removed in v10\.0; use `getDeclarations\(\)` instead\.$#
-			'''
-			identifier: method.deprecated
-			count: 2
-			path: ../src/Css/CssDocument.php
-
-		-
-			message: '''
-				#^Call to deprecated method getRules\(\) of class Sabberworm\\CSS\\RuleSet\\DeclarationBlock\:
-				in v9\.2, will be removed in v10\.0; use `getDeclarations\(\)` instead\.$#
-			'''
-			identifier: method.deprecated
-			count: 2
-			path: ../src/Css/StyleRule.php
-
-		-
-			message: '''
-				#^Call to deprecated method getSelector\(\) of class Sabberworm\\CSS\\Property\\Selector\:
-				in version 9\.2, will be removed in v10\.0\.  Use either `getComponents\(\)` or `render\(\)` instead\.$#
-			'''
-			identifier: method.deprecated
-			count: 1
-			path: ../src/Css/StyleRule.php
-
-		-
 			message: '#^Parameter \#1 \$matches of method Pelago\\Emogrifier\\CssInliner\:\:replaceUnmatchableNotComponent\(\) expects array\<string\>, array given\.$#'
 			identifier: argument.type
 			count: 1
@@ -92,12 +65,3 @@ parameters:
 			identifier: assign.propertyReadOnly
 			count: 1
 			path: ../src/Utilities/CssConcatenator.php
-
-		-
-			message: '''
-				#^Call to deprecated method addRule\(\) of class Sabberworm\\CSS\\RuleSet\\DeclarationBlock\:
-				in v9\.2, will be removed in v10\.0; use `addDeclaration\(\)` instead\.$#
-			'''
-			identifier: method.deprecated
-			count: 2
-			path: ../tests/Unit/Css/StyleRuleTest.php
