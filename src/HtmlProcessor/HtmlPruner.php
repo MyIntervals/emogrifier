@@ -33,13 +33,15 @@ final class HtmlPruner extends AbstractHtmlProcessor
     public function removeElementsWithDisplayNone(): self
     {
         $elementsWithStyleDisplayNone = $this->getXPath()->query(self::DISPLAY_NONE_MATCHER);
+        \assert($elementsWithStyleDisplayNone instanceof \DOMNodeList);
         if ($elementsWithStyleDisplayNone->length === 0) {
             return $this;
         }
 
         foreach ($elementsWithStyleDisplayNone as $element) {
+            \assert($element instanceof \DOMElement);
             $parentNode = $element->parentNode;
-            if ($parentNode !== null) {
+            if ($parentNode instanceof \DOMElement) {
                 $parentNode->removeChild($element);
             }
         }
