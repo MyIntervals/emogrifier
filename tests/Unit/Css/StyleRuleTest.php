@@ -6,7 +6,7 @@ namespace Pelago\Emogrifier\Tests\Unit\Css;
 
 use Pelago\Emogrifier\Css\StyleRule;
 use PHPUnit\Framework\TestCase;
-use Sabberworm\CSS\Rule\Rule;
+use Sabberworm\CSS\Property\Declaration;
 use Sabberworm\CSS\RuleSet\DeclarationBlock;
 use Sabberworm\CSS\Value\RuleValueList;
 
@@ -58,7 +58,7 @@ final class StyleRuleTest extends TestCase
     public function hasAtLeastOneDeclarationForDeclarationBlockWithOneRuleReturnsTrue(): void
     {
         $declarationBlock = new DeclarationBlock();
-        $declarationBlock->addRule(new Rule('color: black;'));
+        $declarationBlock->addDeclaration(new Declaration('color: black;'));
         $styleRule = new StyleRule($declarationBlock, '');
 
         self::assertTrue($styleRule->hasAtLeastOneDeclaration());
@@ -85,21 +85,21 @@ final class StyleRuleTest extends TestCase
     /**
      * @test
      *
-     * @param list<array{property: non-empty-string, value: non-empty-string}> $declarations
+     * @param list<array{property: non-empty-string, value: non-empty-string}> $declarationsData
      *
      * @dataProvider provideDeclarations
      */
     public function getDeclarationsAsTextReturnsConcatenatedDeclarationsFromRules(
-        array $declarations,
+        array $declarationsData,
         string $expected
     ): void {
         $declarationBlock = new DeclarationBlock();
-        foreach ($declarations as $declaration) {
-            $rule = new Rule($declaration['property']);
+        foreach ($declarationsData as $declarationData) {
+            $declaration = new Declaration($declarationData['property']);
             $value = new RuleValueList();
-            $value->addListComponent($declaration['value']);
-            $rule->setValue($value);
-            $declarationBlock->addRule($rule);
+            $value->addListComponent($declarationData['value']);
+            $declaration->setValue($value);
+            $declarationBlock->addDeclaration($declaration);
         }
         $styleRule = new StyleRule($declarationBlock, '');
 

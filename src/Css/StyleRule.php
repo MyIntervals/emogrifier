@@ -35,14 +35,16 @@ final class StyleRule
     }
 
     /**
-     * @return array<non-empty-string> the selectors, e.g. `["h1", "p"]`
+     * @return list<non-empty-string> the selectors, e.g. `["h1", "p"]`
      */
     public function getSelectors(): array
     {
         $selectors = $this->declarationBlock->getSelectors();
         return \array_map(
             static function (Selector $selector): string {
-                return $selector->getSelector();
+                $renderedSelector = $selector->render(OutputFormat::createCompact());
+                \assert($renderedSelector !== '');
+                return $renderedSelector;
             },
             $selectors
         );
@@ -53,14 +55,14 @@ final class StyleRule
      */
     public function getDeclarationsAsText(): string
     {
-        $rules = $this->declarationBlock->getRules();
-        $renderedRules = [];
+        $declarations = $this->declarationBlock->getDeclarations();
+        $renderedDeclarations = [];
         $outputFormat = OutputFormat::create();
-        foreach ($rules as $rule) {
-            $renderedRules[] = $rule->render($outputFormat);
+        foreach ($declarations as $declaration) {
+            $renderedDeclarations[] = $declaration->render($outputFormat);
         }
 
-        return \implode(' ', $renderedRules);
+        return \implode(' ', $renderedDeclarations);
     }
 
     /**
@@ -68,7 +70,7 @@ final class StyleRule
      */
     public function hasAtLeastOneDeclaration(): bool
     {
-        return $this->declarationBlock->getRules() !== [];
+        return $this->declarationBlock->getDeclarations() !== [];
     }
 
     /**

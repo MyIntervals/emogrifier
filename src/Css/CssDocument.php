@@ -177,8 +177,8 @@ final class CssDocument
                 break;
             case 'font-face':
                 $result = $rule instanceof CssRuleSet
-                    && $rule->getRules('font-family') !== []
-                    && $rule->getRules('src') !== [];
+                    && $rule->getDeclarations('font-family') !== []
+                    && $rule->getDeclarations('src') !== [];
                 break;
             default:
                 $result = true;
