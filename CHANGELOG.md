@@ -12,7 +12,7 @@ Please also have a look at our
 
 ### Changed
 
-- Require `sabberworm/php-css-parser` >= 9.2.0 (#1575, #1582)
+- Require `sabberworm/php-css-parser` >= 9.3.0 (#1575, #1582, #1583)
 
 ### Deprecated
 
