@@ -80,7 +80,7 @@ final class CssConcatenator
         $lastRuleBlock = \end($ruleBlocks);
 
         $hasSameDeclarationsAsLastRule = ($lastRuleBlock  instanceof RuleSet)
-            && $declarationsBlock === $lastRuleBlock->getDeclarationsBlock();
+            && $declarationsBlock === $lastRuleBlock->getDeclarationBlock();
         if ($hasSameDeclarationsAsLastRule) {
             $lastRuleBlock->addSelectorsAsKeys($selectorsAsKeys);
         } else {
@@ -88,12 +88,12 @@ final class CssConcatenator
             $hasSameSelectorsAsLastRule = ($lastRuleBlock instanceof RuleSet)
                 && self::hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlockSelectors);
             if ($hasSameSelectorsAsLastRule) {
-                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationsBlock()), ';');
-                $lastRuleBlock->setDeclarationsBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
+                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationBlock()), ';');
+                $lastRuleBlock->setDeclarationBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
             } else {
                 $ruleBlock = new RuleSet();
                 $ruleBlock->setSelectorsAsKeys($selectorsAsKeys);
-                $ruleBlock->setDeclarationsBlock($declarationsBlock);
+                $ruleBlock->setDeclarationBlock($declarationsBlock);
                 $mediaRule->ruleBlocks[] = $ruleBlock;
             }
         }
@@ -164,7 +164,7 @@ final class CssConcatenator
     {
         $selectorsAsKeys = $ruleBlock->getSelectorsAsKeys();
         $selectors = \array_keys($selectorsAsKeys);
-        $declarationsBlock = $ruleBlock->getDeclarationsBlock();
+        $declarationsBlock = $ruleBlock->getDeclarationBlock();
 
         return \implode(',', $selectors) . '{' . $declarationsBlock . '}';
     }

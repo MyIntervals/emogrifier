@@ -19,7 +19,7 @@ final class RuleSet
     /**
      * @var string
      */
-    private $declarationsBlock = '';
+    private $declarationBlock = '';
 
     /**
      * @return array<string, array-key>
@@ -45,13 +45,13 @@ final class RuleSet
         $this->selectorsAsKeys += $selectorsAsKeys;
     }
 
-    public function getDeclarationsBlock(): string
+    public function getDeclarationBlock(): string
     {
-        return $this->declarationsBlock;
+        return $this->declarationBlock;
     }
 
-    public function setDeclarationsBlock(string $declarationsBlock): void
+    public function setDeclarationBlock(string $declarationBlock): void
     {
-        $this->declarationsBlock = $declarationsBlock;
+        $this->declarationBlock = $declarationBlock;
     }
 }

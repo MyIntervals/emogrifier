@@ -90,19 +90,19 @@ final class RuleSetTest extends TestCase
     /**
      * @test
      */
-    public function getDeclarationsBlockInitiallyReturnsEmptyString(): void
+    public function getDeclarationBlockInitiallyReturnsEmptyString(): void
     {
-        self::assertSame('', $this->subject->getDeclarationsBlock());
+        self::assertSame('', $this->subject->getDeclarationBlock());
     }
 
     /**
      * @test
      */
-    public function setDeclarationsBlockSetsDeclarationsBlock(): void
+    public function setDeclarationBlockSetsDeclarationBlock(): void
     {
         $value = 'Club-Mate';
-        $this->subject->setDeclarationsBlock($value);
+        $this->subject->setDeclarationBlock($value);
 
-        self::assertSame($value, $this->subject->getDeclarationsBlock());
+        self::assertSame($value, $this->subject->getDeclarationBlock());
     }
 }
