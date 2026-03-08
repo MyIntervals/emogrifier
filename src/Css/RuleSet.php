@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Css;
 
 /**
+ * This class represents a CSS rule set as defined in the specs: https://drafts.csswg.org/css2/#rule-sets
+ *
  * @internal
  */
 final class RuleSet
