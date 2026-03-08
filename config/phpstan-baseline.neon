@@ -49,19 +49,7 @@ parameters:
 			path: ../src/HtmlProcessor/HtmlPruner.php
 
 		-
-			message: '#^Property object\{media\: string, ruleBlocks\: list\<object\{selectorsAsKeys\: array\<string, \(int\|string\)\>, declarationsBlock\: string\}\>\}\:\:\$ruleBlocks is not writable\.$#'
-			identifier: assign.propertyReadOnly
-			count: 1
-			path: ../src/Utilities/CssConcatenator.php
-
-		-
-			message: '#^Property object\{selectorsAsKeys\: array\<string, \(int\|string\)\>, declarationsBlock\: string\}\:\:\$declarationsBlock is not writable\.$#'
-			identifier: assign.propertyReadOnly
-			count: 1
-			path: ../src/Utilities/CssConcatenator.php
-
-		-
-			message: '#^Property object\{selectorsAsKeys\: array\<string, \(int\|string\)\>, declarationsBlock\: string\}\:\:\$selectorsAsKeys is not writable\.$#'
+			message: '#^Property object\{media\: string, ruleBlocks\: list\<Pelago\\Emogrifier\\Css\\RuleBlock\>\}\:\:\$ruleBlocks is not writable\.$#'
 			identifier: assign.propertyReadOnly
 			count: 1
 			path: ../src/Utilities/CssConcatenator.php

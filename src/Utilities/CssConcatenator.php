@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Utilities;
 
+use Pelago\Emogrifier\Css\RuleBlock;
+
 /**
  * Facilitates building a CSS string by appending rule blocks one at a time, checking whether the media query,
  * selectors, or declarations block are the same as those from the preceding block and combining blocks in such cases.
@@ -50,16 +52,11 @@ final class CssConcatenator
      * Array of media rules in order.  Each element is an object with the following properties:
      * - `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
      *   rules not within a media query block;
-     * - `ruleBlocks` - Array of rule blocks in order, where each element is an object with the following properties:
-     *   - `selectorsAsKeys` - Array whose keys are selectors for the rule block (values are of no significance);
-     *   - `declarationsBlock` - The property declarations, e.g. `margin-top: 0.5em; padding: 0`.
+     * - `ruleBlocks` - Array of rule blocks in order
      *
      * @var list<object{
      *   media: string,
-     *   ruleBlocks: list<object{
-     *     selectorsAsKeys: array<non-empty-string, array-key>,
-     *     declarationsBlock: string
-     *   }>
+     *   ruleBlocks: list<RuleBlock>
      * }>
      */
     private $mediaRules = [];
@@ -82,19 +79,22 @@ final class CssConcatenator
         $ruleBlocks = $mediaRule->ruleBlocks;
         $lastRuleBlock = \end($ruleBlocks);
 
-        $hasSameDeclarationsAsLastRule = \is_object($lastRuleBlock)
-            && $declarationsBlock === $lastRuleBlock->declarationsBlock;
+        $hasSameDeclarationsAsLastRule = ($lastRuleBlock  instanceof RuleBlock)
+            && $declarationsBlock === $lastRuleBlock->getDeclarationsBlock();
         if ($hasSameDeclarationsAsLastRule) {
-            $lastRuleBlock->selectorsAsKeys += $selectorsAsKeys;
+            $lastRuleBlock->addSelectorsAsKeys($selectorsAsKeys);
         } else {
-            $lastRuleBlockSelectors = \is_object($lastRuleBlock) ? $lastRuleBlock->selectorsAsKeys : [];
-            $hasSameSelectorsAsLastRule = \is_object($lastRuleBlock)
+            $lastRuleBlockSelectors = ($lastRuleBlock instanceof RuleBlock) ? $lastRuleBlock->getSelectorsAsKeys() : [];
+            $hasSameSelectorsAsLastRule = ($lastRuleBlock instanceof RuleBlock)
                 && self::hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlockSelectors);
             if ($hasSameSelectorsAsLastRule) {
-                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->declarationsBlock), ';');
-                $lastRuleBlock->declarationsBlock = $lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock;
+                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationsBlock()), ';');
+                $lastRuleBlock->setDeclarationsBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
             } else {
-                $mediaRule->ruleBlocks[] = (object) \compact('selectorsAsKeys', 'declarationsBlock');
+                $ruleBlock = new RuleBlock();
+                $ruleBlock->setSelectorsAsKeys($selectorsAsKeys);
+                $ruleBlock->setDeclarationsBlock($declarationsBlock);
+                $mediaRule->ruleBlocks[] = $ruleBlock;
             }
         }
     }
@@ -110,10 +110,7 @@ final class CssConcatenator
      *
      * @return object{
      *           media: string,
-     *           ruleBlocks: list<object{
-     *             selectorsAsKeys: array<non-empty-string, array-key>,
-     *             declarationsBlock: string
-     *           }>
+     *           ruleBlocks: list<RuleBlock>
      *         }
      */
     private function getOrCreateMediaRuleToAppendTo(string $media): object
@@ -148,10 +145,7 @@ final class CssConcatenator
     /**
      * @param object{
      *          media: string,
-     *          ruleBlocks: array<int, object{
-     *            selectorsAsKeys: array<string, array-key>,
-     *            declarationsBlock: string
-     *          }>
+     *          ruleBlocks: array<int, RuleBlock>
      *        } $mediaRule
      */
     private static function getMediaRuleCss(object $mediaRule): string
@@ -166,14 +160,11 @@ final class CssConcatenator
         return $css;
     }
 
-    /**
-     * @param object{selectorsAsKeys: array<string, array-key>, declarationsBlock: string} $ruleBlock
-     */
-    private static function getRuleBlockCss(object $ruleBlock): string
+    private static function getRuleBlockCss(RuleBlock $ruleBlock): string
     {
-        $selectorsAsKeys = $ruleBlock->selectorsAsKeys;
+        $selectorsAsKeys = $ruleBlock->getSelectorsAsKeys();
         $selectors = \array_keys($selectorsAsKeys);
-        $declarationsBlock = $ruleBlock->declarationsBlock;
+        $declarationsBlock = $ruleBlock->getDeclarationsBlock();
 
         return \implode(',', $selectors) . '{' . $declarationsBlock . '}';
     }
