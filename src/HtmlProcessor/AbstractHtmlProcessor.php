@@ -59,7 +59,7 @@ abstract class AbstractHtmlProcessor
      *
      * Please use `::fromHtml` or `::fromDomDocument` instead.
      */
-    private function __construct() {}
+    final private function __construct() {}
 
     /**
      * Builds a new instance from the given HTML.
