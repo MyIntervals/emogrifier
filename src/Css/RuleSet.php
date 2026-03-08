@@ -7,7 +7,7 @@ namespace Pelago\Emogrifier\Css;
 /**
  * @internal
  */
-final class RuleBlock
+final class RuleSet
 {
     /**
      * @var array<string, array-key>

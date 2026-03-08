@@ -4,22 +4,22 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\Css;
 
-use Pelago\Emogrifier\Css\RuleBlock;
+use Pelago\Emogrifier\Css\RuleSet;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @covers \Pelago\Emogrifier\Css\RuleBlock
+ * @covers \Pelago\Emogrifier\Css\RuleSet
  */
-final class RuleBlockTest extends TestCase
+final class RuleSetTest extends TestCase
 {
     /**
-     * @var RuleBlock
+     * @var RuleSet
      */
     private $subject;
 
     protected function setUp(): void
     {
-        $this->subject = new RuleBlock();
+        $this->subject = new RuleSet();
     }
 
     /**
