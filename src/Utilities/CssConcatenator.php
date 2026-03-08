@@ -79,7 +79,7 @@ final class CssConcatenator
         $ruleBlocks = $mediaRule->ruleBlocks;
         $lastRuleBlock = \end($ruleBlocks);
 
-        $hasSameDeclarationsAsLastRule = ($lastRuleBlock  instanceof RuleSet)
+        $hasSameDeclarationsAsLastRule = ($lastRuleBlock instanceof RuleSet)
             && $declarationsBlock === $lastRuleBlock->getDeclarationBlock();
         if ($hasSameDeclarationsAsLastRule) {
             $lastRuleBlock->addSelectorsAsKeys($selectorsAsKeys);
