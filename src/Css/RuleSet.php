@@ -24,7 +24,7 @@ final class RuleSet
     /**
      * @param array<string, array-key> $selectorsAsKeys
      */
-    public function __construct(array $selectorsAsKeys = [], string $declarationBlock = '')
+    public function __construct(array $selectorsAsKeys, string $declarationBlock)
     {
         $this->selectorsAsKeys = $selectorsAsKeys;
         $this->declarationBlock = $declarationBlock;
