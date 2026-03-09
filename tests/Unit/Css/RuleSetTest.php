@@ -27,19 +27,6 @@ final class RuleSetTest extends TestCase
     /**
      * @test
      */
-    public function setSelectorsAsKeysSetSelectorsAsKeys(): void
-    {
-        $subject = new RuleSet([], 'foo');
-
-        $selectorsAsKeys = ['foo' => 'bar'];
-        $subject->setSelectorsAsKeys($selectorsAsKeys);
-
-        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
-    }
-
-    /**
-     * @test
-     */
     public function addSelectorsAsKeysWithEmptyArrayKeepsSelectorsAsKeyUnchanged(): void
     {
         $selectorsAsKeys = ['foo' => 'bar'];

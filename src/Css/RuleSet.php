@@ -41,14 +41,6 @@ final class RuleSet
     /**
      * @param array<string, array-key> $selectorsAsKeys
      */
-    public function setSelectorsAsKeys(array $selectorsAsKeys): void
-    {
-        $this->selectorsAsKeys = $selectorsAsKeys;
-    }
-
-    /**
-     * @param array<string, array-key> $selectorsAsKeys
-     */
     public function addSelectorsAsKeys(array $selectorsAsKeys): void
     {
         $this->selectorsAsKeys += $selectorsAsKeys;
