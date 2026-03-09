@@ -13,31 +13,13 @@ use PHPUnit\Framework\TestCase;
 final class RuleSetTest extends TestCase
 {
     /**
-     * @var RuleSet
-     */
-    private $subject;
-
-    protected function setUp(): void
-    {
-        $this->subject = new RuleSet();
-    }
-
-    /**
-     * @test
-     */
-    public function getSelectorsAsKeysByDefaultReturnsEmptyArray(): void
-    {
-        self::assertSame([], $this->subject->getSelectorsAsKeys());
-    }
-
-    /**
      * @test
      */
     public function getSelectorsAsKeysReturnsSelectorsProvidedToConstructor(): void
     {
         $selectorsAsKeys = ['foo' => 'bar'];
 
-        $subject = new RuleSet($selectorsAsKeys);
+        $subject = new RuleSet($selectorsAsKeys, 'foo');
 
         self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
     }
@@ -47,11 +29,12 @@ final class RuleSetTest extends TestCase
      */
     public function setSelectorsAsKeysSetSelectorsAsKeys(): void
     {
+        $subject = new RuleSet([], 'foo');
+
         $selectorsAsKeys = ['foo' => 'bar'];
+        $subject->setSelectorsAsKeys($selectorsAsKeys);
 
-        $this->subject->setSelectorsAsKeys($selectorsAsKeys);
-
-        self::assertSame($selectorsAsKeys, $this->subject->getSelectorsAsKeys());
+        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
     }
 
     /**
@@ -60,11 +43,11 @@ final class RuleSetTest extends TestCase
     public function addSelectorsAsKeysWithEmptyArrayKeepsSelectorsAsKeyUnchanged(): void
     {
         $selectorsAsKeys = ['foo' => 'bar'];
-        $this->subject->setSelectorsAsKeys($selectorsAsKeys);
+        $subject = new RuleSet($selectorsAsKeys, 'foo');
 
-        $this->subject->addSelectorsAsKeys([]);
+        $subject->addSelectorsAsKeys([]);
 
-        self::assertSame($selectorsAsKeys, $this->subject->getSelectorsAsKeys());
+        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
     }
 
     /**
@@ -72,16 +55,16 @@ final class RuleSetTest extends TestCase
      */
     public function addSelectorsAsKeysWithNewArrayKeysAddsThem(): void
     {
-        $this->subject->setSelectorsAsKeys(['foo' => 'bar']);
+        $subject = new RuleSet(['foo' => 'bar'], 'foo');
 
-        $this->subject->addSelectorsAsKeys(['good' => 'morning']);
+        $subject->addSelectorsAsKeys(['good' => 'morning']);
 
         self::assertSame(
             [
                 'foo' => 'bar',
                 'good' => 'morning',
             ],
-            $this->subject->getSelectorsAsKeys()
+            $subject->getSelectorsAsKeys()
         );
     }
 
@@ -91,20 +74,12 @@ final class RuleSetTest extends TestCase
     public function addSelectorsAsKeysWithExistingArrayKeysKeepsExistingElements(): void
     {
         $existingSelectorsAsKeys = ['foo' => 'bar'];
-        $this->subject->setSelectorsAsKeys($existingSelectorsAsKeys);
+        $subject = new RuleSet($existingSelectorsAsKeys, 'foo');
 
         $newSelectorsAsKeys = ['foo' => 'tea'];
-        $this->subject->addSelectorsAsKeys($newSelectorsAsKeys);
+        $subject->addSelectorsAsKeys($newSelectorsAsKeys);
 
-        self::assertSame($existingSelectorsAsKeys, $this->subject->getSelectorsAsKeys());
-    }
-
-    /**
-     * @test
-     */
-    public function getDeclarationBlockInitiallyReturnsEmptyString(): void
-    {
-        self::assertSame('', $this->subject->getDeclarationBlock());
+        self::assertSame($existingSelectorsAsKeys, $subject->getSelectorsAsKeys());
     }
 
     /**
@@ -124,9 +99,11 @@ final class RuleSetTest extends TestCase
      */
     public function setDeclarationBlockSetsDeclarationBlock(): void
     {
-        $value = 'Club-Mate';
-        $this->subject->setDeclarationBlock($value);
+        $subject = new RuleSet(['foo' => 'bar'], 'foo');
 
-        self::assertSame($value, $this->subject->getDeclarationBlock());
+        $value = 'Club-Mate';
+        $subject->setDeclarationBlock($value);
+
+        self::assertSame($value, $subject->getDeclarationBlock());
     }
 }
