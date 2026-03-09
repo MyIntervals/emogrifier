@@ -472,6 +472,7 @@ final class CssInliner extends AbstractHtmlProcessor
 
         $css = '';
         foreach ($styleNodes as $styleNode) {
+            \assert($styleNode instanceof \DOMNode);
             if (\is_string($styleNode->nodeValue)) {
                 $css .= "\n\n" . $styleNode->nodeValue;
             }
