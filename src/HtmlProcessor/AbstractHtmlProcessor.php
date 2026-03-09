@@ -149,9 +149,7 @@ abstract class AbstractHtmlProcessor
      */
     public function render(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getHtml();
-
-        return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
+        return $this->getHtml();
     }
 
     /**
@@ -161,8 +159,7 @@ abstract class AbstractHtmlProcessor
      */
     public function renderBodyContent(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getHtml($this->getBodyElement());
-        $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
+        $bodyNodeHtml = $this->getHtml($this->getBodyElement());
 
         return preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
     }
@@ -179,7 +176,7 @@ abstract class AbstractHtmlProcessor
         if (!\is_string($html)) {
             throw new \RuntimeException('`DOMDocument::saveHTML()` failed.', 1773018082);
         }
-        return $html;
+        return $this->removeSelfClosingTagsClosingTags($html);
     }
 
     /**
