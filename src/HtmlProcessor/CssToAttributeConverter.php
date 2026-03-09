@@ -173,7 +173,6 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
     private function mapBackgroundProperty(\DOMElement $node, string $value): void
     {
         // parse out the color, if any
-        /** @var array<int, string> $styles */
         $styles = \explode(' ', $value, 2);
         $first = $styles[0];
         if (\is_numeric($first[0]) || \strncmp($first, 'url', 3) === 0) {
