@@ -144,23 +144,39 @@ abstract class AbstractHtmlProcessor
 
     /**
      * Renders the normalized and processed HTML.
+     *
+     * @throws \RuntimeException if there is an internal error with `DOMDocument`
      */
     public function render(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML();
-
-        return $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
+        return $this->getHtml();
     }
 
     /**
      * Renders the content of the BODY element of the normalized and processed HTML.
+     *
+     * @throws \RuntimeException if there is an internal error with `DOMDocument`
      */
     public function renderBodyContent(): string
     {
-        $htmlWithPossibleErroneousClosingTags = $this->getDomDocument()->saveHTML($this->getBodyElement());
-        $bodyNodeHtml = $this->removeSelfClosingTagsClosingTags($htmlWithPossibleErroneousClosingTags);
+        $bodyNodeHtml = $this->getHtml($this->getBodyElement());
 
         return preg_replace('%</?+body(?:\\s[^>]*+)?+>%', '', $bodyNodeHtml);
+    }
+
+    /**
+     * @param ?\DOMNode $node optional parameter to output a subset of the document
+     *
+     * @throws \RuntimeException if there is an internal error with `DOMDocument`
+     */
+    private function getHtml(?\DOMNode $node = null): string
+    {
+        $html = $this->getDomDocument()->saveHTML($node);
+
+        if (!\is_string($html)) {
+            throw new \RuntimeException('`DOMDocument::saveHTML()` failed.', 1773018082);
+        }
+        return $this->removeSelfClosingTagsClosingTags($html);
     }
 
     /**
