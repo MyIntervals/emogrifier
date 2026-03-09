@@ -91,10 +91,7 @@ final class CssConcatenator
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationBlock()), ';');
                 $lastRuleBlock->setDeclarationBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
             } else {
-                $ruleBlock = new RuleSet();
-                $ruleBlock->setSelectorsAsKeys($selectorsAsKeys);
-                $ruleBlock->setDeclarationBlock($declarationsBlock);
-                $mediaRule->ruleBlocks[] = $ruleBlock;
+                $mediaRule->ruleBlocks[] = new RuleSet($selectorsAsKeys, $declarationsBlock);
             }
         }
     }

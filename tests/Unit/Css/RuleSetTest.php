@@ -33,6 +33,18 @@ final class RuleSetTest extends TestCase
     /**
      * @test
      */
+    public function getSelectorsAsKeysReturnsSelectorsProvidedToConstructor(): void
+    {
+        $selectorsAsKeys = ['foo' => 'bar'];
+
+        $subject = new RuleSet($selectorsAsKeys);
+
+        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
+    }
+
+    /**
+     * @test
+     */
     public function setSelectorsAsKeysSetSelectorsAsKeys(): void
     {
         $selectorsAsKeys = ['foo' => 'bar'];
@@ -93,6 +105,18 @@ final class RuleSetTest extends TestCase
     public function getDeclarationBlockInitiallyReturnsEmptyString(): void
     {
         self::assertSame('', $this->subject->getDeclarationBlock());
+    }
+
+    /**
+     * @test
+     */
+    public function getDeclarationBlockReturnsDeclarationBlockProvidedToConstructor(): void
+    {
+        $value = 'Club-Mate';
+
+        $subject = new RuleSet([], $value);
+
+        self::assertSame($value, $subject->getDeclarationBlock());
     }
 
     /**

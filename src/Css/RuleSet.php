@@ -14,12 +14,21 @@ final class RuleSet
     /**
      * @var array<string, array-key>
      */
-    private $selectorsAsKeys = [];
+    private $selectorsAsKeys;
 
     /**
      * @var string
      */
-    private $declarationBlock = '';
+    private $declarationBlock;
+
+    /**
+     * @param array<string, array-key> $selectorsAsKeys
+     */
+    public function __construct(array $selectorsAsKeys = [], string $declarationBlock = '')
+    {
+        $this->selectorsAsKeys = $selectorsAsKeys;
+        $this->declarationBlock = $declarationBlock;
+    }
 
     /**
      * @return array<string, array-key>
