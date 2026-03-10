@@ -12,7 +12,7 @@ namespace Pelago\Emogrifier\Css;
 final class RuleSet
 {
     /**
-     * @var array<string, array-key>
+     * @var array<non-empty-string, int<0, max>>
      */
     private $selectorsAsKeys;
 
@@ -22,7 +22,7 @@ final class RuleSet
     private $declarationBlock;
 
     /**
-     * @param array<string> $selectors
+     * @param list<non-empty-string> $selectors
      */
     public function __construct(array $selectors, string $declarationBlock)
     {
@@ -31,7 +31,7 @@ final class RuleSet
     }
 
     /**
-     * @return list<string>
+     * @return list<non-empty-string>
      */
     public function getSelectors(): array
     {
@@ -39,7 +39,7 @@ final class RuleSet
     }
 
     /**
-     * @param array<string> $selectors
+     * @param list<non-empty-string> $selectors
      */
     public function addSelectors(array $selectors): void
     {
@@ -50,7 +50,7 @@ final class RuleSet
      * Tests if a set of selectors is equivalent to those currently represented by the object
      * (i.e. the same selectors, possibly in a different order).
      *
-     * @param array<string> $selectors
+     * @param list<non-empty-string> $selectors
      */
     public function hasEquivalentSelectors(array $selectors): bool
     {
