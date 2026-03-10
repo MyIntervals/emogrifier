@@ -64,7 +64,7 @@ final class CssConcatenator
     /**
      * Appends a declaration block to the CSS.
      *
-     * @param array<array-key, string> $selectors
+     * @param non-empty-list<non-empty-string> $selectors
      *        array of selectors for the rule, e.g. `["ul", "ol", "p:first-child"]`
      * @param string $declarationsBlock
      *        the property declarations, e.g. `margin-top: 0.5em; padding: 0`
