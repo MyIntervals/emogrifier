@@ -15,58 +15,112 @@ final class RuleSetTest extends TestCase
     /**
      * @test
      */
-    public function getSelectorsAsKeysReturnsSelectorsProvidedToConstructor(): void
+    public function getSelectorsReturnsSelectorsProvidedToConstructor(): void
     {
-        $selectorsAsKeys = ['foo' => 'bar'];
+        $selectors = ['foo'];
 
-        $subject = new RuleSet($selectorsAsKeys, 'foo');
+        $subject = new RuleSet($selectors, 'foo');
 
-        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
+        self::assertSame($selectors, $subject->getSelectors());
     }
 
     /**
      * @test
      */
-    public function addSelectorsAsKeysWithEmptyArrayKeepsSelectorsAsKeyUnchanged(): void
+    public function addSelectorsWithEmptyArrayKeepsSelectorsUnchanged(): void
     {
-        $selectorsAsKeys = ['foo' => 'bar'];
-        $subject = new RuleSet($selectorsAsKeys, 'foo');
+        $selectors = ['foo'];
+        $subject = new RuleSet($selectors, 'foo');
 
-        $subject->addSelectorsAsKeys([]);
+        $subject->addSelectors([]);
 
-        self::assertSame($selectorsAsKeys, $subject->getSelectorsAsKeys());
+        self::assertSame($selectors, $subject->getSelectors());
     }
 
     /**
      * @test
      */
-    public function addSelectorsAsKeysWithNewArrayKeysAddsThem(): void
+    public function addSelectorsWithNewSelectorsAddsThem(): void
     {
-        $subject = new RuleSet(['foo' => 'bar'], 'foo');
+        $subject = new RuleSet(['foo'], 'foo');
 
-        $subject->addSelectorsAsKeys(['good' => 'morning']);
+        $subject->addSelectors(['good']);
 
-        self::assertSame(
-            [
-                'foo' => 'bar',
-                'good' => 'morning',
-            ],
-            $subject->getSelectorsAsKeys()
-        );
+        self::assertSame(['foo', 'good'], $subject->getSelectors());
     }
 
     /**
      * @test
      */
-    public function addSelectorsAsKeysWithExistingArrayKeysKeepsExistingElements(): void
+    public function addSelectorsWithExistingSelectorsKeepsExistingElements(): void
     {
-        $existingSelectorsAsKeys = ['foo' => 'bar'];
-        $subject = new RuleSet($existingSelectorsAsKeys, 'foo');
+        $existingSelectors = ['foo'];
+        $subject = new RuleSet($existingSelectors, 'foo');
 
-        $newSelectorsAsKeys = ['foo' => 'tea'];
-        $subject->addSelectorsAsKeys($newSelectorsAsKeys);
+        $newSelectors = ['foo'];
+        $subject->addSelectors($newSelectors);
 
-        self::assertSame($existingSelectorsAsKeys, $subject->getSelectorsAsKeys());
+        self::assertSame($existingSelectors, $subject->getSelectors());
+    }
+
+    /**
+     * @return array<non-empty-string, array{0: list<non-empty-string>, 1: list<non-empty-string>}>
+     */
+    public static function provideEquivalentSelectors(): array
+    {
+        return [
+            'no selectors' => [[], []],
+            'one selector' => [['p'], ['p']],
+            'two selectors in same order' => [['h1', 'p'], ['h1', 'p']],
+            'two selectors in different order' => [['h1', 'p'], ['p', 'h1']],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param list<non-empty-string> $selectors1
+     * @param list<non-empty-string> $selectors2
+     *
+     * @dataProvider provideEquivalentSelectors
+     */
+    public function hasEquivalentSelectorsReturnsTrueForEquivalentSelectors(array $selectors1, array $selectors2): void
+    {
+        $subject = new RuleSet($selectors1, 'foo');
+
+        self::assertTrue($subject->hasEquivalentSelectors($selectors2));
+    }
+
+    /**
+     * @return array<non-empty-string, array{0: list<non-empty-string>, 1: list<non-empty-string>}>
+     */
+    public static function provideNonEquivalentSelectors(): array
+    {
+        return [
+            'no selectors and one selector' => [[], ['p']],
+            'one selector and no selectors' => [['p'], []],
+            'one selector and two selectors including a match' => [['p'], ['h1', 'p']],
+            'two selectors and one selector including a match' => [['h1', 'p'], ['p']],
+            'one selector and one different selector' => [['h1'], ['p']],
+            'two selectors and two selectors one of which is different' => [['h1', 'p'], ['h2', 'p']],
+        ];
+    }
+
+    /**
+     * @test
+     *
+     * @param list<non-empty-string> $selectors1
+     * @param list<non-empty-string> $selectors2
+     *
+     * @dataProvider provideNonEquivalentSelectors
+     */
+    public function hasEquivalentSelectorsReturnsFalseForNonEquivalentSelectors(
+        array $selectors1,
+        array $selectors2
+    ): void {
+        $subject = new RuleSet($selectors1, 'foo');
+
+        self::assertFalse($subject->hasEquivalentSelectors($selectors2));
     }
 
     /**
@@ -86,7 +140,7 @@ final class RuleSetTest extends TestCase
      */
     public function setDeclarationBlockSetsDeclarationBlock(): void
     {
-        $subject = new RuleSet(['foo' => 'bar'], 'foo');
+        $subject = new RuleSet(['foo'], 'foo');
 
         $value = 'Club-Mate';
         $subject->setDeclarationBlock($value);
