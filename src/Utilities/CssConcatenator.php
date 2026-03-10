@@ -73,8 +73,6 @@ final class CssConcatenator
      */
     public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
-        $selectorsAsKeys = \array_flip($selectors);
-
         $mediaRule = $this->getOrCreateMediaRuleToAppendTo($media);
         $ruleBlocks = $mediaRule->ruleBlocks;
         $lastRuleBlock = \end($ruleBlocks);
@@ -82,16 +80,15 @@ final class CssConcatenator
         $hasSameDeclarationsAsLastRule = ($lastRuleBlock instanceof RuleSet)
             && $declarationsBlock === $lastRuleBlock->getDeclarationBlock();
         if ($hasSameDeclarationsAsLastRule) {
-            $lastRuleBlock->addSelectorsAsKeys($selectorsAsKeys);
+            $lastRuleBlock->addSelectors($selectors);
         } else {
-            $lastRuleBlockSelectors = ($lastRuleBlock instanceof RuleSet) ? $lastRuleBlock->getSelectorsAsKeys() : [];
             $hasSameSelectorsAsLastRule = ($lastRuleBlock instanceof RuleSet)
-                && self::hasEquivalentSelectors($selectorsAsKeys, $lastRuleBlockSelectors);
+                && $lastRuleBlock->hasEquivalentSelectors($selectors);
             if ($hasSameSelectorsAsLastRule) {
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationBlock()), ';');
                 $lastRuleBlock->setDeclarationBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
             } else {
-                $mediaRule->ruleBlocks[] = new RuleSet($selectorsAsKeys, $declarationsBlock);
+                $mediaRule->ruleBlocks[] = new RuleSet($selectors, $declarationsBlock);
             }
         }
     }
@@ -127,19 +124,6 @@ final class CssConcatenator
     }
 
     /**
-     * Tests if two sets of selectors are equivalent (i.e. the same selectors, possibly in a different order).
-     *
-     * @param array<string, array-key> $selectorsAsKeys1
-     *        array in which the selectors are the keys, and the values are of no significance
-     * @param array<string, array-key> $selectorsAsKeys2 another such array
-     */
-    private static function hasEquivalentSelectors(array $selectorsAsKeys1, array $selectorsAsKeys2): bool
-    {
-        return \count($selectorsAsKeys1) === \count($selectorsAsKeys2)
-            && \count($selectorsAsKeys1) === \count($selectorsAsKeys1 + $selectorsAsKeys2);
-    }
-
-    /**
      * @param object{
      *          media: string,
      *          ruleBlocks: array<int, RuleSet>
@@ -159,8 +143,7 @@ final class CssConcatenator
 
     private static function getRuleBlockCss(RuleSet $ruleBlock): string
     {
-        $selectorsAsKeys = $ruleBlock->getSelectorsAsKeys();
-        $selectors = \array_keys($selectorsAsKeys);
+        $selectors = $ruleBlock->getSelectors();
         $declarationsBlock = $ruleBlock->getDeclarationBlock();
 
         return \implode(',', $selectors) . '{' . $declarationsBlock . '}';

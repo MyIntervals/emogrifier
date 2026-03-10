@@ -22,28 +22,41 @@ final class RuleSet
     private $declarationBlock;
 
     /**
-     * @param array<string, array-key> $selectorsAsKeys
+     * @param array<string> $selectors
      */
-    public function __construct(array $selectorsAsKeys, string $declarationBlock)
+    public function __construct(array $selectors, string $declarationBlock)
     {
-        $this->selectorsAsKeys = $selectorsAsKeys;
+        $this->selectorsAsKeys = \array_flip($selectors);
         $this->declarationBlock = $declarationBlock;
     }
 
     /**
-     * @return array<string, array-key>
+     * @return list<string>
      */
-    public function getSelectorsAsKeys(): array
+    public function getSelectors(): array
     {
-        return $this->selectorsAsKeys;
+        return \array_keys($this->selectorsAsKeys);
     }
 
     /**
-     * @param array<string, array-key> $selectorsAsKeys
+     * @param array<string> $selectors
      */
-    public function addSelectorsAsKeys(array $selectorsAsKeys): void
+    public function addSelectors(array $selectors): void
     {
-        $this->selectorsAsKeys += $selectorsAsKeys;
+        $this->selectorsAsKeys += \array_flip($selectors);
+    }
+
+    /**
+     * Tests if a set of selectors is equivalent to those currently represented by the object
+     * (i.e. the same selectors, possibly in a different order).
+     *
+     * @param array<string> $selectors
+     */
+    public function hasEquivalentSelectors(array $selectors): bool
+    {
+        $selectorsAsKeys = \array_flip($selectors);
+        return \count($this->selectorsAsKeys) === \count($selectorsAsKeys)
+            && \count($this->selectorsAsKeys) === \count($this->selectorsAsKeys + $selectorsAsKeys);
     }
 
     public function getDeclarationBlock(): string
