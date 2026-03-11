@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Utilities;
 
 use Pelago\Emogrifier\Css\RuleSet;
+use Pelago\Emogrifier\Css\RuleSetList;
 
 /**
  * Facilitates building a CSS string by appending rule blocks one at a time, checking whether the media query,
@@ -49,15 +50,7 @@ use Pelago\Emogrifier\Css\RuleSet;
 final class CssConcatenator
 {
     /**
-     * Array of media rules in order.  Each element is an object with the following properties:
-     * - `media` - The media query string, e.g. `@media screen and (max-width:639px)`, or an empty string for
-     *   rules not within a media query block;
-     * - `ruleBlocks` - Array of rule blocks in order
-     *
-     * @var list<object{
-     *   media: string,
-     *   ruleBlocks: list<RuleSet>
-     * }>
+     * @var list<RuleSetList>
      */
     private $mediaRules = [];
 
@@ -74,7 +67,7 @@ final class CssConcatenator
     public function append(array $selectors, string $declarationsBlock, string $media = ''): void
     {
         $mediaRule = $this->getOrCreateMediaRuleToAppendTo($media);
-        $ruleBlocks = $mediaRule->ruleBlocks;
+        $ruleBlocks = $mediaRule->getRuleSets();
         $lastRuleBlock = \end($ruleBlocks);
 
         $hasSameDeclarationsAsLastRule = ($lastRuleBlock instanceof RuleSet)
@@ -88,7 +81,7 @@ final class CssConcatenator
                 $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationBlock()), ';');
                 $lastRuleBlock->setDeclarationBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
             } else {
-                $mediaRule->ruleBlocks[] = new RuleSet($selectors, $declarationsBlock);
+                $mediaRule->appendRuleSet(new RuleSet($selectors, $declarationsBlock));
             }
         }
     }
@@ -101,39 +94,25 @@ final class CssConcatenator
     /**
      * @param string $media The media query for rules to be appended, e.g. `@media screen and (max-width:639px)`,
      *        or an empty string if none.
-     *
-     * @return object{
-     *           media: string,
-     *           ruleBlocks: list<RuleSet>
-     *         }
      */
-    private function getOrCreateMediaRuleToAppendTo(string $media): object
+    private function getOrCreateMediaRuleToAppendTo(string $media): RuleSetList
     {
         $lastMediaRule = \end($this->mediaRules);
-        if (\is_object($lastMediaRule) && $media === $lastMediaRule->media) {
+        if ($lastMediaRule instanceof RuleSetList && $media === $lastMediaRule->getAtRule()) {
             return $lastMediaRule;
         }
 
-        $newMediaRule = (object) [
-            'media' => $media,
-            'ruleBlocks' => [],
-        ];
+        $newMediaRule = new RuleSetList($media);
         $this->mediaRules[] = $newMediaRule;
 
         return $newMediaRule;
     }
 
-    /**
-     * @param object{
-     *          media: string,
-     *          ruleBlocks: array<int, RuleSet>
-     *        } $mediaRule
-     */
-    private static function getMediaRuleCss(object $mediaRule): string
+    private static function getMediaRuleCss(RuleSetList $mediaRule): string
     {
-        $ruleBlocks = $mediaRule->ruleBlocks;
+        $ruleBlocks = $mediaRule->getRuleSets();
         $css = \implode('', \array_map([self::class, 'getRuleBlockCss'], $ruleBlocks));
-        $media = $mediaRule->media;
+        $media = $mediaRule->getAtRule();
         if ($media !== '') {
             $css = $media . '{' . $css . '}';
         }
