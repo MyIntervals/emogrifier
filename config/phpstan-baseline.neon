@@ -23,9 +23,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../src/HtmlProcessor/HtmlPruner.php
-
-		-
-			message: '#^Property object\{media\: string, ruleBlocks\: list\<Pelago\\Emogrifier\\Css\\RuleSet\>\}\:\:\$ruleBlocks is not writable\.$#'
-			identifier: assign.propertyReadOnly
-			count: 1
-			path: ../src/Utilities/CssConcatenator.php
