@@ -8,8 +8,9 @@ use Pelago\Emogrifier\Css\RuleSet;
 use Pelago\Emogrifier\Css\RuleSetList;
 
 /**
- * Facilitates building a CSS string by appending rule blocks one at a time, checking whether the media query,
- * selectors, or declarations block are the same as those from the preceding block and combining blocks in such cases.
+ * Facilitates building a CSS string by appending rulesets one at a time,
+ * checking whether the enclosing at-rule (if any), selectors, or declaration block
+ * are the same as those from the preceding rule and combining rules in such cases.
  *
  * Example:
  *
@@ -50,81 +51,86 @@ use Pelago\Emogrifier\Css\RuleSetList;
 final class CssConcatenator
 {
     /**
+     * Each ruleset list will have a different at-rule.
+     * Within each list will be rulesets with different selectors or declaration blocks.
+     *
      * @var list<RuleSetList>
      */
-    private $mediaRules = [];
+    private $ruleSetLists = [];
 
     /**
-     * Appends a declaration block to the CSS.
+     * Appends a ruleset to the CSS.
      *
      * @param non-empty-list<non-empty-string> $selectors
      *        array of selectors for the rule, e.g. `["ul", "ol", "p:first-child"]`
-     * @param string $declarationsBlock
+     * @param string $declarationBlock
      *        the property declarations, e.g. `margin-top: 0.5em; padding: 0`
-     * @param string $media
-     *        the media query for the rule, e.g. `@media screen and (max-width:639px)`, or an empty string if none
+     * @param string $atRule
+     *        optional name and parameter of an enclosing at-rule, e.g. `@media screen and (max-width:639px)`;
+     *        an empty string if the ruleset is not within an at-rule
      */
-    public function append(array $selectors, string $declarationsBlock, string $media = ''): void
+    public function append(array $selectors, string $declarationBlock, string $atRule = ''): void
     {
-        $mediaRule = $this->getOrCreateMediaRuleToAppendTo($media);
-        $ruleBlocks = $mediaRule->getRuleSets();
-        $lastRuleBlock = \end($ruleBlocks);
+        $ruleSetList = $this->getOrCreateRuleSetListToAppendTo($atRule);
+        $ruleSets = $ruleSetList->getRuleSets();
+        $lastRuleSet = \end($ruleSets);
 
-        $hasSameDeclarationsAsLastRule = ($lastRuleBlock instanceof RuleSet)
-            && $declarationsBlock === $lastRuleBlock->getDeclarationBlock();
+        $hasSameDeclarationsAsLastRule = ($lastRuleSet instanceof RuleSet)
+            && $declarationBlock === $lastRuleSet->getDeclarationBlock();
         if ($hasSameDeclarationsAsLastRule) {
-            $lastRuleBlock->addSelectors($selectors);
+            $lastRuleSet->addSelectors($selectors);
         } else {
-            $hasSameSelectorsAsLastRule = ($lastRuleBlock instanceof RuleSet)
-                && $lastRuleBlock->hasEquivalentSelectors($selectors);
+            $hasSameSelectorsAsLastRule = ($lastRuleSet instanceof RuleSet)
+                && $lastRuleSet->hasEquivalentSelectors($selectors);
             if ($hasSameSelectorsAsLastRule) {
-                $lastDeclarationsBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleBlock->getDeclarationBlock()), ';');
-                $lastRuleBlock->setDeclarationBlock($lastDeclarationsBlockWithoutSemicolon . ';' . $declarationsBlock);
+                $lastDeclarationBlockWithoutSemicolon = \rtrim(\rtrim($lastRuleSet->getDeclarationBlock()), ';');
+                $lastRuleSet->setDeclarationBlock($lastDeclarationBlockWithoutSemicolon . ';' . $declarationBlock);
             } else {
-                $mediaRule->appendRuleSet(new RuleSet($selectors, $declarationsBlock));
+                $ruleSetList->appendRuleSet(new RuleSet($selectors, $declarationBlock));
             }
         }
     }
 
     public function getCss(): string
     {
-        return \implode('', \array_map([self::class, 'getMediaRuleCss'], $this->mediaRules));
+        return \implode('', \array_map([self::class, 'getRuleSetListCss'], $this->ruleSetLists));
     }
 
     /**
-     * @param string $media The media query for rules to be appended, e.g. `@media screen and (max-width:639px)`,
-     *        or an empty string if none.
+     * @param string $atRule
+     *        optional name and parameter of an enclosing at-rule, e.g. `@media screen and (max-width:639px)`;
+     *        an empty string if the rulesets to be appended are not within an at-rule
      */
-    private function getOrCreateMediaRuleToAppendTo(string $media): RuleSetList
+    private function getOrCreateRuleSetListToAppendTo(string $atRule): RuleSetList
     {
-        $lastMediaRule = \end($this->mediaRules);
-        if ($lastMediaRule instanceof RuleSetList && $media === $lastMediaRule->getAtRule()) {
-            return $lastMediaRule;
+        $lastRuleSetList = \end($this->ruleSetLists);
+        if ($lastRuleSetList instanceof RuleSetList && $atRule === $lastRuleSetList->getAtRule()) {
+            return $lastRuleSetList;
         }
 
-        $newMediaRule = new RuleSetList($media);
-        $this->mediaRules[] = $newMediaRule;
+        $newRuleSetList = new RuleSetList($atRule);
+        $this->ruleSetLists[] = $newRuleSetList;
 
-        return $newMediaRule;
+        return $newRuleSetList;
     }
 
-    private static function getMediaRuleCss(RuleSetList $mediaRule): string
+    private static function getRuleSetListCss(RuleSetList $ruleSetList): string
     {
-        $ruleBlocks = $mediaRule->getRuleSets();
-        $css = \implode('', \array_map([self::class, 'getRuleBlockCss'], $ruleBlocks));
-        $media = $mediaRule->getAtRule();
-        if ($media !== '') {
-            $css = $media . '{' . $css . '}';
+        $ruleSets = $ruleSetList->getRuleSets();
+        $css = \implode('', \array_map([self::class, 'getRuleSetCss'], $ruleSets));
+        $atRule = $ruleSetList->getAtRule();
+        if ($atRule !== '') {
+            $css = $atRule . '{' . $css . '}';
         }
 
         return $css;
     }
 
-    private static function getRuleBlockCss(RuleSet $ruleBlock): string
+    private static function getRuleSetCss(RuleSet $ruleSet): string
     {
-        $selectors = $ruleBlock->getSelectors();
-        $declarationsBlock = $ruleBlock->getDeclarationBlock();
+        $selectors = $ruleSet->getSelectors();
+        $declarationBlock = $ruleSet->getDeclarationBlock();
 
-        return \implode(',', $selectors) . '{' . $declarationsBlock . '}';
+        return \implode(',', $selectors) . '{' . $declarationBlock . '}';
     }
 }
