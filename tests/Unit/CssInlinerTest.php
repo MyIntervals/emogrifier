@@ -3922,8 +3922,7 @@ final class CssInlinerTest extends TestCase
      */
     public function inlineCssClearsDeclarationBlockParserCache(): void
     {
-        $subject = new DeclarationBlockParser();
-        $subject->parse('color: green;');
+        DeclarationBlockParser::parse('color: green;');
 
         $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
         if (\PHP_VERSION_ID < 80100) {

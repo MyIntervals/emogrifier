@@ -435,12 +435,10 @@ final class CssInliner extends AbstractHtmlProcessor
      */
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
-        $declarationBlockParser = new DeclarationBlockParser();
-
         $pattern = '/-{0,2}+[_a-zA-Z][\\w\\-]*+(?=:)/S';
         /** @param array<array-key, string> $propertyNameMatches */
-        $callback = static function (array $propertyNameMatches) use ($declarationBlockParser): string {
-            return $declarationBlockParser->normalizePropertyName($propertyNameMatches[0]);
+        $callback = static function (array $propertyNameMatches): string {
+            return DeclarationBlockParser::normalizePropertyName($propertyNameMatches[0]);
         };
         if (\function_exists('Safe\\preg_replace_callback')) {
             $normalizedOriginalStyle = preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
@@ -453,7 +451,7 @@ final class CssInliner extends AbstractHtmlProcessor
         // In order to not overwrite existing style attributes in the HTML, we have to save the original HTML styles.
         $nodePath = $node->getNodePath();
         if (\is_string($nodePath) && ($nodePath !== '') && !isset($this->styleAttributesForNodes[$nodePath])) {
-            $this->styleAttributesForNodes[$nodePath] = $declarationBlockParser->parse($normalizedOriginalStyle);
+            $this->styleAttributesForNodes[$nodePath] = DeclarationBlockParser::parse($normalizedOriginalStyle);
             $this->visitedNodes[$nodePath] = $node;
         }
 
@@ -759,8 +757,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function copyInlinableCssToStyleAttribute(\DOMElement $node, array $cssRule): void
     {
         $declarationsBlock = $cssRule['declarationsBlock'];
-        $declarationBlockParser = new DeclarationBlockParser();
-        $newStyleDeclarations = $declarationBlockParser->parse($declarationsBlock);
+        $newStyleDeclarations = DeclarationBlockParser::parse($declarationsBlock);
         if ($newStyleDeclarations === []) {
             return;
         }
@@ -768,7 +765,7 @@ final class CssInliner extends AbstractHtmlProcessor
         // if it has a style attribute, get it, process it, and append (overwrite) new stuff
         if ($node->hasAttribute('style')) {
             // break it up into an associative array
-            $oldStyleDeclarations = $declarationBlockParser->parse($node->getAttribute('style'));
+            $oldStyleDeclarations = DeclarationBlockParser::parse($node->getAttribute('style'));
         } else {
             $oldStyleDeclarations = [];
         }
@@ -816,14 +813,13 @@ final class CssInliner extends AbstractHtmlProcessor
 
         $combinedStyles = \array_merge($oldStyles, $newStyles);
 
-        $declarationBlockParser = new DeclarationBlockParser();
         $style = '';
         foreach ($combinedStyles as $attributeName => $attributeValue) {
             $trimmedAttributeName = \trim($attributeName);
             if ($trimmedAttributeName === '') {
                 throw new \UnexpectedValueException('An empty property name was encountered.', 1727046078);
             }
-            $propertyName = $declarationBlockParser->normalizePropertyName($trimmedAttributeName);
+            $propertyName = DeclarationBlockParser::normalizePropertyName($trimmedAttributeName);
             $propertyValue = \trim($attributeValue);
             $style .= $propertyName . ': ' . $propertyValue . '; ';
         }
@@ -847,10 +843,9 @@ final class CssInliner extends AbstractHtmlProcessor
      */
     private function fillStyleAttributesWithMergedStyles(): void
     {
-        $declarationBlockParser = new DeclarationBlockParser();
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
-            $currentStyleAttributes = $declarationBlockParser->parse($node->getAttribute('style'));
+            $currentStyleAttributes = DeclarationBlockParser::parse($node->getAttribute('style'));
             $node->setAttribute(
                 'style',
                 $this->generateStyleStringFromDeclarationsArrays(
@@ -887,7 +882,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function removeImportantAnnotationFromNodeInlineStyle(\DOMElement $node): void
     {
         $style = $node->getAttribute('style');
-        $inlineStyleDeclarations = (new DeclarationBlockParser())->parse((bool) $style ? $style : '');
+        $inlineStyleDeclarations = DeclarationBlockParser::parse((bool) $style ? $style : '');
         /** @var array<string, string> $regularStyleDeclarations */
         $regularStyleDeclarations = [];
         /** @var array<string, string> $importantStyleDeclarations */

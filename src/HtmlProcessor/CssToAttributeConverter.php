@@ -62,9 +62,8 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     public function convertCssToVisualAttributes(): self
     {
-        $declarationBlockParser = new DeclarationBlockParser();
         foreach ($this->getAllNodesWithStyleAttribute() as $node) {
-            $inlineStyleDeclarations = $declarationBlockParser->parse($node->getAttribute('style'));
+            $inlineStyleDeclarations = DeclarationBlockParser::parse($node->getAttribute('style'));
             $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
         }
 
