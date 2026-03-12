@@ -22,7 +22,11 @@
     <rule ref="rulesets/codesize.xml/ExcessivePublicCount"/>
     <rule ref="rulesets/codesize.xml/TooManyFields"/>
     <!--<rule ref="rulesets/codesize.xml/TooManyMethods"/>-->
-    <rule ref="rulesets/codesize.xml/TooManyPublicMethods"/>
+    <rule ref="rulesets/codesize.xml/TooManyPublicMethods">
+        <properties>
+            <property name="maxmethods" value="15" />
+        </properties>
+    </rule>
     <!--<rule ref="rulesets/codesize.xml/ExcessiveClassComplexity"/>-->
 
     <rule ref="rulesets/controversial.xml/Superglobals"/>
