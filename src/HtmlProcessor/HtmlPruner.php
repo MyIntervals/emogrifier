@@ -89,6 +89,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
         foreach ($elements as $element) {
+            /** @var list<string> */
             $elementClasses = preg_split('/\\s++/', \trim($element->getAttribute('class')));
             $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
             if ($elementClassesToKeep !== []) {

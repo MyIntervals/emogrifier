@@ -17,9 +17,3 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: ../src/HtmlProcessor/CssVariableEvaluator.php
-
-		-
-			message: '#^Parameter \#1 \$array of method Pelago\\Emogrifier\\Utilities\\ArrayIntersector\:\:intersectWith\(\) expects array\<\(int\|string\)\>, list given\.$#'
-			identifier: argument.type
-			count: 1
-			path: ../src/HtmlProcessor/HtmlPruner.php
