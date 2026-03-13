@@ -436,10 +436,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function normalizeStyleAttributes(\DOMElement $node): void
     {
         $pattern = '/-{0,2}+[_a-zA-Z][\\w\\-]*+(?=:)/S';
-        /** @param array<array-key, string> $propertyNameMatches */
-        $callback = static function (array $propertyNameMatches): string {
-            return DeclarationBlockParser::normalizePropertyName($propertyNameMatches[0]);
-        };
+        $callback = \Closure::fromCallable([self::class, 'normalizePropertyNameCallback']);
         if (\function_exists('Safe\\preg_replace_callback')) {
             $normalizedOriginalStyle = preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
         } else {
@@ -456,6 +453,19 @@ final class CssInliner extends AbstractHtmlProcessor
         }
 
         $node->setAttribute('style', $normalizedOriginalStyle);
+    }
+
+    /**
+     * @param array<mixed> $matches
+     *        A narrower type cannot be specified because it's a callback that may be passed different types in the
+     *        array, depending on the flags provided to `preg_replace_callback()` (which are not actually used),
+     *        and `Safe\preg_replace_callback()` does not have type annotations to cater for this.
+     */
+    private static function normalizePropertyNameCallback(array $matches): string
+    {
+        \assert(\is_string($matches[0] ?? null));
+        \assert($matches[0] !== '');
+        return DeclarationBlockParser::normalizePropertyName($matches[0]);
     }
 
     /**
@@ -997,10 +1007,7 @@ final class CssInliner extends AbstractHtmlProcessor
         // The regex allows nested brackets via `(?2)`.
         // A space is temporarily prepended because the callback can't determine if the match was at the very start.
         $pattern = '/([\\s>+~]?+):not(\\([^()]*+(?:(?2)[^()]*+)*+\\))/i';
-        /** @param array<array-key, string> $matches */
-        $callback = function (array $matches): string {
-            return $this->replaceUnmatchableNotComponent($matches);
-        };
+        $callback = \Closure::fromCallable([$this, 'replaceUnmatchableNotComponent']);
         if (\function_exists('Safe\\preg_replace_callback')) {
             $untrimmedSelectorWithoutNots = preg_replace_callback($pattern, $callback, ' ' . $selector);
         } else {
@@ -1042,7 +1049,11 @@ final class CssInliner extends AbstractHtmlProcessor
      * Helps `removeUnmatchablePseudoComponents()` replace or remove a selector `:not(...)` component if its argument
      * contains pseudo-elements or dynamic pseudo-classes.
      *
-     * @param array<array-key, string> $matches array of elements matched by the regular expression
+     * @param array<mixed> $matches
+     *        This is an array of elements matched by the regular expression.
+     *        A narrower type cannot be specified because it's a callback that may be passed different types in the
+     *        array, depending on the flags provided to `preg_replace_callback()` (which are not actually used),
+     *        and `Safe\preg_replace_callback()` does not have type annotations to cater for this.
      *
      * @return string
      *         the full match if there were no unmatchable pseudo components within; otherwise, any preceding combinator
@@ -1051,6 +1062,9 @@ final class CssInliner extends AbstractHtmlProcessor
     private function replaceUnmatchableNotComponent(array $matches): string
     {
         [$notComponentWithAnyPrecedingCombinator, $anyPrecedingCombinator, $notArgumentInBrackets] = $matches;
+        \assert(\is_string($notComponentWithAnyPrecedingCombinator));
+        \assert(\is_string($anyPrecedingCombinator));
+        \assert(\is_string($notArgumentInBrackets));
 
         if ($this->hasUnsupportedPseudoClass($notArgumentInBrackets)) {
             return $anyPrecedingCombinator !== '' ? $anyPrecedingCombinator . '*' : '';
