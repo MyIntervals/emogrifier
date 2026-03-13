@@ -7,7 +7,7 @@ parameters:
 			path: ../src/CssInliner.php
 
 		-
-			message: '#^Parameter \#1 \$name of method Pelago\\Emogrifier\\Utilities\\DeclarationBlockParser\:\:normalizePropertyName\(\) expects non\-empty\-string, mixed given\.$#'
+			message: '#^Parameter \#1 \$name of static method Pelago\\Emogrifier\\Utilities\\DeclarationBlockParser\:\:normalizePropertyName\(\) expects non\-empty\-string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
 			path: ../src/CssInliner.php

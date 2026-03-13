@@ -41,7 +41,7 @@ final class DeclarationBlockParser
      *
      * @return non-empty-string
      */
-    public function normalizePropertyName(string $name): string
+    public static function normalizePropertyName(string $name): string
     {
         if (\substr($name, 0, 2) === '--') {
             return $name;
@@ -77,7 +77,7 @@ final class DeclarationBlockParser
      *
      * @throws \UnexpectedValueException if an empty property name is encountered (which cannot happen)
      */
-    public function parse(string $declarationBlock): array
+    public static function parse(string $declarationBlock): array
     {
         $trimmedDeclarationBlock = \trim($declarationBlock, "; \n\r\t\v\x00");
         if ($trimmedDeclarationBlock === '') {
@@ -103,7 +103,7 @@ final class DeclarationBlockParser
 
             $propertyName = $matches[1];
             $propertyValue = $matches[2];
-            $properties[$this->normalizePropertyName($propertyName)] = $propertyValue;
+            $properties[self::normalizePropertyName($propertyName)] = $propertyValue;
         }
         self::$cache[$trimmedDeclarationBlock] = $properties;
 

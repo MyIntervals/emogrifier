@@ -9,8 +9,8 @@
     <rule ref="rulesets/cleancode.xml/BooleanArgumentFlag"/>
     <rule ref="rulesets/cleancode.xml/StaticAccess">
         <properties>
-            <!-- Avoid false positives when calling factory and cache-clearing methods -->
-            <property name="ignorepattern" value="/^(from|create|clear)/" />
+            <!-- Avoid false positives when calling methods that are intentionally static -->
+            <property name="ignorepattern" value="/^(from|create|clear|parse$|normalizePropertyName$)/" />
         </properties>
     </rule>
 

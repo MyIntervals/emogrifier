@@ -45,7 +45,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
 
             // Avoid parsing declarations if none use or define a variable
             if (preg_match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
-                $declarations = (new DeclarationBlockParser())->parse($style);
+                $declarations = DeclarationBlockParser::parse($style);
                 $variableDefinitions =
                     $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
                 $this->currentVariableDefinitions = $variableDefinitions;

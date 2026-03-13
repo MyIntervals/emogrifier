@@ -63,9 +63,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function normalizesPropertyName(string $name, string $expectedNormalization): void
     {
-        $subject = new DeclarationBlockParser();
-
-        $result = $subject->normalizePropertyName($name);
+        $result = DeclarationBlockParser::normalizePropertyName($name);
 
         self::assertSame($expectedNormalization, $result);
     }
@@ -264,9 +262,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function parses(string $declarationBlockAsString, array $declarationBlockAsArray): void
     {
-        $subject = new DeclarationBlockParser();
-
-        $result = $subject->parse($declarationBlockAsString);
+        $result = DeclarationBlockParser::parse($declarationBlockAsString);
 
         self::assertSame($declarationBlockAsArray, $result);
     }
@@ -276,9 +272,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function overridesEarlierDeclarationWithLaterOne(): void
     {
-        $subject = new DeclarationBlockParser();
-
-        $result = $subject->parse('color: red; color: green;');
+        $result = DeclarationBlockParser::parse('color: red; color: green;');
 
         self::assertSame(['color' => 'green'], $result);
     }
@@ -291,11 +285,10 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function providesConsistentResults(): void
     {
-        $subject = new DeclarationBlockParser();
         $declarationBlock = 'color: green;';
 
-        $firstResult = $subject->parse($declarationBlock);
-        $secondResult = $subject->parse($declarationBlock);
+        $firstResult = DeclarationBlockParser::parse($declarationBlock);
+        $secondResult = DeclarationBlockParser::parse($declarationBlock);
 
         self::assertSame($firstResult, $secondResult);
     }
@@ -305,8 +298,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function clearCacheEmptiesStaticCache(): void
     {
-        $subject = new DeclarationBlockParser();
-        $subject->parse('color: green;');
+        DeclarationBlockParser::parse('color: green;');
 
         DeclarationBlockParser::clearCache();
 
