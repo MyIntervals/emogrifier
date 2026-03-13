@@ -87,10 +87,13 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
     /**
      * Callback function for {@see replaceVariablesInPropertyValue} performing regular expression replacement.
      *
-     * @param array<int, string> $matches
+     * @param array<mixed> $matches
+     *        This will actaully be `non-empty-list<string>` but the type annotation cannot be any tighter due to use of
+     *        `Safe\preg_replace_callback()` which does not precisely type the `$callback` parameter.
      */
     private function getPropertyValueReplacement(array $matches): string
     {
+        \assert(\is_string($matches[1] ?? null));
         $variableName = $matches[1];
 
         if (isset($this->currentVariableDefinitions[$variableName])) {
@@ -98,10 +101,12 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
         } else {
             $fallbackValueSeparator = $matches[2] ?? '';
             if ($fallbackValueSeparator !== '') {
+                \assert(\is_string($matches[3] ?? null));
                 $fallbackValue = $matches[3];
                 // The fallback value may use other CSS variables, so recurse
                 $variableValue = $this->replaceVariablesInPropertyValue($fallbackValue);
             } else {
+                \assert(\is_string($matches[0] ?? null));
                 $variableValue = $matches[0];
             }
         }
