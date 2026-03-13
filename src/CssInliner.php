@@ -466,7 +466,7 @@ final class CssInliner extends AbstractHtmlProcessor
     {
         \assert(\is_string($matches[0] ?? null));
         \assert($matches[0] !== '');
-        return (new DeclarationBlockParser())->normalizePropertyName($matches[0]);
+        return DeclarationBlockParser::normalizePropertyName($matches[0]);
     }
 
     /**
