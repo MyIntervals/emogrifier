@@ -1,2 +1,13 @@
 parameters:
-	ignoreErrors: []
+	ignoreErrors:
+		-
+			message: '#^Offset 1 might not exist on list\{0\?\: string, 1\?\: non\-falsy\-string, 2\?\: non\-empty\-string\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: ../src/Utilities/DeclarationBlockParser.php
+
+		-
+			message: '#^Offset 2 might not exist on list\{0\?\: string, 1\?\: non\-falsy\-string, 2\?\: non\-empty\-string\}\.$#'
+			identifier: offsetAccess.notFound
+			count: 1
+			path: ../src/Utilities/DeclarationBlockParser.php
