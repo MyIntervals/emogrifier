@@ -101,6 +101,7 @@ final class DeclarationBlockParser
                 continue;
             }
 
+            \assert(\count($matches) >= 3);
             $propertyName = $matches[1];
             $propertyValue = $matches[2];
             $properties[self::normalizePropertyName($propertyName)] = $propertyValue;
