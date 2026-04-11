@@ -115,10 +115,7 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
-        if (!$this->domDocument instanceof \DOMDocument) {
-            $message = self::class . '::setDomDocument() has not yet been called on ' . static::class;
-            throw new \UnexpectedValueException($message, 1570472239);
-        }
+        \assert($this->domDocument instanceof \DOMDocument);
 
         return $this->domDocument;
     }
