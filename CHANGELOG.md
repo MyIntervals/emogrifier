@@ -18,6 +18,8 @@ Please also have a look at our
 
 ### Deprecated
 
+- Deprecate support for PHP 7.3 (#1604)
+
 ### Removed
 
 ### Fixed
