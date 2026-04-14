@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\Tests\Unit\PhpStan;
 
 use PHPStan\Analyser\IgnoreErrorExtension;
-use PHPStan\Testing\RuleTestCase;
 use PHPStan\Rules\Comparison\ImpossibleCheckTypeFunctionCallRule;
 use PHPStan\Rules\Rule;
 
