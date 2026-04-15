@@ -98,7 +98,7 @@
         "check:php:lint": "parallel-lint config src tests",
         "check:php:md": "phpmd src text config/phpmd.xml",
         "check:php:rector": "rector process --no-progress-bar --dry-run --config=config/rector.php",
-        "check:php:stan": "phpstan --no-progress --configuration=config/phpstan.neon",
+        "check:php:stan": "phpstan --no-progress --configuration=./Build/phpstan/phpstan.neon",
         "check:static": [
             "@check:composer:normalize",
             "@check:php:lint",
@@ -125,7 +125,7 @@
         "fix:php:fixer": "\"./.phive/php-cs-fixer\" --config=./Build/php-cs-fixer/config.php fix config src tests",
         "fix:php:rector": "rector process --config=config/rector.php",
         "php:version": "@php -v | grep -Po 'PHP\\s++\\K(?:\\d++\\.)*+\\d++(?:-\\w++)?+'",
-        "phpstan:baseline": "phpstan --configuration=config/phpstan.neon --generate-baseline=config/phpstan-baseline.neon --allow-empty-baseline",
+        "phpstan:baseline": "phpstan --configuration=./Build/phpstan/phpstan.neon --generate-baseline=./Build/phpstan/phpstan-baseline.neon --allow-empty-baseline",
         "phpstan:clearcache": "phpstan clear-result-cache"
     },
     "scripts-descriptions": {
