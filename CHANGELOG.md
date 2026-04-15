@@ -24,7 +24,7 @@ Please also have a look at our
 
 ### Fixed
 
-- Clear all previous caches on each invokation to avoid memory usage build-up
+- Clear all previous caches on each invocation to avoid memory usage build-up
   (#1567)
 - Allow very deeply-nested HTML (#1556, #1560)
 
