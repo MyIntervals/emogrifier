@@ -96,7 +96,7 @@
         "check:php:codesniffer": "phpcs --standard=./Build/phpcs/config.xml Build src tests",
         "check:php:fixer": "\"./.phive/php-cs-fixer\" --config=./Build/php-cs-fixer/config.php fix --dry-run -v --show-progress=dots Build src tests",
         "check:php:lint": "parallel-lint Build src tests",
-        "check:php:md": "phpmd src text config/phpmd.xml",
+        "check:php:md": "phpmd src text ./Build/phpmd/config.xml",
         "check:php:rector": "rector process --no-progress-bar --dry-run --config=./Build/rector/config.php",
         "check:php:stan": "phpstan --no-progress --configuration=./Build/phpstan/phpstan.neon",
         "check:static": [
