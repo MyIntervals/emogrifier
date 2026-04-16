@@ -10,10 +10,9 @@ use Rector\Set\ValueObject\SetList;
 return RectorConfig::configure()
     ->withPaths(
         [
-            __DIR__ . '/../Build',
-            __DIR__ . '/../config',
-            __DIR__ . '/../src',
-            __DIR__ . '/../tests',
+            __DIR__ . '/../../Build',
+            __DIR__ . '/../../src',
+            __DIR__ . '/../../tests',
         ]
     )
     ->withSets([
