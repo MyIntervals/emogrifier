@@ -1,13 +1,2 @@
 parameters:
-	ignoreErrors:
-		-
-			message: '#^Provide more specific return type "DOMNodeList" over abstract one$#'
-			identifier: typePerfect.narrowReturnObjectType
-			count: 1
-			path: ../../src/HtmlProcessor/CssToAttributeConverter.php
-
-		-
-			message: '#^Parameter 1 should use "DOMNodeList\<DOMElement\>" type as the only type passed to this method$#'
-			identifier: typePerfect.narrowPrivateClassMethodParamType
-			count: 2
-			path: ../../src/HtmlProcessor/HtmlPruner.php
+	ignoreErrors: []
