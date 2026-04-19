@@ -415,16 +415,12 @@ final class CssInliner extends AbstractHtmlProcessor
      * Returns a list with all DOM nodes that have a style attribute.
      *
      * @return \DOMNodeList<\DOMElement>
-     *
-     * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
         $query = '//*[@style]';
         $matches = $this->getXPath()->query($query);
-        if (!$matches instanceof \DOMNodeList) {
-            throw new \RuntimeException('XPatch query failed: ' . $query, 1618577797);
-        }
+        \assert($matches instanceof \DOMNodeList);
         /** @var \DOMNodeList<\DOMElement> $matches */
 
         return $matches;
@@ -529,10 +525,7 @@ final class CssInliner extends AbstractHtmlProcessor
     {
         try {
             $result = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectors));
-
-            if ($result === false) {
-                throw new \RuntimeException('query failed with selector \'' . $selectors . '\'', 1726533051);
-            }
+            \assert($result instanceof \DOMNodeList);
             /** @var \DOMNodeList<\DOMElement> $result */
 
             return $result;
@@ -1167,15 +1160,11 @@ final class CssInliner extends AbstractHtmlProcessor
      * Returns the `HEAD` element.
      *
      * This method assumes that there always is a HEAD element.
-     *
-     * @throws \UnexpectedValueException
      */
     private function getHeadElement(): \DOMElement
     {
         $node = $this->getDomDocument()->getElementsByTagName('head')->item(0);
-        if (!$node instanceof \DOMElement) {
-            throw new \UnexpectedValueException('There is no HEAD element. This should never happen.', 1617923227);
-        }
+        \assert($node instanceof \DOMElement);
 
         return $node;
     }
