@@ -415,16 +415,12 @@ final class CssInliner extends AbstractHtmlProcessor
      * Returns a list with all DOM nodes that have a style attribute.
      *
      * @return \DOMNodeList<\DOMElement>
-     *
-     * @throws \RuntimeException
      */
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
         $query = '//*[@style]';
         $matches = $this->getXPath()->query($query);
-        if (!$matches instanceof \DOMNodeList) {
-            throw new \RuntimeException('XPatch query failed: ' . $query, 1618577797);
-        }
+        \assert($matches instanceof \DOMNodeList);
         /** @var \DOMNodeList<\DOMElement> $matches */
 
         return $matches;
@@ -523,39 +519,22 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @throws ParseException
      *         in debug mode (or with `QSA_ALWAYS_THROW_PARSE_EXCEPTION` option), if an invalid selector is encountered
-     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
      */
     private function querySelectorAll(string $selectors, array $options = []): \DOMNodeList
     {
         try {
             $result = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectors));
-
-            if ($result === false) {
-                throw new \RuntimeException('query failed with selector \'' . $selectors . '\'', 1726533051);
-            }
-            /** @var \DOMNodeList<\DOMElement> $result */
-
-            return $result;
+            \assert($result instanceof \DOMNodeList);
         } catch (ParseException $exception) {
             $alwaysThrowParseException = $options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false;
             if ($this->debug || $alwaysThrowParseException) {
                 throw $exception;
             }
-            $list = new \DOMNodeList();
-            /** @var \DOMNodeList<\DOMElement> $list */
-            return $list;
-        } catch (\RuntimeException $exception) {
-            if (
-                $this->debug
-            ) {
-                throw $exception;
-            }
-            // `RuntimeException` indicates a bug in CssSelector so pass the message to the error handler.
-            \trigger_error($exception->getMessage());
-            $list = new \DOMNodeList();
-            /** @var \DOMNodeList<\DOMElement> $list */
-            return $list;
+            $result = new \DOMNodeList();
         }
+
+        /** @var \DOMNodeList<\DOMElement> $result */
+        return $result;
     }
 
     /**
@@ -977,7 +956,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * just not implemented/recognized yet by Emogrifier).
      *
      * @throws ParseException in debug mode, if an invalid selector is encountered
-     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
      */
     private function existsMatchForCssSelector(string $cssSelector): bool
     {
@@ -1167,15 +1145,11 @@ final class CssInliner extends AbstractHtmlProcessor
      * Returns the `HEAD` element.
      *
      * This method assumes that there always is a HEAD element.
-     *
-     * @throws \UnexpectedValueException
      */
     private function getHeadElement(): \DOMElement
     {
         $node = $this->getDomDocument()->getElementsByTagName('head')->item(0);
-        if (!$node instanceof \DOMElement) {
-            throw new \UnexpectedValueException('There is no HEAD element. This should never happen.', 1617923227);
-        }
+        \assert($node instanceof \DOMElement);
 
         return $node;
     }
