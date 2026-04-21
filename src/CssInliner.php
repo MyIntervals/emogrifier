@@ -519,36 +519,22 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @throws ParseException
      *         in debug mode (or with `QSA_ALWAYS_THROW_PARSE_EXCEPTION` option), if an invalid selector is encountered
-     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
      */
     private function querySelectorAll(string $selectors, array $options = []): \DOMNodeList
     {
         try {
             $result = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectors));
             \assert($result instanceof \DOMNodeList);
-            /** @var \DOMNodeList<\DOMElement> $result */
-
-            return $result;
         } catch (ParseException $exception) {
             $alwaysThrowParseException = $options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false;
             if ($this->debug || $alwaysThrowParseException) {
                 throw $exception;
             }
-            $list = new \DOMNodeList();
-            /** @var \DOMNodeList<\DOMElement> $list */
-            return $list;
-        } catch (\RuntimeException $exception) {
-            if (
-                $this->debug
-            ) {
-                throw $exception;
-            }
-            // `RuntimeException` indicates a bug in CssSelector so pass the message to the error handler.
-            \trigger_error($exception->getMessage());
-            $list = new \DOMNodeList();
-            /** @var \DOMNodeList<\DOMElement> $list */
-            return $list;
+            $result = new \DOMNodeList();
         }
+
+        /** @var \DOMNodeList<\DOMElement> $result */
+        return $result;
     }
 
     /**
@@ -970,7 +956,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * just not implemented/recognized yet by Emogrifier).
      *
      * @throws ParseException in debug mode, if an invalid selector is encountered
-     * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
      */
     private function existsMatchForCssSelector(string $cssSelector): bool
     {
