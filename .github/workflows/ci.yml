@@ -95,8 +95,8 @@ jobs:
       matrix:
         command:
           - composer:normalize
-          - php:fixer
-          - php:codesniffer
+          - php:cs-fixer
+          - php:sniff
           - php:md
           - php:rector
           - php:stan
