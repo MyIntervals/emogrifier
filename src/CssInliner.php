@@ -163,8 +163,6 @@ final class CssInliner extends AbstractHtmlProcessor
      * @throws \RuntimeException
      *         in debug mode, if an internal PCRE error occurs
      *         or `CssSelectorConverter::toXPath` returns an invalid XPath expression
-     * @throws \UnexpectedValueException
-     *         if a selector query result includes a node which is not a `DOMElement`
      */
     public function inlineCss(string $css = ''): self
     {
@@ -188,7 +186,7 @@ final class CssInliner extends AbstractHtmlProcessor
                 if (\in_array($node, $excludedNodes, true)) {
                     continue;
                 }
-                $this->copyInlinableCssToStyleAttribute($this->ensureNodeIsElement($node), $cssRule);
+                $this->copyInlinableCssToStyleAttribute($node, $cssRule);
             }
         }
 
@@ -496,15 +494,12 @@ final class CssInliner extends AbstractHtmlProcessor
      *
      * @throws ParseException in debug mode, if an invalid selector is encountered
      * @throws \RuntimeException in debug mode, if `CssSelectorConverter::toXPath` returns an invalid XPath expression
-     * @throws \UnexpectedValueException if the selector query result includes a node which is not a `DOMElement`
      */
     private function getNodesToExclude(): array
     {
         $excludedNodes = [];
         foreach (\array_keys($this->excludedSelectors) as $selectorToExclude) {
-            foreach ($this->querySelectorAll($selectorToExclude) as $node) {
-                $excludedNodes[] = $this->ensureNodeIsElement($node);
-            }
+            \array_push($excludedNodes, ...$this->querySelectorAll($selectorToExclude));
         }
 
         return $excludedNodes;
@@ -535,19 +530,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
         /** @var \DOMNodeList<\DOMElement> $result */
         return $result;
-    }
-
-    /**
-     * @throws \UnexpectedValueException if `$node` is not a `DOMElement`
-     */
-    private function ensureNodeIsElement(\DOMNode $node): \DOMElement
-    {
-        if (!($node instanceof \DOMElement)) {
-            $path = $node->getNodePath() ?? '$node';
-            throw new \UnexpectedValueException($path . ' is not a DOMElement.', 1617975914);
-        }
-
-        return $node;
     }
 
     private function getCssSelectorConverter(): CssSelectorConverter
