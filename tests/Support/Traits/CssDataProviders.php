@@ -77,7 +77,7 @@ trait CssDataProviders
             $datasetsWithAtMediaRuleSelectorListAndPropertyDeclaration,
             $datasetsWithUrlPropertyValue,
             $datasetsWithQuotedPropertyValue,
-            $datasetsWithAtImportRule
+            $datasetsWithAtImportRule,
         );
     }
 
@@ -132,7 +132,7 @@ trait CssDataProviders
             $datasetsWithPropertyDeclarationWithNegativeDecimalValueLessThanOne,
             $datasetsWithPropertyDeclarationWithRgbValue,
             $datasetsWithPropertyDeclarationWithSixDigitRgbValue,
-            $datasetsWithPropertyDeclarationWithUrlValue
+            $datasetsWithPropertyDeclarationWithUrlValue,
         );
     }
 

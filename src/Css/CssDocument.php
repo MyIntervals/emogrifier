@@ -134,7 +134,7 @@ final class CssDocument
                 static function (string $allowedMediaType): string {
                     return \preg_quote($allowedMediaType, '/');
                 },
-                $allowedMediaTypes
+                $allowedMediaTypes,
             );
             $mediaTypesMatcher = \implode('|', $escapedAllowedMediaTypes);
             $isAllowed = preg_match('/^\\s*+(?:only\\s++)?+(?:' . $mediaTypesMatcher . ')/i', $mediaType) !== 0;

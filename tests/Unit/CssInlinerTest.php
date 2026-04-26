@@ -7,8 +7,8 @@ namespace Pelago\Emogrifer\Tests\Unit;
 use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
-use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
+use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
@@ -1114,7 +1114,7 @@ final class CssInlinerTest extends TestCase
 
         self::assertStringContainsString(
             \sprintf($expectedHtml, $cssDeclaration1, $cssDeclaration2),
-            $subject->render()
+            $subject->render(),
         );
     }
 
@@ -1221,12 +1221,12 @@ final class CssInlinerTest extends TestCase
             $lessSpecificSelector . ' { color: red; } ' .
             $moreSpecificSelector . ' { color: green; } ' .
             $moreSpecificSelector . ' { background-color: green; } ' .
-            $lessSpecificSelector . ' { background-color: red; }'
+            $lessSpecificSelector . ' { background-color: red; }',
         );
 
         self::assertStringContainsString(
             $matchedTagPart . ' style="color: green; background-color: green;"',
-            $subject->render()
+            $subject->render(),
         );
     }
 
@@ -1306,12 +1306,12 @@ final class CssInlinerTest extends TestCase
             $selector1 . ' { color: red; } ' .
             $selector2 . ' { color: green; } ' .
             $selector2 . ' { background-color: red; } ' .
-            $selector1 . ' { background-color: green; }'
+            $selector1 . ' { background-color: green; }',
         );
 
         self::assertStringContainsString(
             $matchedTagPart . ' style="color: green; background-color: green;"',
-            $subject->render()
+            $subject->render(),
         );
     }
 
@@ -1412,7 +1412,7 @@ final class CssInlinerTest extends TestCase
             static function (string $styleAttributeContent): Constraint {
                 return self::stringContains('<html style="' . $styleAttributeContent . '">', false);
             },
-            $expectedStyleAttributeContentPossibilities
+            $expectedStyleAttributeContentPossibilities,
         );
         self::assertThat($subject->render(), self::logicalOr(...$constraints));
     }
@@ -1499,7 +1499,7 @@ final class CssInlinerTest extends TestCase
 
         self::assertStringContainsString(
             'style="' . $cssDeclarations . ' ' . $styleAttributeValue . '"',
-            $subject->render()
+            $subject->render(),
         );
     }
 
@@ -1540,8 +1540,8 @@ final class CssInlinerTest extends TestCase
             $subject->render(),
             self::logicalOr(
                 self::stringContains('style="margin: 0 2pX;"'),
-                self::stringContains('style="margin: 0 2px;"')
-            )
+                self::stringContains('style="margin: 0 2px;"'),
+            ),
         );
     }
 
@@ -1591,7 +1591,7 @@ final class CssInlinerTest extends TestCase
     {
         $cssDeclaration = "content: 'Hello World';";
         $subject = $this->buildDebugSubject(
-            '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>'
+            '<html><head><style>p {' . $cssDeclaration . '}</style></head><body><p>target</p></body></html>',
         );
 
         $subject->inlineCss();
@@ -1621,7 +1621,7 @@ final class CssInlinerTest extends TestCase
         $this->expectException(UnexpectedTokenException::class);
 
         $subject = CssInliner::fromHtml(
-            '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>'
+            '<html><style type="text/css">p{color:red;} <style data-x="1">html{cursor:text;}</style></html>',
         );
         $subject->setDebug(true);
 
@@ -2327,7 +2327,7 @@ final class CssInlinerTest extends TestCase
                 'minified parent &' => 'p>',
                 'minified adjacent sibling &' => 'a+',
                 'minified general sibling &' => 'a~',
-            ]
+            ],
         );
         $datasetsWithCombinedPseudoSelectors = [
             'pseudo-class & descendant' => ['p:hover a { color: green; }'],
@@ -2382,7 +2382,7 @@ final class CssInlinerTest extends TestCase
         return DataProvider::join(
             $datasetsWithSelectorPseudoComponents,
             $datasetsWithCombinedPseudoSelectors,
-            $datasetsWithUnsupportedStaticPseudoClasses
+            $datasetsWithUnsupportedStaticPseudoClasses,
         );
     }
 
@@ -2396,7 +2396,7 @@ final class CssInlinerTest extends TestCase
     public function inlineCssKeepsRuleWithPseudoComponentInMatchingSelector(string $css): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>'
+            '<html><p><a id="a" class="a" href="a">foo</a><input type="text" name="test"/></p></html>',
         );
 
         $subject->inlineCss($css);
@@ -2424,7 +2424,7 @@ final class CssInlinerTest extends TestCase
                 'minified parent &' => 'ul>',
                 'minified adjacent sibling &' => 'p+',
                 'minified general sibling &' => 'p~',
-            ]
+            ],
         );
         $datasetsWithCombinedPseudoSelectors = [
             'pseudo-class & descendant' => ['ul:hover a { color: green; }'],
@@ -2471,7 +2471,7 @@ final class CssInlinerTest extends TestCase
         return DataProvider::join(
             $datasetsWithSelectorPseudoComponents,
             $datasetsWithCombinedPseudoSelectors,
-            $datasetsWithUnsupportedStaticPseudoClasses
+            $datasetsWithUnsupportedStaticPseudoClasses,
         );
     }
 
@@ -2597,7 +2597,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
-            . ' { h1 { color: red; } }'
+            . ' { h1 { color: red; } }',
         );
 
         self::assertStringContainsString('<h1 style="color: green;">', $subject->render());
@@ -2619,7 +2619,7 @@ final class CssInlinerTest extends TestCase
 
         $subject->inlineCss(
             '@media ' . $emptyRuleMediaType . ' {} h1 { color: green; } @media ' . $mediaType
-            . ' { h1 { color: red; } } h1 { font-size: 24px; }'
+            . ' { h1 { color: red; } } h1 { font-size: 24px; }',
         );
 
         self::assertStringContainsString('<h1 style="color: green; font-size: 24px;">', $subject->renderBodyContent());
@@ -2632,7 +2632,7 @@ final class CssInlinerTest extends TestCase
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
-            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>'
+            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>',
         );
 
         $subject->inlineCss();
@@ -2659,7 +2659,7 @@ final class CssInlinerTest extends TestCase
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
-            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>'
+            '<html><style type="text/css">html {' . $styleAttributeValue . '}</style></html>',
         );
         $subject->disableStyleBlocksParsing();
 
@@ -2676,7 +2676,7 @@ final class CssInlinerTest extends TestCase
         $styleAttributeValue = 'text-align: center;';
         $subject = $this->buildDebugSubject(
             '<html><head><style type="text/css">p { color: #ccc; }</style></head>' .
-            '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>'
+            '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>',
         );
         $subject->disableStyleBlocksParsing();
 
@@ -2718,7 +2718,7 @@ final class CssInlinerTest extends TestCase
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
             '<html><head><style type="text/css">p { ' . $styleAttributeValue . ' }</style></head>' .
-            '<body><p style="text-align: center;">paragraph</p></body></html>'
+            '<body><p style="text-align: center;">paragraph</p></body></html>',
         );
         $subject->disableInlineStyleAttributesParsing();
 
@@ -2736,7 +2736,7 @@ final class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
+            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss();
@@ -2744,7 +2744,7 @@ final class CssInlinerTest extends TestCase
         $result = $subject->renderBodyContent();
         self::assertStringContainsString(
             '<p style="padding-bottom: 1px; padding-top: 0; text-align: center;">',
-            $result
+            $result,
         );
     }
 
@@ -2757,14 +2757,14 @@ final class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
+            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss('p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}');
 
         self::assertStringContainsString(
             '<p style="margin: 0; padding-bottom: 3px; padding-top: 1px; text-align: center;">',
-            $subject->renderBodyContent()
+            $subject->renderBodyContent(),
         );
     }
 
@@ -2775,7 +2775,7 @@ final class CssInlinerTest extends TestCase
     {
         $subject = $this->buildDebugSubject(
             '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>'
+            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss('p { margin: 1px; padding-bottom:0;}');
@@ -3191,7 +3191,7 @@ final class CssInlinerTest extends TestCase
 
         self::assertStringContainsString(
             '<section><div class="green" style="' . $expectedInlineCss . '"></div></section>',
-            $subject->renderBodyContent()
+            $subject->renderBodyContent(),
         );
     }
 
@@ -3280,7 +3280,7 @@ final class CssInlinerTest extends TestCase
             '<html><body>' .
             '<p class="medium">medium</p>' .
             '<p class="small">small</p>' .
-            '</body></html>'
+            '</body></html>',
         );
         $css = "@media all {\r\n" .
             ".medium {font-size:18px;}\r\n" .
@@ -3301,7 +3301,7 @@ final class CssInlinerTest extends TestCase
             '<html><body>' .
             '<p class="medium">medium</p>' .
             '<p class="small">small</p>' .
-            '</body></html>'
+            '</body></html>',
         );
         $css = "@media all {\n" .
             ".medium {font-size:18px;}\n" .
@@ -3322,7 +3322,7 @@ final class CssInlinerTest extends TestCase
             '<html><body>' .
             '<p class="medium">medium</p>' .
             '<p class="small">small</p>' .
-            '</body></html>'
+            '</body></html>',
         );
         $css = "@media all {\n" .
             ".medium {font-size:18px;}\n" .
@@ -3392,14 +3392,14 @@ final class CssInlinerTest extends TestCase
     public function inlineCssKeepsInlineStylePriorityVersusStyleBlockRules(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><head><style>p {padding:10px;}</style></head><body><p style="padding-left:20px;"></p></body></html>'
+            '<html><head><style>p {padding:10px;}</style></head><body><p style="padding-left:20px;"></p></body></html>',
         );
 
         $subject->inlineCss();
 
         self::assertStringContainsString(
             '<p style="padding: 10px; padding-left: 20px;">',
-            $subject->renderBodyContent()
+            $subject->renderBodyContent(),
         );
     }
 
@@ -3465,14 +3465,14 @@ final class CssInlinerTest extends TestCase
         string $expectedStyleAttributeContent
     ): void {
         $subject = $this->buildDebugSubject(
-            '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>'
+            '<html><head><body><p style="' . $originalStyleAttributeContent . '"></p></body></html>',
         );
 
         $subject->inlineCss();
 
         self::assertStringContainsString(
             '<p style="' . $expectedStyleAttributeContent . '">',
-            $subject->renderBodyContent()
+            $subject->renderBodyContent(),
         );
     }
 
@@ -3661,7 +3661,7 @@ final class CssInlinerTest extends TestCase
                 'preceded by matching inlinable rule' => ["p { color: green; }\n", ''],
                 'preceded by matching uninlinable rule' => ["p:hover { color: green; }\n", ''],
                 'preceded by matching @media rule' => ["@media (max-width: 640px) { p { color: green; } }\n", ''],
-            ]
+            ],
         );
         $datasets2 = DataProvider::cross(
             [
@@ -3680,7 +3680,7 @@ final class CssInlinerTest extends TestCase
                     . '@font-face{font-family:"Bar Sans";src:url(/bar-sans.woff2) format("woff2")}',
                 ],
             ],
-            ['alone' => ['', '']]
+            ['alone' => ['', '']],
         );
 
         return DataProvider::join($datasets1, $datasets2);
@@ -3719,7 +3719,7 @@ final class CssInlinerTest extends TestCase
             static function (string $rule): array {
                 return [$rule];
             },
-            self::BLACK_BOX_AT_RULES
+            self::BLACK_BOX_AT_RULES,
         );
     }
 
@@ -3819,12 +3819,15 @@ final class CssInlinerTest extends TestCase
      */
     public function getMatchingUninlinableSelectorsReturnsMatchingUninlinableSelectors(array $selectors): void
     {
-        $css = \implode(' ', \array_map(
-            static function (string $selector): string {
-                return $selector . ' { color: green; }';
-            },
-            $selectors
-        ));
+        $css = \implode(
+            ' ',
+            \array_map(
+                static function (string $selector): string {
+                    return $selector . ' { color: green; }';
+                },
+                $selectors,
+            ),
+        );
         $subject = $this->buildDebugSubject('<html><p>foo</p></html>');
         $subject->inlineCss($css);
 
@@ -3889,7 +3892,7 @@ final class CssInlinerTest extends TestCase
         ];
         $matchingUninlinableCssRulesProperty = new \ReflectionProperty(
             CssInliner::class,
-            'matchingUninlinableCssRules'
+            'matchingUninlinableCssRules',
         );
         if (PHP_VERSION_ID < 80100) {
             $matchingUninlinableCssRulesProperty->setAccessible(true);

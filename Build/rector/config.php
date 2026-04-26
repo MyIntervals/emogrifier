@@ -13,7 +13,7 @@ return RectorConfig::configure()
             __DIR__ . '/../../Build',
             __DIR__ . '/../../src',
             __DIR__ . '/../../tests',
-        ]
+        ],
     )
     ->withSets([
         // Rector sets

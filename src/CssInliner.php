@@ -619,7 +619,7 @@ final class CssInliner extends AbstractHtmlProcessor
              */
             function (array $first, array $second): int {
                 return $this->sortBySelectorPrecedence($first, $second);
-            }
+            },
         );
 
         return $cssRules;
@@ -742,7 +742,7 @@ final class CssInliner extends AbstractHtmlProcessor
         }
         $node->setAttribute(
             'style',
-            $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations)
+            $this->generateStyleStringFromDeclarationsArrays($oldStyleDeclarations, $newStyleDeclarations),
         );
     }
 
@@ -821,8 +821,8 @@ final class CssInliner extends AbstractHtmlProcessor
                 'style',
                 $this->generateStyleStringFromDeclarationsArrays(
                     $currentStyleAttributes,
-                    $styleAttributesForNode
-                )
+                    $styleAttributesForNode,
+                ),
             );
         }
     }
@@ -869,7 +869,7 @@ final class CssInliner extends AbstractHtmlProcessor
         $inlineStyleDeclarationsInNewOrder = \array_merge($regularStyleDeclarations, $importantStyleDeclarations);
         $node->setAttribute(
             'style',
-            $this->generateStyleStringFromSingleDeclarationsArray($inlineStyleDeclarationsInNewOrder)
+            $this->generateStyleStringFromSingleDeclarationsArray($inlineStyleDeclarationsInNewOrder),
         );
     }
 
@@ -902,7 +902,7 @@ final class CssInliner extends AbstractHtmlProcessor
             $cssRules,
             function (array $cssRule): bool {
                 return $this->existsMatchForSelectorInCssRule($cssRule);
-            }
+            },
         );
     }
 
@@ -979,12 +979,12 @@ final class CssInliner extends AbstractHtmlProcessor
 
         $selectorWithoutUnmatchablePseudoComponents = $this->removeSelectorComponents(
             ':(?!' . self::PSEUDO_CLASS_MATCHER . '):?+[\\w\\-]++(?:\\([^\\)]*+\\))?+',
-            $selectorWithoutNots
+            $selectorWithoutNots,
         );
 
         if (preg_match(
             '/:(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')/i',
-            $selectorWithoutUnmatchablePseudoComponents
+            $selectorWithoutUnmatchablePseudoComponents,
         ) === 0) {
             return $selectorWithoutUnmatchablePseudoComponents;
         }
@@ -993,16 +993,19 @@ final class CssInliner extends AbstractHtmlProcessor
             '/(' . self::COMBINATOR_MATCHER . ')/',
             $selectorWithoutUnmatchablePseudoComponents,
             -1,
-            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY
+            PREG_SPLIT_DELIM_CAPTURE | PREG_SPLIT_NO_EMPTY,
         );
         /** @var list<string> $selectorParts */
 
-        return \implode('', \array_map(
-            function (string $selectorPart): string {
-                return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
-            },
-            $selectorParts
-        ));
+        return \implode(
+            '',
+            \array_map(
+                function (string $selectorPart): string {
+                    return $this->removeUnsupportedOfTypePseudoClasses($selectorPart);
+                },
+                $selectorParts,
+            ),
+        );
     }
 
     /**
@@ -1046,7 +1049,7 @@ final class CssInliner extends AbstractHtmlProcessor
         return preg_replace(
             ['/([\\s>+~]|^)' . $matcher . '/i', '/' . $matcher . '/i'],
             ['$1*', ''],
-            $selector
+            $selector,
         );
     }
 
@@ -1067,7 +1070,7 @@ final class CssInliner extends AbstractHtmlProcessor
 
         return $this->removeSelectorComponents(
             ':(?:' . self::OF_TYPE_PSEUDO_CLASS_MATCHER . ')(?:\\([^\\)]*+\\))?+',
-            $selectorPart
+            $selectorPart,
         );
     }
 

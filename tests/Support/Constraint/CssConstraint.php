@@ -229,7 +229,7 @@ abstract class CssConstraint extends Constraint
             return preg_replace(
                 self::OPTIONAL_TRAILING_SEMICOLON_MATCHER_PATTERN,
                 '(?:\\s*+;)?+',
-                $matcher
+                $matcher,
             );
         }
 
