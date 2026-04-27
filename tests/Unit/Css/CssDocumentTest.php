@@ -300,7 +300,7 @@ final class CssDocumentTest extends TestCase
     public function parsesMultipleStyleRulesWithOtherCssBetween(string $cssBetween): void
     {
         $subject = $this->createDebugSubject(
-            'p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }'
+            'p { color: green; }' . $cssBetween . '@media screen { h1 { color: green; } }',
         );
 
         $result = $subject->getStyleRulesData(['screen']);
@@ -318,7 +318,7 @@ final class CssDocumentTest extends TestCase
     public function parsesMultipleStyleRulesWithOtherCssBefore(string $cssBefore): void
     {
         $subject = $this->createDebugSubject(
-            $cssBefore . 'p { color: green; } @media screen { h1 { color: green; } }'
+            $cssBefore . 'p { color: green; } @media screen { h1 { color: green; } }',
         );
 
         $result = $subject->getStyleRulesData(['screen']);

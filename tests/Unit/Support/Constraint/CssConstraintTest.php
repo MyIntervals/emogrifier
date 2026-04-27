@@ -25,7 +25,7 @@ final class CssConstraintTest extends TestCase
 
         self::assertSame(
             \preg_quote($css, '/'),
-            $resultWithOtherMatchersRemoved
+            $resultWithOtherMatchersRemoved,
         );
     }
 
@@ -77,7 +77,7 @@ final class CssConstraintTest extends TestCase
         string $otherContent
     ): void {
         $result = TestingCssConstraint::getCssRegularExpressionMatcherForTesting(
-            $otherContent . $contentToInsertAround . $otherContent
+            $otherContent . $contentToInsertAround . $otherContent,
         );
 
         $quotedOtherContent = \preg_quote($otherContent, '/');

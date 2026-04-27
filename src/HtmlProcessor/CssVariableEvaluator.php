@@ -80,7 +80,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
             static function (string $key): bool {
                 return \substr($key, 0, 2) === '--';
             },
-            ARRAY_FILTER_USE_KEY
+            ARRAY_FILTER_USE_KEY,
         );
     }
 
@@ -190,7 +190,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                 }
                 return $newPropertyValue;
             },
-            $declarations
+            $declarations,
         );
 
         return $substitutionsMade ? $result : null;
@@ -206,7 +206,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                 return $key . ': ' . $value;
             },
             \array_keys($declarations),
-            \array_values($declarations)
+            \array_values($declarations),
         );
 
         return \implode('; ', $declarationStrings) . ';';

@@ -46,7 +46,7 @@ final class StyleRule
                 \assert($renderedSelector !== '');
                 return $renderedSelector;
             },
-            $selectors
+            $selectors,
         );
     }
 

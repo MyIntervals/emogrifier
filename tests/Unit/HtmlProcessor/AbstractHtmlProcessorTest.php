@@ -362,14 +362,14 @@ final class AbstractHtmlProcessorTest extends TestCase
     public function insertsOptionallyOmittedClosingPTagBeforeSibling(string $siblingTagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
-            '<body><p> Hello <' . $siblingTagName . '></' . $siblingTagName . '></body>'
+            '<body><p> Hello <' . $siblingTagName . '></' . $siblingTagName . '></body>',
         );
 
         $result = $subject->render();
 
         self::assertContainsHtml(
             '<body><p> Hello </p><' . $siblingTagName . '></' . $siblingTagName . '></body>',
-            $result
+            $result,
         );
     }
 
@@ -408,14 +408,14 @@ final class AbstractHtmlProcessorTest extends TestCase
     public function insertsOptionallyOmittedClosingPTagAtEndOfParent(string $parentTagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
-            '<body><' . $parentTagName . '><p> Hello </' . $parentTagName . '><p> World </p></body>'
+            '<body><' . $parentTagName . '><p> Hello </' . $parentTagName . '><p> World </p></body>',
         );
 
         $result = $subject->render();
 
         self::assertContainsHtml(
             '<body><' . $parentTagName . '><p> Hello </p></' . $parentTagName . '><p> World </p></body>',
-            $result
+            $result,
         );
     }
 
@@ -844,7 +844,7 @@ final class AbstractHtmlProcessorTest extends TestCase
 
         $numberOfContentTypeMetaTags = \substr_count(
             $resultBeforeHeadEnd,
-            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">',
         );
         self::assertSame(1, $numberOfContentTypeMetaTags);
     }
@@ -982,7 +982,7 @@ final class AbstractHtmlProcessorTest extends TestCase
                 $dataset[0] = \str_replace('/>', '>', $dataset[0]);
                 return $dataset;
             },
-            $this->xmlSelfClosingTagDataProvider()
+            $this->xmlSelfClosingTagDataProvider(),
         );
     }
 
@@ -1008,7 +1008,7 @@ final class AbstractHtmlProcessorTest extends TestCase
                 /** @var array{0: non-empty-string, 1: non-empty-string, 2: non-empty-string} $updatedDataset */
                 return $updatedDataset;
             },
-            $this->xmlSelfClosingTagDataProvider()
+            $this->xmlSelfClosingTagDataProvider(),
         );
     }
 
@@ -1065,7 +1065,7 @@ final class AbstractHtmlProcessorTest extends TestCase
         string $htmlWithXmlSelfClosingTags
     ): void {
         $subject = TestingHtmlProcessor::fromHtml(
-            $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>'
+            $documentType . '<html><body>' . $htmlWithXmlSelfClosingTags . '</body></html>',
         );
 
         $result = $subject->render();
@@ -1084,7 +1084,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     public function keepsNonXmlSelfClosingTags(string $documentType, string $htmlWithNonXmlSelfClosingTags): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
-            $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+            $documentType . '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>',
         );
 
         $result = $subject->render();
@@ -1103,7 +1103,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     public function notAddsClosingTagForSelfClosingTags(string $htmlWithNonXmlSelfClosingTags, string $tagName): void
     {
         $subject = TestingHtmlProcessor::fromHtml(
-            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>',
         );
 
         $result = $subject->render();
@@ -1223,7 +1223,7 @@ final class AbstractHtmlProcessorTest extends TestCase
         string $tagName
     ): void {
         $subject = TestingHtmlProcessor::fromHtml(
-            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>'
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '</body></html>',
         );
 
         $result = $subject->renderBodyContent();
@@ -1284,7 +1284,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     ): void {
         // Append a 'trap' element that might become a child node if the HTML is parsed incorrectly
         $subject = TestingHtmlProcessor::fromHtml(
-            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>'
+            '<html><body>' . $htmlWithNonXmlSelfClosingTags . '<span>foo</span></body></html>',
         );
 
         $domDocument = $subject->getDomDocument();
@@ -1340,7 +1340,7 @@ final class AbstractHtmlProcessorTest extends TestCase
             . '|/(?:li|dd|dt|option|optgroup|caption|colgroup|thead|tbody|tfoot|tr|td|th'
             . '|p|dl|h[1-6]|menu|ol|pre|table|ul|address|blockquote|div|fieldset|form))\\\\>%',
             '$0\\n?+',
-            $needleMatcher
+            $needleMatcher,
         );
 
         self::assertMatchesRegularExpression('%' . $needleMatcherWithNewlines . '%', $haystack, $message);
@@ -1372,7 +1372,7 @@ final class AbstractHtmlProcessorTest extends TestCase
                 '%(</html>)\\s*+($)%',
             ],
             "$1\n$2",
-            $html
+            $html,
         );
     }
 }

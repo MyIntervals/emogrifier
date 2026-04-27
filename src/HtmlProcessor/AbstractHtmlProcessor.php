@@ -286,7 +286,7 @@ abstract class AbstractHtmlProcessor
             '/<!DOCTYPE\\s++html(?=[\\s>])/i',
             '<!DOCTYPE html',
             $html,
-            1
+            1,
         );
         \assert($result !== '');
 
@@ -317,13 +317,13 @@ abstract class AbstractHtmlProcessor
             $reworkedHtml = preg_replace(
                 '/<head(?=[\\s>])([^>]*+)>/i',
                 '<head$1>' . self::CONTENT_TYPE_META_TAG,
-                $html
+                $html,
             );
         } elseif ($hasHtmlTag) {
             $reworkedHtml = preg_replace(
                 '/<html(.*?)>/is',
                 '<html$1><head>' . self::CONTENT_TYPE_META_TAG . '</head>',
-                $html
+                $html,
             );
         } else {
             $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
@@ -381,7 +381,7 @@ abstract class AbstractHtmlProcessor
                 (?=<(?&target))
             %isx',
             $html,
-            $matches
+            $matches,
         );
         if (isset($matches[0])) {
             $htmlBefore = $matches[0];
@@ -448,7 +448,7 @@ abstract class AbstractHtmlProcessor
         return preg_replace(
             '%<' . self::PHP_UNRECOGNIZED_VOID_TAGNAME_MATCHER . '\\b[^>]*+(?<!/)(?=>)%',
             '$0/',
-            $html
+            $html,
         );
     }
 

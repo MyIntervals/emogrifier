@@ -96,7 +96,7 @@ final class DeclarationBlockParser
             if (preg_match(
                 '/^(-?+[a-zA-Z_][a-zA-Z_0-9\\-]*+|--[a-zA-Z_0-9\\-]++)\\s*+:\\s*+(.++)$/s',
                 \trim($declaration),
-                $matches
+                $matches,
             ) === 0) {
                 continue;
             }

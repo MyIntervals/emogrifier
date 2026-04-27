@@ -113,7 +113,7 @@ final class HtmlPrunerTest extends TestCase
         string $classAttributeValue
     ): void {
         $subject = HtmlPruner::fromHtml(
-            '<html><body><div class="' . $classAttributeValue . '" style="display: none;"></div></body></html>'
+            '<html><body><div class="' . $classAttributeValue . '" style="display: none;"></div></body></html>',
         );
 
         $subject->removeElementsWithDisplayNone();
@@ -619,7 +619,7 @@ final class HtmlPrunerTest extends TestCase
         self::assertSame(
             $expectedCount,
             \substr_count($haystack, $needle),
-            'asserting \'' . $haystack . '\' contains ' . (string) $expectedCount . ' instance(s) of "' . $needle . '"'
+            'asserting \'' . $haystack . '\' contains ' . (string) $expectedCount . ' instance(s) of "' . $needle . '"',
         );
     }
 

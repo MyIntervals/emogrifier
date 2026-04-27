@@ -97,5 +97,5 @@ return (new Config())
             // string notation
             'single_quote' => true,
             'string_implicit_backslashes' => ['single_quoted' => 'escape'],
-        ]
+        ],
     );
