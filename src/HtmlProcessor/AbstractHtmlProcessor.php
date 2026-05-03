@@ -50,9 +50,9 @@ abstract class AbstractHtmlProcessor
     protected $domDocument = null;
 
     /**
-     * @var \DOMXPath|null
+     * @var \DOMXPath
      */
-    private $xPath = null;
+    protected $xPath;
 
     /**
      * The constructor.
@@ -124,19 +124,6 @@ abstract class AbstractHtmlProcessor
     {
         $this->domDocument = $domDocument;
         $this->xPath = new \DOMXPath($this->domDocument);
-    }
-
-    /**
-     * @throws \UnexpectedValueException
-     */
-    protected function getXPath(): \DOMXPath
-    {
-        if (!$this->xPath instanceof \DOMXPath) {
-            $message = self::class . '::setDomDocument() has not yet been called on ' . static::class;
-            throw new \UnexpectedValueException($message, 1617819086);
-        }
-
-        return $this->xPath;
     }
 
     /**
