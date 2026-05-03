@@ -32,7 +32,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
      */
     public function removeElementsWithDisplayNone(): self
     {
-        $elementsWithStyleDisplayNone = $this->getXPath()->query(self::DISPLAY_NONE_MATCHER);
+        $elementsWithStyleDisplayNone = $this->xPath->query(self::DISPLAY_NONE_MATCHER);
         \assert($elementsWithStyleDisplayNone instanceof \DOMNodeList);
         if ($elementsWithStyleDisplayNone->length === 0) {
             return $this;
@@ -65,7 +65,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
     public function removeRedundantClasses(array $classesToKeep = []): self
     {
         /** @var \DOMNodeList<\DOMElement> $elementsWithClassAttribute */
-        $elementsWithClassAttribute = $this->getXPath()->query('//*[@class]');
+        $elementsWithClassAttribute = $this->xPath->query('//*[@class]');
 
         if ($classesToKeep !== []) {
             $this->removeClassesFromElements($elementsWithClassAttribute, $classesToKeep);

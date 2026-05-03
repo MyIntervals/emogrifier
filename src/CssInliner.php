@@ -417,7 +417,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function getAllNodesWithStyleAttribute(): \DOMNodeList
     {
         $query = '//*[@style]';
-        $matches = $this->getXPath()->query($query);
+        $matches = $this->xPath->query($query);
         \assert($matches instanceof \DOMNodeList);
         /** @var \DOMNodeList<\DOMElement> $matches */
 
@@ -467,7 +467,7 @@ final class CssInliner extends AbstractHtmlProcessor
      */
     private function getCssFromAllStyleNodes(): string
     {
-        $styleNodes = $this->getXPath()->query('//style');
+        $styleNodes = $this->xPath->query('//style');
         if ($styleNodes === false) {
             return '';
         }
@@ -518,7 +518,7 @@ final class CssInliner extends AbstractHtmlProcessor
     private function querySelectorAll(string $selectors, array $options = []): \DOMNodeList
     {
         try {
-            $result = $this->getXPath()->query($this->getCssSelectorConverter()->toXPath($selectors));
+            $result = $this->xPath->query($this->getCssSelectorConverter()->toXPath($selectors));
             \assert($result instanceof \DOMNodeList);
         } catch (ParseException $exception) {
             $alwaysThrowParseException = $options[self::QSA_ALWAYS_THROW_PARSE_EXCEPTION] ?? false;
