@@ -45,9 +45,9 @@ abstract class AbstractHtmlProcessor
         = '%<template[\\s>][^<]*+(?:<(?!/template>)[^<]*+)*+(?:</template>|$)%i';
 
     /**
-     * @var \DOMDocument|null
+     * @var \DOMDocument
      */
-    protected $domDocument = null;
+    private $domDocument;
 
     /**
      * @var \DOMXPath|null
@@ -115,15 +115,13 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
-        \assert($this->domDocument instanceof \DOMDocument);
-
         return $this->domDocument;
     }
 
     private function setDomDocument(\DOMDocument $domDocument): void
     {
         $this->domDocument = $domDocument;
-        $this->xPath = new \DOMXPath($this->domDocument);
+        $this->xPath = new \DOMXPath($domDocument);
     }
 
     /**
@@ -219,7 +217,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Creates a DOM document from the given HTML and stores it in $this->domDocument.
+     * Creates a DOM document from the given HTML and stores it in `$this->domDocument`.
      *
      * The DOM document will always have a BODY element and a document type.
      */
@@ -230,7 +228,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Creates a DOMDocument instance from the given HTML and stores it in $this->domDocument.
+     * Creates a DOMDocument instance from the given HTML and stores it in `$this->domDocument`.
      */
     private function createRawDomDocument(string $html): void
     {
@@ -453,9 +451,7 @@ abstract class AbstractHtmlProcessor
     }
 
     /**
-     * Checks that $this->domDocument has a BODY element and adds it if it is missing.
-     *
-     * @throws \UnexpectedValueException
+     * Checks that `$this->domDocument` has a BODY element and adds it if it is missing.
      */
     private function ensureExistenceOfBodyElement(): void
     {
