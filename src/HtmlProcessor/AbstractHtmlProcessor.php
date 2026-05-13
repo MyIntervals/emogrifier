@@ -78,6 +78,7 @@ abstract class AbstractHtmlProcessor
 
         $instance = new static();
         $instance->setHtml($unprocessedHtml);
+        \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
     }
@@ -93,6 +94,7 @@ abstract class AbstractHtmlProcessor
     {
         $instance = new static();
         $instance->setDomDocument($document);
+        \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
     }
@@ -109,8 +111,6 @@ abstract class AbstractHtmlProcessor
 
     /**
      * Provides access to the internal DOMDocument representation of the HTML in its current state.
-     *
-     * @throws \UnexpectedValueException
      */
     public function getDomDocument(): \DOMDocument
     {
