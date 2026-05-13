@@ -50,9 +50,9 @@ abstract class AbstractHtmlProcessor
     private $domDocument;
 
     /**
-     * @var \DOMXPath|null
+     * @var \DOMXPath
      */
-    private $xPath = null;
+    protected $xPath;
 
     /**
      * The constructor.
@@ -78,6 +78,7 @@ abstract class AbstractHtmlProcessor
 
         $instance = new static();
         $instance->setHtml($unprocessedHtml);
+        \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
     }
@@ -93,6 +94,7 @@ abstract class AbstractHtmlProcessor
     {
         $instance = new static();
         $instance->setDomDocument($document);
+        \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
     }
@@ -109,8 +111,6 @@ abstract class AbstractHtmlProcessor
 
     /**
      * Provides access to the internal DOMDocument representation of the HTML in its current state.
-     *
-     * @throws \UnexpectedValueException
      */
     public function getDomDocument(): \DOMDocument
     {
@@ -121,19 +121,6 @@ abstract class AbstractHtmlProcessor
     {
         $this->domDocument = $domDocument;
         $this->xPath = new \DOMXPath($domDocument);
-    }
-
-    /**
-     * @throws \UnexpectedValueException
-     */
-    protected function getXPath(): \DOMXPath
-    {
-        if (!$this->xPath instanceof \DOMXPath) {
-            $message = self::class . '::setDomDocument() has not yet been called on ' . static::class;
-            throw new \UnexpectedValueException($message, 1617819086);
-        }
-
-        return $this->xPath;
     }
 
     /**
