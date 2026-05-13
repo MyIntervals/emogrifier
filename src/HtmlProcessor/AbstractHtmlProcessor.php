@@ -78,6 +78,7 @@ abstract class AbstractHtmlProcessor
 
         $instance = new static();
         $instance->setHtml($unprocessedHtml);
+        \assert($instance->domDocument instanceof \DOMDocument);
         \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
@@ -94,6 +95,7 @@ abstract class AbstractHtmlProcessor
     {
         $instance = new static();
         $instance->setDomDocument($document);
+        \assert($instance->domDocument instanceof \DOMDocument);
         \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
@@ -114,6 +116,8 @@ abstract class AbstractHtmlProcessor
      */
     public function getDomDocument(): \DOMDocument
     {
+        \assert($this->domDocument instanceof \DOMDocument);
+
         return $this->domDocument;
     }
 
