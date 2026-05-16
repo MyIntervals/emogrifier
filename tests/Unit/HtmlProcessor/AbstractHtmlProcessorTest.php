@@ -106,16 +106,16 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     public function renderPreservesOuterHtmlProvidedToFromHtml(): void
     {
-        $rawHtml = '<!DOCTYPE HTML>' .
-            '<html>' .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
-            '<body></body>' .
-            '</html>';
-        $formattedHtml = "<!DOCTYPE html>\n" .
-            "<html>\n" .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n" .
-            "<body></body>\n" .
-            "</html>\n";
+        $rawHtml = '<!DOCTYPE HTML>'
+            . '<html>'
+            . '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+            . '<body></body>'
+            . '</html>';
+        $formattedHtml = "<!DOCTYPE html>\n"
+            . "<html>\n"
+            . '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' . "\n"
+            . "<body></body>\n"
+            . "</html>\n";
 
         $subject = TestingHtmlProcessor::fromHtml($rawHtml);
         $html = $subject->render();
@@ -128,15 +128,15 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     public function renderPreservesOriginalHtmlFormatting(): void
     {
-        $rawHtml = "<!DOCTYPE html>\n" .
-            "<html>\n" .
-            '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>' .
-            "<body>\n" .
-            "<ul>\n" .
-            "<li><em>Hello</em> world</li>\n" .
-            "</ul>\n" .
-            "</body>\n" .
-            '</html>';
+        $rawHtml = "<!DOCTYPE html>\n"
+            . "<html>\n"
+            . '<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"></head>'
+            . "<body>\n"
+            . "<ul>\n"
+            . "<li><em>Hello</em> world</li>\n"
+            . "</ul>\n"
+            . "</body>\n"
+            . '</html>';
 
         $subject = TestingHtmlProcessor::fromHtml($rawHtml);
         $renderedHtml = $subject->render();
@@ -725,16 +725,16 @@ final class AbstractHtmlProcessorTest extends TestCase
         return [
             'HTML5' => ['<!DOCTYPE html>'],
             'HTML 4.01 strict' => [
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" ' .
-                '"http://www.w3.org/TR/html4/strict.dtd">',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" '
+                . '"http://www.w3.org/TR/html4/strict.dtd">',
             ],
             'HTML 4.01 transitional' => [
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" ' .
-                '"http://www.w3.org/TR/html4/loose.dtd">',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" '
+                . '"http://www.w3.org/TR/html4/loose.dtd">',
             ],
             'HTML 4 transitional' => [
-                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" ' .
-                '"http://www.w3.org/TR/REC-html40/loose.dtd">',
+                '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" '
+                . '"http://www.w3.org/TR/REC-html40/loose.dtd">',
             ],
             'HTML 3.2' => ['<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">'],
         ];
@@ -1258,9 +1258,9 @@ final class AbstractHtmlProcessorTest extends TestCase
      */
     public function getDomDocumentWithNormalizedHtmlRepresentsTheGivenHtml(): void
     {
-        $html = "<!DOCTYPE html>\n<html>\n<head>" .
-            '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">' .
-            "</head>\n<body>\n<br>\n</body>\n</html>\n";
+        $html = "<!DOCTYPE html>\n<html>\n<head>"
+            . '<meta http-equiv="Content-Type" content="text/html; charset=utf-8">'
+            . "</head>\n<body>\n<br>\n</body>\n</html>\n";
         $subject = TestingHtmlProcessor::fromHtml($html);
 
         $domDocument = $subject->getDomDocument();

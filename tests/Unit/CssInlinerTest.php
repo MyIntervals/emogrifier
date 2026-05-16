@@ -1218,10 +1218,10 @@ final class CssInlinerTest extends TestCase
         $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
-            $lessSpecificSelector . ' { color: red; } ' .
-            $moreSpecificSelector . ' { color: green; } ' .
-            $moreSpecificSelector . ' { background-color: green; } ' .
-            $lessSpecificSelector . ' { background-color: red; }',
+            $lessSpecificSelector . ' { color: red; } '
+            . $moreSpecificSelector . ' { color: green; } '
+            . $moreSpecificSelector . ' { background-color: green; } '
+            . $lessSpecificSelector . ' { background-color: red; }',
         );
 
         self::assertStringContainsString(
@@ -1303,10 +1303,10 @@ final class CssInlinerTest extends TestCase
         $subject = $this->buildDebugSubject(self::COMMON_TEST_HTML);
 
         $subject->inlineCss(
-            $selector1 . ' { color: red; } ' .
-            $selector2 . ' { color: green; } ' .
-            $selector2 . ' { background-color: red; } ' .
-            $selector1 . ' { background-color: green; }',
+            $selector1 . ' { color: red; } '
+            . $selector2 . ' { color: green; } '
+            . $selector2 . ' { background-color: red; } '
+            . $selector1 . ' { background-color: green; }',
         );
 
         self::assertStringContainsString(
@@ -1633,9 +1633,9 @@ final class CssInlinerTest extends TestCase
      */
     public function inlineCssNotInDebugModeIgnoresInvalidCssSelectors(): void
     {
-        $html = '<html><style type="text/css">' .
-            'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
-            '<body><p></p></body></html>';
+        $html = '<html><style type="text/css">'
+            . 'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> '
+            . '<body><p></p></body></html>';
         $subject = CssInliner::fromHtml($html);
         $subject->setDebug(false);
 
@@ -1651,9 +1651,9 @@ final class CssInlinerTest extends TestCase
      */
     public function inlineCssByDefaultIgnoresInvalidCssSelectors(): void
     {
-        $html = '<html><style type="text/css">' .
-            'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> ' .
-            '<body><p></p></body></html>';
+        $html = '<html><style type="text/css">'
+            . 'p{color:red;} <style data-x="1">html{cursor:text;} p{background-color:blue;}</style> '
+            . '<body><p></p></body></html>';
         $subject = CssInliner::fromHtml($html);
 
         $subject->inlineCss();
@@ -2020,11 +2020,11 @@ final class CssInlinerTest extends TestCase
             'style in "print" media type rule' => ['@media print { * { color:#000 !important; } }'],
             'style in media type rule without specification' => ['@media { h1 { color:red; } }'],
             'style with multiple media type rules' => [
-                '@media all { p { color: #000; } }' .
-                '@media only screen { h1 { color:red; } }' .
-                '@media only all { h1 { color:red; } }' .
-                '@media print { * { color:#000 !important; } }' .
-                '@media { h1 { color:red; } }',
+                '@media all { p { color: #000; } }'
+                . '@media only screen { h1 { color:red; } }'
+                . '@media only all { h1 { color:red; } }'
+                . '@media print { * { color:#000 !important; } }'
+                . '@media { h1 { color:red; } }',
             ],
         ];
     }
@@ -2675,8 +2675,8 @@ final class CssInlinerTest extends TestCase
     {
         $styleAttributeValue = 'text-align: center;';
         $subject = $this->buildDebugSubject(
-            '<html><head><style type="text/css">p { color: #ccc; }</style></head>' .
-            '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>',
+            '<html><head><style type="text/css">p { color: #ccc; }</style></head>'
+            . '<body><p style="' . $styleAttributeValue . '">paragraph</p></body></html>',
         );
         $subject->disableStyleBlocksParsing();
 
@@ -2717,8 +2717,8 @@ final class CssInlinerTest extends TestCase
     {
         $styleAttributeValue = 'color: #ccc;';
         $subject = $this->buildDebugSubject(
-            '<html><head><style type="text/css">p { ' . $styleAttributeValue . ' }</style></head>' .
-            '<body><p style="text-align: center;">paragraph</p></body></html>',
+            '<html><head><style type="text/css">p { ' . $styleAttributeValue . ' }</style></head>'
+            . '<body><p style="text-align: center;">paragraph</p></body></html>',
         );
         $subject->disableInlineStyleAttributesParsing();
 
@@ -2735,8 +2735,8 @@ final class CssInlinerTest extends TestCase
     public function inlineCssAppliesCssWithMixedCaseAttributesInStyleBlock(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
+            '<html><head><style>#topWrap p {padding-bottom: 1px;PADDING-TOP: 0;}</style></head>'
+            . '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss();
@@ -2756,8 +2756,8 @@ final class CssInlinerTest extends TestCase
     public function inlineCssMergesCssWithMixedCaseAttribute(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
+            '<html><head><style>#topWrap p {padding-bottom: 3px;PADDING-TOP: 1px;}</style></head>'
+            . '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss('p { margin: 0; padding-TOP: 0; PADDING-bottom: 1PX;}');
@@ -2774,8 +2774,8 @@ final class CssInlinerTest extends TestCase
     public function inlineCssMergesCssWithMixedUnits(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head>' .
-            '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
+            '<html><head><style>#topWrap p {margin:0;padding-bottom: 1px;}</style></head>'
+            . '<body><div id="topWrap"><p style="text-align: center;">some content</p></div></body></html>',
         );
 
         $subject->inlineCss('p { margin: 1px; padding-bottom:0;}');
@@ -3277,15 +3277,15 @@ final class CssInlinerTest extends TestCase
     public function multiLineMediaQueryWithWindowsLineEndingsIsAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><body>' .
-            '<p class="medium">medium</p>' .
-            '<p class="small">small</p>' .
-            '</body></html>',
+            '<html><body>'
+            . '<p class="medium">medium</p>'
+            . '<p class="small">small</p>'
+            . '</body></html>',
         );
-        $css = "@media all {\r\n" .
-            ".medium {font-size:18px;}\r\n" .
-            ".small {font-size:14px;}\r\n" .
-            '}';
+        $css = "@media all {\r\n"
+            . ".medium {font-size:18px;}\r\n"
+            . ".small {font-size:14px;}\r\n"
+            . '}';
 
         $subject->inlineCss($css);
 
@@ -3298,15 +3298,15 @@ final class CssInlinerTest extends TestCase
     public function multiLineMediaQueryWithUnixLineEndingsIsAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><body>' .
-            '<p class="medium">medium</p>' .
-            '<p class="small">small</p>' .
-            '</body></html>',
+            '<html><body>'
+            . '<p class="medium">medium</p>'
+            . '<p class="small">small</p>'
+            . '</body></html>',
         );
-        $css = "@media all {\n" .
-            ".medium {font-size:18px;}\n" .
-            ".small {font-size:14px;}\n" .
-            '}';
+        $css = "@media all {\n"
+            . ".medium {font-size:18px;}\n"
+            . ".small {font-size:14px;}\n"
+            . '}';
 
         $subject->inlineCss($css);
 
@@ -3319,19 +3319,19 @@ final class CssInlinerTest extends TestCase
     public function multipleMediaQueriesAreAppliedOnlyOnce(): void
     {
         $subject = $this->buildDebugSubject(
-            '<html><body>' .
-            '<p class="medium">medium</p>' .
-            '<p class="small">small</p>' .
-            '</body></html>',
+            '<html><body>'
+            . '<p class="medium">medium</p>'
+            . '<p class="small">small</p>'
+            . '</body></html>',
         );
-        $css = "@media all {\n" .
-            ".medium {font-size:18px;}\n" .
-            ".small {font-size:14px;}\n" .
-            '}' .
-            "@media screen {\n" .
-            ".medium {font-size:24px;}\n" .
-            ".small {font-size:18px;}\n" .
-            '}';
+        $css = "@media all {\n"
+            . ".medium {font-size:18px;}\n"
+            . ".small {font-size:14px;}\n"
+            . '}'
+            . "@media screen {\n"
+            . ".medium {font-size:24px;}\n"
+            . ".small {font-size:18px;}\n"
+            . '}';
 
         $subject->inlineCss($css);
 
@@ -3359,13 +3359,13 @@ final class CssInlinerTest extends TestCase
     public function dataUrisAreConserved(string $dataUriMediaType): void
     {
         $subject = $this->buildDebugSubject('<html></html>');
-        $styleRule = 'background-image: url(data:image/png' . $dataUriMediaType .
-            ',iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk' .
-            'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR' .
-            'VFAQAAICJEhN/q8Xjoug7D4RA+qsFgwDjn9QYiTiaT+Xx+OByOx+NqtapjWq0WjEajekPTtCAIiIiIyrKMoqiOMQxDlVqyLMt1XQ' .
-            'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt' .
-            'ut53nj8bip8m6345wLIQCgKIowDIuikAoz6Wm3233mjHPe6XRe5UROJqImIWPwh/pvZMbYM2GKorx5oUw6m+v1miTJ+XzO8/x+v7' .
-            '+UtizrM8+GYahVVSFik9/jxy6rqlJN02SM1cmI+GbbQghd178AAO2FXws6LwMAAAAASUVORK5CYII=);';
+        $styleRule = 'background-image: url(data:image/png' . $dataUriMediaType
+            . ',iVBORw0KGgoAAAANSUhEUgAAABQAAAAUCAIAAAAC64paAAABUk'
+            . 'lEQVQ4y81UsY6CQBCdWXBjYWFMjEgAE0piY8c38B9+iX+ksaHCgs5YWEhIrJCQYGJBomiC7lzhVcfqEa+5KXfey3s783bRdd00TR'
+            . 'VFAQAAICJEhN/q8Xjoug7D4RA+qsFgwDjn9QYiTiaT+Xx+OByOx+NqtapjWq0WjEajekPTtCAIiIiIyrKMoqiOMQxDlVqyLMt1XQ'
+            . 'A4nU6z2Wy9XkthEnK/3zdN8znC/X7v+36WZfJ7120vFos4joUQRHS5XDabzXK5bGrbtu1er/dtTFU1TWu3202VHceZTqe3242Itt'
+            . 'ut53nj8bip8m6345wLIQCgKIowDIuikAoz6Wm3233mjHPe6XRe5UROJqImIWPwh/pvZMbYM2GKorx5oUw6m+v1miTJ+XzO8/x+v7'
+            . '+UtizrM8+GYahVVSFik9/jxy6rqlJN02SM1cmI+GbbQghd178AAO2FXws6LwMAAAAASUVORK5CYII=);';
 
         $subject->inlineCss('html {' . $styleRule . '}');
 
