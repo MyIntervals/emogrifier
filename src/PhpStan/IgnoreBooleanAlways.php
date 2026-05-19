@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Pelago\Emogrifier\Tests\PhpStan;
+namespace Pelago\Emogrifier\PhpStan;
 
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
@@ -14,7 +14,9 @@ use PHPStan\Analyser\Scope;
 /**
  * Ignore PHPStan warnings where the DocBlocks indicate that a conditional expression would always be true (or false),
  * but a programming mistake elsewhere could lead to that not being the case, for the following:
- * - `assert($object instanceof Class);`
+ * - `assert($object instanceof Class);`.
+ *
+ * @internal
  */
 final class IgnoreBooleanAlways implements IgnoreErrorExtension
 {

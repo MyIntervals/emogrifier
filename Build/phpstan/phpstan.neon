@@ -24,6 +24,6 @@ parameters:
 
 services:
   -
-    class: \Pelago\Emogrifier\Tests\PhpStan\IgnoreBooleanAlways
+    class: \Pelago\Emogrifier\PhpStan\IgnoreBooleanAlways
     tags:
       - phpstan.ignoreErrorExtension
