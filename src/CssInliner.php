@@ -434,7 +434,8 @@ final class CssInliner extends AbstractHtmlProcessor
         if (\function_exists('Safe\\preg_replace_callback')) {
             $normalizedOriginalStyle = preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
         } else {
-            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // @phpstan-ignore theCodingMachineSafe.function
             $normalizedOriginalStyle = \preg_replace_callback($pattern, $callback, $node->getAttribute('style'));
             \assert(\is_string($normalizedOriginalStyle));
         }
@@ -971,7 +972,8 @@ final class CssInliner extends AbstractHtmlProcessor
         if (\function_exists('Safe\\preg_replace_callback')) {
             $untrimmedSelectorWithoutNots = preg_replace_callback($pattern, $callback, ' ' . $selector);
         } else {
-            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // @phpstan-ignore theCodingMachineSafe.function
             $untrimmedSelectorWithoutNots = \preg_replace_callback($pattern, $callback, ' ' . $selector);
             \assert(\is_string($untrimmedSelectorWithoutNots));
         }
