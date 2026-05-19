@@ -25,7 +25,7 @@ final class IgnoreBooleanAlwaysImpossibleAssertTest extends IgnoreBooleanAlwaysT
     protected function getRule(): Rule
     {
         // If the class is renamed or removed in the next major release of PHPStan, we'll deal with it then.
-        // @phpstan-ignore-next-line phpstanApi.classConstant
+        // @phpstan-ignore phpstanApi.classConstant
         return self::getContainer()->getByType(ImpossibleCheckTypeFunctionCallRule::class);
     }
 
