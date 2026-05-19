@@ -33,6 +33,12 @@ final class IgnoreBooleanAlwaysImpossibleInstanceofTest extends IgnoreBooleanAlw
      */
     public function warningIsRetainedForInstanceofNotInAssert(): void
     {
+        // Skip the test in PHP/PHPStan configurations that don't have the required components.
+        // It is good enough to test for those that do.
+        if (!\interface_exists(IgnoreErrorExtension::class)) {
+            self::markTestSkipped('This is testing the testers, and only needs to run whenever possible.');
+        }
+
         // Second argument is array of expected warnings.
         $this->analyse(
             [self::FIXTURES_DIR . 'alwaystrue-instanceof-notinassert.php'],

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\PhpStan;
 
+use PHPStan\Analyser\IgnoreErrorExtension;
 use PHPStan\Testing\RuleTestCase;
 use PHPStan\Rules\Rule;
 
@@ -26,6 +27,12 @@ abstract class IgnoreBooleanAlwaysTestBase extends RuleTestCase
      */
     public function warningIsIgnoredInAssertInstanceOf(): void
     {
+        // Skip the test in PHP/PHPStan configurations that don't have the required components.
+        // It is good enough to test for those that do.
+        if (!\interface_exists(IgnoreErrorExtension::class)) {
+            self::markTestSkipped('This is testing the testers, and only needs to run whenever possible.');
+        }
+
         // Second argument is array of expected warnings.
         $this->analyse([self::FIXTURES_DIR . 'alwaystrue-instanceof-inassert.php'], []);
     }
