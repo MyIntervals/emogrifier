@@ -10,6 +10,9 @@ parameters:
     - %currentWorkingDirectory%/src/
     - %currentWorkingDirectory%/tests/
 
+  excludePaths:
+    - %currentWorkingDirectory%/tests/fixtures/phpstan/
+
   type_perfect:
     no_mixed_property: true
     no_mixed_caller: true
