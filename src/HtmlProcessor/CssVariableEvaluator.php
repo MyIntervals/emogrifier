@@ -166,7 +166,8 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
         if (\function_exists('Safe\\preg_replace_callback')) {
             $result = preg_replace_callback($pattern, $callable, $propertyValue);
         } else {
-            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // @phpstan-ignore theCodingMachineSafe.function
             $result = \preg_replace_callback($pattern, $callable, $propertyValue);
         }
         \assert(\is_string($result));

@@ -168,7 +168,8 @@ abstract class CssConstraint extends Constraint
         if (\function_exists('Safe\\preg_replace_callback')) {
             $matcher = preg_replace_callback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
         } else {
-            // @phpstan-ignore-next-line The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+            // @phpstan-ignore theCodingMachineSafe.function
             $matcher = \preg_replace_callback(self::CSS_REGULAR_EXPRESSION_PATTERN, $callback, $css);
         }
         \assert(\is_string($matcher));
@@ -197,7 +198,8 @@ abstract class CssConstraint extends Constraint
                 if (\function_exists('Safe\\preg_replace_callback')) {
                     $regularExpressionEquivalent = preg_replace_callback($pattern, $callback, $replacement);
                 } else {
-                    // @phpstan-ignore-next-line The safe version in "thecodingmachine/safe" needs PHP >= 8.1.
+                    // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
+                    // @phpstan-ignore theCodingMachineSafe.function
                     $regularExpressionEquivalent = \preg_replace_callback($pattern, $callback, $replacement);
                 }
                 \assert(\is_string($regularExpressionEquivalent));

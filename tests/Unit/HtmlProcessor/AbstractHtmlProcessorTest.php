@@ -151,7 +151,7 @@ final class AbstractHtmlProcessorTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        // @phpstan-ignore-next-line argument.type We're explicitly testing with an invalid value here.
+        // @phpstan-ignore argument.type (We're explicitly testing with an invalid value here.)
         TestingHtmlProcessor::fromHtml('');
     }
 
