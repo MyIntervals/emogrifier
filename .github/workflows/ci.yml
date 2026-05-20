@@ -121,14 +121,6 @@ jobs:
       - name: Show the Composer configuration
         run: composer config --global --list
 
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/composer
-          key: php${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-composer-
-
       - name: Install Composer dependencies
         run: composer install --no-progress
 
@@ -160,7 +152,6 @@ jobs:
           - '8.4'
           - '8.5'
         dependencies:
-          - lowest
           - highest
 
     steps:
@@ -180,14 +171,6 @@ jobs:
 
       - name: Show the Composer configuration
         run: composer config --global --list
-
-      - name: Cache dependencies installed with composer
-        uses: actions/cache@v5
-        with:
-          path: ~/.cache/composer
-          key: php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-${{ hashFiles('**/composer.json') }}
-          restore-keys: |
-            php${{ matrix.php-version }}-${{ matrix.dependencies }}-composer-
 
       - name: Install Composer dependencies
         run: |
