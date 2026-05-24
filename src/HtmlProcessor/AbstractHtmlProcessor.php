@@ -72,6 +72,7 @@ abstract class AbstractHtmlProcessor
      */
     public static function fromHtml(string $unprocessedHtml): self
     {
+        // @phpstan-ignore identical.alwaysFalse (We're checking for a contract violation here.)
         if ($unprocessedHtml === '') {
             throw new \InvalidArgumentException('The provided HTML must not be empty.', 1515763647);
         }
