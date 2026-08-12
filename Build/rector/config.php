@@ -3,8 +3,6 @@
 declare(strict_types=1);
 
 use Rector\Config\RectorConfig;
-use Rector\PHPUnit\Set\PHPUnitSetList;
-use Rector\Set\ValueObject\LevelSetList;
 use Rector\Set\ValueObject\SetList;
 
 return RectorConfig::configure()
@@ -14,11 +12,8 @@ return RectorConfig::configure()
             __DIR__ . '/../../tests',
         ],
     )
+    ->withComposerBased()
     ->withSets([
-        // Rector sets
-
-        LevelSetList::UP_TO_PHP_73,
-
         // SetList::CODE_QUALITY,
         // SetList::CODING_STYLE,
         // SetList::DEAD_CODE,
@@ -27,10 +22,5 @@ return RectorConfig::configure()
         // SetList::NAMING,
         // SetList::PRIVATIZATION,
         SetList::TYPE_DECLARATION,
-
-        // PHPUnit sets
-
-        PHPUnitSetList::PHPUNIT_90,
-        // PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ])
     ->withImportNames(true, true, false);
