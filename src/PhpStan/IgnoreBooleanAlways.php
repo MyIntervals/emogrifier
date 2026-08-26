@@ -28,7 +28,7 @@ final class IgnoreBooleanAlways implements IgnoreErrorExtension
         switch ($error->getIdentifier()) {
             case 'function.alreadyNarrowedType':
                 // For an `assert()` that the DocBlocks say cannot fail.
-                if ($node instanceof FunctionCallExpressionNode) {
+                if (\class_exists(FunctionCallExpressionNode::class) && $node instanceof FunctionCallExpressionNode) {
                     // Unwrap for PHPStan >= 2.2.8
                     $node = $node->getOriginalNode();
                 }
