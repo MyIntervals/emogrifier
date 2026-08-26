@@ -10,6 +10,7 @@ use PhpParser\Node\Name;
 use PHPStan\Analyser\Error;
 use PHPStan\Analyser\IgnoreErrorExtension;
 use PHPStan\Analyser\Scope;
+use PHPStan\Node\FunctionCallExpressionNode;
 
 /**
  * Ignore PHPStan warnings where the DocBlocks indicate that a conditional expression would always be true (or false),
@@ -27,6 +28,10 @@ final class IgnoreBooleanAlways implements IgnoreErrorExtension
         switch ($error->getIdentifier()) {
             case 'function.alreadyNarrowedType':
                 // For an `assert()` that the DocBlocks say cannot fail.
+                if ($node instanceof FunctionCallExpressionNode) {
+                    // Unwrap for PHPStan >= 2.2.8
+                    $node = $node->getOriginalNode();
+                }
                 if ($node instanceof FuncCall) {
                     $nameNode = $node->name;
                     if ($nameNode instanceof Name && $nameNode->name === 'assert') {
