@@ -40,8 +40,11 @@ final class IgnoreBooleanAlways implements IgnoreErrorExtension
     {
         $shouldIgnore = false;
 
+        // This is an unstable API that does not adhere to semver.
+        // @phpstan-ignore phpstanApi.classConstant, phpstanApi.class
         if (\class_exists(FunctionCallExpressionNode::class) && $node instanceof FunctionCallExpressionNode) {
             // Unwrap for PHPStan >= 2.2.8
+            // @phpstan-ignore phpstanApi.method
             $node = $node->getOriginalNode();
         }
         if ($node instanceof FuncCall) {
