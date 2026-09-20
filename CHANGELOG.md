@@ -10,6 +10,8 @@ Please also have a look at our
 
 ### Added
 
+- Add support for PHP 8.6 (#1649)
+
 ### Changed
 
 - The `render()` methods will now throw an exception upon an internal error
