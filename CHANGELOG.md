@@ -14,7 +14,7 @@ Please also have a look at our
 
 - The `render()` methods will now throw an exception upon an internal error
   from `DOMDocument`, instead of returning an empty string (#1588)
-- Require `sabberworm/php-css-parser` >= 9.3.0 (#1575, #1582, #1583)
+- Require `sabberworm/php-css-parser` >= 9.5.0 (#1575, #1582, #1583, #1657)
 
 ### Deprecated
 
