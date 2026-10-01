@@ -6,9 +6,7 @@ namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\Utilities\ArrayIntersector;
-
-use function Safe\preg_match_all;
-use function Safe\preg_split;
+use Pelago\Emogrifier\Utilities\Preg;
 
 /**
  * This class can remove things from HTML.
@@ -88,9 +86,10 @@ final class HtmlPruner extends AbstractHtmlProcessor
     {
         $classesToKeepIntersector = new ArrayIntersector($classesToKeep);
 
+        $preg = new Preg();
         foreach ($elements as $element) {
             /** @var list<string> $elementClasses */
-            $elementClasses = preg_split('/\\s++/', \trim($element->getAttribute('class')));
+            $elementClasses = $preg->split('/\\s++/', \trim($element->getAttribute('class')));
             $elementClassesToKeep = $classesToKeepIntersector->intersectWith($elementClasses);
             if ($elementClassesToKeep !== []) {
                 $element->setAttribute('class', \implode(' ', $elementClassesToKeep));
@@ -126,8 +125,11 @@ final class HtmlPruner extends AbstractHtmlProcessor
     public function removeRedundantClassesAfterCssInlined(CssInliner $cssInliner): self
     {
         $classesToKeepAsKeys = [];
+
+        $preg = new Preg();
         foreach ($cssInliner->getMatchingUninlinableSelectors() as $selector) {
-            preg_match_all('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
+            $preg->matchAll('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
+            \assert(isset($matches[1]));
             $classesToKeepAsKeys += \array_fill_keys($matches[1], true);
         }
 
