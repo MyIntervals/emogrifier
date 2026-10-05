@@ -5,9 +5,7 @@ declare(strict_types=1);
 namespace Pelago\Emogrifier\HtmlProcessor;
 
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
-
-use function Safe\preg_match;
-use function Safe\preg_replace_callback;
+use Pelago\Emogrifier\Utilities\Preg;
 
 /**
  * This class can evaluate CSS custom properties that are defined and used in inline style attributes.
@@ -44,7 +42,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
             $style = $currentElement->getAttribute('style');
 
             // Avoid parsing declarations if none use or define a variable
-            if (preg_match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
+            if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
                 $declarations = DeclarationBlockParser::parse($style);
                 $variableDefinitions
                     = $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
@@ -87,9 +85,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
     /**
      * Callback function for {@see replaceVariablesInPropertyValue} performing regular expression replacement.
      *
-     * @param array<mixed> $matches
-     *        This will actaully be `non-empty-list<string>` but the type annotation cannot be any tighter due to use of
-     *        `Safe\preg_replace_callback()` which does not precisely type the `$callback` parameter.
+     * @param non-empty-list<string> $matches
      */
     private function getPropertyValueReplacement(array $matches): string
     {
@@ -106,7 +102,6 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                 // The fallback value may use other CSS variables, so recurse
                 $variableValue = $this->replaceVariablesInPropertyValue($fallbackValue);
             } else {
-                \assert(\is_string($matches[0] ?? null));
                 $variableValue = $matches[0];
             }
         }
@@ -163,16 +158,8 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
             /x';
 
         $callable = \Closure::fromCallable([$this, 'getPropertyValueReplacement']);
-        if (\function_exists('Safe\\preg_replace_callback')) {
-            $result = preg_replace_callback($pattern, $callable, $propertyValue);
-        } else {
-            // The safe version is only available in "thecodingmachine/safe" for PHP >= 8.1.
-            // @phpstan-ignore theCodingMachineSafe.function
-            $result = \preg_replace_callback($pattern, $callable, $propertyValue);
-        }
-        \assert(\is_string($result));
 
-        return $result;
+        return (new Preg())->replaceCallback($pattern, $callable, $propertyValue);
     }
 
     /**
