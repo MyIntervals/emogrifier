@@ -1,6 +1,18 @@
 parameters:
 	ignoreErrors:
 		-
+			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\AbstractHtmlProcessor\:\:addContentTypeMetaTag\(\) should return non\-empty\-string but returns string\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
+			message: '#^Method Pelago\\Emogrifier\\HtmlProcessor\\AbstractHtmlProcessor\:\:normalizeDocumentType\(\) should return non\-empty\-string but returns string\.$#'
+			identifier: return.type
+			count: 1
+			path: ../../src/HtmlProcessor/AbstractHtmlProcessor.php
+
+		-
 			message: '#^Function preg_match is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_match;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
 			identifier: theCodingMachineSafe.function
 			count: 1
