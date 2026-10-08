@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Utilities;
 
-use function Safe\preg_match;
-use function Safe\preg_split;
-
 /**
  * Provides a common method for parsing CSS declaration blocks.
  * These might be from actual CSS, or from the `style` attribute of an HTML DOM element.
@@ -88,12 +85,13 @@ final class DeclarationBlockParser
             return self::$cache[$trimmedDeclarationBlock];
         }
 
-        $declarations = preg_split('/;(?!base64|charset)/', $trimmedDeclarationBlock);
-        /** @var list<string> $declarations */
+        $preg = new Preg();
+
+        $declarations = $preg->split('/;(?!base64|charset)/', $trimmedDeclarationBlock);
         $properties = [];
         foreach ($declarations as $declaration) {
             $matches = [];
-            if (preg_match(
+            if ($preg->match(
                 '/^(-?+[a-zA-Z_][a-zA-Z_0-9\\-]*+|--[a-zA-Z_0-9\\-]++)\\s*+:\\s*+(.++)$/s',
                 \trim($declaration),
                 $matches,
@@ -101,8 +99,9 @@ final class DeclarationBlockParser
                 continue;
             }
 
-            \assert(\count($matches) >= 3);
+            \assert($matches !== null && \count($matches) >= 3);
             $propertyName = $matches[1];
+            \assert($propertyName !== '');
             $propertyValue = $matches[2];
             $properties[self::normalizePropertyName($propertyName)] = $propertyValue;
         }

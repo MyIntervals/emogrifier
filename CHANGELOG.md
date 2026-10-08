@@ -19,7 +19,7 @@ Please also have a look at our
   recovery behaviour is to return the original string unmodified;
   if the 'debug' option is set, an exception will still be thrown;
   this restores the behaviour to that of the 8.1.0 release
-  (#1663, #1665, #1666, #1667, #1668)
+  (#1663, #1665, #1666, #1667, #1668, #1669)
 - The `render()` methods will now throw an exception upon an internal error
   from `DOMDocument`, instead of returning an empty string (#1588)
 - Require `sabberworm/php-css-parser` >= 9.5.0 (#1575, #1582, #1583, #1657)
