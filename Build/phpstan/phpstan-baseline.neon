@@ -13,36 +13,6 @@ parameters:
 			path: ../../src/HtmlProcessor/AbstractHtmlProcessor.php
 
 		-
-			message: '#^Function preg_match is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_match;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
-			identifier: theCodingMachineSafe.function
-			count: 1
-			path: ../../src/Utilities/Preg.php
-
-		-
-			message: '#^Function preg_match_all is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_match_all;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
-			identifier: theCodingMachineSafe.function
-			count: 1
-			path: ../../src/Utilities/Preg.php
-
-		-
-			message: '#^Function preg_replace is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_replace;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
-			identifier: theCodingMachineSafe.function
-			count: 1
-			path: ../../src/Utilities/Preg.php
-
-		-
-			message: '#^Function preg_replace_callback is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_replace_callback;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
-			identifier: theCodingMachineSafe.function
-			count: 1
-			path: ../../src/Utilities/Preg.php
-
-		-
-			message: '#^Function preg_split is unsafe to use\. It can return FALSE instead of throwing an exception\. Please add ''use function Safe\\preg_split;'' at the beginning of the file to use the variant provided by the ''thecodingmachine/safe'' library\.$#'
-			identifier: theCodingMachineSafe.function
-			count: 1
-			path: ../../src/Utilities/Preg.php
-
-		-
 			message: '#^Method Pelago\\Emogrifier\\Utilities\\Preg\:\:match\(\) never assigns null to &\$matches so it can be removed from the by\-ref type\.$#'
 			identifier: parameterByRef.unusedType
 			count: 1
