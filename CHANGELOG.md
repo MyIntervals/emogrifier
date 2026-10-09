@@ -30,6 +30,9 @@ Please also have a look at our
 
 ### Removed
 
+- Remove `thecodingmachine/safe` dependency; note that this is still used in a
+  development environment for the unit tests (#1671)
+
 ### Fixed
 
 - Clear all previous caches on each invocation to avoid memory usage build-up
