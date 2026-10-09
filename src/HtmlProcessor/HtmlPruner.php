@@ -128,6 +128,7 @@ final class HtmlPruner extends AbstractHtmlProcessor
 
         $preg = new Preg();
         foreach ($cssInliner->getMatchingUninlinableSelectors() as $selector) {
+            $matches = null;
             $preg->matchAll('/\\.(-?+[_a-zA-Z][\\w\\-]*+)/', $selector, $matches);
             \assert(isset($matches[1]));
             $classesToKeepAsKeys += \array_fill_keys($matches[1], true);

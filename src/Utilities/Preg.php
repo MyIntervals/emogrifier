@@ -42,6 +42,7 @@ final class Preg
      *
      * @param non-empty-string|non-empty-array<non-empty-string> $pattern
      * @param string|non-empty-array<string> $replacement
+     * @param-out int<0, max> $count
      *
      * @throws \RuntimeException
      */
@@ -66,6 +67,7 @@ final class Preg
      * To circumvent that, use `\Closure::fromCallable([$objectOrClassName, 'method'])`.
      *
      * @param non-empty-string|non-empty-array<non-empty-string> $pattern
+     * @param-out int<0, max> $count
      *
      * @throws \RuntimeException
      */
@@ -94,7 +96,7 @@ final class Preg
      *
      * @param non-empty-string $pattern
      *
-     * @return array<int, string>
+     * @return list<string>
      *
      * @throws \RuntimeException
      */
@@ -104,6 +106,11 @@ final class Preg
             throw new \RuntimeException('PREG_SPLIT_OFFSET_CAPTURE is not supported by Preg::split', 1726506348);
         }
 
+        /**
+         * @var list<string>|false $result
+         *      As `PREG_SPLIT_OFFSET_CAPTURE` is not supported,
+         *      these are the only possible return types from `preg_split()`.
+         */
         $result = \preg_split($pattern, $subject, $limit, $flags);
 
         if ($result === false) {
@@ -121,7 +128,8 @@ final class Preg
      * This method does not currently support the `$flags` or `$offset` parameters.
      *
      * @param non-empty-string $pattern
-     * @param array<int, string> $matches
+     * @param list<string> $matches
+     * @param-out array<string> $matches
      *
      * @return 0|1
      *
@@ -154,7 +162,8 @@ final class Preg
      * This method does not currently support the `$flags` or `$offset` parameters.
      *
      * @param non-empty-string $pattern
-     * @param array<int, array<int, string>> $matches
+     * @param list<list<string>> $matches
+     * @param-out array<list<string>> $matches
      *
      * @throws \RuntimeException
      */
@@ -162,6 +171,7 @@ final class Preg
     {
         $result = \preg_match_all($pattern, $subject, $matches);
 
+        \assert($result !== null); // PHPStan seems to think `null` is a possible return value, but it's not documented.
         if ($result === false) {
             $this->logOrThrowPregLastError();
             $result = 0;
@@ -181,14 +191,16 @@ final class Preg
      */
     private function logOrThrowPregLastError(): void
     {
+        /** @var array<string, int<1, max>> $pcreConstants The PCRE constants are all integers. */
         $pcreConstants = \get_defined_constants(true)['pcre'];
-        $pcreErrorConstantNames = \array_flip(\array_filter(
+        $pcreErrorConstants = \array_filter(
             $pcreConstants,
             static function (string $key): bool {
                 return \substr($key, -6) === '_ERROR';
             },
             ARRAY_FILTER_USE_KEY
-        ));
+        );
+        $pcreErrorConstantNames = \array_flip($pcreErrorConstants);
 
         $pregLastError = \preg_last_error();
         $message = 'PCRE regex execution error `' . (string) ($pcreErrorConstantNames[$pregLastError] ?? $pregLastError)
