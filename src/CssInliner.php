@@ -695,9 +695,7 @@ final class CssInliner extends AbstractHtmlProcessor
             }
             $count = 0;
             $selector = $preg->replace('/' . $matcher . '\\w+/', '', $selector, -1, $count);
-            \assert(\is_int($count));
             $precedence += ($value * $count);
-            \assert($precedence >= 0);
         }
         $this->caches[self::CACHE_KEY_SELECTOR][$selectorKey] = $precedence;
 

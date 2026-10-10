@@ -270,12 +270,16 @@ abstract class AbstractHtmlProcessor
     private function normalizeDocumentType(string $html): string
     {
         // Limit to replacing the first occurrence: as an optimization; and in case an example exists as unescaped text.
-        return (new Preg())->replace(
+        $result = (new Preg())->replace(
             '/<!DOCTYPE\\s++html(?=[\\s>])/i',
             '<!DOCTYPE html',
             $html,
             1,
         );
+
+        \assert($result !== '');
+
+        return $result;
     }
 
     /**
@@ -315,6 +319,8 @@ abstract class AbstractHtmlProcessor
         } else {
             $reworkedHtml = self::CONTENT_TYPE_META_TAG . $html;
         }
+
+        \assert($reworkedHtml !== '');
 
         return $reworkedHtml;
     }

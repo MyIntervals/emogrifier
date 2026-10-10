@@ -99,7 +99,7 @@ final class DeclarationBlockParser
                 continue;
             }
 
-            \assert($matches !== null && \count($matches) >= 3);
+            \assert(\count($matches) >= 3);
             $propertyName = $matches[1];
             \assert($propertyName !== '');
             $propertyValue = $matches[2];
