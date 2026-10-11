@@ -10,6 +10,18 @@ Please also have a look at our
 
 ### Added
 
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+## 8.3.0: Support PHP 8.6, mitigate "dependency hell" in WordPress, and cater for extreme usage
+
+### Added
+
 - Add support for PHP 8.6 (#1649)
 
 ### Changed
