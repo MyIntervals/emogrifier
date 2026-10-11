@@ -8,7 +8,7 @@ updates:
       interval: "daily"
     commit-message:
       prefix: "[Dependabot] "
-    milestone: 21
+    milestone: 22
     cooldown:
       default-days: 7
 
@@ -28,6 +28,6 @@ updates:
     versioning-strategy: "increase"
     commit-message:
       prefix: "[Dependabot] "
-    milestone: 21
+    milestone: 22
     cooldown:
       default-days: 7
