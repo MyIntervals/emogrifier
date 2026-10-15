@@ -3933,8 +3933,27 @@ final class CssInlinerTest extends TestCase
         }
         self::assertNotSame([], $cacheProperty->getValue());
 
-        CssInliner::fromHtml('<html><body></body></html>')->inlineCss();
+        CssInliner::fromHtml('<html><body><p>text</p></body></html>')->inlineCss('p { color: green; }');
 
         self::assertSame([], $cacheProperty->getValue());
+    }
+
+    /**
+     * @test
+     */
+    public function inlineCssClearsDeclarationBlockParserCacheWhenItThrows(): void
+    {
+        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
+        if (\PHP_VERSION_ID < 80100) {
+            $cacheProperty->setAccessible(true);
+        }
+
+        $subject = $this->buildDebugSubject('<html><body><p>text</p></body></html>');
+        try {
+            $subject->inlineCss('p { color: green; } ..p { color: red; }');
+            self::fail('Expected an invalid CSS selector to throw.');
+        } catch (SyntaxErrorException $exception) {
+            self::assertSame([], $cacheProperty->getValue());
+        }
     }
 }
