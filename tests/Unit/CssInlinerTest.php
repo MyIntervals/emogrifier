@@ -8,7 +8,6 @@ use Pelago\Emogrifier\Css\CssDocument;
 use Pelago\Emogrifier\CssInliner;
 use Pelago\Emogrifier\HtmlProcessor\AbstractHtmlProcessor;
 use Pelago\Emogrifier\Tests\Support\Traits\AssertCss;
-use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Framework\TestCase;
 use Sabberworm\CSS\Parsing\UnexpectedTokenException;
@@ -3923,37 +3922,29 @@ final class CssInlinerTest extends TestCase
     /**
      * @test
      */
-    public function inlineCssClearsDeclarationBlockParserCache(): void
+    public function inlineCssReturnsTheSameInstanceAfterInliningCss(): void
     {
-        DeclarationBlockParser::parse('color: green;');
+        $subject = CssInliner::fromHtml('<html><body><p>text</p></body></html>');
 
-        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
-        if (\PHP_VERSION_ID < 80100) {
-            $cacheProperty->setAccessible(true);
-        }
-        self::assertNotSame([], $cacheProperty->getValue());
-
-        CssInliner::fromHtml('<html><body><p>text</p></body></html>')->inlineCss('p { color: green; }');
-
-        self::assertSame([], $cacheProperty->getValue());
+        self::assertSame($subject, $subject->inlineCss('p { color: green; }'));
+        self::assertStringContainsString('<p style="color: green;">text</p>', $subject->render());
     }
 
     /**
      * @test
      */
-    public function inlineCssClearsDeclarationBlockParserCacheWhenItThrows(): void
+    public function inlineCssCanProcessAnotherDocumentAfterInvalidCss(): void
     {
-        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
-        if (\PHP_VERSION_ID < 80100) {
-            $cacheProperty->setAccessible(true);
-        }
-
         $subject = $this->buildDebugSubject('<html><body><p>text</p></body></html>');
         try {
             $subject->inlineCss('p { color: green; } ..p { color: red; }');
             self::fail('Expected an invalid CSS selector to throw.');
         } catch (SyntaxErrorException $exception) {
-            self::assertSame([], $cacheProperty->getValue());
         }
+
+        $subject = CssInliner::fromHtml('<html><body><p>text</p></body></html>');
+        $subject->inlineCss('p { color: blue; }');
+
+        self::assertStringContainsString('<p style="color: blue;">text</p>', $subject->render());
     }
 }

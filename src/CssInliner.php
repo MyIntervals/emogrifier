@@ -166,11 +166,11 @@ final class CssInliner extends AbstractHtmlProcessor
 
         try {
             $this->inlineCssInternal($css);
-
-            return $this;
         } finally {
             DeclarationBlockParser::clearCache();
         }
+
+        return $this;
     }
 
     private function inlineCssInternal(string $css): void
@@ -206,7 +206,6 @@ final class CssInliner extends AbstractHtmlProcessor
 
         $this->determineMatchingUninlinableCssRules($cssRules['uninlinable']);
         $this->copyUninlinableCssToStyleNode($parsedCss);
-
     }
 
     /**
