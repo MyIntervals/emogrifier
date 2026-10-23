@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
-use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Utilities\Preg;
 
 /**
@@ -59,9 +58,13 @@ final class CssToAttributeConverter extends AbstractHtmlProcessor
      */
     public function convertCssToVisualAttributes(): self
     {
-        foreach ($this->getAllNodesWithStyleAttribute() as $node) {
-            $inlineStyleDeclarations = DeclarationBlockParser::parse($node->getAttribute('style'));
-            $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
+        try {
+            foreach ($this->getAllNodesWithStyleAttribute() as $node) {
+                $inlineStyleDeclarations = $this->declarationBlockParser->parse($node->getAttribute('style'));
+                $this->mapCssToHtmlAttributes($inlineStyleDeclarations, $node);
+            }
+        } finally {
+            $this->declarationBlockParser->clearCache();
         }
 
         return $this;

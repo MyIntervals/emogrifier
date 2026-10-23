@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\Tests\Unit\Utilities;
 
+use Pelago\Emogrifier\CssInliner;
+use Pelago\Emogrifier\HtmlProcessor\CssToAttributeConverter;
+use Pelago\Emogrifier\HtmlProcessor\CssVariableEvaluator;
 use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use PHPUnit\Framework\TestCase;
 
@@ -262,7 +265,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function parses(string $declarationBlockAsString, array $declarationBlockAsArray): void
     {
-        $result = DeclarationBlockParser::parse($declarationBlockAsString);
+        $result = (new DeclarationBlockParser())->parse($declarationBlockAsString);
 
         self::assertSame($declarationBlockAsArray, $result);
     }
@@ -272,7 +275,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function overridesEarlierDeclarationWithLaterOne(): void
     {
-        $result = DeclarationBlockParser::parse('color: red; color: green;');
+        $result = (new DeclarationBlockParser())->parse('color: red; color: green;');
 
         self::assertSame(['color' => 'green'], $result);
     }
@@ -287,26 +290,59 @@ final class DeclarationBlockParserTest extends TestCase
     {
         $declarationBlock = 'color: green;';
 
-        $firstResult = DeclarationBlockParser::parse($declarationBlock);
-        $secondResult = DeclarationBlockParser::parse($declarationBlock);
+        $parser = new DeclarationBlockParser();
+        $firstResult = $parser->parse($declarationBlock);
+        $secondResult = $parser->parse($declarationBlock);
 
         self::assertSame($firstResult, $secondResult);
     }
 
     /**
      * @test
+     * @coversNothing
      */
-    public function clearCacheEmptiesStaticCache(): void
+    public function processorsReleaseDeclarationCacheBetweenDocuments(): void
     {
-        DeclarationBlockParser::parse('color: green;');
+        $html = '<html><body><p>text</p></body></html>';
+        $inliner = CssInliner::fromHtml($html);
+        $variableEvaluator = CssVariableEvaluator::fromHtml($html);
+        $variableElement = $variableEvaluator->getDomDocument()->getElementsByTagName('p')->item(0);
+        self::assertInstanceOf(\DOMElement::class, $variableElement);
+        $converter = CssToAttributeConverter::fromHtml($html);
+        $converterElement = $converter->getDomDocument()->getElementsByTagName('p')->item(0);
+        self::assertInstanceOf(\DOMElement::class, $converterElement);
 
-        DeclarationBlockParser::clearCache();
+        $inliner->inlineCss('p { color: #000000; }')->render();
+        $variableElement->setAttribute('style', '--warmup: red; color: var(--warmup)');
+        $variableEvaluator->evaluateVariables();
+        $converterElement->setAttribute('style', 'text-align: center; --warmup: red');
+        $converter->convertCssToVisualAttributes();
+        \gc_collect_cycles();
+        $initialMemoryUsage = \memory_get_usage();
 
-        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
-        if (\PHP_VERSION_ID < 80100) {
-            $cacheProperty->setAccessible(true);
+        for ($index = 0; $index < 1200; ++$index) {
+            $color = \sprintf('#%06x', $index);
+            $inliner->inlineCss('p { color: ' . $color . '; }');
         }
-        self::assertSame([], $cacheProperty->getValue());
+
+        for ($index = 0; $index < 1200; ++$index) {
+            $color = \sprintf('#%06x', $index);
+            $variableName = '--color-' . $index;
+            $variableElement->setAttribute(
+                'style',
+                $variableName . ': ' . $color . '; color: var(' . $variableName . ')'
+            );
+            $variableEvaluator->evaluateVariables();
+        }
+
+        for ($index = 0; $index < 1200; ++$index) {
+            $color = \sprintf('#%06x', $index);
+            $converterElement->setAttribute('style', 'text-align: center; --marker-' . $index . ': ' . $color);
+            $converter->convertCssToVisualAttributes();
+        }
+
+        \gc_collect_cycles();
+        self::assertLessThan(1024 * 1024, \memory_get_usage() - $initialMemoryUsage);
     }
 
 }

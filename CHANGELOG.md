@@ -18,8 +18,8 @@ Please also have a look at our
 
 ### Fixed
 
-- Clear the static declaration-block cache after each CSS inlining call, including
-  when an exception is thrown (#1568)
+- Scope parsed declaration-block caches to the processor handling each document
+  to avoid retaining CSS from completed processing calls (#1568)
 
 ## 8.3.0: Support PHP 8.6, mitigate "dependency hell" in WordPress, and cater for extreme usage
 
