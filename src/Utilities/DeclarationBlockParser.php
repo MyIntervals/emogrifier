@@ -8,7 +8,7 @@ namespace Pelago\Emogrifier\Utilities;
  * Provides a common method for parsing CSS declaration blocks.
  * These might be from actual CSS, or from the `style` attribute of an HTML DOM element.
  *
- * Caches results globally.
+ * Caches results in the parser instance.
  *
  * @internal
  */
@@ -17,17 +17,14 @@ final class DeclarationBlockParser
     /**
      * @var array<non-empty-string, array<non-empty-string, string>>
      */
-    private static $cache = [];
+    private $cache = [];
 
     /**
-     * Clears the static cache of parsed declaration blocks.
-     *
-     * This is called by {@see CssInliner::inlineCss} to prevent unbounded memory growth
-     * when processing multiple HTML documents in a single PHP process.
+     * Clears the cache of parsed declaration blocks.
      */
-    public static function clearCache(): void
+    public function clearCache(): void
     {
-        self::$cache = [];
+        $this->cache = [];
     }
 
     /**
@@ -74,15 +71,15 @@ final class DeclarationBlockParser
      *
      * @throws \UnexpectedValueException if an empty property name is encountered (which cannot happen)
      */
-    public static function parse(string $declarationBlock): array
+    public function parse(string $declarationBlock): array
     {
         $trimmedDeclarationBlock = \trim($declarationBlock, "; \n\r\t\v\x00");
         if ($trimmedDeclarationBlock === '') {
             return [];
         }
 
-        if (isset(self::$cache[$trimmedDeclarationBlock])) {
-            return self::$cache[$trimmedDeclarationBlock];
+        if (isset($this->cache[$trimmedDeclarationBlock])) {
+            return $this->cache[$trimmedDeclarationBlock];
         }
 
         $preg = new Preg();
@@ -105,7 +102,7 @@ final class DeclarationBlockParser
             $propertyValue = $matches[2];
             $properties[self::normalizePropertyName($propertyName)] = $propertyValue;
         }
-        self::$cache[$trimmedDeclarationBlock] = $properties;
+        $this->cache[$trimmedDeclarationBlock] = $properties;
 
         return $properties;
     }
