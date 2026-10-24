@@ -33,6 +33,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
          *      $elementsToEvaluate
          */
         $elementsToEvaluate = [['element' => $this->getHtmlElement(), 'ancestorDefinitions' => []]];
+        $declarationBlockParser = $this->getDeclarationBlockParser();
 
         try {
             while (($currentElementData = \array_pop($elementsToEvaluate)) !== null) {
@@ -43,7 +44,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
 
                 // Avoid parsing declarations if none use or define a variable
                 if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
-                    $declarations = $this->declarationBlockParser->parse($style);
+                    $declarations = $declarationBlockParser->parse($style);
                     $variableDefinitions
                         = $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
                     $this->currentVariableDefinitions = $variableDefinitions;
@@ -63,7 +64,7 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
                 }
             }
         } finally {
-            $this->declarationBlockParser->clearCache();
+            $declarationBlockParser->clearCache();
         }
 
         return $this;
