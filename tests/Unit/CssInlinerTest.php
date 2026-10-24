@@ -3947,4 +3947,24 @@ final class CssInlinerTest extends TestCase
 
         self::assertStringContainsString('<p style="color: blue;">text</p>', $subject->render());
     }
+
+    /**
+     * @test
+     */
+    public function inlineCssReleasesDeclarationCacheBetweenCalls(): void
+    {
+        $subject = CssInliner::fromHtml('<html><body><p>text</p></body></html>');
+        $subject->inlineCss('p { color: #000000; }');
+        for ($index = 0; $index < 1200; ++$index) {
+            $color = \sprintf('#%06x', $index);
+            $css[] = 'p { color: ' . $color . '; }';
+        }
+
+        \gc_collect_cycles();
+        $initialMemoryUsage = \memory_get_usage();
+        $subject->inlineCss(\implode("\n", $css));
+        \gc_collect_cycles();
+        // Seven PHP 8.5 runs measured 1,064,440 bytes without clearing and 388,592 with clearing.
+        self::assertLessThan(726_516, \memory_get_usage() - $initialMemoryUsage);
+    }
 }

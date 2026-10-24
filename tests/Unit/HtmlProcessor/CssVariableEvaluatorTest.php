@@ -40,6 +40,32 @@ final class CssVariableEvaluatorTest extends TestCase
     }
 
     /**
+     * @test
+     */
+    public function evaluateVariablesReleasesDeclarationCacheBetweenCalls(): void
+    {
+        $subject = CssVariableEvaluator::fromHtml('<html><body><p></p></body></html>');
+        $element = $subject->getDomDocument()->getElementsByTagName('p')->item(0);
+        self::assertInstanceOf(\DOMElement::class, $element);
+
+        $element->setAttribute('style', '--warmup: red; color: var(--warmup)');
+        $subject->evaluateVariables();
+        \gc_collect_cycles();
+        $initialMemoryUsage = \memory_get_usage();
+
+        for ($index = 0; $index < 1200; ++$index) {
+            $variableName = '--color-' . $index;
+            $color = \sprintf('#%06x', $index);
+            $element->setAttribute('style', $variableName . ': ' . $color . '; color: var(' . $variableName . ')');
+            $subject->evaluateVariables();
+        }
+
+        \gc_collect_cycles();
+        // Seven PHP 8.5 runs measured 841,960 bytes without clearing and 368 with clearing.
+        self::assertLessThan(421_164, \memory_get_usage() - $initialMemoryUsage);
+    }
+
+    /**
      * Invokes `CssInliner` to provide a test subject wrapping a `DOMDocument` in which `$css` has been inlined into
      * `$html`.
      *

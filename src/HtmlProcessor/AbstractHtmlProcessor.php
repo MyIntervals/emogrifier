@@ -57,9 +57,9 @@ abstract class AbstractHtmlProcessor
     /**
      * Parses CSS declaration blocks for this processor instance.
      *
-     * @var DeclarationBlockParser
+     * @var ?DeclarationBlockParser
      */
-    protected $declarationBlockParser;
+    private $declarationBlockParser;
 
     /**
      * The constructor.
@@ -85,7 +85,6 @@ abstract class AbstractHtmlProcessor
         }
 
         $instance = new static();
-        $instance->declarationBlockParser = new DeclarationBlockParser();
         $instance->setHtml($unprocessedHtml);
         \assert($instance->domDocument instanceof \DOMDocument);
         \assert($instance->xPath instanceof \DOMXPath);
@@ -103,12 +102,23 @@ abstract class AbstractHtmlProcessor
     public static function fromDomDocument(\DOMDocument $document): self
     {
         $instance = new static();
-        $instance->declarationBlockParser = new DeclarationBlockParser();
         $instance->setDomDocument($document);
         \assert($instance->domDocument instanceof \DOMDocument);
         \assert($instance->xPath instanceof \DOMXPath);
 
         return $instance;
+    }
+
+    /**
+     * Returns the parser for CSS declaration blocks, creating it on first use.
+     */
+    protected function getDeclarationBlockParser(): DeclarationBlockParser
+    {
+        if (!$this->declarationBlockParser instanceof DeclarationBlockParser) {
+            $this->declarationBlockParser = new DeclarationBlockParser();
+        }
+
+        return $this->declarationBlockParser;
     }
 
     /**
