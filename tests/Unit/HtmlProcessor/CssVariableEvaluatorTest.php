@@ -62,7 +62,7 @@ final class CssVariableEvaluatorTest extends TestCase
 
         \gc_collect_cycles();
         // Seven PHP 8.5 runs measured 841,960 bytes without clearing and 368 with clearing.
-        self::assertLessThan(421_164, \memory_get_usage() - $initialMemoryUsage);
+        self::assertLessThan(421164, \memory_get_usage() - $initialMemoryUsage);
     }
 
     /**

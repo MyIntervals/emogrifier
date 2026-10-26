@@ -89,7 +89,7 @@ final class CssToAttributeConverterTest extends TestCase
 
         \gc_collect_cycles();
         // Seven PHP 8.5 runs measured 840,160 bytes without clearing and 320 with clearing.
-        self::assertLessThan(420_240, \memory_get_usage() - $initialMemoryUsage);
+        self::assertLessThan(420240, \memory_get_usage() - $initialMemoryUsage);
     }
 
     /**

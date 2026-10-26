@@ -3965,6 +3965,6 @@ final class CssInlinerTest extends TestCase
         $subject->inlineCss(\implode("\n", $css));
         \gc_collect_cycles();
         // Seven PHP 8.5 runs measured 1,064,440 bytes without clearing and 388,592 with clearing.
-        self::assertLessThan(726_516, \memory_get_usage() - $initialMemoryUsage);
+        self::assertLessThan(726516, \memory_get_usage() - $initialMemoryUsage);
     }
 }
