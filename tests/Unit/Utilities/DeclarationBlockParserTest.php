@@ -294,4 +294,22 @@ final class DeclarationBlockParserTest extends TestCase
         self::assertSame($firstResult, $secondResult);
     }
 
+    /**
+     * @test
+     */
+    public function doesNotRetainMemoryBetweenParserInstances(): void
+    {
+        $initialMemoryUsage = \memory_get_usage();
+
+        for ($index = 0; $index < 5000; ++$index) {
+            $parser = new DeclarationBlockParser();
+            $parser->parse('color: #' . \str_pad(\dechex($index), 6, '0', STR_PAD_LEFT) . ';');
+        }
+
+        unset($parser);
+        \gc_collect_cycles();
+
+        self::assertLessThan(1048576, \memory_get_usage() - $initialMemoryUsage);
+    }
+
 }
