@@ -262,7 +262,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function parses(string $declarationBlockAsString, array $declarationBlockAsArray): void
     {
-        $result = DeclarationBlockParser::parse($declarationBlockAsString);
+        $result = (new DeclarationBlockParser())->parse($declarationBlockAsString);
 
         self::assertSame($declarationBlockAsArray, $result);
     }
@@ -272,7 +272,7 @@ final class DeclarationBlockParserTest extends TestCase
      */
     public function overridesEarlierDeclarationWithLaterOne(): void
     {
-        $result = DeclarationBlockParser::parse('color: red; color: green;');
+        $result = (new DeclarationBlockParser())->parse('color: red; color: green;');
 
         self::assertSame(['color' => 'green'], $result);
     }
@@ -287,8 +287,9 @@ final class DeclarationBlockParserTest extends TestCase
     {
         $declarationBlock = 'color: green;';
 
-        $firstResult = DeclarationBlockParser::parse($declarationBlock);
-        $secondResult = DeclarationBlockParser::parse($declarationBlock);
+        $parser = new DeclarationBlockParser();
+        $firstResult = $parser->parse($declarationBlock);
+        $secondResult = $parser->parse($declarationBlock);
 
         self::assertSame($firstResult, $secondResult);
     }
@@ -296,17 +297,19 @@ final class DeclarationBlockParserTest extends TestCase
     /**
      * @test
      */
-    public function clearCacheEmptiesStaticCache(): void
+    public function doesNotRetainMemoryBetweenParserInstances(): void
     {
-        DeclarationBlockParser::parse('color: green;');
+        $initialMemoryUsage = \memory_get_usage();
 
-        DeclarationBlockParser::clearCache();
-
-        $cacheProperty = new \ReflectionProperty(DeclarationBlockParser::class, 'cache');
-        if (\PHP_VERSION_ID < 80100) {
-            $cacheProperty->setAccessible(true);
+        for ($index = 0; $index < 5000; ++$index) {
+            $parser = new DeclarationBlockParser();
+            $parser->parse('color: #' . \str_pad(\dechex($index), 6, '0', STR_PAD_LEFT) . ';');
         }
-        self::assertSame([], $cacheProperty->getValue());
+
+        unset($parser);
+        \gc_collect_cycles();
+
+        self::assertLessThan(1048576, \memory_get_usage() - $initialMemoryUsage);
     }
 
 }

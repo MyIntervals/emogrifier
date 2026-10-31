@@ -18,6 +18,9 @@ Please also have a look at our
 
 ### Fixed
 
+- Scope parsed declaration-block caches to the processor handling each document
+  to avoid retaining CSS from completed processing calls (#1568)
+
 ## 8.3.0: Support PHP 8.6, mitigate "dependency hell" in WordPress, and cater for extreme usage
 
 ### Added
