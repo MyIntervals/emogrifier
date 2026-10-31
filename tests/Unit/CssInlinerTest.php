@@ -3955,6 +3955,7 @@ final class CssInlinerTest extends TestCase
     {
         $subject = CssInliner::fromHtml('<html><body><p>text</p></body></html>');
         $subject->inlineCss('p { color: #000000; }');
+        $css = [];
         for ($index = 0; $index < 1200; ++$index) {
             $color = \sprintf('#%06x', $index);
             $css[] = 'p { color: ' . $color . '; }';
