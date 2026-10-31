@@ -163,12 +163,10 @@ final class CssInliner extends AbstractHtmlProcessor
     public function inlineCss(string $css = ''): self
     {
         $this->clearAllCaches();
-        $declarationBlockParser = $this->getDeclarationBlockParser();
-
         try {
             $this->inlineCssInternal($css);
         } finally {
-            $declarationBlockParser->clearCache();
+            $this->clearAllCaches();
         }
 
         return $this;
