@@ -3953,6 +3953,10 @@ final class CssInlinerTest extends TestCase
      */
     public function inlineCssReleasesDeclarationCacheBetweenCalls(): void
     {
+        if (\extension_loaded('xdebug')) {
+            self::markTestSkipped('Xdebug retains memory after the caches are cleared.');
+        }
+
         $subject = CssInliner::fromHtml('<html><body><p>text</p></body></html>');
         $subject->inlineCss('p { color: #000000; }');
         $css = [];

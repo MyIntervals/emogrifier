@@ -815,9 +815,10 @@ final class CssInliner extends AbstractHtmlProcessor
      */
     private function fillStyleAttributesWithMergedStyles(): void
     {
+        $declarationBlockParser = $this->getDeclarationBlockParser();
         foreach ($this->styleAttributesForNodes as $nodePath => $styleAttributesForNode) {
             $node = $this->visitedNodes[$nodePath];
-            $currentStyleAttributes = $this->getDeclarationBlockParser()->parse($node->getAttribute('style'));
+            $currentStyleAttributes = $declarationBlockParser->parse($node->getAttribute('style'));
             $node->setAttribute(
                 'style',
                 $this->generateStyleStringFromDeclarationsArrays(
