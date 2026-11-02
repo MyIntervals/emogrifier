@@ -45,7 +45,7 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "1.4.0",
-        "phpmd/phpmd": "2.15.0",
+        "phpmd/phpmd": "3.0.0",
         "phpstan/extension-installer": "1.4.3",
         "phpstan/phpstan": "1.12.33 || 2.3.1",
         "phpstan/phpstan-deprecation-rules": "1.2.1 || 2.0.5",
