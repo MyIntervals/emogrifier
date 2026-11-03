@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pelago\Emogrifier\HtmlProcessor;
 
-use Pelago\Emogrifier\Utilities\DeclarationBlockParser;
 use Pelago\Emogrifier\Utilities\Preg;
 
 /**
@@ -34,33 +33,38 @@ final class CssVariableEvaluator extends AbstractHtmlProcessor
          *      $elementsToEvaluate
          */
         $elementsToEvaluate = [['element' => $this->getHtmlElement(), 'ancestorDefinitions' => []]];
+        $declarationBlockParser = $this->getDeclarationBlockParser();
 
-        while (($currentElementData = \array_pop($elementsToEvaluate)) !== null) {
-            $currentElement = $currentElementData['element'];
-            $currentAncestorDefinitions = $currentElementData['ancestorDefinitions'];
+        try {
+            while (($currentElementData = \array_pop($elementsToEvaluate)) !== null) {
+                $currentElement = $currentElementData['element'];
+                $currentAncestorDefinitions = $currentElementData['ancestorDefinitions'];
 
-            $style = $currentElement->getAttribute('style');
+                $style = $currentElement->getAttribute('style');
 
-            // Avoid parsing declarations if none use or define a variable
-            if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
-                $declarations = DeclarationBlockParser::parse($style);
-                $variableDefinitions
-                    = $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
-                $this->currentVariableDefinitions = $variableDefinitions;
+                // Avoid parsing declarations if none use or define a variable
+                if ((new Preg())->match('/(?<![\\w\\-])--[\\w\\-]/', $style) !== 0) {
+                    $declarations = $declarationBlockParser->parse($style);
+                    $variableDefinitions
+                        = $this->getVariableDefinitionsFromDeclarations($declarations) + $currentAncestorDefinitions;
+                    $this->currentVariableDefinitions = $variableDefinitions;
 
-                $newDeclarations = $this->replaceVariablesInDeclarations($declarations);
-                if ($newDeclarations !== null) {
-                    $currentElement->setAttribute('style', $this->getDeclarationsAsString($newDeclarations));
+                    $newDeclarations = $this->replaceVariablesInDeclarations($declarations);
+                    if ($newDeclarations !== null) {
+                        $currentElement->setAttribute('style', $this->getDeclarationsAsString($newDeclarations));
+                    }
+                } else {
+                    $variableDefinitions = $currentAncestorDefinitions;
                 }
-            } else {
-                $variableDefinitions = $currentAncestorDefinitions;
-            }
 
-            foreach ($currentElement->childNodes as $child) {
-                if ($child instanceof \DOMElement) {
-                    $elementsToEvaluate[] = ['element' => $child, 'ancestorDefinitions' => $variableDefinitions];
+                foreach ($currentElement->childNodes as $child) {
+                    if ($child instanceof \DOMElement) {
+                        $elementsToEvaluate[] = ['element' => $child, 'ancestorDefinitions' => $variableDefinitions];
+                    }
                 }
             }
+        } finally {
+            $declarationBlockParser->clearCache();
         }
 
         return $this;
