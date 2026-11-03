@@ -12,10 +12,6 @@ parameters:
     - %currentWorkingDirectory%/src/
     - %currentWorkingDirectory%/tests/
 
-  excludePaths:
-    - %currentWorkingDirectory%/tests/Unit/PhpStan/
-    - %currentWorkingDirectory%/tests/fixtures/phpstan/
-
   # As this project is a library, we cannot trust callers to adhere to the PHPDoc type annotations.
   treatPhpDocTypesAsCertain: false
 
@@ -30,14 +26,3 @@ parameters:
     -
       message: '#^Call to static method PHPUnit\\Framework\\Assert\:\:assertInstanceOf\(\) .* will always evaluate to#'
       path: '%currentWorkingDirectory%/tests/'
-
-  # This is a temporary but sadly necessary setting to allow upgrade to PHPStan 2.2.8.
-  # It maintains compatibility with PHPStan 2.2.7.
-  # When it has been bedded in, it can (and should) be removed.
-  reportUnmatchedIgnoredErrors: false
-
-services:
-  -
-    class: \Pelago\Emogrifier\PhpStan\IgnoreBooleanAlways
-    tags:
-      - phpstan.ignoreErrorExtension

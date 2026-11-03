@@ -1,5 +1,0 @@
-services:
-  -
-    class: \Pelago\Emogrifier\PhpStan\IgnoreBooleanAlways
-    tags:
-      - phpstan.ignoreErrorExtension
