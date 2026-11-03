@@ -57,7 +57,7 @@ abstract class AbstractHtmlProcessor
     /**
      * Parses CSS declaration blocks for this processor instance.
      *
-     * @var ?DeclarationBlockParser
+     * @var DeclarationBlockParser|null
      */
     private $declarationBlockParser;
 
@@ -114,7 +114,7 @@ abstract class AbstractHtmlProcessor
      */
     protected function getDeclarationBlockParser(): DeclarationBlockParser
     {
-        if (!$this->declarationBlockParser instanceof DeclarationBlockParser) {
+        if (!($this->declarationBlockParser instanceof DeclarationBlockParser)) {
             $this->declarationBlockParser = new DeclarationBlockParser();
         }
 
