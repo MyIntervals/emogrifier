@@ -14,6 +14,7 @@
 1. Tag the new release.
 1. In the [Releases tab](https://github.com/MyIntervals/emogrifier/releases),
    create a new release and copy the change log entries to the new release.
+1. Close the old milestone.
 1. Post about the new release on social media.
 
 ## Working with git tags
