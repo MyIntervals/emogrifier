@@ -16,6 +16,9 @@ parameters:
     - %currentWorkingDirectory%/tests/Unit/PhpStan/
     - %currentWorkingDirectory%/tests/fixtures/phpstan/
 
+  # As this project is a library, we cannot trust callers to adhere to the PHPDoc type annotations.
+  treatPhpDocTypesAsCertain: false
+
   type_perfect:
     no_mixed_property: true
     no_mixed_caller: true
